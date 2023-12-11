@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Land Tax Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #calculator {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .input-column,
+    .result-column {
+      flex: 1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div id="calculator">
+  <div class="input-column">
+    <label for="ropani">१. रोपनी:</label>
+    <input type="number" id="ropani" placeholder="Enter Ropani">
+
+    <label for="aana">२. आना:</label>
+    <input type="number" id="aana" placeholder="Enter Aana">
+
+    <label for="paisa">३. पैसा:</label>
+    <input type="number" id="paisa" placeholder="Enter Paisa">
+
+    <label for="daam">४. दाम:</label>
+    <input type="number" id="daam" placeholder="Enter Daam">
+  </div>
+
+  <div class="input-column">
+    <label for="fiscalYear">५. तिरो बुझाएको आर्थिक वर्ष:</label>
+    <select id="fiscalYear">
+      <option value="79।80">79।80</option>
+      <option value="78।79">78।79</option>
+      <option value="77।78">77।78</option>
+      <option value="76।77">76।77</option>
+      <option value="75।76">75।76</option>
+      <option value="74।75">74।75</option>
+      <option value="73।74">73।74</option>
+      <option value="72।73">72।73</option>
+      <option value="71।72">71।72</option>
+      <option value="70।71">70।71</option>
+      <option value="69।70">69।70</option>
+      <option value="68।69">68।69</option>
+      <option value="67।68">67।68</option>
+      <option value="66।67">66।67</option>
+      <option value="65।66">65।66</option>
+      <option value="64।65">64।65</option>
+      <option value="63।64">63।64</option>
+      <option value="62।63">62।63</option>
+      <option value="61।62">61।62</option>
+      <option value="60।61">60।61</option>
+      <option value="59।60">59।60</option>
+      <option value="58।59">58।59</option>
+      <option value="57।58">57।58</option>
+      <option value="56।57">56।57</option>
+      <option value="55।56">55।56</option>
+      <option value="54।55">54।55</option>
+      <option value="53।54">53।54</option>
+      <option value="52।53">52।53</option>
+      <option value="51।52">51।52</option>
+      <option value="50।51">50।51</option>
+      <option value="49।50">49।50</option>
+      <option value="48।49">48।49</option>
+      <option value="47।48">47।48</option>
+      <option value="46।47">46।47</option>
+      <option value="45।46">45।46</option>
+      <option value="44।45">44।45</option>
+      <option value="43।44">43।44</option>
+      <option value="42।43">42।43</option>
+    </select>
+  </div>
+
+  <button onclick="calculateTax()">Calculate Tax</button>
+
+  <div class="result-column">
+    <label for="bakayota">१. बक्यौता:</label>
+    <div id="bakayota" class="result"></div>
+
+    <label for="chalu">२. चालु:</label>
+    <div id="chalu" class="result"></div>
+
+    <label for="jaribana">३. जरिवाना:</label>
+    <div id="jaribana" class="result"></div>
+
+    <label for="jamma">४. जम्मा:</label>
+    <div id="jamma" class="result"></div>
+  </div>
+</div>
+
+<script>
+  function calculateTax() {
+    const ropani = parseFloat(document.getElementById('ropani').value) || 0;
+    const aana = parseFloat(document.getElementById('aana').value) || 0;
+    const paisa = parseFloat(document.getElementById('paisa').value) || 0;
+    const daam = parseFloat(document.getElementById('daam').value) || 0;
+    const fiscalYear = document.getElementById('fiscalYear').value;
+
+    // Replace this with your actual rates
+    const rates = {
+      '79।80': { rate: 125, exemption: 0 },
+      '78।79': { rate: 125, exemption: 20 },
+      '77।78': { rate: 100, exemption: 30 },
+      '76।77': { rate: 100, exemption: 40 },
+      '75।76': { rate: 100, exemption: 50 },
+      '74।75': { rate: 100, exemption: 60 },
+      '73।74': { rate: 100, exemption: 70 },
+      '72।73': { rate: 100, exemption: 80 },
+      '71।72': { rate: 100, exemption: 90 },
+      '70।71': { rate: 100, exemption: 100 },
+      '69।70': { rate: 100, exemption: 100 },
+      '68।69': { rate: 75, exemption: 100 },
+      '67।68': { rate: 75, exemption: 100 },
+      '66।67': { rate: 75, exemption: 100 },
+      '65।66': { rate: 75, exemption: 100 },
+      '64।65': { rate: 75, exemption: 100 },
+      '63।64': { rate: 75, exemption: 100 },
+      '62।63': { rate: 75, exemption: 100 },
+      '61।62': { rate: 75, exemption: 100 },
+      '60।61': { rate: 25.6, exemption: 100 },
+      '59।60': { rate: 25.6, exemption: 100 },
+      '58।59': { rate: 25.6, exemption: 100 },
+      '57।58': { rate: 25.6, exemption: 100 },
+      '56।57': { rate: 25.6, exemption: 100 },
+      '55।56': { rate: 25.6, exemption: 100 },
+      '54।55': { rate: 25.6, exemption: 100 },
+      '53।54': { rate: 25.6, exemption: 100 },
+      '52।53': { rate: 25.6, exemption: 100 },
+      '51।52': { rate: 25.6, exemption: 100 },
+      '50।51': { rate: 25.6, exemption: 100 },
+      '49।50': { rate: 25.6, exemption: 100 },
+      '48।49': { rate: 3.3, exemption: 100 },
+      '47।48': { rate: 3.3, exemption: 100 },
+      '46।47': { rate: 3.3, exemption: 100 },
+      '45।46': { rate: 3.3, exemption: 100 },
+      '44।45': { rate: 3.3, exemption: 100 },
+      '43।44': { rate: 3.3, exemption: 100 },
+      '42।43': { rate: 3.3, exemption: 100 },
+    };
+
+    const rate = rates[fiscalYear] || { rate: 0, exemption: 0 };
+
+    const total = (ropani + aana / 16 + paisa / 64 + daam / 256) * rate.rate;
+    const exemptionAmount = (total * rate.exemption) / 100;
+    const bakayota = total - exemptionAmount;
+    const chalu = (total * 5) / 100;
+    const jaribana = (total * 2) / 100;
+    const jamma = bakayota + chalu + jaribana;
+
+    document.getElementById('bakayota').textContent = `रु. ${bakayota.toFixed(2)}`;
+    document.getElementById('chalu').textContent = `रु. ${chalu.toFixed(2)}`;
+    document.getElementById('jaribana').textContent = `रु. ${jaribana.toFixed(2)}`;
+    document.getElementById('jamma').textContent = `रु. ${jamma.toFixed(2)}`;
+  }
+</script>
+<script>
+    function calculateResult() {
+      const ropani = parseFloat(document.getElementById('ropani').value) || 0;
+      const fiscalYear = document.getElementById('fiscalYear').value;
+  
+      // Replace this with your actual rates
+      const rates = {
+        '79।80': { rate: 125, exemption: 0 },
+        '78।79': { rate: 125, exemption: 20 },
+        '77।78': { rate: 100, exemption: 30 },
+        '76।77': { rate: 100, exemption: 40 },
+        '75।76': { rate: 100, exemption: 50 },
+        '74।75': { rate: 100, exemption: 60 },
+        '73।74': { rate: 100, exemption: 70 },
+        '72।73': { rate: 100, exemption: 80 },
+        '71।72': { rate: 100, exemption: 90 },
+        '70।71': { rate: 100, exemption: 100 },
+        '69।70': { rate: 100, exemption: 100 },
+        '68।69': { rate: 75, exemption: 100 },
+        '67।68': { rate: 75, exemption: 100 },
+        '66।67': { rate: 75, exemption: 100 },
+        '65।66': { rate: 75, exemption: 100 },
+        '64।65': { rate: 75, exemption: 100 },
+        '63।64': { rate: 75, exemption: 100 },
+        '62।63': { rate: 75, exemption: 100 },
+        '61।62': { rate: 75, exemption: 100 },
+        '60।61': { rate: 25.6, exemption: 100 },
+        '59।60': { rate: 25.6, exemption: 100 },
+        '58।59': { rate: 25.6, exemption: 100 },
+        '57।58': { rate: 25.6, exemption: 100 },
+        '56।57': { rate: 25.6, exemption: 100 },
+        '55।56': { rate: 25.6, exemption: 100 },
+        '54।55': { rate: 25.6, exemption: 100 },
+        '53।54': { rate: 25.6, exemption: 100 },
+        '52।53': { rate: 25.6, exemption: 100 },
+        '51।52': { rate: 25.6, exemption: 100 },
+        '50।51': { rate: 25.6, exemption: 100 },
+        '49।50': { rate: 25.6, exemption: 100 },
+        '48।49': { rate: 3.3, exemption: 100 },
+        '47।48': { rate: 3.3, exemption: 100 },
+        '46।47': { rate: 3.3, exemption: 100 },
+        '45।46': { rate: 3.3, exemption: 100 },
+        '44।45': { rate: 3.3, exemption: 100 },
+        '43।44': { rate: 3.3, exemption: 100 },
+        '42।43': { rate: 3.3, exemption: 100 },
+      };
+  
+      const rateKeys = Object.keys(rates);
+      const index = rateKeys.indexOf(fiscalYear);
+      const rateSum = rateKeys.slice(1, index + 1).reduce((sum, key) => sum + rates[key].rate, 0);
+  
+      const chalu = ropani * 125;
+      const bakayota = ropani * rateSum;
+      const jaribana = (bakayota * rates[fiscalYear].exemption) / 100;
+      const jamma = chalu + bakayota + jaribana;
+  
+      document.getElementById('chalu').textContent = `१. चालु: रु. ${chalu.toFixed(2)}`;
+      document.getElementById('bakayota').textContent = `२. बक्यौता: रु. ${bakayota.toFixed(2)}`;
+      document.getElementById('jaribana').textContent = `३. जरिवाना: रु. ${jaribana.toFixed(2)}`;
+      document.getElementById('jamma').textContent = `४. जम्मा: रु. ${jamma.toFixed(2)}`;
+    }
+  </script>
+  
+</body>
+</html>
