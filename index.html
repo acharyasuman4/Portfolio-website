@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <style>
-      
+    <style> 
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
             background-color: #f4f4f4;
             color: #333;
+            font-size: 25px
         }
+        body {
+    font-size: 16px; /* Adjust as needed */
+}
+
+@media (max-width: 600px) {
+    label, select, input {
+        font-size: 14px;
+    }
+}
 
         #calculator {
             max-width: 600px;
@@ -20,11 +29,11 @@
         }
 
         h2 {
-            color: #4CAF50;
+            color: #0a15e7;
         }
 
         label, select, input {
-            width: 50%;
+            width: 30%;
             padding: 10px;
             margin-bottom: 15px;
             box-sizing: border-box;
@@ -58,6 +67,21 @@
         p {
             font-size: 30px;
         }
+        @media (max-width: 600px) {
+    /* Existing styles for small screens */
+    #calculator {
+        max-width: 100%;
+    }
+
+    label, select, input {
+        width: 100%;
+    }
+
+    button {
+        width: 48%; /* Adjust as needed */
+        margin-right: 2%;
+    }
+}
 
         /* Media query for small screens */
         @media (max-width: 600px) {
@@ -92,7 +116,7 @@
             text-align: center;
             padding: 10px;
             background-color: #78c6a5;
-            color: rgb(17, 5, 229);
+            color: rgb(5, 229, 46);
             border-radius: 5px;
             margin-bottom: 20px;
         }
@@ -109,8 +133,24 @@
         #designer {
             text-align: center;
             font-style: italic;
+            color: rgb(8, 162, 228);
         }
+        table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px; /* Add margin for separation from the result */
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd; /* Add borders for better visibility */
+    }
+
+        
     </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 <body>
 
