@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer:Suman Acharya</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .welcome-text {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 100px; /* Increased gap between Welcome Text and Menu Button */
+        }
+
+        .emoji {
+            font-size: 36px;
+        }
+
+        .dropdown-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .dropdown {
+            text-align: center;
+        }
+
+        .dropbtn {
+            padding: 15px;
+            font-size: 18px;
+            background-color: #f9f9f9;
+            border: 2px solid #333; /* Added border for clarity */
+            font-weight: bold; /* Increased font weight for clarity */
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            min-width: 160px;
+            text-align: center;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="dropdown-container">
+        <div class="dropdown">
+            <button class="dropbtn">Menu</button>
+            <div class="dropdown-content">
+                <a href="malpot_calculator.html">मालपोत असुली क्याल्कुलेटर</a>
+                <a href="adhinasta.html">कुतबाली असुली क्याल्कुलेटर</a>
+                <a href="ropani_adder.html">रोपनी जोड्न</a>
+                <a href="Contact.html">Contact</a>
+            </div>
+        </div>
+        <div class="welcome-text"></div>
+
+        <div class="emoji">लौ, स्वागत छ है 😍<br>🌟</div>
+    </div>
+</div>
+
+</body>
+</html>

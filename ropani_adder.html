@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ropani Adder</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #calculator {
+            max-width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #05ccf9; /* Blue color */
+        }
+        p.blue-text {
+            color: #007bff; /* Blue color */
+            margin-top: 0;
+        }
+        label {
+            display: inline-block;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+        input {
+            width: calc(25% - 5px);
+            margin-right: 5px;
+            padding: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #0bc5ef;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #result {
+            text-align: left;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        #history {
+            text-align: left;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        footer {
+            margin-top: 20px;
+            color: #007bff; /* Blue color */
+        }
+    </style>
+</head>
+<body>
+
+<div id="calculator">
+    <h2>Ropani Adder</h2>
+    <p class="blue-text">घटाउनु परेमा अङ्कको अगाडि " -" sign को प्रयोग गर्नुहोला</p>
+    <label for="ropani">रोपनी:</label>
+    <input type="number" id="ropani" placeholder="Enter रोपनी" step="any">
+
+    <label for="aana">आना:</label>
+    <input type="number" id="aana" placeholder="Enter आना" step="any" max="15.99">
+
+    <label for="paisa">पैसा:</label>
+    <input type="number" id="paisa" placeholder="Enter पैसा" step="any" max="3.99">
+
+    <label for="daam">दाम:</label>
+    <input type="number" id="daam" placeholder="Enter दाम" step="any" max="3.99">
+
+    <button onclick="addLandArea()">Add Land Area</button>
+
+    <div id="result"></div>
+
+    <!-- Clear History Button -->
+    <button id="clearHistoryButton" onclick="clearHistory()" style="display:none;">Clear History</button>
+
+    <div id="history"></div>
+</div>
+
+<footer>
+    <p>Designed by: Suman Acharya, Land Revenue office, Sindhupalchowk</p>
+</footer>
+
+<script>
+    // Initialize arrays to store land areas and history
+    const landAreas = [];
+    const history = [];
+
+    // Function to calculate and update the total area
+// Function to calculate and update the total area
+function calculateAndUpdateTotalArea() {
+    let totalRopani = 0;
+    let totalAana = 0;
+    let totalPaisa = 0;
+    let totalDaam = 0;
+
+    // Calculate total area from each land area
+    landAreas.forEach(area => {
+        totalRopani += area.ropani;
+        totalAana += area.aana;
+        totalPaisa += area.paisa;
+        totalDaam += area.daam;
+    });
+
+    // Convert negative values to positive and adjust larger units accordingly
+    if (totalDaam < 0) {
+        totalDaam += 4;
+        totalPaisa -= 1;
+    }
+    if (totalPaisa < 0) {
+        totalPaisa += 4;
+        totalAana -= 1;
+    }
+    if (totalAana < 0) {
+        totalAana += 16;
+        totalRopani -= 1;
+    }
+
+    // Display the result
+    const resultElement = document.getElementById('result');
+    resultElement.innerHTML = `<p>Total Land Area:</p>`;
+    resultElement.innerHTML += `<p>${Math.max(0, totalRopani)} रोपनी, ${Math.max(0, totalAana.toFixed(2))} आना, ${Math.max(0, totalPaisa.toFixed(2))} पैसा, ${Math.max(0, totalDaam.toFixed(2))} दाम</p>`;
+
+    // Show the "Clear History" button
+    document.getElementById('clearHistoryButton').style.display = 'block';
+}
+
+    // Function to add land area to the array
+    function addLandArea() {
+        const ropani = parseFloat(document.getElementById('ropani').value) || 0;
+        const aana = parseFloat(document.getElementById('aana').value) || 0;
+        const paisa = parseFloat(document.getElementById('paisa').value) || 0;
+        const daam = parseFloat(document.getElementById('daam').value) || 0;
+
+        // Check if values are within limits
+        if (aana >= 16 || paisa >= 4 || daam >= 4) {
+            alert('Values for आना, पैसा, and दाम should be less than 16, 4, and 4, respectively.');
+            return;
+        }
+
+        // Add land area to the array
+        landAreas.push({ ropani, aana, paisa, daam });
+
+        // Add land area to history and clear input fields
+        history.push({ ropani, aana, paisa, daam });
+        clearInputFields();
+
+        // Calculate and update total area
+        calculateAndUpdateTotalArea();
+
+        // Display history
+        displayHistory();
+
+        // Focus on the "रोपनी" field after adding land area
+        document.getElementById('ropani').focus();
+    }
+
+    // Function to clear input fields
+    function clearInputFields() {
+        document.getElementById('ropani').value = '';
+        document.getElementById('aana').value = '';
+        document.getElementById('paisa').value = '';
+        document.getElementById('daam').value = '';
+    }
+
+    // Function to display history
+    function displayHistory() {
+        const historyElement = document.getElementById('history');
+        historyElement.innerHTML = '<p>History:</p>';
+        history.forEach((area, index) => {
+            historyElement.innerHTML += `<p>${index + 1}. ${area.ropani} रोपनी, ${area.aana.toFixed(2)} आना, ${area.paisa.toFixed(2)} पैसा, ${area.daam.toFixed(2)} दाम</p>`;
+        });
+    }
+
+    // Function to clear the history
+    function clearHistory() {
+        // Clear history array
+        history.length = 0;
+
+        // Clear total land area, result display, and history display
+        landAreas.length = 0;
+        document.getElementById('result').innerHTML = '';
+        document.getElementById('history').innerHTML = '';
+
+        // Hide the "Clear History" button
+        document.getElementById('clearHistoryButton').style.display = 'none';
+
+        // Focus on the "रोपनी" field
+        document.getElementById('ropani').focus();
+    }
+
+    // Event listener for input fields to trigger the calculation on "Enter" key press in the "daam" field
+    document.getElementById('daam').addEventListener('keydown', function (event) {
+        if (event.key === 'Tab') {
+            event.preventDefault(); // Prevent default tab behavior
+            addLandArea();
+        }
+    });
+</script>
+
+</body>
+</html>
