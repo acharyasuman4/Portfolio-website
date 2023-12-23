@@ -89,7 +89,7 @@
     }
 }
 
-/* Adjust styles for smaller screens */
+/* Add this CSS to adjust layout for mobile and small devices */
 @media (max-width: 600px) {
     label, input {
         width: 50%;
@@ -118,7 +118,39 @@
         flex-direction: inline block;
         align-items: flex-start;
     }
+    #calculator {
+        max-width: 100%;
+    }
+
+    label, input {
+        width: 50%;
+        font-size: 16px; /* Adjust as needed */
+    }
+
+    .fields label {
+        width: 30%;
+        margin-bottom: 5px;
+    }
+
+    button {
+        width: 48%; /* Adjust as needed */
+        margin-right: 2%;
+    }
+
+    #result table {
+        font-size: 14px; /* Adjust as needed */
+    }
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    .fields {
+        flex-direction: inline-block;
+        align-items: flex-start;
+    }
 }
+
         /* Menu styles */
         #menu {
             text-align: center;
