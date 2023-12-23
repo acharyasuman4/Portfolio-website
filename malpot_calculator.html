@@ -205,6 +205,19 @@
             font-size: 30px;
             font-family: Arial, sans-serif;
         }
+#calculateButton, #clearButton {
+    font-size: 16px; /* Adjust the font size as needed */
+    padding: 10px 20px; /* Adjust the padding to increase button size */
+    margin-top: 10px; /* Add margin for spacing */
+}
+
+/* Optionally, you can add a hover effect to make the buttons more interactive */
+#calculateButton:hover, #clearButton:hover {
+    background-color: #4CAF50; /* Change the background color on hover */
+    color: white; /* Change the text color on hover */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
         
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -220,19 +233,29 @@
       मालपोत असुली क्याल्कुलेटर
                 </h2>
 
-    <div class="fields">
-        <label for="ropni">रोपनी:</label>
-        <input type="number" id="ropni">
-
-        <label for="aana">आना:</label>
-        <input type="number" id="aana">
-
-        <label for="paisa">पैसा:</label>
-        <input type="number" id="paisa">
-
-        <label for="daam">दाम:</label>
-        <input type="number" id="daam">
+<!-- Input fields for रोपनी, आना, पैसा, दाम -->
+<div style="display: flex; justify-content: space-around;">
+    <div>
+        <label for="ropani">रोपनी:</label>
+        <input type="number" id="ropani" name="ropani" pattern="\d*" maxlength="5" style="width: 80px;">
     </div>
+
+    <div>
+        <label for="aana">आना:</label>
+        <input type="number" id="aana" name="aana" pattern="\d*" maxlength="5" style="width: 80px;">
+    </div>
+
+    <div>
+        <label for="paisa">पैसा:</label>
+        <input type="number" id="paisa" name="paisa" pattern="\d*" maxlength="5" style="width: 80px;">
+    </div>
+
+    <div>
+        <label for="daam">दाम:</label>
+        <input type="number" id="daam" name="daam" pattern="\d*" maxlength="5" style="width: 80px;">
+    </div>
+</div>
+<br>
 
     <div class="fields">
         <label for="financialYear">तिरो बुझाएको आर्थिक वर्ष:</label>
@@ -282,9 +305,9 @@
     </div>
 
     <div>
-        <button onclick="calculateTax()">Calculate Tax</button>
-        <button onclick="clearForm()">Clear</button>
-    </div>
+        <button id="calculateButton" onclick="calculateTax()">Calculate</button>
+        <button id="clearButton" onclick="clearForm()">Clear</button>
+            </div>
 
     <div id="result">
         <table>
@@ -318,28 +341,27 @@
 </div>
 
 <script>
-  function clearForm() {
-      document.getElementById('ropni').value = '';
-      document.getElementById('aana').value = '';
-      document.getElementById('paisa').value = '';
-      document.getElementById('daam').value = '';
-      document.getElementById('financialYear').value = '80/81';
-      document.getElementById('bakyaota').innerText = '';
-      document.getElementById('chalu').innerText = '';
-      document.getElementById('jarivana').innerText = '';
-      document.getElementById('jamma').innerText = '';
-  }
 
-  
-  function calculateTax() {
+function clearForm() {
+    document.getElementById('ropani').value = '';
+    document.getElementById('aana').value = '';
+    document.getElementById('paisa').value = '';
+    document.getElementById('daam').value = '';
+    document.getElementById('financialYear').value = '80/81';
+    document.getElementById('bakyaota').innerText = '';
+    document.getElementById('chalu').innerText = '';
+    document.getElementById('jarivana').innerText = '';
+    document.getElementById('jamma').innerText = '';
+}
+
+function calculateTax() {
     // Get values from the form
     const financialYear = document.getElementById('financialYear').value;
-    const ropni = parseFloat(document.getElementById('ropni').value) || 0;
+    const ropni = parseFloat(document.getElementById('ropani').value) || 0;
     const aana = parseFloat(document.getElementById('aana').value) || 0;
     const paisa = parseFloat(document.getElementById('paisa').value) || 0;
     const daam = parseFloat(document.getElementById('daam').value) || 0;
     const localBody = document.getElementById('localBody').value;
-    
 
     // Calculate बक्यौता
     let bakyaota = calculateBakyaota(financialYear, ropni, aana, paisa, daam);
@@ -357,151 +379,148 @@
         jarivana *= 2;
     }
 
-// Calculate जम्मा without rounding each component
-let jamma = chalu + bakyaota + jarivana;
+    // Calculate जम्मा without rounding each component
+    let jamma = chalu + bakyaota + jarivana;
 
-// Display the results
-document.getElementById('bakyaota').innerText = Math.round(bakyaota).toFixed(0);
-document.getElementById('chalu').innerText = Math.round(chalu).toFixed(0);
-document.getElementById('jarivana').innerText = Math.round(jarivana).toFixed(0);
+    // Display the results
+    document.getElementById('bakyaota').innerText = Math.round(bakyaota).toFixed(0);
+    document.getElementById('chalu').innerText = Math.round(chalu).toFixed(0);
+    document.getElementById('jarivana').innerText = Math.round(jarivana).toFixed(0);
 
-// Calculate rounded jamma as the sum of individually rounded components
-let roundedJamma = Math.round(bakyaota) + Math.round(chalu) + Math.round(jarivana);
+    // Calculate rounded jamma as the sum of individually rounded components
+    let roundedJamma = Math.round(bakyaota) + Math.round(chalu) + Math.round(jarivana);
 
-document.getElementById('jamma').innerText = roundedJamma.toFixed(0);
-}
- 
-  function calculateBakyaota(financialYear, ropni, aana, paisa, daam) {
-  switch (financialYear) {
-      case '80/81':
-      case '79/80':
-          return 0;
-      case '78/79':
-          return Math.round(125 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '77/78':
-          return Math.round(225 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '76/77':
-          return Math.round(325 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '75/76':
-          return Math.round(425 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '74/75':
-          return Math.round(525 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '73/74':
-          return Math.round(625 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '72/73':
-          return Math.round(725 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '71/72':
-          return Math.round(825 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '70/71':
-          return Math.round(925 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '69/70':
-          return Math.round(1025 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '68/69':
-          return Math.round(1100 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '67/68':
-          return Math.round(1175 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '66/67':
-          return Math.round(1250 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '65/66':
-          return Math.round(1325 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '64/65':
-          return Math.round(1400 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '63/64':
-          return Math.round(1475 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '62/63':
-          return Math.round(1550 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '61/62':
-          return Math.round(1625 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '60/61':
-          return Math.round(1650.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '59/60':
-          return Math.round(1676.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '58/59':
-          return Math.round(1701.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '57/58':
-          return Math.round(1727.4 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '56/57':
-          return Math.round(1753 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '55/56':
-          return Math.round(1778.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '54/55':
-          return Math.round(1804.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '53/54':
-          return Math.round(1829.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '52/53':
-          return Math.round(1855.4 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '51/52':
-          return Math.round(1881 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '50/51':
-          return Math.round(1906.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '49/50':
-          return Math.round(1932.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '48/49':
-          return Math.round(1935.5 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '47/48':
-          return Math.round(1938.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      case '46/47':
-          return Math.round(1942.1 * (ropni + aana / 16 + paisa / 64 + daam / 256));
-      default:
-          return 0;
-  }
+    document.getElementById('jamma').innerText = roundedJamma.toFixed(0);
 }
 
-  function calculateJarivana(financialYear, bakyaota) {
-      switch (financialYear) {
-          case '80/81':
-          case '79/80':
-              return 0;
-          case '78/79':
-              return 0.2 * bakyaota;
-          case '77/78':
-              return 0.3 * bakyaota;
-          case '76/77':
-              return 0.4 * bakyaota;
-          case '75/76':
-              return 0.5 * bakyaota;
-          case '74/75':
-              return 0.6 * bakyaota;
-          case '73/74':
-              return 0.7 * bakyaota;
-          case '72/73':
-              return 0.8 * bakyaota;
-          case '71/72':
-              return 0.9 * bakyaota;
-          case '70/71':
-          case '69/70':
-          case '68/69':
-          case '67/68':
-          case '66/67':
-          case '65/66':
-          case '64/65':
-          case '63/64':
-          case '62/63':
-          case '61/62':
-          case '60/61':
-          case '59/60':
-          case '58/59':
-          case '57/58':
-          case '56/57':
-          case '55/56':
-          case '54/55':
-          case '53/54':
-          case '52/53':
-          case '51/52':
-          case '50/51':
-          case '49/50':
-          case '48/49':
-          case '47/48':
-          case '46/47':
-              return bakyaota;
-          default:
-              return 0;
-      }
-  }
+function calculateBakyaota(financialYear, ropni, aana, paisa, daam) {
+    switch (financialYear) {
+        case '80/81':
+        case '79/80':
+            return 0;
+        case '78/79':
+            return Math.round(125 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '77/78':
+            return Math.round(225 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '76/77':
+            return Math.round(325 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '75/76':
+            return Math.round(425 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '74/75':
+            return Math.round(525 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '73/74':
+            return Math.round(625 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '72/73':
+            return Math.round(725 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '71/72':
+            return Math.round(825 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '70/71':
+            return Math.round(925 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '69/70':
+            return Math.round(1025 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '68/69':
+            return Math.round(1100 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '67/68':
+            return Math.round(1175 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '66/67':
+            return Math.round(1250 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '65/66':
+            return Math.round(1325 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '64/65':
+            return Math.round(1400 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '63/64':
+            return Math.round(1475 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '62/63':
+            return Math.round(1550 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '61/62':
+            return Math.round(1625 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '60/61':
+            return Math.round(1650.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '59/60':
+            return Math.round(1676.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '58/59':
+            return Math.round(1701.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '57/58':
+            return Math.round(1727.4 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '56/57':
+            return Math.round(1753 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '55/56':
+            return Math.round(1778.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '54/55':
+            return Math.round(1804.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '53/54':
+            return Math.round(1829.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '52/53':
+            return Math.round(1855.4 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '51/52':
+            return Math.round(1881 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '50/51':
+            return Math.round(1906.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '49/50':
+            return Math.round(1932.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '48/49':
+            return Math.round(1935.5 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '47/48':
+            return Math.round(1938.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        case '46/47':
+            return Math.round(1942.1 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+        default:
+            return 0;
+    }
+}
+
+function calculateJarivana(financialYear, bakyaota) {
+    switch (financialYear) {
+        case '80/81':
+        case '79/80':
+            return 0;
+        case '78/79':
+            return 0.2 * bakyaota;
+        case '77/78':
+            return 0.3 * bakyaota;
+        case '76/77':
+            return 0.4 * bakyaota;
+        case '75/76':
+            return 0.5 * bakyaota;
+        case '74/75':
+            return 0.6 * bakyaota;
+        case '73/74':
+            return 0.7 * bakyaota;
+        case '72/73':
+            return 0.8 * bakyaota;
+        case '71/72':
+            return 0.9 * bakyaota;
+        case '70/71':
+        case '69/70':
+        case '68/69':
+        case '67/68':
+        case '66/67':
+        case '65/66':
+        case '64/65':
+        case '63/64':
+        case '62/63':
+        case '61/62':
+        case '60/61':
+        case '59/60':
+        case '58/59':
+        case '57/58':
+        case '56/57':
+        case '55/56':
+        case '54/55':
+        case '53/54':
+        case '52/53':
+        case '51/52':
+        case '50/51':
+        case '49/50':
+        case '48/49':
+        case '47/48':
+        case '46/47':
+            return bakyaota;
+        default:
+            return 0;
+    }
+}
 </script>
 
 </body>
 </html>
-
-
-
