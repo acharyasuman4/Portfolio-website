@@ -89,34 +89,27 @@
     }
 }
 
-        /* Media query for small screens */
-        @media (max-width: 600px) {
-            #calculator {
-                padding: 10px;
-            }
+/* Add this media query for smaller screens */
+@media (max-width: 600px) {
+    label, input {
+        width: 100%;
+        font-size: 16px; /* Adjust as needed */
+    }
 
-            label, select, input {
-                font-size: 14px;
-            }
+    .fields label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
 
-            button {
-                width: 24%;
-                margin-right: 2%;
-            }
+    button {
+        width: 48%; /* Adjust as needed */
+        margin-right: 2%;
+    }
 
-            #result {
-                margin-top: 10px;
-            }
-
-            .fields {
-                flex-direction: row;
-            }
-
-            .fields label {
-                width: 24%;
-                margin-bottom: 5px;
-            }
-        }
+    #result table {
+        font-size: 14px; /* Adjust as needed */
+    }
+}
         /* Menu styles */
         #menu {
             text-align: center;
