@@ -68,7 +68,7 @@
         /* Media Queries */
         @media only screen and (max-width: 600px) {
             input {
-                width: 100%;
+                width: 40%;
                 margin-right: 0;
             }
         }
@@ -86,16 +86,16 @@
     <h2>Ropani Adder</h2>
     <p class="blue-text">घटाउनु परेमा अङ्कको अगाडि " -" sign को प्रयोग गर्नुहोला</p>
     <label for="ropani">रोपनी:</label>
-    <input type="number" id="ropani" placeholder="Enter रोपनी" step="any">
+    <input type="number" id="ropani" placeholder="रोपनी" step="any" pattern="\d*" style="width: 80px;">
 
     <label for="aana">आना:</label>
-    <input type="number" id="aana" placeholder="Enter आना" step="any" max="15.99">
+    <input type="number" id="aana" placeholder="आना" step="any" max="15.99" pattern="\d*" style="width: 80px;">
 
     <label for="paisa">पैसा:</label>
-    <input type="number" id="paisa" placeholder="Enter पैसा" step="any" max="3.99">
+    <input type="number" id="paisa" placeholder="पैसा" step="any" max="3.99" pattern="\d*" style="width: 80px;">
 
     <label for="daam">दाम:</label>
-    <input type="number" id="daam" placeholder="Enter दाम" step="any" max="3.99">
+    <input type="number" id="daam" placeholder="दाम" step="any" max="3.99" pattern="\d*" style="width: 80px;">
 
     <button onclick="addLandArea()">Add Land Area</button>
 
