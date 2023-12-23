@@ -14,7 +14,7 @@
             font-size: 25px
         }
         body {
-    font-size: 16px; /* Adjust as needed */
+    font-size: 16px; 
 }
 
 @media (max-width: 600px) {
@@ -68,6 +68,7 @@
 
         #result {
             margin-top: 20px;
+            font-size: large;
         }
 
         p {
@@ -233,7 +234,6 @@
       मालपोत असुली क्याल्कुलेटर
                 </h2>
 
-<!-- Input fields for रोपनी, आना, पैसा, दाम -->
 <div style="display: flex; justify-content: space-around;">
     <div>
         <label for="ropani">रोपनी:</label>
@@ -362,6 +362,16 @@ function calculateTax() {
     const paisa = parseFloat(document.getElementById('paisa').value) || 0;
     const daam = parseFloat(document.getElementById('daam').value) || 0;
     const localBody = document.getElementById('localBody').value;
+    // Validation
+    if (ropni < 0 || aana < 0 || paisa < 0 || daam < 0) {
+        alert('Values cannot be negative. Please enter positive values.');
+        return;
+    }
+
+    if (aana >= 16 || paisa >= 4 || daam >= 4) {
+        alert('आना १६ भन्दा कम,पैसा ४ भन्दा कम,दाम ४ भन्दा कम हुनुपर्छ ।');
+        return;
+    }
 
     // Calculate बक्यौता
     let bakyaota = calculateBakyaota(financialYear, ropni, aana, paisa, daam);
