@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>कुतबाली-आचार्य सुमन</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .form-container {
+            max-width: 80%; /* Adjust the width as needed */
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer; /* Add cursor pointer on hover */
+        }
+        #footer {
+            margin-top: 20px;
+            color: red;
+            font-size: 12px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        #designer {
+            text-align: center;
+            font-style: italic;
+            color: rgb(8, 162, 228);
+        }
+h1 {color:darkorange;}
+
+        table {
+            width: 30%;
+            border-collapse: collapse;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
+            width: 50%;
+            font-size: large;
+            height: fit-content;
+            
+        }
+
+        #bakyauta,
+        #chalu,
+        #jaribana,
+        #jamma {
+            max-width: 160px;
+            /* Adjust the width as needed (twice of the heading) */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        @media only screen and (max-width: 600px) {
+        .form-container {
+            max-width: 100%;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+        }
+    }
+    /* Update the styles for input fields */
+input[type="number"] {
+    width: 80px; /* Adjust the width as needed */
+    height: 30px; /* Adjust the height as needed */
+    padding: 5px; /* Adjust the padding as needed */
+    margin-bottom: 10px; /* Adjust the margin as needed */
+    font-size: large;
+}
+
+
+    </style>
+</head>
+<body>
+
+    <h1>कुतबाली असुली क्याल्कुलेटर</h1>
+    <form id="landTaxForm" class="form-container">
+		<div style="display: inline-block;">
+			<label for="ropani">रोपनी:</label>
+            <input type="number" id="ropani" name="ropani" pattern="\d*" maxlength="5">
+		</div>
+
+		<div style="display: inline-block;">
+			<label for="aana">आना:</label>
+            <input type="number" id="aana" name="aana" pattern="\d*" maxlength="5">
+		</div>
+
+		<div style="display: inline-block;">
+			<label for="paisa">पैसा:</label>
+            <input type="number" id="paisa" name="paisa" pattern="\d*" maxlength="5">
+		</div>
+
+		<div style="display: inline-block;">
+			<label for="dam">दाम:</label>
+            <input type="number" id="dam" name="dam" pattern="\d*" maxlength="5">
+		</div>
+        <br>
+    <div style="display: inline-block;">
+        <label for="financial_year">तिरो बुझाएको आर्थिक वर्ष:</label>
+        <select id="financial_year" name="financial_year">
+                        <option value="80/81">८०/८१</option>
+                        <option value="79/80">७९/८०</option>
+                        <option value="78/79">७८/७९</option>
+                        <option value="77/78">७७/७८</option>
+                        <option value="76/77">७६/७७</option>
+                        <option value="75/76">७५/७६</option>
+                        <option value="74/75">७४/७५</option>
+                        <option value="73/74">७३/७४</option>
+                        <option value="72/73">७२/७३</option>
+                        <option value="71/72">७१/७२</option>
+                        <option value="70/71">७०/७१</option>
+                        <option value="69/70">६९/७०</option>
+                        <option value="68/69">६८/६९</option>
+                        <option value="67/68">६७/६८</option>
+                        <option value="66/67">६६/६७</option>
+                        <option value="65/66">६५/६६</option>
+                        <option value="64/65">६४/६५</option>
+                        <option value="63/64">६३/६४</option>
+                        <option value="62/63">६२/६३</option>
+                        <option value="61/62">६१/६२</option>
+                        <option value="60/61">६०/६१</option>
+                        <option value="59/60">५९/६०</option>
+                        <option value="58/59">५८/५९</option>
+                        <option value="57/58">५७/५८</option>
+                        <option value="56/57">५६/५७</option>
+                        <option value="55/56">५५/५६</option>
+                        <option value="54/55">५४/५५</option>
+                        <option value="53/54">५३/५४</option>
+                        <option value="52/53">५२/५३</option>
+                        <option value="51/52">५१/५२</option>
+                        <option value="50/51">५०/५१</option>
+                        <option value="49/50">४९/५०</option>
+                        <option value="48/49">४८/४९</option>
+                        <option value="47/48">४७/४८</option>
+                        <option value="46/47">४६/४७</option>
+                        <option value="45/46">४५/४६</option>
+                        <option value="44/45">४४/४५</option>
+                        <option value="43/44">४३/४४</option>
+                        <option value="42/43">४२/४३</option>
+                        <option value="41/42">४१/४२</option>
+    </select>
+        </div>
+        <div style="display: inline-block;">
+        <label for="land_type">किसिम:</label>
+        <select id="land_type" name="land_type">
+            <option value="खेत अवल">खेत अवल</option>
+            <option value="खेत दोयम">खेत दोयम</option>
+            <option value="खेत सिम\चाहार">खेत सिम\चाहार</option>
+            <option value="पाखो">पाखो</option>
+    </select>
+    </div>
+    <br>
+    </form>
+
+    <button onclick="calculateLandTax()">Calculate</button>
+    <button onclick="clearForm()">Clear</button>
+
+    <!-- Results -->
+    <h2>तिर्नुपर्ने रकम</h2>
+    <table>
+        <tr>
+            <th>बक्यौता</th>
+            <th>चालु</th>
+            <th>जरिवाना</th>
+        </tr>
+        <tr>
+            <td id="bakyauta"></td>
+            <td id="chalu"></td>
+            <td id="jaribana"></td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <th>जम्मा</th>
+        </tr>
+        <tr>
+            <td id="jamma"></td>
+        </tr>
+    </table>
+    <div id="footer">
+        *** यो आधिकारिक वेवसाइट होइन, सहजताको प्रयोनार्थ मात्र ***
+      </div>
+      
+      <div id="designer">
+        Designed by: Suman Acharya, Land revenue Office, Sindhupalchowk
+      </div>
+      
+
+    <script>
+    // Land type values
+    const landTypeValues = {
+        'खेत अवल': 0.9375,
+        'खेत दोयम': 0.65,
+        'खेत सिम\\चाहार': 0.43125,
+        'पाखो': 0.3625
+    };
+
+    function calculateLandTax() {
+    console.log("Function called");
+    // Get values from form fields and parse as integers
+    let ropani = parseInt(document.getElementById("ropani").value) || 0;
+    let aana = parseInt(document.getElementById("aana").value) || 0;
+    let paisa = parseInt(document.getElementById("paisa").value) || 0;
+    let dam = parseInt(document.getElementById("dam").value) || 0;
+
+    
+        // Validate input as numbers (digits) only
+        if (isNaN(ropani) || isNaN(0<aana<16) || isNaN(paisa<4) || isNaN(dam<4)) {
+            alert("Please enter valid numeric values for all fields.");
+            return;
+        }
+    
+        // Display error messages for exceeding limits
+        if (aana > 15) {
+            alert("आना १६ भन्दा कम हुन्छ");
+            document.getElementById("aana");
+            document.getElementById("aana").focus();
+            return;
+        } else {
+            document.getElementById("aana").style.borderColor = ""; // Reset border color
+        }
+    
+        if (paisa > 3) {
+            alert("पैसा ४ भन्दा कम हुन्छ");
+            document.getElementById("paisa");
+            document.getElementById("paisa").focus();
+            return;
+        } else {
+            document.getElementById("paisa").style.borderColor = ""; // Reset border color
+        }
+    
+        if (dam > 3) {
+            alert("दाम ४ भन्दा कम हुन्छ");
+            document.getElementById("dam");
+            document.getElementById("dam").focus();
+            return;
+        } else {
+            document.getElementById("dam").style.borderColor = ""; // Reset border color
+        }
+    // Update input fields with validated values
+    document.getElementById("ropani").value = ropani;
+    document.getElementById("aana").value = aana;
+    document.getElementById("paisa").value = paisa;
+    document.getElementById("dam").value = dam;
+
+    const financialYearMapping = {
+        "80/81": 0,
+        "79/80": 1,
+        "78/79": 2,
+        "77/78": 3,
+        "76/77": 4,
+        "75/76": 5,
+        "74/75": 6,
+        "73/74": 7,
+        "72/73": 8,
+        "71/72": 9,
+        "70/71": 10,
+        "69/70": 11,
+        "68/69": 12,
+        "67/68": 13,
+        "66/67": 14,
+        "65/66": 15,
+        "64/65": 16,
+        "63/64": 17,
+        "62/63": 18,
+        "61/62": 19,
+        "60/61": 20,
+        "59/60": 21,
+        "58/59": 22,
+        "57/58": 23,
+        "56/57": 24,
+        "55/56": 25,
+        "54/55": 26,
+        "53/54": 27,
+        "52/53": 28,
+        "51/52": 29,
+        "50/51": 30,
+        "49/50": 31,
+        "48/49": 32,
+        "47/48": 33,
+        "46/47": 34,
+        "45/46": 35,
+        "44/45": 36,
+        "43/44": 37,
+        "42/43": 38,
+        "41/42": 39,
+        "40/41": 40,
+    };
+    
+    
+    // Calculate land area in terms of ropani
+    const landArea = ropani + aana / 16 + paisa / 64 + dam / 256;
+
+    // Get selected land type and its corresponding value
+    const selectedLandType = document.getElementById("land_type").value;
+    const landTypeValue = landTypeValues[selectedLandType];
+
+    // Get selected financial year value
+    const selectedFinancialYear = document.getElementById("financial_year").value;
+    const financialYearValue = financialYearMapping[selectedFinancialYear];
+    console.log("Selected Financial Year Value:", financialYearValue); // Add this line
+
+// Calculate bakyauta based on the provided formula
+let bakyauta;
+switch (financialYearValue) {
+    case 0: 
+    case 1:
+        bakyauta = 0;
+        break;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        bakyauta = landArea * landTypeValue * 2700 * (financialYearValue - 1);
+        break;
+    case 6:
+        bakyauta = landArea * landTypeValue * (2500 + 10800);
+        break;
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+        bakyauta = landArea * landTypeValue * (financialYearValue - 6) * 2000 + landArea * landTypeValue * (10800 + 2500);
+        break;
+    case 12:
+        bakyauta = landArea * landTypeValue * (1800 + 10000 + 2500 + 10800);
+        break;
+    case 13:
+    case 14:
+        bakyauta = landArea * landTypeValue * (financialYearValue - 12) * 1650 + landArea * landTypeValue * (1800 + 10000 + 2500 + 10800);
+        break;
+    case 15:
+        bakyauta = landArea * landTypeValue * (1800 + 10000 + 2500 + 10800 + 3300 + 1450);
+        break;
+    case 16:
+        bakyauta = landArea * landTypeValue * (1800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300);
+        break;
+    case 17:
+        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100);
+        break;
+    case 18:
+    case 19:
+        bakyauta = landArea * landTypeValue * (financialYearValue - 17) * 1000 + landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100);
+        break;
+    case 20:
+        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900);
+        break;
+    case 21:
+    case 22:
+        bakyauta = landArea * landTypeValue * (financialYearValue - 20) * 860 + landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900);
+        break;
+    case 23:
+    case 24:
+    case 25:
+    case 26:
+    case 27:
+        bakyauta = landArea * landTypeValue * (financialYearValue - 22) * 833 + landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720);
+        break;
+    case 28:
+        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720 + 4165 + 757);
+        break;
+    case 29:
+        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720 + 4165 + 757 + 688);
+        break;
+    case 30:
+    case 31:
+        bakyauta = landArea * landTypeValue * (financialYearValue - 29) * 625 + landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720 + 4165 + 757 + 688);
+        break;
+    case 32:
+        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720 + 4165 + 757 + 688 + 1250 + 550);
+        break;
+    default:
+        console.error("Invalid financial year:", financialYearValue);
+        break;
+}
+
+console.log("Final Bakyauta:", bakyauta); // Add this line
+
+    // Calculate chalu, jaribana, and jamma
+    const chalu = landArea * landTypeValue * 2700;
+    const jaribana = 0.1 * bakyauta;
+    const jamma = bakyauta + chalu + jaribana;
+
+    // Round the values
+    const roundedChalu = chalu.toFixed(0);
+    const roundedBakyauta = bakyauta.toFixed(0);
+    const roundedJaribana = jaribana.toFixed(0);
+    const roundedJamma = (parseFloat(roundedChalu) + parseFloat(roundedBakyauta) + parseFloat(roundedJaribana)).toFixed(0);
+
+    // Update the result table cells
+    document.getElementById("bakyauta").textContent = roundedBakyauta;
+    document.getElementById("chalu").textContent = roundedChalu;
+    document.getElementById("jaribana").textContent = roundedJaribana;
+    document.getElementById("jamma").textContent = roundedJamma;
+}
+
+    function clearForm() {
+        document.getElementById("ropani").value = "";
+        document.getElementById("aana").value = "";
+        document.getElementById("paisa").value = "";
+        document.getElementById("dam").value = "";
+        document.getElementById("financial_year").value = "80/81";
+        document.getElementById("land_type").value = "खेत अवल";
+        // Clear the result table cells
+        document.getElementById("bakyauta").textContent = "";
+        document.getElementById("chalu").textContent = "";
+        document.getElementById("jaribana").textContent = "";
+        document.getElementById("jamma").textContent = "";
+    }
+    </script>
+</body>
+</html>
