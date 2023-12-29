@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,26 +71,93 @@
         .dropdown-content a:hover {
             background-color: #ddd;
         }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .dropdown-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .dropdown {
+            text-align: center;
+        }
+
+        .dropbtn {
+            padding: 15px;
+            font-size: 18px;
+            background-color: #f9f9f9;
+            border: 2px solid #333;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            min-width: 160px;
+            text-align: center;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        #embeddedWebsite {
+            margin-top: 20px;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="header">
-    <div class="dropdown-container">
-        <div class="dropdown">
-            <button class="dropbtn">Menu</button>
-            <div class="dropdown-content">
-                <a href="malpot_calculator">मालपोत असुली क्याल्कुलेटर</a>
-                <a href="adhinasta">कुतबाली असुली क्याल्कुलेटर</a>
-                <a href="ropani_adder">रोपनी जोड्न</a>
-                <a href="Contact">Contact</a>
+    <div class="header">
+        <div class="dropdown-container">
+            <div class="dropdown">
+                <button class="dropbtn">Menu</button>
+                <div class="dropdown-content">
+                    <a href="malpot_calculator.html">मालपोत असुली क्याल्कुलेटर</a>
+                    <a href="adhinasta.html">कुतबाली असुली क्याल्कुलेटर</a>
+                    <a href="ropani_adder.html">रोपनी जोड्न</a>
+                    <a href="Contact.html">Contact</a>
+                    <a href="#" onclick="redirectTo('https://sites.google.com/view/sam-eer/%E0%A4%B8%E0%A4%AF%E0%A4%B0/%E0%A4%AE%E0%A4%95%E0%A4%A4%E0%A4%95?authuser=0')" target="_blank">मुक्तक</a>
+                    <a href="#" onclick="redirectTo('https://sites.google.com/view/sam-eer/%E0%A4%B8%E0%A4%AF%E0%A4%B0/%E0%A4%97%E0%A4%9C%E0%A4%B2?authuser=0')" target="_blank">गजल</a>
+                </div>
             </div>
+            <div class="welcome-text"></div>
+
+            <div class="emoji">लौ, स्वागत छ है 😍<br>🌟</div>
         </div>
-        <div class="welcome-text"></div>
-
-        <div class="emoji">लौ, स्वागत छ है 😍<br>🌟</div>
     </div>
-</div>
 
+    <!-- Embedded Website Container -->
+    <div id="embeddedWebsite"></div>
+
+    <!-- JavaScript function to redirect to external websites -->
+    <script>
+        function redirectTo(url) {
+            window.open(url, '_blank');
+        }
+    </script>
 </body>
+
 </html>
