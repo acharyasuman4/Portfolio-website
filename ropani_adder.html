@@ -117,8 +117,7 @@
     const history = [];
 
     // Function to calculate and update the total area
-// Function to calculate and update the total area
-function calculateAndUpdateTotalArea() {
+    function calculateAndUpdateTotalArea() {
     let totalRopani = 0;
     let totalAana = 0;
     let totalPaisa = 0;
@@ -134,27 +133,38 @@ function calculateAndUpdateTotalArea() {
 
     // Convert negative values to positive and adjust larger units accordingly
     if (totalDaam < 0) {
-        totalDaam += 4;
         totalPaisa -= 1;
+        totalDaam += 4;
     }
     if (totalPaisa < 0) {
-        totalPaisa += 4;
         totalAana -= 1;
+        totalPaisa += 4;
     }
     if (totalAana < 0) {
-        totalAana += 16;
         totalRopani -= 1;
+        totalAana += 16;
     }
+
+    // Adjust totalDaam to show correct conversion
+    totalPaisa += Math.floor(totalDaam / 4);
+    totalDaam = totalDaam % 4;
+
+    // Adjust totalAana to show correct conversion
+    totalRopani += Math.floor(totalAana / 16);
+    totalAana = totalAana % 16;
+
+    // Adjust totalPaisa to show correct conversion
+    totalAana += Math.floor(totalPaisa / 4);
+    totalPaisa = totalPaisa % 4;
 
     // Display the result
     const resultElement = document.getElementById('result');
     resultElement.innerHTML = `<p>Total Land Area:</p>`;
-    resultElement.innerHTML += `<p>${Math.max(0, totalRopani)} रोपनी, ${Math.max(0, totalAana.toFixed(2))} आना, ${Math.max(0, totalPaisa.toFixed(2))} पैसा, ${Math.max(0, totalDaam.toFixed(2))} दाम</p>`;
+    resultElement.innerHTML += `<p>${Math.max(0, totalRopani)} रोपनी, ${Math.max(0, totalAana)} आना, ${Math.max(0, totalPaisa)} पैसा, ${Math.max(0, totalDaam)} दाम</p>`;
 
     // Show the "Clear History" button
     document.getElementById('clearHistoryButton').style.display = 'block';
 }
-
     // Function to add land area to the array
     function addLandArea() {
         const ropani = parseFloat(document.getElementById('ropani').value) || 0;
