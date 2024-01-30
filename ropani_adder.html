@@ -18,6 +18,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        
         h2 {
             color: #05ccf9; /* Blue color */
         }
@@ -78,13 +79,68 @@
                 max-width: 90%;
             }
         }
+        header {
+            background-color: #b5c8d1;
+            padding: 10px;
+            color: rgb(18, 224, 49);
+            text-align: center;
+            position: fixed;
+            width: 5%;
+            z-index: 1000;
+        }
+
+        .menu-btn {
+            font-size: 20px;
+            cursor: pointer;
+            float: left;
+        }
+
+        .slide-menu {
+            display: none;
+            position: fixed;
+            top: 60px; /* Adjust based on your header height */
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #abcbdd;
+            padding-top: 20px; /* Adjust based on your header padding */
+            box-shadow: 0 0 10px rgba(234, 230, 230, 0.5);
+        }
+
+        .slide-menu ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .slide-menu li {
+            padding: 10px;
+            border-bottom: 1px solid #555;
+        }
+
+        .slide-menu a {
+            text-decoration: none;
+            color: white;
+        }
+
     </style>
 </head>
 <body>
+    <header>
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <nav class="slide-menu">
+            <ul>
+                <li><a href="malpot_calculator.html">मालपोत असुली</a></li>
+                <li><a href="adhinasta.html">कुतबाली असुली</a></li>
+                <li><a href="ropani_adder.html">रोपनी जोड्न</a></li>
+                <li><a href="https://sites.google.com/view/sam-eer/contact?authuser=0" target="_blank">सम्पर्क</a></li>
+            </ul>
+        </nav>
+    </header>
+    
 
 <div id="calculator">
     <h2>Ropani Adder</h2>
-    <p class="blue-text">घटाउनु परेमा अङ्कको अगाडि " -" sign को प्रयोग गर्नुहोला</p>
+    <p class="blue-text">घटाउनु परेमा प्रत्येक अङ्कको अगाडि " -" sign को प्रयोग गर्नुहोला</p>
     <label for="ropani">रोपनी:</label>
     <input type="number" id="ropani" placeholder="रोपनी" step="any" pattern="\d*" style="width: 80px;">
 
@@ -112,6 +168,11 @@
 </footer>
 
 <script>
+    function toggleMenu() {
+        var menu = document.querySelector('.slide-menu');
+        menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+    }
+
     // Initialize arrays to store land areas and history
     const landAreas = [];
     const history = [];

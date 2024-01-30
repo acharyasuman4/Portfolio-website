@@ -5,6 +5,7 @@
     <meta name="गुठी संस्थान र मालपोत कार्यलयले (गुठीको कार्यालय नभएको ठाउँमा) लिने गुठी रैतानी नंवरी जग्गाको तिरोको हिसाब निकाल्न यसको डिजाइन गरिएको छ(This is designed to calculate land tax of guthi raitani nambari land which used to taken by guthi sansthan and land revenue office incase there is no guthi office)"
     content="यसबाट गाउँपालिका र नगरपालिकाको गुठी रैतानी नंबरी जग्गाको गुठि संस्थानले निर्धारण गरेबमोजिमको तिरो (मालपोत असुली) कति आउँछ भनि अनुमानित हिसाब निकाल्न सक्नुहुन्छी
     (You can calculate the land tax of guthi raitani numbari land of rural municipality and municipality of Nepal)">
+    <link rel="import" href="menu.html">
     <style> 
         body {
             font-family: Arial, sans-serif;
@@ -218,23 +219,72 @@
     color: white; /* Change the text color on hover */
     cursor: pointer; /* Change cursor to pointer on hover */
 }
+header {
+            background-color: #b5c8d1;
+            padding: 10px;
+            color: rgb(18, 224, 49);
+            text-align: center;
+            position: fixed;
+            width: 5%;
+            z-index: 1000;
+        }
 
-        
+        .menu-btn {
+            font-size: 20px;
+            cursor: pointer;
+            float: left;
+        }
+
+        .slide-menu {
+            display: none;
+            position: fixed;
+            top: 60px; /* Adjust based on your header height */
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #abcbdd;
+            padding-top: 20px; /* Adjust based on your header padding */
+            box-shadow: 0 0 10px rgba(234, 230, 230, 0.5);
+        }
+
+        .slide-menu ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .slide-menu li {
+            padding: 10px;
+            border-bottom: 1px solid #555;
+        }
+
+        .slide-menu a {
+            text-decoration: none;
+            color: white;
+        }
+
     </style>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>मालपोत असुली</title>
-
-</head>
+ </head>
 <body>
+    <header>
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <nav class="slide-menu">
+            <ul>
+                <li><a href="malpot_calculator.html">मालपोत असुली</a></li>
+                <li><a href="adhinasta.html">कुतबाली असुली</a></li>
+                <li><a href="ropani_adder.html">रोपनी जोड्न</a></li>
+                <li><a href="https://sites.google.com/view/sam-eer/contact?authuser=0" target="_blank">सम्पर्क</a></li>
+            </ul>
+        </nav>
+    </header>
+
 
   <div id="calculator">
     <h2>                 
       मालपोत असुली क्याल्कुलेटर
                 </h2>
+      <div id="embeddedWebsite"></div>
 
-<div style="display: flex; justify-content: space-around;">
+    <div style="display: flex; justify-content: space-around;">
     <div>
         <label for="ropani">रोपनी:</label>
         <input type="number" id="ropani" name="ropani" pattern="\d*" maxlength="5" style="width: 80px;">
@@ -341,6 +391,11 @@
 </div>
 
 <script>
+        function toggleMenu() {
+        var menu = document.querySelector('.slide-menu');
+        menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+    }
+
 
 function clearForm() {
     document.getElementById('ropani').value = '';

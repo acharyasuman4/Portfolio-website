@@ -101,11 +101,63 @@ input[type="number"] {
     margin-bottom: 10px; /* Adjust the margin as needed */
     font-size: large;
 }
+header {
+            background-color: #b5c8d1;
+            padding: 10px;
+            color: rgb(18, 224, 49);
+            text-align: center;
+            position: fixed;
+            width: 5%;
+            z-index: 1000;
+        }
 
+        .menu-btn {
+            font-size: 20px;
+            cursor: pointer;
+            float: left;
+        }
+
+        .slide-menu {
+            display: none;
+            position: fixed;
+            top: 60px; /* Adjust based on your header height */
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #abcbdd;
+            padding-top: 20px; /* Adjust based on your header padding */
+            box-shadow: 0 0 10px rgba(234, 230, 230, 0.5);
+        }
+
+        .slide-menu ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .slide-menu li {
+            padding: 10px;
+            border-bottom: 1px solid #555;
+        }
+
+        .slide-menu a {
+            text-decoration: none;
+            color: white;
+        }
 
     </style>
 </head>
 <body>
+    <header>
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <nav class="slide-menu">
+            <ul>
+                <li><a href="malpot_calculator.html">मालपोत असुली</a></li>
+                <li><a href="adhinasta.html">कुतबाली असुली</a></li>
+                <li><a href="ropani_adder.html">रोपनी जोड्न</a></li>
+                <li><a href="https://sites.google.com/view/sam-eer/contact?authuser=0" target="_blank">सम्पर्क</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <h1>कुतबाली असुली क्याल्कुलेटर</h1>
     <form id="landTaxForm" class="form-container">
@@ -221,6 +273,11 @@ input[type="number"] {
       
 
     <script>
+            function toggleMenu() {
+        var menu = document.querySelector('.slide-menu');
+        menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+    }
+
     // Land type values
     const landTypeValues = {
         'खेत अवल': 0.9375,
