@@ -2,26 +2,20 @@
 <html lang="en">
 <head>
     <title>मालपोत असुली - आचार्य सुमन</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="गुठी संस्थान र मालपोत कार्यलयले (गुठीको कार्यालय नभएको ठाउँमा) लिने गुठी रैतानी नंवरी जग्गाको तिरोको हिसाब निकाल्न यसको डिजाइन गरिएको छ(This is designed to calculate land tax of guthi raitani nambari land which used to taken by guthi sansthan and land revenue office incase there is no guthi office)"
     content="यसबाट गाउँपालिका र नगरपालिकाको गुठी रैतानी नंबरी जग्गाको गुठि संस्थानले निर्धारण गरेबमोजिमको तिरो (मालपोत असुली) कति आउँछ भनि अनुमानित हिसाब निकाल्न सक्नुहुन्छी
     (You can calculate the land tax of guthi raitani numbari land of rural municipality and municipality of Nepal)">
-    <link rel="import" href="menu.html">
     <style> 
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 8px;
             background-color: #f4f4f4;
             color: #333;
             font-size: 25px
         }
         body {
     font-size: 16px; 
-}
-
-@media (max-width: 600px) {
-    label, select, input {
-        font-size: 14px;
-    }
 }
 
         #calculator {
@@ -75,83 +69,6 @@
         p {
             font-size: 30px;
         }
-        @media (max-width: 600px) {
-    /* Existing styles for small screens */
-    #calculator {
-        max-width: 100%;
-    }
-
-    label, select, input {
-        width: 100%;
-    }
-
-    button {
-        width: 48%; /* Adjust as needed */
-        margin-right: 2%;
-    }
-}
-
-/* Add this CSS to adjust layout for mobile and small devices */
-@media (max-width: 600px) {
-    label, input {
-        width: 50%;
-        font-size: 16px; /* Adjust as needed */
-    }
-
-    .fields label {
-        width: 50%;
-        margin-bottom: 5px;
-    }
-
-    button {
-        width: 48%; /* Adjust as needed */
-        margin-right: 2%;
-    }
-
-    #result table {
-        font-size: 14px; /* Adjust as needed */
-    }
-
-    h2 {
-        margin-bottom: 10px;
-    }
-
-    .fields {
-        flex-direction: inline block;
-        align-items: flex-start;
-    }
-    #calculator {
-        max-width: 100%;
-    }
-
-    label, input {
-        width: 50%;
-        font-size: 16px; /* Adjust as needed */
-    }
-
-    .fields label {
-        width: 50%;
-        margin-bottom: 5px;
-    }
-
-    button {
-        width: 48%; /* Adjust as needed */
-        margin-right: 2%;
-    }
-
-    #result table {
-        font-size: 14px; /* Adjust as needed */
-    }
-
-    h2 {
-        margin-bottom: 10px;
-    }
-
-    .fields {
-        flex-direction: inline-block;
-        align-items: flex-start;
-    }
-}
 
         /* Menu styles */
         #menu {
@@ -261,6 +178,27 @@ header {
             text-decoration: none;
             color: white;
         }
+        @media screen and (max-width: 600px) {
+            body {
+                font-size: 16px;
+            }
+
+            #calculator {
+                max-width: 100%;
+            }
+
+            .fields label,
+            label,
+            select,
+            input {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .fields {
+                flex-direction: column;
+            }
+        }
 
     </style>
  </head>
@@ -282,7 +220,7 @@ header {
     <h2>                 
       मालपोत असुली क्याल्कुलेटर
                 </h2>
-      <div id="embeddedWebsite"></div>
+      <div id="embeddedWebsite" class="form-container"></div>
 
     <div style="display: flex; justify-content: space-around;">
     <div>
