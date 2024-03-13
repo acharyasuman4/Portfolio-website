@@ -212,13 +212,13 @@
     totalPaisa += Math.floor(totalDaam / 4);
     totalDaam = totalDaam % 4;
 
-    // Adjust totalAana to show correct conversion
-    totalRopani += Math.floor(totalAana / 16);
-    totalAana = totalAana % 16;
-
-    // Adjust totalPaisa to show correct conversion
+    // Adjust totalPaisa accordingly
     totalAana += Math.floor(totalPaisa / 4);
     totalPaisa = totalPaisa % 4;
+
+    // Adjust totalAana accordingly
+    totalRopani += Math.floor(totalAana / 16);
+    totalAana = totalAana % 16;
 
     // Display the result
     const resultElement = document.getElementById('result');
