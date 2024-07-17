@@ -500,6 +500,19 @@ console.log("Final Bakyauta:", bakyauta); // Add this line
         document.getElementById("jaribana").textContent = "";
         document.getElementById("jamma").textContent = "";
     }
+    document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+    e.preventDefault();
+  }
+});
+document.addEventListener('keydown', function(event) {
+    // Check if Ctrl (or Command for Mac) and U keys are pressed
+    if ((event.ctrlKey || event.metaKey) && event.key === 'u') {
+        event.preventDefault();
+        alert('Viewing source is disabled on this page.');
+    }
+});
     </script>
 </body>
 </html>

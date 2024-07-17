@@ -132,9 +132,10 @@
 
 /* Optionally, you can add a hover effect to make the buttons more interactive */
 #calculateButton:hover, #clearButton:hover {
-    background-color: #4CAF50; /* Change the background color on hover */
+    background-color: #1885b0; /* Change the background color on hover */
     color: white; /* Change the text color on hover */
     cursor: pointer; /* Change cursor to pointer on hover */
+    
 }
 header {
             background-color: #b5c8d1;
@@ -524,6 +525,19 @@ function calculateJarivana(financialYear, bakyaota) {
             return 0;
     }
 }
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+    e.preventDefault();
+  }
+});
+document.addEventListener('keydown', function(event) {
+    // Check if Ctrl (or Command for Mac) and U keys are pressed
+    if ((event.ctrlKey || event.metaKey) && event.key === 'u') {
+        event.preventDefault();
+        alert('Viewing source is disabled on this page.');
+    }
+});
 </script>
 
 </body>
