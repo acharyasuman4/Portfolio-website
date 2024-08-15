@@ -372,7 +372,7 @@ function calculateTax() {
     let bakyaota = calculateBakyaota(financialYear, ropni, aana, paisa, daam);
 
     // Calculate चालु
-    let chalu = 125 * (ropni + aana / 16 + paisa / 64 + daam / 256);
+    let chalu = 40 * (ropni + aana / 16 + paisa / 64 + daam / 256);
 
     // Calculate जरिवाना
     let jarivana = calculateJarivana(financialYear, bakyaota);
@@ -380,7 +380,7 @@ function calculateTax() {
     // Double the result for नगरपालिका
     if (localBody === 'nagarpalika') {
         bakyaota *= 2;
-        chalu *= 2;
+        chalu *= 5/4;
         jarivana *= 2;
     }
 
@@ -400,75 +400,76 @@ function calculateTax() {
 
 function calculateBakyaota(financialYear, ropni, aana, paisa, daam) {
     switch (financialYear) {
-        case '80/81':
+        case '80/81': 
+             return 0;
         case '79/80':
-            return 0;
+        return Math.round(125 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '78/79':
-            return Math.round(125 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(250 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '77/78':
-            return Math.round(225 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(350 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '76/77':
-            return Math.round(325 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(450 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '75/76':
-            return Math.round(425 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(550 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '74/75':
-            return Math.round(525 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(650 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '73/74':
-            return Math.round(625 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(750 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '72/73':
-            return Math.round(725 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(850 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '71/72':
-            return Math.round(825 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(950 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '70/71':
-            return Math.round(925 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1050 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '69/70':
-            return Math.round(1025 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1150 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '68/69':
-            return Math.round(1100 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1225 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '67/68':
-            return Math.round(1175 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1300 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '66/67':
-            return Math.round(1250 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1375 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '65/66':
-            return Math.round(1325 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1450 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '64/65':
-            return Math.round(1400 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1525 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '63/64':
-            return Math.round(1475 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1600 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '62/63':
-            return Math.round(1550 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1675 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '61/62':
-            return Math.round(1625 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1750 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '60/61':
-            return Math.round(1650.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1775.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '59/60':
-            return Math.round(1676.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1801.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '58/59':
-            return Math.round(1701.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1826.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '57/58':
-            return Math.round(1727.4 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1852.4 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '56/57':
-            return Math.round(1753 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1878 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '55/56':
-            return Math.round(1778.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1903.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '54/55':
-            return Math.round(1804.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1929.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '53/54':
-            return Math.round(1829.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1954.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '52/53':
-            return Math.round(1855.4 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(1980.4 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '51/52':
-            return Math.round(1881 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(2006 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '50/51':
-            return Math.round(1906.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(2031.6 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '49/50':
-            return Math.round(1932.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(2057.2 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '48/49':
-            return Math.round(1935.5 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(2060.5 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '47/48':
-            return Math.round(1938.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(2063.8 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         case '46/47':
-            return Math.round(1942.1 * (ropni + aana / 16 + paisa / 64 + daam / 256));
+            return Math.round(2067.1 * (ropni + aana / 16 + paisa / 64 + daam / 256));
         default:
             return 0;
     }
@@ -477,24 +478,24 @@ function calculateBakyaota(financialYear, ropni, aana, paisa, daam) {
 function calculateJarivana(financialYear, bakyaota) {
     switch (financialYear) {
         case '80/81':
-        case '79/80':
             return 0;
-        case '78/79':
+        case '79/80':
             return 0.2 * bakyaota;
-        case '77/78':
+        case '78/79':
             return 0.3 * bakyaota;
-        case '76/77':
+        case '77/78':
             return 0.4 * bakyaota;
-        case '75/76':
+        case '76/77':
             return 0.5 * bakyaota;
-        case '74/75':
+        case '75/76':
             return 0.6 * bakyaota;
-        case '73/74':
+        case '74/75':
             return 0.7 * bakyaota;
-        case '72/73':
+        case '73/74':
             return 0.8 * bakyaota;
-        case '71/72':
+        case '72/73':
             return 0.9 * bakyaota;
+        case '71/72':
         case '70/71':
         case '69/70':
         case '68/69':
