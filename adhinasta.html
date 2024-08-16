@@ -8,12 +8,14 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
+            background-color: bisque;
         }
 
         .form-container {
             max-width: 80%; /* Adjust the width as needed */
             margin: auto;
             margin-top: 20px;
+            background-color: #abcbdd;
         }
 
         label {
@@ -30,10 +32,17 @@
 
         button {
             padding: 10px 20px;
+            margin: 10px;
             background-color: blue;
             color: white;
             border: none;
             cursor: pointer; /* Add cursor pointer on hover */
+            font-size: 18px;
+        }
+        button:hover{
+            color: rgb(0, 236, 0);
+            background-color: rgb(55, 126, 128);
+            font-size: 20px;
         }
         #footer {
             margin-top: 20px;
@@ -48,13 +57,15 @@
             font-style: italic;
             color: rgb(8, 162, 228);
         }
-h1 {color:darkorange;}
+h1 {color:rgb(0, 153, 255); background-color: rgb(66, 66, 35);}
 
         table {
             width: 30%;
             border-collapse: collapse;
             margin: auto;
             margin-top: 20px;
+            background-color: rgb(244, 213, 174);
+            color: rgb(43, 0, 255);
         }
 
         table,
@@ -68,9 +79,11 @@ h1 {color:darkorange;}
             padding: 10px;
             text-align: center;
             width: 50%;
-            font-size: large;
-            height: fit-content;
-            
+            font-size: 20px;
+            height: fit-content; 
+        }
+        th{
+            color: rgb(240, 134, 12);
         }
 
         #bakyauta,
@@ -82,6 +95,14 @@ h1 {color:darkorange;}
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
+        }
+        #Contact{
+            color: #e66e0c;
+            background-color: rgb(205, 219, 176);
+        }
+        image{
+            margin: 10px;
+            padding: 10px;
         }
         @media only screen and (max-width: 600px) {
         .form-container {
@@ -185,46 +206,46 @@ header {
     <div style="display: inline-block;">
         <label for="financial_year">तिरो बुझाएको आर्थिक वर्ष:</label>
         <select id="financial_year" name="financial_year">
-                        <option value="80/81">८०/८१</option>
-                        <option value="79/80">७९/८०</option>
-                        <option value="78/79">७८/७९</option>
-                        <option value="77/78">७७/७८</option>
-                        <option value="76/77">७६/७७</option>
-                        <option value="75/76">७५/७६</option>
-                        <option value="74/75">७४/७५</option>
-                        <option value="73/74">७३/७४</option>
-                        <option value="72/73">७२/७३</option>
-                        <option value="71/72">७१/७२</option>
-                        <option value="70/71">७०/७१</option>
-                        <option value="69/70">६९/७०</option>
-                        <option value="68/69">६८/६९</option>
-                        <option value="67/68">६७/६८</option>
-                        <option value="66/67">६६/६७</option>
-                        <option value="65/66">६५/६६</option>
-                        <option value="64/65">६४/६५</option>
-                        <option value="63/64">६३/६४</option>
-                        <option value="62/63">६२/६३</option>
-                        <option value="61/62">६१/६२</option>
-                        <option value="60/61">६०/६१</option>
-                        <option value="59/60">५९/६०</option>
-                        <option value="58/59">५८/५९</option>
-                        <option value="57/58">५७/५८</option>
-                        <option value="56/57">५६/५७</option>
-                        <option value="55/56">५५/५६</option>
-                        <option value="54/55">५४/५५</option>
-                        <option value="53/54">५३/५४</option>
-                        <option value="52/53">५२/५३</option>
-                        <option value="51/52">५१/५२</option>
-                        <option value="50/51">५०/५१</option>
-                        <option value="49/50">४९/५०</option>
-                        <option value="48/49">४८/४९</option>
-                        <option value="47/48">४७/४८</option>
-                        <option value="46/47">४६/४७</option>
-                        <option value="45/46">४५/४६</option>
-                        <option value="44/45">४४/४५</option>
-                        <option value="43/44">४३/४४</option>
-                        <option value="42/43">४२/४३</option>
-                        <option value="41/42">४१/४२</option>
+            <option value="79/80">७९/८०</option>
+            <option value="78/79">७८/७९</option>
+            <option value="77/78">७७/७८</option>
+            <option value="76/77">७६/७७</option>
+            <option value="80/81">८०/८१</option>
+             <option value="75/76">७५/७६</option>
+             <option value="74/75">७४/७५</option>
+             <option value="73/74">७३/७४</option>
+             <option value="72/73">७२/७३</option>
+             <option value="71/72">७१/७२</option>
+             <option value="70/71">७०/७१</option>
+             <option value="69/70">६९/७०</option>
+             <option value="68/69">६८/६९</option>
+             <option value="67/68">६७/६८</option>
+             <option value="66/67">६६/६७</option>
+             <option value="65/66">६५/६६</option>
+             <option value="64/65">६४/६५</option>
+             <option value="63/64">६३/६४</option>
+             <option value="62/63">६२/६३</option>
+             <option value="61/62">६१/६२</option>
+             <option value="60/61">६०/६१</option>
+             <option value="59/60">५९/६०</option>
+             <option value="58/59">५८/५९</option>
+             <option value="57/58">५७/५८</option>
+             <option value="56/57">५६/५७</option>
+             <option value="55/56">५५/५६</option>
+             <option value="54/55">५४/५५</option>
+             <option value="53/54">५३/५४</option>
+             <option value="52/53">५२/५३</option>
+             <option value="51/52">५१/५२</option>
+             <option value="50/51">५०/५१</option>
+             <option value="49/50">४९/५०</option>
+             <option value="48/49">४८/४९</option>
+             <option value="47/48">४७/४८</option>
+             <option value="46/47">४६/४७</option>
+             <option value="45/46">४५/४६</option>
+             <option value="44/45">४४/४५</option>
+             <option value="43/44">४३/४४</option>
+             <option value="42/43">४२/४३</option>
+             <option value="41/42">४१/४२</option>
     </select>
         </div>
         <div style="display: inline-block;">
@@ -271,7 +292,7 @@ header {
       <div id="designer">
         Designed by: Suman Acharya, Land revenue Office, Sindhupalchowk
       </div>
-      
+      <div id="Contact"><b>सम्पर्कको लागि</b> <a href="mailto:acharyasuman874@gmail.com"><img src="email logo.jpg" alt="Email logo" style="width: 20px; height: 15px;"></a> </div>
 
     <script>
             function toggleMenu() {
@@ -285,6 +306,13 @@ header {
         'खेत दोयम': 0.65,
         'खेत सिम\\चाहार': 0.43125,
         'पाखो': 0.3625
+    };
+
+    const landTypeChaluValues = {
+        'खेत अवल': 0.1,
+        'खेत दोयम': 0.075,
+        'खेत सिम\\चाहार': 0.05,
+        'पाखो': 0.025
     };
 
     function calculateLandTax() {
@@ -336,47 +364,43 @@ header {
     document.getElementById("dam").value = dam;
 
     const financialYearMapping = {
-        "80/81": 0,
-        "79/80": 1,
-        "78/79": 2,
-        "77/78": 3,
-        "76/77": 4,
-        "75/76": 5,
-        "74/75": 6,
-        "73/74": 7,
-        "72/73": 8,
-        "71/72": 9,
-        "70/71": 10,
-        "69/70": 11,
-        "68/69": 12,
-        "67/68": 13,
-        "66/67": 14,
-        "65/66": 15,
-        "64/65": 16,
-        "63/64": 17,
-        "62/63": 18,
-        "61/62": 19,
-        "60/61": 20,
-        "59/60": 21,
-        "58/59": 22,
-        "57/58": 23,
-        "56/57": 24,
-        "55/56": 25,
-        "54/55": 26,
-        "53/54": 27,
-        "52/53": 28,
-        "51/52": 29,
-        "50/51": 30,
-        "49/50": 31,
-        "48/49": 32,
-        "47/48": 33,
-        "46/47": 34,
-        "45/46": 35,
-        "44/45": 36,
-        "43/44": 37,
-        "42/43": 38,
-        "41/42": 39,
-        "40/41": 40,
+    "80/81": 1,
+    "79/80": 2,
+    "78/79": 3,
+    "77/78": 4,
+    "76/77": 5,
+    "75/76": 6,
+    "74/75": 7,
+    "73/74": 8,
+    "72/73": 9,
+    "71/72": 10,
+    "70/71": 11,
+    "69/70": 12,
+    "68/69": 13,
+    "67/68": 14,
+    "66/67": 15,
+    "65/66": 16,
+    "64/65": 17,
+    "63/64": 18,
+    "62/63": 19,
+    "61/62": 20,
+    "60/61": 21,
+    "59/60": 22,
+    "58/59": 23,
+    "57/58": 24,
+    "56/57": 25,
+    "55/56": 26,
+    "54/55": 27,
+    "53/54": 28,
+    "52/53": 29,
+    "51/52": 30,
+    "50/51": 31,
+    "49/50": 32,
+    "48/49": 33,
+    "47/48": 34,
+    "46/47": 35,
+    "45/46": 36,
+    "44/45": 37,
     };
     
     
@@ -395,84 +419,127 @@ header {
 // Calculate bakyauta based on the provided formula
 let bakyauta;
 switch (financialYearValue) {
-    case 0: 
     case 1:
-        bakyauta = 0;
-        break;
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-        bakyauta = landArea * landTypeValue * 2700 * (financialYearValue - 1);
-        break;
-    case 6:
-        bakyauta = landArea * landTypeValue * (2500 + 10800);
-        break;
-    case 7:
-    case 8:
-    case 9:
-    case 10:
-    case 11:
-        bakyauta = landArea * landTypeValue * (financialYearValue - 6) * 2000 + landArea * landTypeValue * (10800 + 2500);
-        break;
-    case 12:
-        bakyauta = landArea * landTypeValue * (1800 + 10000 + 2500 + 10800);
-        break;
-    case 13:
-    case 14:
-        bakyauta = landArea * landTypeValue * (financialYearValue - 12) * 1650 + landArea * landTypeValue * (1800 + 10000 + 2500 + 10800);
-        break;
-    case 15:
-        bakyauta = landArea * landTypeValue * (1800 + 10000 + 2500 + 10800 + 3300 + 1450);
-        break;
-    case 16:
-        bakyauta = landArea * landTypeValue * (1800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300);
-        break;
-    case 17:
-        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100);
-        break;
-    case 18:
-    case 19:
-        bakyauta = landArea * landTypeValue * (financialYearValue - 17) * 1000 + landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100);
-        break;
-    case 20:
-        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900);
-        break;
-    case 21:
-    case 22:
-        bakyauta = landArea * landTypeValue * (financialYearValue - 20) * 860 + landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900);
-        break;
-    case 23:
-    case 24:
-    case 25:
-    case 26:
-    case 27:
-        bakyauta = landArea * landTypeValue * (financialYearValue - 22) * 833 + landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720);
-        break;
-    case 28:
-        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720 + 4165 + 757);
-        break;
-    case 29:
-        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720 + 4165 + 757 + 688);
-        break;
-    case 30:
-    case 31:
-        bakyauta = landArea * landTypeValue * (financialYearValue - 29) * 625 + landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720 + 4165 + 757 + 688);
-        break;
-    case 32:
-        bakyauta = landArea * landTypeValue * (800 + 10000 + 2500 + 10800 + 3300 + 1450 + 1300 + 1100 + 2000 + 900 + 1720 + 4165 + 757 + 688 + 1250 + 550);
-        break;
+    bakyauta = landArea * landTypeValue * 0;
+    break;
+case 2:
+    bakyauta = landArea * landTypeValue * 2700;
+    break;
+case 3:
+    bakyauta = landArea * landTypeValue * 5400;
+    break;
+case 4:
+    bakyauta = landArea * landTypeValue * 8100;
+    break;
+case 5:
+    bakyauta = landArea * landTypeValue * 10800;
+    break;
+case 6:
+    bakyauta = landArea * landTypeValue * 13500;
+    break;
+case 7:
+    bakyauta = landArea * landTypeValue * 16000;
+    break;
+case 8:
+    bakyauta = landArea * landTypeValue * 18000;
+    break;
+case 9:
+    bakyauta = landArea * landTypeValue * 20000;
+    break;
+case 10:
+    bakyauta = landArea * landTypeValue * 22000;
+    break;
+case 11:
+    bakyauta = landArea * landTypeValue * 24000;
+    break;
+case 12:
+    bakyauta = landArea * landTypeValue * 26000;
+    break;
+case 13:
+    bakyauta = landArea * landTypeValue * 27800;
+    break;
+case 14:
+    bakyauta = landArea * landTypeValue * 29450;
+    break;
+case 15:
+    bakyauta = landArea * landTypeValue * 31100;
+    break;
+case 16:
+    bakyauta = landArea * landTypeValue * 32550;
+    break;
+case 17:
+    bakyauta = landArea * landTypeValue * 33850;
+    break;
+case 18:
+    bakyauta = landArea * landTypeValue * 34950;
+    break;
+case 19:
+    bakyauta = landArea * landTypeValue * 35950;
+    break;
+case 20:
+    bakyauta = landArea * landTypeValue * 36950;
+    break;
+case 21:
+    bakyauta = landArea * landTypeValue * 37850;
+    break;
+case 22:
+    bakyauta = landArea * landTypeValue * 38710;
+    break;
+case 23:
+    bakyauta = landArea * landTypeValue * 39570;
+    break;
+case 24:
+    bakyauta = landArea * landTypeValue * 40403;
+    break;
+case 25:
+    bakyauta = landArea * landTypeValue * 41236;
+    break;
+case 26:
+    bakyauta = landArea * landTypeValue * 42069;
+    break;
+case 27:
+    bakyauta = landArea * landTypeValue * 42902;
+    break;
+case 28:
+    bakyauta = landArea * landTypeValue * 43735;
+    break;
+case 29:
+    bakyauta = landArea * landTypeValue * 44492;
+    break;
+case 30:
+    bakyauta = landArea * landTypeValue * 45180;
+    break;
+case 31:
+    bakyauta = landArea * landTypeValue * 45805;
+    break;
+case 32:
+    bakyauta = landArea * landTypeValue * 46430;
+    break;
+case 33:
+    bakyauta = landArea * landTypeValue * 46980;
+    break;
+case 34:
+    bakyauta = landArea * landTypeValue * 47430;
+    break;
+case 35:
+    bakyauta = landArea * landTypeValue * 47780;
+    break;
+case 36:
+    bakyauta = landArea * landTypeValue * 48090;
+    break;
+case 37:
+    bakyauta = landArea * landTypeValue * 48380;
+    break;
+
     default:
-        console.error("Invalid financial year:", financialYearValue);
-        break;
+bakyauta= 0;
 }
 
 console.log("Final Bakyauta:", bakyauta); // Add this line
 
-    // Calculate chalu, jaribana, and jamma
-    const chalu = landArea * landTypeValue * 2700;
-    const jaribana = 0.1 * bakyauta;
-    const jamma = bakyauta + chalu + jaribana;
+let chalu = landArea * landTypeChaluValues[selectedLandType] * 2700;
+let jaribana = bakyauta * 0.1; // Example for fine calculation (10%)
+let jamma = bakyauta + chalu + jaribana;
 
     // Round the values
     const roundedChalu = chalu.toFixed(0);
