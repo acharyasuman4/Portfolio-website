@@ -564,6 +564,16 @@ let jamma = bakyauta + chalu + jaribana;
         document.getElementById("jaribana").textContent = "";
         document.getElementById("jamma").textContent = "";
     }
+
+    // Add event listeners to trigger the calculation when any input changes
+    document.getElementById('ropani').addEventListener('input', calculateLandTax);
+    document.getElementById('aana').addEventListener('input', calculateLandTax);
+    document.getElementById('paisa').addEventListener('input', calculateLandTax);
+    document.getElementById('dam').addEventListener('input', calculateLandTax);
+    document.getElementById('financial_year').addEventListener('change', calculateLandTax);
+    document.getElementById('land_type').addEventListener('change', calculateLandTax);
+
+
     document.addEventListener('contextmenu', event => event.preventDefault());
 document.addEventListener('keydown', (e) => {
   if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {

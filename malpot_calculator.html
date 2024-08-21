@@ -372,14 +372,22 @@ function calculateTax() {
     const localBody = document.getElementById('localBody').value;
     // Validation
     if (ropni < 0 || aana < 0 || paisa < 0 || daam < 0) {
-        alert('Values cannot be negative. Please enter positive values.');
-        return;
-    }
+    alert('Values cannot be negative. Please enter positive values.');
+    document.getElementById('bakyaota').innerText = '';
+    document.getElementById('chalu').innerText = '';
+    document.getElementById('jarivana').innerText = '';
+    document.getElementById('jamma').innerText = '';
+    return; // Stop further calculation
+}
 
     if (aana >= 16 || paisa >= 4 || daam >= 4) {
-        alert('आना १६ भन्दा कम,पैसा ४ भन्दा कम,दाम ४ भन्दा कम हुनुपर्छ ।');
-        return;
-    }
+    alert('आना १६ भन्दा कम, पैसा ४ भन्दा कम, दाम ४ भन्दा कम हुनुपर्छ ।');
+    document.getElementById('bakyaota').innerText = '';
+    document.getElementById('chalu').innerText = '';
+    document.getElementById('jarivana').innerText = '';
+    document.getElementById('jamma').innerText = '';
+    return; // Stop further calculation
+}
 
     // Calculate बक्यौता
     let bakyaota = calculateBakyaota(financialYear, ropni, aana, paisa, daam);
@@ -539,6 +547,15 @@ function calculateJarivana(financialYear, bakyaota) {
             return 0;
     }
 }
+
+// Add event listeners to trigger the calculation when any input changes
+document.getElementById('ropani').addEventListener('input', calculateTax);
+    document.getElementById('aana').addEventListener('input', calculateTax);
+    document.getElementById('paisa').addEventListener('input', calculateTax);
+    document.getElementById('daam').addEventListener('input', calculateTax);
+    document.getElementById('financialYear').addEventListener('change', calculateTax);
+    document.getElementById('localBody').addEventListener('change', calculateTax);
+
 document.addEventListener('contextmenu', event => event.preventDefault());
 document.addEventListener('keydown', (e) => {
   if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
@@ -552,6 +569,7 @@ document.addEventListener('keydown', function(event) {
         alert('Viewing source is disabled on this page.');
     }
 });
+
 </script>
 
 </body>
