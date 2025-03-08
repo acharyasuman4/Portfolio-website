@@ -1,0 +1,57 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: bisque;
+    text-align: center;
+}
+
+label {
+    display: inline-block;
+    width: 60px;
+    margin: 10px auto;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 18px;
+}
+
+.choose label{
+    width: 120px;
+}
+
+input, select {
+    margin-top: 5px;
+    display: inline-block;
+    height: 23px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 20px;
+    width: 150px;
+}
+select{
+    width: 150px;
+    height: 30px;  
+}
+
+button {
+    margin-top: 10px;
+}
+
+#history {
+    list-style-type: none;
+    padding: 0;
+}
+
+#history li {
+    margin-bottom: 5px;
+}
+
+#calcForm{
+display: inline-block;
+max-width: 90%;
+}
+
+.location{
+    display: inline-flex;
+}
+.area{display:inline-block;
+}
+.area1, .area2{display: inline-flex;
+}
