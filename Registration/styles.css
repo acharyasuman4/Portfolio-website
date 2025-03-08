@@ -51,6 +51,7 @@ max-width: 90%;
 .location{
     display: inline-flex;
 }
-.area1, .area2{
-    display: inline-block;
+.area{display:inline-block;
+}
+.area1, .area2{display: inline-flex;
 }
