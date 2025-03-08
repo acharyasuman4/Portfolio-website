@@ -48,7 +48,9 @@ display: inline-block;
 max-width: 90%;
 }
 
-.location, .area{
+.location{
     display: inline-flex;
 }
-
+.area1, .area2{
+    display: inline-block;
+}
