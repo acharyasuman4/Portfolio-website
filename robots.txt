@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://acharyasuman4.com.np/sitemap.xml
