@@ -1,7 +1,13 @@
 // Retrieve history from local storage or initialize empty array
 let history = JSON.parse(localStorage.getItem('history')) || [];
 
-// Function to perform calculations and update history
+/* ---------------------- Nepali Number Format ----------------------- */
+function toNepaliNumber(num) {
+    const nepaliDigits = ['०','१','२','३','४','५','६','७','८','९'];
+    return num.toString().replace(/[0-9]/g, d => nepaliDigits[d]);
+}
+
+/* ---------------------- Calculate Function ------------------------- */
 function calculate() {
     const wadaNo = document.getElementById('wadaNo').value;
     const kittaNo = document.getElementById('kittaNo').value;
@@ -32,46 +38,68 @@ function calculate() {
     history.push(historyItem);
     localStorage.setItem('history', JSON.stringify(history));
 
-    // Update history list and total amount
+    // Update history + total
     updateHistory();
     updateTotalAmount();
 
-    // Reset form fields
+    // Reset form
     document.getElementById('calcForm').reset();
     document.getElementById('wadaNo').focus();
-
-    // Set the default visibility and values
     document.getElementById('batoType').value = 'गोरेटो बाटो';
     document.getElementById('fieldType').style.display = 'none';
     document.getElementById('mulyaPratiRopani').value = '';
+
+    validateForm(); // disable calculate button again
 }
 
-// Function to update history list
+/* ---------------------- History Display (Latest First) ---------------------- */
 function updateHistory() {
     const historyList = document.getElementById('history');
     historyList.innerHTML = '';
 
-    history.forEach(item => {
+    history.slice().reverse().forEach((item, index) => {
         const historyItem = document.createElement('li');
-        const formattedResult = `${item.wadaNo} - ${item.kittaNo} (${item.ropani}-${item.aana}-${item.paisa}-${item.daam}) ${item.batoType}${item.fieldType ? ` (${item.fieldType})` : ''} न्युनत्तम मुल्य = ${item.result}`;
-        historyItem.textContent = formattedResult;
+
+        const nepResult = toNepaliNumber(item.result);
+
+        historyItem.innerHTML = `
+            ${item.wadaNo} - ${item.kittaNo} 
+            (${item.ropani}-${item.aana}-${item.paisa}-${item.daam})
+            ${item.batoType}${item.fieldType ? ` (${item.fieldType})` : ''}
+            = <b>${nepResult}</b>
+            <button class="deleteItem" data-index="${index}">❌</button>
+        `;
+
         historyList.appendChild(historyItem);
+    });
+
+    // Delete item event binding
+    document.querySelectorAll('.deleteItem').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const idx = parseInt(this.getAttribute('data-index'));
+            history.splice(history.length - 1 - idx, 1);
+            localStorage.setItem('history', JSON.stringify(history));
+            updateHistory();
+            updateTotalAmount();
+        });
     });
 }
 
-// Function to update the total amount
+/* ---------------------- Total Amount in Nepali ---------------------- */
 function updateTotalAmount() {
     const totalAmountElem = document.getElementById('totalAmount');
     const totalAmount = history.reduce((sum, item) => sum + item.result, 0);
-    totalAmountElem.textContent = totalAmount.toFixed(2);
+    totalAmountElem.textContent = toNepaliNumber(totalAmount.toFixed(0));
 }
 
-// Function to auto-fill fields based on history
+/* ---------------------- Auto Fill Fields Based on History ---------------------- */
 function autoFillFields(wadaNo, kittaNo) {
     const matchingEntry = history.find(item => item.wadaNo === wadaNo && item.kittaNo === kittaNo);
+
     if (matchingEntry) {
         document.getElementById('mulyaPratiRopani').value = matchingEntry.mulyaPratiRopaniInput;
         document.getElementById('batoType').value = matchingEntry.batoType;
+
         if (matchingEntry.batoType === 'नभएको') {
             document.getElementById('fieldType').style.display = 'block';
             document.getElementById('fieldTypeSelect').value = matchingEntry.fieldType;
@@ -83,9 +111,11 @@ function autoFillFields(wadaNo, kittaNo) {
         document.getElementById('batoType').value = 'गोरेटो बाटो';
         document.getElementById('fieldType').style.display = 'none';
     }
+
+    validateForm();
 }
 
-// Function to clear history and reset the total amount
+/* ---------------------- Clear Entire History ---------------------- */
 function clearHistory() {
     history = [];
     localStorage.removeItem('history');
@@ -93,17 +123,16 @@ function clearHistory() {
     updateTotalAmount();
 }
 
-// Event listener to show/hide field type dropdown
-document.getElementById('batoType').addEventListener('change', function() {
-    const fieldTypeDiv = document.getElementById('fieldType');
+/* ---------------------- Show/Hide Field Type ---------------------- */
+document.getElementById('batoType').addEventListener('change', function () {
     if (this.value === 'नभएको') {
-        fieldTypeDiv.style.display = 'block';
+        document.getElementById('fieldType').style.display = 'block';
     } else {
-        fieldTypeDiv.style.display = 'none';
+        document.getElementById('fieldType').style.display = 'none';
     }
 });
 
-// Event listener to auto-fill fields when वडा नं. or कित्ता नं. changes
+/* ---------------------- Auto-fill Wada/Kitta ---------------------- */
 document.getElementById('wadaNo').addEventListener('input', () => {
     autoFillFields(document.getElementById('wadaNo').value, document.getElementById('kittaNo').value);
 });
@@ -112,6 +141,42 @@ document.getElementById('kittaNo').addEventListener('input', () => {
     autoFillFields(document.getElementById('wadaNo').value, document.getElementById('kittaNo').value);
 });
 
-// Load history on page load
+/* ---------------------- Auto Calculate on TAB after Daam ---------------------- */
+document.getElementById('daam').addEventListener('keydown', function (e) {
+    if (e.key === 'Tab') {
+        const mulyaValue = parseFloat(document.getElementById('mulyaPratiRopani').value);
+
+        if (!isNaN(mulyaValue) && mulyaValue > 0) {
+            setTimeout(() => calculate(), 10);
+        }
+    }
+});
+
+/* ---------------------- Enable/Disable Calculate Button ---------------------- */
+function validateForm() {
+    const wada = document.getElementById('wadaNo').value.trim();
+    const kitta = document.getElementById('kittaNo').value.trim();
+    const r = document.getElementById('ropani').value;
+    const a = document.getElementById('aana').value;
+    const p = document.getElementById('paisa').value;
+    const d = document.getElementById('daam').value;
+    const m = document.getElementById('mulyaPratiRopani').value;
+
+    const calcBtn = document.getElementById('calculateBtn');
+
+    if (wada && kitta && r && a && p && d && m > 0) {
+        calcBtn.disabled = false;
+    } else {
+        calcBtn.disabled = true;
+    }
+}
+
+['wadaNo','kittaNo','ropani','aana','paisa','daam','mulyaPratiRopani']
+.forEach(id => {
+    document.getElementById(id).addEventListener('input', validateForm);
+});
+
+/* ---------------------- Load History on Page Load ---------------------- */
 updateHistory();
 updateTotalAmount();
+validateForm();
