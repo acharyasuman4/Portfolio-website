@@ -550,6 +550,10 @@ document.addEventListener('keydown', function(event) {
         alert('Viewing source is disabled on this page.');
     }
 });
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+
 
 </script>
 
