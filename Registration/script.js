@@ -180,3 +180,4 @@ function validateForm() {
 updateHistory();
 updateTotalAmount();
 validateForm();
+

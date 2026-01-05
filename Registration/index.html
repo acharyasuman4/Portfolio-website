@@ -7,6 +7,19 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+      <header>
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <nav class="slide-menu">
+           <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/malpot calculator/">मालपोत असुली</a></li>
+                <li><a href="/kutabali calculator/">कुतबाली असुली</a></li>
+                <li><a href="/ropani adder/">रोपनी जोड्न</a></li>
+                <li><a href="/Registration/">न्युनत्तम मूल्याङ्कन</a></li>
+                <li><a href="/Contact.html">सम्पर्क</a></li>
+            </ul>
+        </nav>
+    </header>
     <h1>न्युनत्तम मुल्यांकन Calculator</h1>
     <div><a href="template.html">कार्यालयको लागि</a></div>
     <form id="calcForm">
@@ -68,11 +81,16 @@
     <h3>Total Amount: <span id="totalAmount">0</span></h3>
     <button onclick="clearHistory()">Clear History</button>
 
-    <script src="script.js">
-        if ("serviceWorker" in navigator) {
+    <script src="script.js"></script>
+    <script>
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js");
 }
+function toggleMenu() {
+    var menu = document.querySelector('.slide-menu');
+    menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+}
+</script>
 
-    </script>
 </body>
 </html>

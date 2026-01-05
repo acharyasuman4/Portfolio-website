@@ -8,123 +8,26 @@ body { font-family: 'Mangal', Arial, sans-serif; padding: 20px; line-height:1.6;
 label { margin: 0 5px; font-weight: bold; }
 input, button, select { padding: 6px; margin: 2px 0; }
 .inline { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout:auto; }
-th, td { border: 1px solid #555; padding: 4px; font-size: 13px; white-space: normal; word-wrap: break-word; }
-th { background: #eee; text-align:center; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #555; padding: 4px; font-size: 13px; white-space: normal; word-wrap: break-word; text-align:center;}
+th { background: #eee; }
 #templateOutput { margin-top: 20px; font-size: 16px; padding: 10px; background: #f7f7f7; text-align: justify; }
 button { cursor: pointer; }
+.upper-table td, .upper-table th { border:1px solid #888; padding:4px; text-align:center; }
+.upper-table th { background:#ddd; }
 
 /* PRINT */
 @media print { 
     body * { visibility: hidden !important; } 
     #printContainer, #printContainer * { visibility: visible !important; } 
-    #printContainer { position: absolute; top:0; left:1in; width:calc(100% - 1in); } /* left margin 1" */
+    #printContainer { position: absolute; top:0; left:1in; width:calc(100% - 1in); } 
     #templateOutput { font-size:14px !important; text-align: justify; line-height:1.55em; } 
     #resultTable th, #resultTable td { font-size:12px !important; } 
     .no-print { display:none !important; } 
 }
-
-.upper-table td, .upper-table th { border:1px solid #888; padding:4px; text-align:center; }
-.upper-table th { background:#ddd; }
-
-/* Column compacting */
-td.price, th.price { width:80px; text-align:right; }
-td.area, th.area { width:120px; }
-td.road { width:160px; }
-td.category { width:100px; }
-header {
-            background-color: #707679;
-            padding: 10px;
-            color: rgb(18, 224, 49);
-            text-align: center;
-            position: fixed;
-            /* width: 5%; */
-            z-index: 1000;
-        }
-
-        .menu-btn {
-            font-size: 20px;
-            cursor: pointer;
-            float: left;
-        }
-
-        .slide-menu {
-            display: none;
-            position: fixed;
-            top: 50px; /* Adjust based on your header height */
-            left: 0;
-            height: 100%;
-            width: 250px;
-            background-color: #abcbdd;
-            padding-top: 0px; /* Adjust based on your header padding */
-            box-shadow: 0 0 10px rgba(53, 150, 11, 0.5);
-        }
-        ul{
-            margin-top: 3px;
-        }
-
-        .slide-menu ul {
-            list-style: none;
-            padding: 0;
-        }
-        .slide-menu ul li:nth-child(2n-1){
-        background-color: #4f0b0b;
-
-        }
-        .slide-menu ul li:nth-child(2n-1){
-            color: white;
-            font-weight: bold;
-        }
-
-        .slide-menu ul li:nth-child(2n){
-            background-color: #555e08;
-        }
-
-        .slide-menu li {
-            padding: 10px;
-            border-bottom: 1px solid #555;
-        }
-
-        .slide-menu a {
-            text-decoration: none;
-           color: rgb(17, 194, 29);
-
-        }
-        .slide-menu {
-    display: none;   /* menu starts hidden */
-    position: fixed;
-    top: 50px; /* adjust based on header height */
-    left: 0;
-    width: 250px;
-    height: 100%;
-    background-color: #abcbdd;
-    padding-top: 0px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    z-index: 999;
-}
-
-/* Optional: use a class for toggle */
-.slide-menu.show {
-    display: block;
-}
-
-
 </style>
 </head>
 <body>
-      <header>
-        <div class="menu-btn" onclick="toggleMenu()">☰</div>
-        <nav class="slide-menu">
-           <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/malpot calculator/">मालपोत असुली</a></li>
-                <li><a href="/kutabali calculator/">कुतबाली असुली</a></li>
-                <li><a href="/ropani adder/">रोपनी जोड्न</a></li>
-                <li><a href="/Registration/">न्युनत्तम मूल्याङ्कन</a></li>
-                <li><a href="/Contact.html">सम्पर्क</a></li>
-            </ul>
-        </nav>
-    </header>
 
 <h2>जग्गा न्युनतम मूल्याङ्कन फारम</h2>
 
@@ -143,7 +46,6 @@ header {
 </div>
 
 <div id="upperListContainer" style="margin-top:10px;"></div>
-
 <hr>
 
 <!-- Lower Part -->
@@ -197,23 +99,29 @@ header {
 <table id="resultTable" style="display:none;">
 <thead>
 <tr>
-<th>क्र.<br>सं.</th>
-<th>जिल्ला</th>
-<th>साविक<br>गा.वि.स.</th>
-<th>वडा<br>नं.</th>
-<th>कित्ता<br>नं.</th>
-<th class="area">क्षेत्रफल</th>
-<th class="road">घरबाटो विवरण</th>
-<th class="category">वर्गिकरण</th>
-<th class="price" colspan="1">मूल्य प्रति<br> रोपनी (रू)</th>
-<th class="price">न्युनतम मूल्य</th>
+<th rowspan="2">क्र.<br>सं.</th>
+<th rowspan="2">जिल्ला</th>
+<th rowspan="2">साविक<br>गा.वि.स.</th>
+<th rowspan="2">वडा<br>नं.</th>
+<th rowspan="2">कित्ता<br>नं.</th>
+<th colspan="2">क्षेत्रफल</th>
+<th rowspan="2">घरबाटो विवरण</th>
+<th rowspan="2">वर्गिकरण</th>
+<th rowspan="2">मूल्य प्रति रोपनी रू</th>
+<th rowspan="2">न्युनतम मूल्य</th>
+<th rowspan="2">Action</th>
+</tr>
+<tr>
+<th>R-A-P-D</th>
+<th>वर्ग मि.</th>
 </tr>
 </thead>
 <tbody></tbody>
 <tfoot>
 <tr>
-<td colspan="9" style="text-align:right;font-weight:bold;" id="sumText">जम्मा :</td>
+<td colspan="10" style="text-align:right;font-weight:bold;" id="sumText">जम्मा :</td>
 <td id="sumValue"></td>
+<td></td>
 </tr>
 </tfoot>
 </table>
@@ -251,19 +159,28 @@ function getArea(){
         let d=parseFloat(document.getElementById("dam").value)||0;
         let ropani=r+a/16+p/64+d/256;
         let sqm=ropani*508.74;
-        let rapdText=`${toNepali(r)}-${toNepali(a)}-${toNepali(p)}-${toNepali(d)}\n(${toNepali(sqm.toFixed(2))} व.मि)`; 
-        return { rapdText, ropani };
+        return { rapdText:`${toNepali(r)}-${toNepali(a)}-${toNepali(p)}-${toNepali(d)}\n(${toNepali(sqm.toFixed(2))} व.मि.)`, ropani, sqm };
     } else {
         let sqm=parseFloat(document.getElementById("sqm").value)||0;
         let ropani=sqm/508.74;
         let rapd=ropaniToRAPD(ropani);
-        let rapdText=`${toNepali(rapd.R)}-${toNepali(rapd.A)}-${toNepali(rapd.P)}-${toNepali(rapd.D)}\n(${toNepali(sqm.toFixed(2))} व.मि)`;
-        return { rapdText, ropani };
+        return { rapdText:`${toNepali(rapd.R)}-${toNepali(rapd.A)}-${toNepali(rapd.P)}-${toNepali(rapd.D)}\n(${toNepali(sqm.toFixed(2))} व.मि.)`, ropani, sqm };
     }
 }
 
 // ----------------- NUMBER TO NEPALI WORDS -----------------
-const NUMBERS_NE = ["शुन्य","एक","दुई","तीन","चार","पाँच","छ","सात","आठ","नौ","दस","एघार","बाह्र","तेह्र","चौध","पन्ध्र","सोह्र","सत्र","अठार","उन्नाइस","बीस","एक्काइस","बाइस","तेइस","चौबीस","पच्चीस","छब्बीस","सत्ताइस","अठ्ठाइस","उनन्तीस","तीस","एकतीस","बत्तीस","तेत्तीस","चौँतीस","पैंतीस","छत्तीस","सैंतीस","अठतीस","उनन्चालीस","चालीस","एकचालीस","बयालीस","त्रिचालीस","चवालीस","पैँतालीस","छयालीस","सत्चालीस","अठचालीस","उनन्चास","पचास","एकाउन्न","बाउन्न","त्रिपन्न","चवन्न","पचपन्न","छपन्न","सन्ताउन्न","अन्ठाउन्न","उनन्साठी","साठी","एकसट्ठी","बैसट्ठी","त्रिसट्ठी","चौसट्ठी","पैंसट्ठी","छैंसट्ठी","सडसट्ठी","अठसट्ठी","उनन्सत्तरी","सत्तरी","एकहत्तर","बहत्तर","त्रिहत्तर","चौरहत्तर","पचहत्तर","छयहत्तर","सतहत्तर","अठहत्तर","उनासी","अस्सी","एकासी","बयासी","त्रियासी","चौरासी","पचासी","छयासी","सतासी","अठासी","उनान्नब्बे","नब्बे","एकान्नब्बे","बयान्नब्बे","त्रियान्नब्बे","चौरान्नब्बे","पन्चान्नब्बे","छयान्नब्बे","सन्तानब्बे","अन्ठान्नब्बे","उनान्सय","सय"];
+const NUMBERS_NE=[
+"शुन्य","एक","दुई","तीन","चार","पाँच","छ","सात","आठ","नौ",
+"दस","एघार","बाह्र","तेह्र","चौध","पन्ध्र","सोह्र","सत्र","अठार","उन्नाइस",
+"बीस","एक्काइस","बाइस","तेइस","चौबीस","पच्चीस","छब्बीस","सत्ताइस","अठ्ठाइस","उनन्तीस",
+"तीस","एकतीस","बत्तीस","तेत्तीस","चौँतीस","पैंतीस","छत्तीस","सैंतीस","अठतीस","उनन्चालीस",
+"चालीस","एकचालीस","बयालीस","त्रिचालीस","चवालीस","पैँतालीस","छयालीस","सत्चालीस","अठचालीस","उनन्चास",
+"पचास","एकाउन्न","बाउन्न","त्रिपन्न","चवन्न","पचपन्न","छपन्न","सन्ताउन्न","अन्ठाउन्न","उनन्साठी",
+"साठी","एकसट्ठी","बैसट्ठी","त्रिसट्ठी","चौसट्ठी","पैंसट्ठी","छैंसट्ठी","सडसट्ठी","अठसट्ठी","उनन्सत्तरी",
+"सत्तरी","एकहत्तर","बहत्तर","त्रिहत्तर","चौरहत्तर","पचहत्तर","छयहत्तर","सतहत्तर","अठहत्तर","उनासी",
+"अस्सी","एकासी","बयासी","त्रियासी","चौरासी","पचासी","छयासी","सतासी","अठासी","उनान्नब्बे","नब्बे",
+"एकान्नब्बे","बयान्नब्बे","त्रियान्नब्बे","चौरान्नब्बे","पन्चान्नब्बे","छयान्नब्बे","सन्तानब्बे","अन्ठान्नब्बे","उनान्सय","सय"
+];
 
 function convertToNepaliWords(num){
     if(num===0) return "शुन्य";
@@ -297,7 +214,6 @@ function numberToNepaliWords(num){
     words+=" मात्र";
     return words;
 }
-
 
 // ----------------- UPPER ENTRY -----------------
 function addUpperEntry(){
@@ -334,20 +250,15 @@ function updateUpperTemplate(){
         document.getElementById("templateOutput").innerText=""; 
         return;
     }
-
     const fy = document.getElementById("t5").value;
     const nepFy = fy.replace(/\d/g,d=>'०१२३४५६७८९'[d]);
-
     let paragraph = upperEntries.map(e=>{
         return `${e.t1}को ${toNepali(e.t2)} नं. वडा कार्यालयको च.नं. ${toNepali(e.t3)} मिति ${toNepali(e.t4)} गतेको`;
-    }).join(" , "); 
-
+    }).join(" , ");
     paragraph += ` घरबाटो सिफारिस र जग्गाको वर्गिकरण समेतको आधारमा तपशिलका कित्ता जग्गाहरूको आ.व. ${nepFy} को लागि तपशिल बमोजिम न्युनतम मूल्याङ्कन हुने देखिन्छ ।`;
-
     const container = document.getElementById("templateOutput");
     container.innerText = paragraph;
-    container.style.textAlign = "justify";  
-    container.style.wordBreak = "break-word"; 
+    container.style.textAlign = "justify";
 }
 
 // ----------------- LOWER ENTRY -----------------
@@ -361,12 +272,29 @@ function addRow(){
     const category=document.getElementById("category").value;
     const price=parseFloat(document.getElementById("pricePerRopani").value)||0;
     const minValue=area.ropani*price;
-    LOWER_ENTRIES.push(minValue); 
-    const table=document.getElementById("resultTable"); table.style.display="table";
+
+    const table=document.getElementById("resultTable"); 
+    table.style.display="table";
     const tbody=table.querySelector("tbody");
     const row=tbody.insertRow();
     const index=tbody.rows.length;
-    row.innerHTML=`<td>${toNepali(index)}</td><td>${district}</td><td>${old_vdc}</td><td>${toNepali(ward)}</td><td>${toNepali(kitta)}</td><td class="area" style="white-space:pre-line;">${area.rapdText}</td><td class="road">${road}</td><td class="category">${category}</td><td class="price">${toNepali(price)}</td><td class="price">${toNepali(minValue.toFixed(2))}</td>`;
+
+    row.innerHTML=`
+        <td>${toNepali(index)}</td>
+        <td>${district}</td>
+        <td>${old_vdc}</td>
+        <td>${toNepali(ward)}</td>
+        <td>${toNepali(kitta)}</td>
+        <td>${area.rapdText.split('\n')[0]}</td>
+        <td>${area.rapdText.split('\n')[1]}</td>
+        <td>${road}</td>
+        <td>${category}</td>
+        <td>${toNepali(price)}</td>
+        <td>${toNepali(minValue.toFixed(2))}</td>
+        <td><button onclick="deleteRow(this)">Delete</button></td>
+    `;
+
+    LOWER_ENTRIES.push(minValue);
     updateSum();
 }
 
@@ -382,37 +310,70 @@ function clearLower(newVDC){
     document.getElementById("pricePerRopani").value="";
 }
 
-function updateSum(){
-    let sum = LOWER_ENTRIES.reduce((a,b)=>a+b,0);
-    document.getElementById("sumText").innerText = "जम्मा : "+numberToNepaliWords(sum);
-    document.getElementById("sumValue").innerText = toNepali(sum.toFixed(2));
+function deleteRow(btn){
+    const row = btn.closest("tr");
+    const index = row.rowIndex - 1;
+    LOWER_ENTRIES.splice(index,1);
+    row.remove();
+    updateSum();
 }
 
-// ----------------- SAVE HISTORY -----------------
+function updateSum(){
+    const sum=LOWER_ENTRIES.reduce((a,b)=>a+b,0);
+    document.getElementById("sumValue").innerText=toNepali(sum.toFixed(2));
+    document.getElementById("sumText").innerText="जम्मा :";
+}
+
+// ----------------- HISTORY -----------------
 function saveHistory(){
-    const snapshot={upper:upperEntries.slice(), lower:[]};
+    const snapshot={ upper: upperEntries.slice(), lower: []};
     const tbody=document.querySelector("#resultTable tbody");
     for(let tr of tbody.rows){
         snapshot.lower.push(Array.from(tr.cells).map(td=>td.innerText));
     }
-    console.log("Saved History:", snapshot);
-    alert("History saved to console");
-}
-function toggleMenu() {
-    const menu = document.querySelector('.slide-menu');
-    menu.classList.toggle('show');
+    let history=JSON.parse(localStorage.getItem("landHistory")||"[]");
+    history.push(snapshot);
+    if(history.length>3) history.shift();
+    localStorage.setItem("landHistory",JSON.stringify(history));
+    alert("Saved to history!");
 }
 
-// Optional: hide menu if user clicks outside
-document.addEventListener('click', function(e){
-    const menu = document.querySelector('.slide-menu');
-    const btn = document.querySelector('.menu-btn');
-    if(!menu.contains(e.target) && !btn.contains(e.target)){
-        menu.classList.remove('show');
-    }
-});
+function loadHistory(index){
+    const history=JSON.parse(localStorage.getItem("landHistory")||"[]");
+    if(!history[index]) return;
+    upperEntries=history[index].upper.slice();
+    renderUpperList();
 
+    const tbody=document.querySelector("#resultTable tbody");
+    tbody.innerHTML="";
+    LOWER_ENTRIES=[];
+    history[index].lower.forEach(row=>{
+        const tr=tbody.insertRow();
+        tr.innerHTML=row.map(td=>`<td>${td}</td>`).join('');
+        LOWER_ENTRIES.push(parseFloat(row[10].replace(/[^\d.]/g,'')));
+        const delBtn = document.createElement("button");
+        delBtn.innerText="Delete";
+        delBtn.onclick=function(){ deleteRow(delBtn);}
+        tr.cells[11].innerHTML="";
+        tr.cells[11].appendChild(delBtn);
+    });
+    updateSum();
+}
+
+// Auto-fill price (optional, example)
+function autoFillPrice(){
+    const v=document.getElementById("old_vdc").value;
+    if(v===""){ document.getElementById("pricePerRopani").value=""; return;}
+    document.getElementById("pricePerRopani").value="300000"; // default example
+}
 </script>
+
+<div class="inline no-print" style="margin-top:15px;">
+<button onclick="loadHistory(0)">Load Last 1</button>
+<button onclick="loadHistory(1)">Load Last 2</button>
+<button onclick="loadHistory(2)">Load Last 3</button>
+<button onclick="window.print()">Print</button>
+</div>
 
 </body>
 </html>
