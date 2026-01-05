@@ -4,21 +4,35 @@
 <meta charset="UTF-8">
 <title>जग्गा न्युनतम मूल्याङ्कन</title>
 <style>
-body { font-family: 'Mangal', Arial, sans-serif; padding: 20px; line-height:1.6; }
+body { font-family: 'Mangal', Arial, sans-serif; padding: 20px; line-height:1.6; font-size:14px; }
 label { margin: 0 5px; font-weight: bold; }
 input, button, select { padding: 6px; margin: 2px 0; }
 .inline { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout:auto; }
 th, td { border: 1px solid #555; padding: 4px; font-size: 13px; white-space: normal; word-wrap: break-word; }
-th { background: #eee; }
+th { background: #eee; text-align:center; }
 #templateOutput { margin-top: 20px; font-size: 16px; padding: 10px; background: #f7f7f7; text-align: justify; }
 button { cursor: pointer; }
 
 /* PRINT */
-@media print { body * { visibility: hidden !important; } #printContainer, #printContainer * { visibility: visible !important; } #printContainer { position: absolute; top:0; left:0; width:100%; } #templateOutput { font-size:15px !important; text-align: justify; line-height:1.55em; } #resultTable th, #resultTable td { font-size:12px !important; } .no-print { display:none !important; } }
+@media print { 
+    body * { visibility: hidden !important; } 
+    #printContainer, #printContainer * { visibility: visible !important; } 
+    #printContainer { position: absolute; top:0; left:1in; width:calc(100% - 1in); } /* left margin 1" */
+    #templateOutput { font-size:14px !important; text-align: justify; line-height:1.55em; } 
+    #resultTable th, #resultTable td { font-size:12px !important; } 
+    .no-print { display:none !important; } 
+}
 
 .upper-table td, .upper-table th { border:1px solid #888; padding:4px; text-align:center; }
 .upper-table th { background:#ddd; }
+
+/* Column compacting */
+td.price, th.price { width:80px; text-align:right; }
+td.area, th.area { width:120px; }
+td.road { width:160px; }
+td.category { width:100px; }
+
 </style>
 </head>
 <body>
@@ -99,11 +113,11 @@ button { cursor: pointer; }
 <th>साविक<br>गा.वि.स.</th>
 <th>वडा<br>नं.</th>
 <th>कित्ता<br>नं.</th>
-<th>क्षेत्रफल</th>
-<th>घरबाटो विवरण</th>
-<th>वर्गिकरण</th>
-<th>मूल्य प्रति रोपनी</th>
-<th>न्युनतम मूल्य</th>
+<th class="area">क्षेत्रफल</th>
+<th class="road">घरबाटो विवरण</th>
+<th class="category">वर्गिकरण</th>
+<th class="price" colspan="1">मूल्य प्रति<br> रोपनी (रू)</th>
+<th class="price">न्युनतम मूल्य</th>
 </tr>
 </thead>
 <tbody></tbody>
@@ -148,32 +162,22 @@ function getArea(){
         let d=parseFloat(document.getElementById("dam").value)||0;
         let ropani=r+a/16+p/64+d/256;
         let sqm=ropani*508.74;
-        return { rapdText:`${toNepali(r)}-${toNepali(a)}-${toNepali(p)}-${toNepali(d)}\n(${toNepali(sqm.toFixed(2))} वर्ग मि.)`, ropani };
+        let rapdText=`${toNepali(r)}-${toNepali(a)}-${toNepali(p)}-${toNepali(d)}\n(${toNepali(sqm.toFixed(2))} व.मि)`; 
+        return { rapdText, ropani };
     } else {
         let sqm=parseFloat(document.getElementById("sqm").value)||0;
         let ropani=sqm/508.74;
         let rapd=ropaniToRAPD(ropani);
-        return { rapdText:`${toNepali(rapd.R)}-${toNepali(rapd.A)}-${toNepali(rapd.P)}-${toNepali(rapd.D)}\n(${toNepali(sqm.toFixed(2))} वर्ग मि.)`, ropani };
+        let rapdText=`${toNepali(rapd.R)}-${toNepali(rapd.A)}-${toNepali(rapd.P)}-${toNepali(rapd.D)}\n(${toNepali(sqm.toFixed(2))} व.मि)`;
+        return { rapdText, ropani };
     }
 }
 
 // ----------------- NUMBER TO NEPALI WORDS -----------------
-const NUMBERS_NE = [
-"शुन्य","एक","दुई","तीन","चार","पाँच","छ","सात","आठ","नौ",
-"दस","एघार","बाह्र","तेह्र","चौध","पन्ध्र","सोह्र","सत्र","अठार","उन्नाइस",
-"बीस","एक्काइस","बाइस","तेइस","चौबीस","पच्चीस","छब्बीस","सत्ताइस","अठ्ठाइस","उनन्तीस",
-"तीस","एकतीस","बत्तीस","तेत्तीस","चौँतीस","पैंतीस","छत्तीस","सैंतीस","अठतीस","उनन्चालीस",
-"चालीस","एकचालीस","बयालीस","त्रिचालीस","चवालीस","पैँतालीस","छयालीस","सत्चालीस","अठचालीस","उनन्चास",
-"पचास","एकाउन्न","बाउन्न","त्रिपन्न","चवन्न","पचपन्न","छपन्न","सन्ताउन्न","अन्ठाउन्न","उनन्साठी",
-"साठी","एकसट्ठी","बैसट्ठी","त्रिसट्ठी","चौसट्ठी","पैंसट्ठी","छैंसट्ठी","सडसट्ठी","अठसट्ठी","उनन्सत्तरी",
-"सत्तरी","एकहत्तर","बहत्तर","त्रिहत्तर","चौरहत्तर","पचहत्तर","छयहत्तर","सतहत्तर","अठहत्तर","उनासी",
-"अस्सी","एकासी","बयासी","त्रियासी","चौरासी","पचासी","छयासी","सतासी","अठासी","उनान्नब्बे","नब्बे",
-"एकान्नब्बे","बयान्नब्बे","त्रियान्नब्बे","चौरान्नब्बे","पन्चान्नब्बे","छयान्नब्बे","सन्तानब्बे","अन्ठान्नब्बे","उनान्सय","सय"
-];
+const NUMBERS_NE = ["शुन्य","एक","दुई","तीन","चार","पाँच","छ","सात","आठ","नौ","दस","एघार","बाह्र","तेह्र","चौध","पन्ध्र","सोह्र","सत्र","अठार","उन्नाइस","बीस","एक्काइस","बाइस","तेइस","चौबीस","पच्चीस","छब्बीस","सत्ताइस","अठ्ठाइस","उनन्तीस","तीस","एकतीस","बत्तीस","तेत्तीस","चौँतीस","पैंतीस","छत्तीस","सैंतीस","अठतीस","उनन्चालीस","चालीस","एकचालीस","बयालीस","त्रिचालीस","चवालीस","पैँतालीस","छयालीस","सत्चालीस","अठचालीस","उनन्चास","पचास","एकाउन्न","बाउन्न","त्रिपन्न","चवन्न","पचपन्न","छपन्न","सन्ताउन्न","अन्ठाउन्न","उनन्साठी","साठी","एकसट्ठी","बैसट्ठी","त्रिसट्ठी","चौसट्ठी","पैंसट्ठी","छैंसट्ठी","सडसट्ठी","अठसट्ठी","उनन्सत्तरी","सत्तरी","एकहत्तर","बहत्तर","त्रिहत्तर","चौरहत्तर","पचहत्तर","छयहत्तर","सतहत्तर","अठहत्तर","उनासी","अस्सी","एकासी","बयासी","त्रियासी","चौरासी","पचासी","छयासी","सतासी","अठासी","उनान्नब्बे","नब्बे","एकान्नब्बे","बयान्नब्बे","त्रियान्नब्बे","चौरान्नब्बे","पन्चान्नब्बे","छयान्नब्बे","सन्तानब्बे","अन्ठान्नब्बे","उनान्सय","सय"];
 
 function convertToNepaliWords(num){
     if(num===0) return "शुन्य";
-    if(num>10000000) return "धेरै"; // over करोड
     let words="";
     const crore=Math.floor(num/10000000); num%=10000000;
     const lakh=Math.floor(num/100000); num%=100000;
@@ -183,7 +187,16 @@ function convertToNepaliWords(num){
     if(lakh>0) words+=NUMBERS_NE[lakh]+" लाख ";
     if(thousand>0) words+=NUMBERS_NE[thousand]+" हजार ";
     if(hundred>0) words+=NUMBERS_NE[hundred]+" सय ";
-    if(num>0) words+=NUMBERS_NE[Math.floor(num)]+" ";
+    
+    if(num>0){
+        if(num<=100) words+=NUMBERS_NE[Math.floor(num)]+" ";
+        else{
+            let tens=Math.floor(num/10)*10;
+            let units=num%10;
+            if(tens>0) words+=NUMBERS_NE[tens]+" ";
+            if(units>0) words+=NUMBERS_NE[units]+" ";
+        }
+    }
     return words.trim();
 }
 
@@ -195,6 +208,7 @@ function numberToNepaliWords(num){
     words+=" मात्र";
     return words;
 }
+
 
 // ----------------- UPPER ENTRY -----------------
 function addUpperEntry(){
@@ -235,20 +249,17 @@ function updateUpperTemplate(){
     const fy = document.getElementById("t5").value;
     const nepFy = fy.replace(/\d/g,d=>'०१२३४५६७८९'[d]);
 
-    // Combine all entries into a single paragraph
     let paragraph = upperEntries.map(e=>{
         return `${e.t1}को ${toNepali(e.t2)} नं. वडा कार्यालयको च.नं. ${toNepali(e.t3)} मिति ${toNepali(e.t4)} गतेको`;
-    }).join(" , "); // join with comma+space instead of \n
+    }).join(" , "); 
 
     paragraph += ` घरबाटो सिफारिस र जग्गाको वर्गिकरण समेतको आधारमा तपशिलका कित्ता जग्गाहरूको आ.व. ${nepFy} को लागि तपशिल बमोजिम न्युनतम मूल्याङ्कन हुने देखिन्छ ।`;
 
     const container = document.getElementById("templateOutput");
     container.innerText = paragraph;
-    container.style.textAlign = "justify";  // fully justified
-    container.style.wordBreak = "break-word"; // wrap long words if needed
+    container.style.textAlign = "justify";  
+    container.style.wordBreak = "break-word"; 
 }
-
-
 
 // ----------------- LOWER ENTRY -----------------
 function addRow(){
@@ -261,12 +272,12 @@ function addRow(){
     const category=document.getElementById("category").value;
     const price=parseFloat(document.getElementById("pricePerRopani").value)||0;
     const minValue=area.ropani*price;
-    LOWER_ENTRIES.push(minValue); // store numeric for sum
+    LOWER_ENTRIES.push(minValue); 
     const table=document.getElementById("resultTable"); table.style.display="table";
     const tbody=table.querySelector("tbody");
     const row=tbody.insertRow();
     const index=tbody.rows.length;
-    row.innerHTML=`<td>${toNepali(index)}</td><td>${district}</td><td>${old_vdc}</td><td>${toNepali(ward)}</td><td>${toNepali(kitta)}</td><td>${area.rapdText}</td><td>${road}</td><td>${category}</td><td>${toNepali(price)}</td><td>${toNepali(minValue.toFixed(2))}</td>`;
+    row.innerHTML=`<td>${toNepali(index)}</td><td>${district}</td><td>${old_vdc}</td><td>${toNepali(ward)}</td><td>${toNepali(kitta)}</td><td class="area" style="white-space:pre-line;">${area.rapdText}</td><td class="road">${road}</td><td class="category">${category}</td><td class="price">${toNepali(price)}</td><td class="price">${toNepali(minValue.toFixed(2))}</td>`;
     updateSum();
 }
 
@@ -295,27 +306,11 @@ function saveHistory(){
     for(let tr of tbody.rows){
         snapshot.lower.push(Array.from(tr.cells).map(td=>td.innerText));
     }
-    let history=JSON.parse(localStorage.getItem("landHistory")||"[]");
-    history.push(snapshot);
-    if(history.length>3) history.shift();
-    localStorage.setItem("landHistory",JSON.stringify(history));
-    alert("Saved to history!");
+    console.log("Saved History:", snapshot);
+    alert("History saved to console");
 }
 
-function loadHistory(index){
-    const history=JSON.parse(localStorage.getItem("landHistory")||"[]");
-    if(!history[index]) return;
-    upperEntries=history[index].upper.slice();
-    renderUpperList();
-    const tbody=document.querySelector("#resultTable tbody"); tbody.innerHTML="";
-    LOWER_ENTRIES=[];
-    history[index].lower.forEach(row=>{
-        const tr=tbody.insertRow();
-        tr.innerHTML=row.map(td=>`<td>${td}</td>`).join('');
-        LOWER_ENTRIES.push(parseFloat(row[9].replace(/[^\d.]/g,'')));
-    });
-    updateSum();
-}
 </script>
+
 </body>
 </html>
