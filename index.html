@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="This is for personal use and for Guthi sansthan of Nepal. This is suitable for Land revenue offices specially Sindhupalchowk and other districts which matched with Sindhupalchowk.">
     <meta name="description" content="यो नेपालको गुठी संस्थान र व्यक्तिगत प्रयोगको लागि हो । यो मालपोत कार्यालयहरू विशेष गरी सिन्धुपाल्चोक र अन्य जिल्लाहरूमा उपयुक्त छ जुन सिन्धुपाल्चोकसँग मिल्दोजुल्दो छ।">
+    <meta name="description" content="This is for personal use and for Guthi sansthan of Nepal. This is suitable for Land revenue offices specially Sindhupalchowk and other districts which matched with Sindhupalchowk.">
     <meta name="keywords" content="Guthi, Suman Acharya, Nepal, Personal Use, official use, Sindhupalchowk">
     <title>For Guthi + Suman Acharya</title>
     <style>
@@ -175,6 +175,11 @@ document.addEventListener('keydown', function(event) {
         alert('Viewing source is disabled on this page.');
     }
 });
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+
 
     </script>
 </body>
