@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ne">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>मालपोत टिप्पणी प्रणाली v15 - Complete</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Mukta', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .kitta-card {
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 2px solid #e2e8f0;
+        }
+
+        .kitta-card.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            border: 2px solid #3b82f6;
+        }
+
+        .table-output td,
+        .table-output th {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .preview-content {
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        /* Valuation Box Styling */
+        .valuation-input.filled {
+            background-color: #dcfce7;
+            border-color: #22c55e;
+        }
+
+        /* Official Letterhead Styles for Web Preview */
+        .office-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px double #000;
+            padding-bottom: 10px;
+            width: 100%;
+            position: relative;
+        }
+
+        .office-emblem {
+            width: 100px;
+            height: auto;
+            margin-right: -100px;
+            z-index: 10;
+        }
+
+        .header-text-container {
+            flex-grow: 1;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.3;
+            color: red;
+        }
+
+        .h-gov {
+            font-size: 10px;
+        }
+
+        .h-ministry {
+            font-size: 12px;
+        }
+
+        .h-dept {
+            font-size: 14px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+
+        .h-office {
+            font-size: 18px;
+            /* margin-top: 5px;
+            margin-bottom: 2px; */
+        }
+
+        .h-loc {
+            font-size: 13px;
+        }
+
+        /* Printing logic */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #tippani-preview,
+            #tippani-preview * {
+                visibility: visible;
+            }
+
+            #tippani-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding-left: 1.25in;
+                /* Margin for punching */
+                border: none;
+                box-shadow: none;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+                #nisan_img {
+                    visibility: visible !important;
+                    display: block !important;
+                }
+            }
+
+    </style>
+</head>
+
+<body class="bg-slate-200 p-2 md:p-6 text-sm">
+
+    <div class="max-w-[1950px] mx-auto grid grid-cols-1 xl:grid-cols-2 gap-8">
+
+        <!-- बायाँ भाग: इन्पुट -->
+        <div
+            class="bg-white p-6 rounded-2xl shadow-xl border border-slate-300 overflow-y-auto max-h-[95vh] space-y-6 no-print">
+
+            <div class="flex justify-between items-center border-b pb-2">
+                <h2 class="text-xl font-bold text-slate-800">Tippani Entry v15</h2>
+                <div class="flex gap-2">
+                    <input type="text" id="in_danum" oninput="updateAll()" placeholder="द.नं."
+                        class="border p-2 rounded w-20" autofocus>
+                    <input type="text" id="in_dadate" oninput="updateAll()" placeholder="मिति"
+                        class="border p-2 rounded w-32">
+                </div>
+            </div>
+
+            <!-- १. निवेदक र धनी -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200">
+                    <div class="flex justify-between mb-2">
+                        <h3 class="font-bold text-indigo-800">निवेदकहरू</h3><button onclick="addApplicant()"
+                            class="bg-indigo-600 text-white px-2 py-1 rounded text-[10px] shadow">+ थप्नुहोस्</button>
+                    </div>
+                    <div id="applicant-list" class="space-y-3"></div>
+                </div>
+                <div class="bg-rose-50 p-4 rounded-xl border border-rose-200">
+                    <div class="flex justify-between mb-2">
+                        <h3 class="font-bold text-rose-800">जग्गाधनीहरू</h3><button onclick="addOwner()"
+                            class="bg-rose-600 text-white px-2 py-1 rounded text-[10px] shadow">+ थप्नुहोस्</button>
+                    </div>
+                    <div id="owner-list" class="flex flex-wrap gap-1"></div>
+                </div>
+            </section>
+
+            <!-- २. जग्गा इन्ट्री -->
+            <section class="bg-green-50 p-4 rounded-xl border border-green-200">
+                <h3 class="font-bold text-green-800 mb-2">जग्गाको विवरण (साविक)</h3>
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <input type="text" id="l_vdc" placeholder="गा.वि.स." class="border p-2 rounded">
+                    <input type="text" id="l_ward" placeholder="वडा" class="border p-2 rounded">
+                    <input type="text" id="l_kitta" placeholder="कि.नं." class="border p-2 rounded">
+                </div>
+
+                <div class="flex items-center gap-4 mb-3 p-2 bg-white rounded border">
+                    <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="unit" value="rapd"
+                            checked onclick="toggleUnitUI()"> R-A-P-D</label>
+                    <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="unit" value="sqm"
+                            onclick="toggleUnitUI()"> वर्ग मिटर</label>
+                </div>
+
+                <div id="ui_rapd" class="grid grid-cols-4 gap-2 mb-3">
+                    <input type="text" id="l_r" placeholder="रो" class="border p-2 rounded">
+                    <input type="text" id="l_a" placeholder="आ" class="border p-2 rounded">
+                    <input type="text" id="l_p" placeholder="पै" class="border p-2 rounded">
+                    <input type="text" id="l_d" placeholder="दा" class="border p-2 rounded">
+                </div>
+                <div id="ui_sqm" class="hidden mb-3">
+                    <input type="text" id="l_sqm" placeholder="क्षेत्रफल (व.मि.)" class="w-full border p-2 rounded">
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="addLand('same')"
+                        class="flex-1 bg-blue-600 text-white py-2 rounded font-bold shadow">+ Add Same Loc</button>
+                    <button onclick="addLand('new')"
+                        class="flex-1 bg-green-700 text-white py-2 rounded font-bold shadow">+ Add New Land</button>
+                </div>
+                <div id="land-list-ui" class="mt-3 flex flex-wrap gap-1"></div>
+            </section>
+
+            <!-- ३. रोक्का र फुकुवा -->
+            <section id="rokka-section" class="hidden bg-orange-50 p-4 rounded-xl border border-orange-200 space-y-4">
+                <h3 class="font-bold text-orange-800 border-b pb-1">रोक्का र फुकुवा व्यवस्थापन</h3>
+                <div id="rokka-kitta-selector" class="grid grid-cols-4 md:grid-cols-6 gap-2"></div>
+
+                <div class="bg-white p-4 rounded border space-y-3 shadow-inner">
+                    <div class="flex gap-4">
+                        <label class="font-bold"><input type="radio" name="r_status" value="no" checked
+                                onclick="toggleRFields()"> रोक्का छैन</label>
+                        <label class="font-bold text-red-600"><input type="radio" name="r_status" value="yes"
+                                onclick="toggleRFields()"> रोक्का छ</label>
+                    </div>
+                    <div id="r_fields" class="hidden space-y-2">
+                        <input type="text" id="r_auth" placeholder="निकाय (उदा: जिल्ला अदालत)"
+                            class="w-full border p-2 rounded text-xs">
+                        <div class="grid grid-cols-2 gap-2"><input type="text" id="r_chanum" placeholder="च.नं."
+                                class="border p-2 rounded text-xs"><input type="text" id="r_date" placeholder="मिति"
+                                class="border p-2 rounded text-xs"></div>
+                    </div>
+                    <button onclick="addRokka()"
+                        class="w-full bg-orange-600 text-white py-2 rounded font-bold shadow">सुरक्षित
+                        गर्नुहोस्</button>
+                </div>
+                <div id="rokka-summary" class="space-y-1"></div>
+
+                <div class="bg-white p-3 rounded border border-orange-300">
+                    <label class="flex items-center gap-2 font-bold text-blue-800 cursor-pointer"><input type="checkbox"
+                            id="need_fukuwa" onchange="updateAll()"> फुकुवा आवश्यक छ ?</label>
+                    <div id="fukuwa_options" class="mt-2 space-y-1 pl-6"></div>
+                </div>
+            </section>
+
+            <!-- ४. कित्ताकाट -->
+            <section class="bg-yellow-50 p-4 rounded-xl border border-yellow-200 space-y-4">
+                <label class="flex items-center gap-2 font-bold cursor-pointer"><input type="checkbox" id="has_kk"
+                        onchange="toggleKKUI()"> कित्ताकाट विवरण छ ?</label>
+                <div id="kk_ui" class="hidden space-y-3">
+                    <div class="grid grid-cols-2 gap-2"><input type="text" id="napi_ch" oninput="updateAll()"
+                            placeholder="नापी च.नं." class="border p-2 rounded text-xs"><input type="text" id="napi_dt"
+                            oninput="updateAll()" placeholder="नापी मिति" class="border p-2 rounded text-xs"></div>
+                    <div id="kk_sabik_buttons" class="flex flex-wrap gap-1"></div>
+                    <div id="kk_haal_inputs" class="space-y-2"></div>
+                </div>
+            </section>
+
+            <!-- ५. थप निर्णय र राजश्व -->
+            <section class="bg-slate-800 text-white p-5 rounded-xl space-y-5">
+                <div>
+                    <h3 class="font-bold border-b border-slate-600 mb-2">निर्णय खण्डमा थप विवरण:</h3>
+                    <textarea id="decision_extra" oninput="updateAll()" placeholder="थप व्यहोरा यहाँ लेख्नुहोस्..."
+                        class="w-full border p-2 rounded h-20 text-xs text-black"></textarea>
+                </div>
+
+                <div id="base-valuation-area" class="space-y-2">
+                    <h3 class="text-xs font-bold text-slate-300 italic">कित्ताकाट नभएका जग्गाको थैलीः</h3>
+                    <div id="base-valuation-list" class="grid grid-cols-1 gap-2"></div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-700">
+                    <label class="flex items-center gap-2 font-bold cursor-pointer"><input type="checkbox"
+                            id="rev_applicable" onchange="toggleRevUI()"> राजश्व/लाभकर लाग्छ ?</label>
+                    <div id="rev_ui" class="hidden mt-3 space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="v_muchulka" oninput="updateAll()" placeholder="मुचुल्काको रकम"
+                                class="p-2 rounded text-black font-bold">
+                            <div class="flex items-center gap-2 text-xs"><input type="checkbox" id="has_profit_tax"
+                                    onchange="updateAll()"> लाभकर (%) <input type="text" id="profit_tax_perc"
+                                    oninput="updateAll()" class="w-10 p-1 rounded text-black"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <label><input type="checkbox" id="svc_perc_mode" onchange="toggleSvcMode('perc')"> सेवा
+                                शुल्क (%) <input type="text" id="svc_perc_val" oninput="updateAll()"
+                                    class="w-10 p-1 rounded text-black"></label>
+                            <label><input type="checkbox" id="svc_fixed_mode" onchange="toggleSvcMode('fixed')"> सेवा
+                                शुल्क (फाइल) <input type="text" id="svc_fixed_val" oninput="updateAll()"
+                                    class="w-20 p-1 rounded text-black"></label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ६. अदालती पत्रहरू -->
+            <section class="bg-sky-50 p-4 rounded-xl border border-sky-200">
+                <h3 class="font-bold text-sky-800 mb-2">अदालती पत्र र अन्य कागजातहरू</h3>
+                <div class="flex gap-1 mb-2">
+                    <input type="text" id="c_name" placeholder="अदालत" class="w-1/2 border p-1 rounded text-xs">
+                    <input type="text" id="c_ch" placeholder="च.नं." class="w-1/4 border p-1 rounded text-xs">
+                    <input type="text" id="c_dt" placeholder="मिति" class="w-1/4 border p-1 rounded text-xs">
+                    <button onclick="addCourt()" class="bg-sky-600 text-white px-3 rounded font-bold shadow">+</button>
+                </div>
+                <div id="court-list-ui" class="space-y-1"></div>
+                <div class="flex gap-1 mt-2">
+                    <input type="text" id="other_doc_input" placeholder="अन्य (फैसला, मुचुल्का...)"
+                        class="flex-1 border p-1 rounded text-xs">
+                    <button onclick="addOtherDoc()"
+                        class="bg-amber-600 text-white px-4 rounded font-bold shadow">+</button>
+                </div>
+                <div id="doc-list-ui" class="flex flex-wrap gap-1 mt-1"></div>
+            </section>
+
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="window.print()"
+                    class="bg-blue-800 text-white py-4 rounded-xl font-bold text-lg shadow-2xl hover:bg-blue-900 transition">सिधै
+                    प्रिन्ट (PRINT)</button>
+                <button onclick="exportToWord()"
+                    class="bg-slate-800 text-white py-4 rounded-xl font-bold text-lg shadow-2xl hover:bg-black transition">WORD
+                    (.DOCX)</button>
+            </div>
+        </div>
+
+        <!-- दायाँ भाग: प्रिभ्यु -->
+        <div id="tippani-preview"
+            class="bg-white p-12 rounded shadow-sm border border-slate-300 text-justify sticky top-6 h-fit text-[17px] preview-content">
+            <div id="word-content">
+                <!-- लेटर-हेड -->
+                <div class="office-header">
+                    <img id="nisan_img" class="office-emblem"
+                        src="data:image/jpeg;base64,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">
+                    <div class="header-text-container">
+                        <div class="h-gov">नेपाल सरकार</div>
+                        <div class="h-ministry">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
+                        <div class="h-dept">भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
+                        <div class="h-office">मालपोत कार्यालय</div>
+                        <div class="h-loc">चौतारा, सिन्धुपाल्चोक</div>
+                    </div>
+                </div>
+
+                <h3 style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 25px;">
+                    टिप्पणी र आदेश</h3>
+                <p>श्रीमान्,</p>
+                <p>
+                    <span id="out_applicant_details">.......</span> ले <span id="out_owners"
+                        class="font-bold text-red-800">.......</span> को नाममा जग्गाधनी श्रेस्ता कायम रहेको
+                    सिन्धुपाल्चोक जिल्ला <span id="out_land_details" class="font-bold text-green-700">.......</span> का
+                    जग्गाहरू अदालतबाट भएको फैसला बमोजिम दा.खा. गरिदिन <span id="out_court_details"
+                        class="font-bold text-blue-800">.......</span> को पत्र, <span id="out_other_docs"
+                        class="font-bold">.......</span> संलग्न राखी दाखिला खारेज गरिपाउन द.नं. <span id="out_danum"
+                        class="font-bold">.......</span> मिति <span id="out_dadate" class="font-bold">.......</span> मा
+                    निवेदन गर्नुभएको ।
+                </p>
+
+                <p>
+                    उल्लिखित कित्ता जग्गाहरू मोठ कायम रहेको र <span id="out_rokka_details"
+                        class="font-bold text-orange-800">.......</span> व्यहोरा मोठ र कम्प्युटर फाँटबाट भिडि आएको ।
+                </p>
+
+                <div id="kk_table_area" class="my-6">
+                    <p id="out_napi_intro" class="mb-2">...</p>
+                    <table class="table-output w-full" style="border-collapse: collapse; width: 100%;">
+                        <thead id="out_table_head"></thead>
+                        <tbody id="kk_rows"></tbody>
+                        <tfoot>
+                            <tr style="font-weight: bold;">
+                                <td id="total_label_cell" colspan="5" style="text-align: right;">जम्मा थैली अङ्कः</td>
+                                <td id="out_total_v">...</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div id="decision_area">
+                    <p id="out_final_decision">.......</p>
+                </div>
+            </div>
+
+            <!-- फुटर प्रिभ्यु -->
+            <!-- <div id="footer-preview-text"
+                class="mt-10 pt-4 border-t border-slate-200 text-right text-xs italic no-print">
+                पेज नं. १ / जम्मा पाना संख्या
+            </div> -->
+        </div>
+    </div>
+
+    <script>
+        let applicants = []; let owners = []; let lands = []; let rokkaEntries = []; let courtEntries = []; let otherDocs = []; let haalKittas = {}; let baseValuations = {};
+
+        const toNepali = (num) => { if (!num && num !== 0) return ""; const n = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९']; return num.toString().replace(/[0-9]/g, s => n[s]); };
+        const toEnglish = (str) => { if (!str) return 0; const n = { '०': 0, '१': 1, '२': 2, '३': 3, '४': 4, '५': 5, '६': 6, '७': 7, '८': 8, '९': 9 }; let res = str.toString().replace(/[०-९]/g, s => n[s]); return parseFloat(res.replace(/,/g, '')) || 0; };
+        function nepaliJoin(arr) { if (!arr || !arr.length) return ""; if (arr.length === 1) return arr[0]; const last = arr.pop(); return arr.join(', ') + ' र ' + last; }
+
+        function addApplicant() { applicants.push({ id: Date.now(), name: '', gfather: '', father: '', dist: 'सिन्धुपाल्चोक', addr: '' }); renderApplicants(); }
+        function renderApplicants() {
+            document.getElementById('applicant-list').innerHTML = applicants.map((a, i) => `
+                <div class="input-group border border-indigo-200 p-2 bg-white rounded-lg text-xs relative">
+                    <button onclick="applicants.splice(${i},1); renderApplicants(); updateAll();" class="absolute right-1 top-0 text-red-400">✕</button>
+                    <input type="text" oninput="applicants[${i}].name=this.value; updateAll()" value="${a.name}" placeholder="नाम" class="border p-1 w-full mb-1 font-bold">
+                    <div class="grid grid-cols-2 gap-1"><input type="text" oninput="applicants[${i}].dist=this.value; updateAll()" value="${a.dist}" class="border p-1"><input type="text" oninput="applicants[${i}].addr=this.value; updateAll()" value="${a.addr}" placeholder="ठेगाना" class="border p-1"><input type="text" oninput="applicants[${i}].gfather=this.value; updateAll()" value="${a.gfather}" placeholder="बाजे" class="border p-1"><input type="text" oninput="applicants[${i}].father=this.value; updateAll()" value="${a.father}" placeholder="बाबु" class="border p-1"></div>
+                </div>`).join('');
+        }
+        function addOwner() { const n = prompt("धनीको नाम:"); if (n) { owners.push(n); renderOwners(); updateAll(); } }
+        function renderOwners() { document.getElementById('owner-list').innerHTML = owners.map((o, i) => `<span class="bg-rose-100 px-2 py-1 rounded text-[10px] flex gap-1 shadow-sm">${o}<button onclick="owners.splice(${i},1); renderOwners(); updateAll()">✕</button></span>`).join(''); }
+
+        function toggleUnitUI() { const u = document.querySelector('input[name="unit"]:checked').value; document.getElementById('ui_rapd').classList.toggle('hidden', u !== 'rapd'); document.getElementById('ui_sqm').classList.toggle('hidden', u !== 'sqm'); }
+
+        function addLand(type) {
+            const vdc = document.getElementById('l_vdc').value, ward = document.getElementById('l_ward').value, kitta = document.getElementById('l_kitta').value;
+            const unit = document.querySelector('input[name="unit"]:checked').value;
+            let area = (unit === 'rapd') ? `${document.getElementById('l_r').value || '०'}-${document.getElementById('l_a').value || '०'}-${document.getElementById('l_p').value || '०'}-${document.getElementById('l_d').value || '०'}` : document.getElementById('l_sqm').value + " व.मि.";
+            if (!kitta) return;
+            const id = Date.now();
+            lands.push({ id, vdc, ward, kitta, area });
+            haalKittas[id] = [];
+            if (type === 'new') { document.getElementById('l_vdc').value = ''; document.getElementById('l_ward').value = ''; document.getElementById('l_vdc').focus(); }
+            document.getElementById('l_kitta').value = ''; document.getElementById('l_kitta').focus();
+            renderLandUI(); updateAll();
+            document.getElementById('rokka-section').classList.remove('hidden');
+        }
+
+        function renderLandUI() {
+            document.getElementById('land-list-ui').innerHTML = lands.map(l => `<div class="bg-white border rounded px-2 py-1 text-[10px] flex gap-1 shadow-sm"><span>${l.vdc}-${l.ward} (${l.kitta})</span><button onclick="lands=lands.filter(x=>x.id!==${l.id}); renderLandUI(); updateAll();">✕</button></div>`).join('');
+            renderRokkaSelectors(); renderKKButtons(); renderBaseValuationList();
+        }
+
+        function toggleRFields() { document.getElementById('r_fields').classList.toggle('hidden', document.querySelector('input[name="r_status"]:checked').value === 'no'); }
+        function renderRokkaSelectors() { document.getElementById('rokka-kitta-selector').innerHTML = lands.map(l => `<div id="card_${l.id}" class="kitta-card p-1 rounded text-center bg-white text-[10px]" onclick="toggleRK(${l.id})"><input type="checkbox" id="rk_${l.id}" value="${l.id}" class="hidden rk-cb"><div>${l.kitta}</div></div>`).join(''); }
+        function toggleRK(id) { const cb = document.getElementById('rk_' + id); cb.checked = !cb.checked; document.getElementById('card_' + id).classList.toggle('selected', cb.checked); }
+        function addRokka() {
+            const kids = Array.from(document.querySelectorAll('.rk-cb:checked')).map(cb => parseInt(cb.value));
+            if (!kids.length) return alert("कित्ता छान्नुहोस्!");
+            rokkaEntries.push({ kittaIds: kids, isRokka: document.querySelector('input[name="r_status"]:checked').value === 'yes', auth: document.getElementById('r_auth').value, chanum: document.getElementById('r_chanum').value, date: document.getElementById('r_date').value });
+            document.querySelectorAll('.rk-cb').forEach(cb => { cb.checked = false; cb.parentElement.classList.remove('selected'); });
+            document.getElementById('r_auth').value = ''; document.getElementById('r_chanum').value = ''; document.getElementById('r_date').value = '';
+            renderRokkaUI(); updateAll();
+        }
+        function renderRokkaUI() {
+            document.getElementById('rokka-summary').innerHTML = rokkaEntries.map((re, i) => `<div class="flex justify-between bg-white border p-1 rounded text-[10px]"><span>${re.isRokka ? '🚩 ' + re.auth : '✅ रोक्का छैन'} (${re.kittaIds.length} कित्ता)</span><button onclick="rokkaEntries.splice(${i},1); renderRokkaUI(); updateAll();">✕</button></div>`).join('');
+            document.getElementById('fukuwa_options').innerHTML = rokkaEntries.filter(re => re.isRokka).map((re, i) => `<label class="flex items-center gap-2 text-[10px]"><input type="checkbox" class="fukuwa-cb" data-index="${i}" onchange="updateAll()"> ${re.auth} (${re.chanum})</label>`).join('');
+        }
+
+        function renderBaseValuationList() {
+            const list = document.getElementById('base-valuation-list');
+            list.innerHTML = lands.filter(l => !haalKittas[l.id]?.length).map(l => `
+                <div class="flex items-center gap-2 bg-slate-700 p-2 rounded">
+                    <span class="text-[10px] font-bold w-1/2">कि.नं. ${l.kitta} थैलीः</span>
+                    <input type="text" id="val_${l.id}" value="${baseValuations[l.id] || ''}" oninput="baseValuations[${l.id}]=this.value; updateAll(); this.classList.toggle('filled', this.value.length > 0)" class="valuation-input border p-1 rounded text-black text-[10px] w-1/2">
+                </div>
+            `).join('');
+        }
+
+        function toggleKKUI() { document.getElementById('kk_ui').classList.toggle('hidden', !document.getElementById('has_kk').checked); document.getElementById('kk_table_area').classList.toggle('hidden', !document.getElementById('has_kk').checked); updateAll(); renderBaseValuationList(); }
+        function renderKKButtons() { document.getElementById('kk_sabik_buttons').innerHTML = lands.map(l => `<button onclick="addHaalSet(${l.id})" class="bg-yellow-200 border px-2 py-1 rounded text-[10px] font-bold shadow-sm">+ कि.नं. ${l.kitta}</button>`).join(''); }
+        function addHaalSet(sid) {
+            if (!haalKittas[sid].length) haalKittas[sid].push({ kitta: '', area: '', owner: 'निवेदक', valuation: '' }, { kitta: '', area: '', owner: 'बाँकी', valuation: '' });
+            else haalKittas[sid].push({ kitta: '', area: '', owner: 'निवेदक', valuation: '' });
+            renderKKInputs(); updateAll(); renderBaseValuationList();
+        }
+        function renderKKInputs() {
+            let html = "";
+            lands.forEach(l => {
+                if (haalKittas[l.id]?.length) {
+                    html += `<div class="bg-white p-2 border rounded mb-2"><div class="font-bold text-[10px] border-b mb-1">कि.नं. ${l.kitta} का टुक्राहरू</div>`;
+                    haalKittas[l.id].forEach((h, idx) => {
+                        html += `<div class="flex gap-1 mb-1"><input type="text" placeholder="कि.नं." oninput="uH(${l.id},${idx},'kitta',this.value)" class="border p-1 rounded text-[10px] w-12" value="${h.kitta}"><input type="text" placeholder="क्षे.फ." oninput="uH(${l.id},${idx},'area',this.value)" class="border p-1 rounded text-[10px] w-16" value="${h.area}"><select onchange="uH(${l.id},${idx},'owner',this.value)" class="border p-1 rounded text-[10px]"><option value="निवेदक" ${h.owner === 'निवेदक' ? 'selected' : ''}>निवेदक</option><option value="बाँकी" ${h.owner === 'बाँकी' ? 'selected' : ''}>बाँकी</option></select><input type="text" placeholder="थैली" oninput="uH(${l.id},${idx},'valuation',this.value)" class="border p-1 rounded text-[10px] w-16" value="${h.valuation}"><button onclick="haalKittas[${l.id}].splice(${idx},1); renderKKInputs(); updateAll(); renderBaseValuationList();">✕</button></div>`;
+                    });
+                    html += `</div>`;
+                }
+            });
+            document.getElementById('kk_haal_inputs').innerHTML = html;
+        }
+        function uH(sid, idx, f, v) { haalKittas[sid][idx][f] = v; updateAll(); }
+
+        function toggleRevUI() { document.getElementById('rev_ui').classList.toggle('hidden', !document.getElementById('rev_applicable').checked); updateAll(); }
+        function toggleSvcMode(m) { if (m === 'perc') document.getElementById('svc_fixed_mode').checked = false; else document.getElementById('svc_perc_mode').checked = false; updateAll(); }
+        function addCourt() { const n = document.getElementById('c_name').value, ch = document.getElementById('c_ch').value, dt = document.getElementById('c_dt').value; if (n) { courtEntries.push(`${n} अदालतको च.नं. ${ch} मिति ${dt}`); renderCourts(); updateAll(); } }
+        function renderCourts() { document.getElementById('court-list-ui').innerHTML = courtEntries.map((c, i) => `<div class="bg-white border p-1 rounded text-[10px] flex justify-between"><span>${c}</span><button onclick="courtEntries.splice(${i},1); renderCourts(); updateAll();">✕</button></div>`).join(''); }
+        function addOtherDoc() { const v = document.getElementById('other_doc_input').value; if (v) { otherDocs.push(v); document.getElementById('other_doc_input').value = ''; renderOtherDocs(); updateAll(); } }
+        function renderOtherDocs() { document.getElementById('doc-list-ui').innerHTML = otherDocs.map((d, i) => `<span class="bg-amber-100 border px-2 py-1 rounded text-[10px] flex gap-1 shadow-sm">${d}<button onclick="otherDocs.splice(${i},1); renderOtherDocs(); updateAll();">✕</button></span>`).join(''); }
+
+        function updateAll() {
+            const groups = {}; applicants.forEach(a => { const key = `${a.dist}|${a.addr}|${a.gfather}|${a.father}`; if (!groups[key]) groups[key] = []; groups[key].push(`<span class="font-bold text-blue-900">${a.name}</span>`); });
+            let appStr = Object.keys(groups).map(k => { const [d, ad, gf, f] = k.split('|'); return `${d} जिल्ला ${ad} बस्ने ${gf}को नाति ${f}को छोरा ${nepaliJoin(groups[k])}`; });
+            document.getElementById('out_applicant_details').innerHTML = nepaliJoin(appStr) || ".......";
+
+            document.getElementById('out_owners').innerText = nepaliJoin([...owners]) || ".......";
+            const locs = {}; lands.forEach(l => { const key = `साविक ${l.vdc} वडा नं. ${toNepali(l.ward)}`; if (!locs[key]) locs[key] = []; locs[key].push(`कि.नं. ${toNepali(l.kitta)} (${toNepali(l.area)})`); });
+            document.getElementById('out_land_details').innerText = Object.keys(locs).map(k => `${k} को ${nepaliJoin(locs[k])}`).join(', ') || ".......";
+            document.getElementById('out_court_details').innerText = nepaliJoin([...courtEntries]) || ".......";
+            document.getElementById('out_other_docs').innerText = nepaliJoin([...otherDocs]) || ".......";
+            ['danum', 'dadate', 'napi_ch', 'napi_dt'].forEach(f => { const el = document.getElementById('out_' + f); if (el) el.innerText = toNepali(document.getElementById('in_' + f)?.value); });
+
+            let clean = []; let grouped = {};
+            lands.forEach(l => {
+                let rel = rokkaEntries.filter(re => re.kittaIds.includes(l.id));
+                if (!rel.length || rel.every(re => !re.isRokka)) clean.push(toNepali(l.kitta));
+                else {
+                    let key = rel.filter(re => re.isRokka).map(re => `${re.auth}को च.नं. ${toNepali(re.chanum)} मिति ${toNepali(re.date)}`).join(' र ');
+                    if (!grouped[key]) grouped[key] = []; grouped[key].push(toNepali(l.kitta));
+                }
+            });
+            let rParts = []; if (clean.length) rParts.push(`कि.नं. ${nepaliJoin(clean)} रोक्का नरहेको`);
+            Object.keys(grouped).forEach(k => rParts.push(`कि.नं. ${nepaliJoin(grouped[k])} ${k} को पत्रबाट रोक्का रहेको`));
+            document.getElementById('out_rokka_details').innerText = nepaliJoin(rParts) || ".......";
+
+            renderTable();
+            document.getElementById('out_final_decision').innerHTML = generateDecision();
+        }
+
+        function generateDecision() {
+            let extra = document.getElementById('decision_extra').value;
+            let d = `यसमा उल्लिखित प्रमाणहरू ${extra ? 'साथै ' + extra : ''} समेतको आधारमा `;
+            if (document.getElementById('need_fukuwa').checked) {
+                let sel = []; document.querySelectorAll('.fukuwa-cb:checked').forEach(cb => { let re = rokkaEntries.filter(r => r.isRokka)[cb.dataset.index]; sel.push(`${re.auth}को च.नं. ${toNepali(re.chanum)} मिति ${toNepali(re.date)}`); });
+                if (sel.length) d += `${nepaliJoin(sel)} को पत्रले रोक्का भएका जग्गाहरू फुकुवा गरि `;
+            }
+            if (document.getElementById('rev_applicable').checked) {
+                const muchulka = toEnglish(document.getElementById('v_muchulka').value);
+                let regTotal = 0; lands.forEach(l => { if (haalKittas[l.id]?.length) { haalKittas[l.id].forEach(h => { if (h.owner === 'निवेदक') regTotal += toEnglish(h.valuation); }); } else { regTotal += toEnglish(baseValuations[l.id]); } });
+                const maxVal = Math.max(muchulka, regTotal);
+                d += ` रजिष्ट्रेशन थैली रू. ${toNepali(regTotal.toLocaleString())} र मुचुल्काको थैली रू. ${toNepali(muchulka.toLocaleString())} मध्ये ठूलो थैली (रू. ${toNepali(maxVal.toLocaleString())}) को `;
+                let rev = [];
+                if (document.getElementById('has_profit_tax').checked) rev.push(`${toNepali(document.getElementById('profit_tax_perc').value)}% ले रू. ${toNepali(Math.round(maxVal * toEnglish(document.getElementById('profit_tax_perc').value) / 100).toLocaleString())} लाभकर`);
+                if (document.getElementById('svc_perc_mode').checked) rev.push(`${toNepali(document.getElementById('svc_perc_val').value)}% ले रू. ${toNepali(Math.round(maxVal * toEnglish(document.getElementById('svc_perc_val').value) / 100).toLocaleString())} सेवा शुल्क`);
+                if (document.getElementById('svc_fixed_mode').checked) rev.push(`रू. ${toNepali(document.getElementById('svc_fixed_val').value)} सेवा शुल्क`);
+                d += `${nepaliJoin(rev)} असुल भई `;
+            }
+            let appsK = [], ownsK = [];
+            lands.forEach(l => { if (haalKittas[l.id]?.length) { haalKittas[l.id].forEach(h => { if (h.owner === 'निवेदक') appsK.push(toNepali(h.kitta)); else ownsK.push(toNepali(h.kitta)); }); } else { appsK.push(toNepali(l.kitta)); } });
+            d += `कि.नं. ${nepaliJoin(appsK)} निवेदक ${nepaliJoin(applicants.map(a => a.name))}को नाममा दा.खा. हुन `;
+            if (ownsK.length) d += `र कि.नं. ${nepaliJoin(ownsK)} ज.ध. ${nepaliJoin([...owners])}को नाममा बाँकी रहन `;
+            d += `आवश्यक निर्णयार्थ पेश । श्रीमानको जो आदेश ।`;
+            return d;
+        }
+
+        function renderTable() {
+            const hasKK = document.getElementById('has_kk').checked;
+            const intro = hasKK ? `नापी कार्यालयको च.नं. ${toNepali(document.getElementById('napi_ch').value)} मिति ${toNepali(document.getElementById('napi_dt').value)} को पत्रबाट कित्ताकाट भई आएको देहाय बमोजिम हुने ।` : `माग भएका कित्ता जग्गाहरूको मुल्याङ्कन देहाय बमोजिम हुने ।`;
+            document.getElementById('out_napi_intro').innerText = intro;
+            let head = hasKK ? `<tr style="background: #eee;"><th rowspan="2">सि.नं.</th><th colspan="3">साविक</th><th colspan="3">हाल</th><th rowspan="2">थैली</th></tr><tr><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th></tr>` : `<tr style="background: #eee;"><th>सि.नं.</th><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th><th>थैली</th></tr>`;
+            document.getElementById('out_table_head').innerHTML = head;
+            document.getElementById('total_label_cell').colSpan = hasKK ? 7 : 5;
+            let html = "", sn = 1, total = 0;
+            lands.forEach(l => {
+                const hs = haalKittas[l.id] || [];
+                if (hs.length) {
+                    hs.forEach((h, idx) => {
+                        html += `<tr>`;
+                        if (idx === 0) html += `<td rowspan="${hs.length}">${toNepali(sn++)}</td><td rowspan="${hs.length}">${l.vdc} ${toNepali(l.ward)}</td><td rowspan="${hs.length}">${toNepali(l.kitta)}</td><td rowspan="${hs.length}">${toNepali(l.area)}</td>`;
+                        if (h.owner === 'निवेदक') total += toEnglish(h.valuation);
+                        html += `<td>${toNepali(h.kitta)}</td><td>${toNepali(h.area)}</td><td>${h.owner === 'निवेदक' ? nepaliJoin(applicants.map(a => a.name)) : nepaliJoin([...owners])}</td><td>${h.valuation ? toNepali(h.valuation) : ''}</td></tr>`;
+                    });
+                } else {
+                    const val = toEnglish(baseValuations[l.id]); total += val;
+                    if (hasKK) html += `<tr><td>${toNepali(sn++)}</td><td>${l.vdc} ${toNepali(l.ward)}</td><td>${toNepali(l.kitta)}</td><td>${toNepali(l.area)}</td><td>${toNepali(l.kitta)}</td><td>${toNepali(l.area)}</td><td>${nepaliJoin(applicants.map(a => a.name))}</td><td>${val ? toNepali(val) : ''}</td></tr>`;
+                    else html += `<tr><td>${toNepali(sn++)}</td><td>${l.vdc} ${toNepali(l.ward)}</td><td>${toNepali(l.kitta)}</td><td>${toNepali(l.area)}</td><td>${nepaliJoin(applicants.map(a => a.name))}</td><td>${val ? toNepali(val) : ''}</td></tr>`;
+                }
+            });
+            document.getElementById('kk_rows').innerHTML = html;
+            document.getElementById('out_total_v').innerText = toNepali(total.toLocaleString()) + "।-";
+        }
+
+        async function exportToWord() {
+            // Get Base64 of Nisan Chhap
+            const img = document.getElementById('nisan_img');
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            const base64Img = canvas.toDataURL('image/png');
+
+            const content = document.getElementById("word-content").innerHTML;
+            const updatedContent = content.replace(/src="input_file_1.png"/, `src="${base64Img}" width="100"`);
+
+            const wordDoc = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><style>
+                    @page Section1 { size: 8.5in 11.0in; margin: 1.0in 0.5in 1.0in 1.25in; mso-header-margin: .5in; mso-footer-margin: .5in; mso-footer: f1; }
+                    div.Section1 { page: Section1; }
+                    p.MsoFooter { margin: 0in; text-align: right; font-size: 11.0pt; font-family: "Mukta"; }
+                    body { font-family: 'Mukta', sans-serif; font-size: 12pt; }
+                    p { text-align: justify; margin: 0 0 10pt; line-height: 1.6; }
+                    table { border-collapse: collapse; width: 100%; }
+                    th, td { border: 1px solid black; padding: 4px; text-align: center; }
+                    .office-header { display: table; width: 100%; border-bottom: 2px double black; margin-bottom: 20px; }
+                    .header-left { display: table-cell; width: 100px; vertical-align: middle; }
+                    .header-center { display: table-cell; text-align: center; vertical-align: middle; font-weight: bold; }
+                </style></head>
+                <body><div class="Section1">
+                <!-- Word Header Layout -->
+                <div class="office-header">
+                    <div class="header-left"><img src="${base64Img}" width="90"></div>
+                    <div class="header-center">
+                        <div style="font-size: 14pt;">नेपाल सरकार</div>
+                        <div style="font-size: 12pt;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
+                        <div style="font-size: 12pt;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
+                        <div style="font-size: 20pt;">मालपोत कार्यालय,</div>
+                        <div style="font-size: 14pt;">चौतारा, सिन्धुपाल्चोक</div>
+                    </div>
+                </div>
+                ${document.getElementById('tippani-preview').innerHTML.split('</h3>')[1]}
+                <div style='mso-element:footer' id=f1><p class=MsoFooter>पेज नं. <span style='mso-field-code:" PAGE "'></span> / <span style='mso-field-code:" NUMPAGES "'></span></p></div>
+                </div></body></html>`;
+            const blob = new Blob(['\ufeff', wordDoc], { type: 'application/msword' });
+            const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `tippani.doc`; link.click();
+        }
+
+        addApplicant(); updateAll();
+    </script>
+</body>
+
+</html>
