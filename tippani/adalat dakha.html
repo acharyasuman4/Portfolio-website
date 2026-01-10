@@ -549,50 +549,67 @@
             document.getElementById('out_total_v').innerText = toNepali(total.toLocaleString()) + "।-";
         }
 
-        async function exportToWord() {
-            // Get Base64 of Nisan Chhap
-            const img = document.getElementById('nisan_img');
-            const canvas = document.createElement('canvas');
-            canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            const base64Img = canvas.toDataURL('image/png');
+       async function exportToWord() {
+    const img = document.getElementById('nisan_img');
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth; 
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const base64Img = canvas.toDataURL('image/png');
 
-            const content = document.getElementById("word-content").innerHTML;
-            const updatedContent = content.replace(/src="input_file_1.png"/, `src="${base64Img}" width="100"`);
+    const content = document.getElementById("tippani-preview").innerHTML;
 
-            const wordDoc = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'><style>
-                    @page Section1 { size: 8.5in 11.0in; margin: 1.0in 0.5in 1.0in 1.25in; mso-header-margin: .5in; mso-footer-margin: .5in; mso-footer: f1; }
-                    div.Section1 { page: Section1; }
-                    p.MsoFooter { margin: 0in; text-align: right; font-size: 11.0pt; font-family: "Mukta"; }
-                    body { font-family: 'Mukta', sans-serif; font-size: 12pt; }
-                    p { text-align: justify; margin: 0 0 10pt; line-height: 1.6; }
-                    table { border-collapse: collapse; width: 100%; }
-                    th, td { border: 1px solid black; padding: 4px; text-align: center; }
-                    .office-header { display: table; width: 100%; border-bottom: 2px double black; margin-bottom: 20px; }
-                    .header-left { display: table-cell; width: 100px; vertical-align: middle; }
-                    .header-center { display: table-cell; text-align: center; vertical-align: middle; font-weight: bold; }
-                </style></head>
-                <body><div class="Section1">
-                <!-- Word Header Layout -->
-                <div class="office-header">
-                    <div class="header-left"><img src="${base64Img}" width="90"></div>
-                    <div class="header-center">
-                        <div style="font-size: 14pt;">नेपाल सरकार</div>
-                        <div style="font-size: 12pt;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
-                        <div style="font-size: 12pt;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
-                        <div style="font-size: 20pt;">मालपोत कार्यालय,</div>
-                        <div style="font-size: 14pt;">चौतारा, सिन्धुपाल्चोक</div>
-                    </div>
-                </div>
-                ${document.getElementById('tippani-preview').innerHTML.split('</h3>')[1]}
-                <div style='mso-element:footer' id=f1><p class=MsoFooter>पेज नं. <span style='mso-field-code:" PAGE "'></span> / <span style='mso-field-code:" NUMPAGES "'></span></p></div>
-                </div></body></html>`;
-            const blob = new Blob(['\ufeff', wordDoc], { type: 'application/msword' });
-            const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `tippani.doc`; link.click();
-        }
+   // Replace your previous header generation with table-based header
+const headerHTML = `
+<div style='mso-element:header' id=h1>
+  <table width="100%" style="border-collapse:collapse;">
+    <tr>
+      <td width="100px"><img src="${base64Img}" width="100"></td>
+      <td style="text-align:center; vertical-align:middle; font-weight:bold;">
+        <div style="font-size:9pt;">नेपाल सरकार</div>
+        <div style="font-size:11pt;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
+        <div style="font-size:13pt;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
+        <div style="font-size:15pt;">मालपोत कार्यालय,</div>
+        <div style="font-size:13pt;">चौतारा, सिन्धुपाल्चोक</div>
+      </td>
+    </tr>
+  </table>
+</div>
+`;
+
+const wordDoc = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+      xmlns:w='urn:schemas-microsoft-com:office:word'
+      xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><style>
+@page Section1 { size: 8.5in 11in; margin: 1in 0.5in 1in 1.05in; mso-header-margin:.5in; mso-footer-margin:.5in; mso-footer:f1; }
+div.Section1 { page:Section1; }
+body { font-family:'Mukta',sans-serif; font-size:12pt; }
+</style></head>
+<body>
+<div class="Section1">
+  ${headerHTML}
+
+  <div style='mso-element:footer' id=f1>
+    <p style='text-align:right; font-size:10pt;'>पेज नं. <span style='mso-field-code:" PAGE "'></span> / <span style='mso-field-code:" NUMPAGES "'></span></p>
+  </div>
+
+  <!-- Main content goes here -->
+  ${document.getElementById('tippani-preview').innerHTML}
+</div>
+</body>
+</html>
+`;
+
+
+    const blob = new Blob(['\ufeff', wordDoc], { type: 'application/msword' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `tippani.doc`;
+    link.click();
+}
+
 
         addApplicant(); updateAll();
     </script>
