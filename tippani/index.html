@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>टिप्पणीहरू | Tippani Formats</title>
+    
+    <!-- Google Fonts for beautiful Nepali and English text -->
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Mukta', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header & Navigation CSS --- */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .menu-btn {
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.1);
+            color: var(--secondary-color);
+        }
+
+        .header-title {
+            margin-left: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Overlay for menu */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 998;
+        }
+        .overlay.active {
+            display: block;
+        }
+
+        /* Slide Menu */
+        .slide-menu {
+            position: fixed;
+            top: 0;
+            left: -280px; /* Hidden by default */
+            width: 280px;
+            height: 100%;
+            background-color: var(--white);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: left 0.3s ease-in-out;
+            z-index: 999;
+            padding-top: 60px;
+        }
+
+        .slide-menu.active {
+            left: 0;
+        }
+
+        .slide-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .slide-menu li {
+            border-bottom: 1px solid #eee;
+        }
+
+        .slide-menu li a {
+            display: block;
+            padding: 15px 25px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s, padding-left 0.2s;
+        }
+
+        .slide-menu li a:hover {
+            background-color: #f0f4f8;
+            color: var(--secondary-color);
+            padding-left: 30px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        /* --- Main Content CSS --- */
+        main {
+            flex: 1; /* Pushes footer down */
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            width: 90%;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 700;
+            border-bottom: 3px solid var(--secondary-color);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            margin: 0 auto;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .subjects {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .subjects label {
+            display: block;
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: left;
+            border-left: 4px solid var(--secondary-color);
+            padding-left: 10px;
+        }
+
+        .subjects ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        /* Link Cards */
+        .subjects li a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f8f9fa;
+            border: 1px solid #e1e4e8;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .subjects li a::after {
+            content: '➜';
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .subjects li a:hover {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+            border-color: var(--secondary-color);
+        }
+
+        .subjects li a:hover::after {
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        /* --- Footer CSS --- */
+        footer {
+            background-color: var(--primary-color);
+            color: #ecf0f1;
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: auto;
+            border-top: 5px solid var(--secondary-color);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-text {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            background: rgba(255,255,255,0.05);
+            padding: 8px 16px;
+            border-radius: 50px;
+            transition: background 0.3s ease;
+        }
+
+        .contact-link:hover {
+            background: rgba(255,255,255,0.15);
+            color: var(--white);
+        }
+
+        .contact-link svg {
+            margin-right: 8px;
+            fill: currentColor;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.5rem; }
+            .subjects li a { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Overlay for closing menu -->
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <div class="header-title">मालपोत तथा भूमि व्यवस्थापन</div> <!-- Optional Site Title -->
+        
+        <nav class="slide-menu" id="slideMenu">
+            <div class="close-btn" onclick="toggleMenu()">&times;</div>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/malpot calculator/">मालपोत असुली</a></li>
+                <li><a href="/kutabali calculator/">कुतबाली असुली</a></li>
+                <li><a href="/ropani adder/">रोपनी जोड्न</a></li>
+                <li><a href="/Registration/">न्युनत्तम मूल्याङ्कन</a></li>
+                <li><a href="/tippani/">टिप्पणी फर्म्याटहरू</a></li>
+                <li><a href="/Contact.html">सम्पर्क</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <h1>टिप्पणीका फर्म्याटहरू</h1>
+            
+            <div class="subjects" id="subjects">
+                <label for="subjects">विषयहरू</label>
+                <ul>
+                    <li>
+                        <a href="/tippani/adalat dakha.html" target="_blank" rel="noopener noreferrer">
+                            अदालतको दाखिला खारेज
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/tippani/namsari suchana aades.html">
+                            नामसारीको सुचना र आदेश
+                        </a>
+                    </li>
+                    <!-- Example of adding more items neatly -->
+                    <!-- <li><a href="#">मोही लगत कट्टा</a></li> -->
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-text">
+                Designed by: <strong>Suman Acharya Sameer</strong> (Using AI)
+            </div>
+            
+            <a href="mailto:acharyasuma874@gmail.com" class="contact-link">
+                <!-- SVG Email Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                सम्पर्क: acharyasuma874@gmail.com
+            </a>
+        </div>
+    </footer>
+
+    <!-- Script for Menu Toggle -->
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("slideMenu");
+            var overlay = document.getElementById("overlay");
+            
+            // Toggle active class
+            if (menu.classList.contains('active')) {
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
+            } else {
+                menu.classList.add('active');
+                overlay.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
