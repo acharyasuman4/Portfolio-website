@@ -2,95 +2,461 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>न्युनत्तम मुल्यांकन Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minimum Valuation(न्युनत्तम मुल्याङ्कन) -acharyasuman4</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --blue: #3498db;
+            --red: #e74c3c;
+            --bg: #f0f2f5;
+            --white: #ffffff;
+            --green: #27ae60;
+        }
+
+        body {
+            font-family: 'Mukta', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Compact Header --- */
+        header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+        .menu-btn { font-size: 20px; cursor: pointer; margin-right: 15px; }
+        .header-title { font-size: 1rem; font-weight: 600; }
+
+        /* Menu Sidebar */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 998; }
+        .overlay.active { display: block; }
+        .slide-menu { position: fixed; top: 0; left: -250px; width: 250px; height: 100%; background: var(--white); transition: left 0.3s; z-index: 999; padding-top: 50px; }
+        .slide-menu.active { left: 0; }
+        .slide-menu ul { list-style: none; padding: 0; }
+        .slide-menu li a { display: block; padding: 10px 20px; color: var(--primary); text-decoration: none; border-bottom: 1px solid #eee; }
+        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 24px; cursor: pointer; }
+
+        /* --- Main Layout --- */
+        main {
+            flex: 1;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        /* --- Form Card --- */
+        .card {
+            background: var(--white);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 5px;
+        }
+
+        /* Compact Inputs */
+        .input-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .col { flex: 1; }
+        
+        label { display: block; font-size: 0.75rem; font-weight: 600; color: #555; margin-bottom: 2px; }
+        input, select {
+            width: 100%;
+            padding: 6px; 
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus { border-color: var(--blue); outline: none; background: #f8fbff; }
+
+        /* RAPD Grid */
+        .rapd-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; }
+        .rapd-inputs input { text-align: center; }
+
+        /* Unit Toggle (Small) */
+        .toggle-row { display: flex; justify-content: flex-end; margin-bottom: 5px; }
+        .toggle-label { font-size: 0.75rem; margin-right: 5px; color: #666; cursor: pointer; }
+        .toggle-label.active { color: var(--blue); font-weight: bold; text-decoration: underline; }
+
+        /* Buttons */
+        .btn-row { display: flex; gap: 10px; margin-top: 5px; }
+        button {
+            padding: 8px; border: none; border-radius: 4px; font-size: 0.9rem;
+            font-weight: 600; cursor: pointer; flex: 1;
+        }
+        .btn-calc { background: var(--blue); color: white; }
+        .btn-clear { background: var(--red); color: white; flex: 0.4; }
+
+        /* --- History Section (Compact Table) --- */
+        .history-card {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 200px;
+        }
+
+        .history-header {
+            padding: 8px 10px;
+            background: #eef2f5;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .history-content { flex: 1; overflow-y: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { position: sticky; top: 0; background: #fff; z-index: 10; text-align: left; padding: 5px; border-bottom: 2px solid #eee; font-size: 0.75rem; color: #666; }
+        td { padding: 6px 5px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+        
+        .val-cell { color: var(--green); font-weight: bold; }
+        .del-btn { color: #aaa; cursor: pointer; font-size: 1.1rem; line-height: 1; }
+        .del-btn:hover { color: var(--red); }
+
+        .hidden { display: none; }
+
+        /* Mobile Optimization */
+        @media(max-width: 400px) {
+            .input-row { gap: 5px; }
+            input, select { font-size: 0.9rem; }
+        }
+    </style>
 </head>
 <body>
-      <header>
+
+    <!-- Overlay & Menu -->
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <header>
         <div class="menu-btn" onclick="toggleMenu()">☰</div>
-        <nav class="slide-menu">
-           <ul>
+        <div class="header-title">Minimum Valuation (न्युनत्तम मुल्यांकन)</div>
+        <nav class="slide-menu" id="slideMenu">
+            <div class="close-btn" onclick="toggleMenu()">&times;</div>
+            <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/malpot calculator/">मालपोत असुली</a></li>
                 <li><a href="/kutabali calculator/">कुतबाली असुली</a></li>
                 <li><a href="/ropani adder/">रोपनी जोड्न</a></li>
                 <li><a href="/Registration/">न्युनत्तम मूल्याङ्कन</a></li>
+                <li><a href="/tippani/">टिप्पणी</a></li>
                 <li><a href="/Contact.html">सम्पर्क</a></li>
             </ul>
         </nav>
     </header>
-    <h1>न्युनत्तम मुल्यांकन Calculator</h1>
-    <div><a href="template.html">कार्यालयको लागि</a></div>
-    <form id="calcForm">
-        <section class="location">
-        <label for="wadaNo">वडा नं.:</label>
-        <input type="number" id="wadaNo" required><br>
 
-        <label for="kittaNo">कित्ता नं.:</label>
-        <input type="number" id="kittaNo" required><br>
-    </section>
-    <br>
-    <section class="area">
-    <section class="area1">
-        <label for="ropani">रोपनीः</label>
-        <input type="number" id="ropani" required><br>
+    <main>
+        <!-- Form Section -->
+        <div class="card">
+            <div class="toggle-row">
+                <span id="t-rapd" class="toggle-label active" onclick="setMode('rapd')">ROPANI</span>
+                <span style="font-size:0.75rem; color:#ccc;">|</span>
+                <span id="t-sqm" class="toggle-label" onclick="setMode('sqm')">SQ. METER</span>
+            </div>
 
-        <label for="aana">आनाः</label>
-        <input type="number" id="aana" max="15" required><br>
-    </section>
-<section class="area2">
-        <label for="paisa">पैसाः</label>
-        <input type="number" id="paisa" max="3" required><br>
+            <div class="input-row">
+                <div class="col" style="flex: 0.8;">
+                    <label>वडा नं.</label>
+                    <input type="number" id="wadaNo" placeholder="Wada">
+                </div>
+                <div class="col" style="flex: 1.2;">
+                    <label>कित्ता नं.</label>
+                    <input type="number" id="kittaNo" placeholder="Kitta">
+                </div>
+            </div>
 
-        <label for="daam">दामः</label>
-        <input type="number" id="daam" max="3" required><br>
-    </section>
-</section>
-    <section class="choose">
-        <label for="batoType">बाटोको प्रकारः</label>
-        <select id="batoType" required>
-            <option value="गोरेटो बाटो">गोरेटो बाटो</option>
-            <option value="अन्य बाटो">अन्य बाटो</option>
-            <option value="नभएको">नभएको</option>
-        </select><br>
+            <!-- RAPD Inputs -->
+            <div id="area-rapd" class="rapd-inputs" style="margin-bottom: 8px;">
+                <input type="number" id="ropani" placeholder="रो" step="any">
+                <input type="number" id="aana" placeholder="आ" step="any">
+                <input type="number" id="paisa" placeholder="पै" step="any">
+                <input type="number" id="daam" placeholder="दा" step="any">
+            </div>
 
-        <div id="fieldType" style="display: none;">
-            <label for="fieldTypeSelect">जग्गाको किसिम:</label>
-            <select id="fieldTypeSelect">
-                <option value="खेत अवल">खेत अवल</option>
-                <option value="खेत दोयम">खेत दोयम</option>
-                <option value="खेत सीम">खेत सीम</option>
-                <option value="खेत चाहार">खेत चाहार</option>
-                <option value="पाखो अवल">पाखो अवल</option>
-                <option value="पाखो दोयम">पाखो दोयम</option>
-                <option value="पाखो सीम">पाखो सीम</option>
-                <option value="पाखो चाहार">पाखो चाहार</option>
-            </select><br>
+            <!-- SqM Input -->
+            <div id="area-sqm" class="hidden" style="margin-bottom: 8px;">
+                <input type="number" id="sqmeter" placeholder="Area in Sq. Meter" step="any">
+            </div>
+
+            <div class="input-row">
+                <div class="col">
+                    <label>बाटोको प्रकार</label>
+                    <select id="batoType" onchange="toggleFieldType()">
+                        <option value="गोरेटो बाटो">गोरेटो बाटो</option>
+                        <option value="नभएको">नभएको</option>
+                        <option value="कच्ची मोटर बाटो">कच्ची मोटर बाटो</option>
+                        <option value="पक्कि मोटर बाटो">पक्कि मोटर बाटो</option>
+                        <option value="अन्य">अन्य</option>
+                    </select>
+                </div>
+                <div class="col hidden" id="fieldTypeCol">
+                    <label>जग्गा (बाटो नभए)</label>
+                    <select id="fieldTypeSelect">
+                        <option value="खेत अवल">खेत अवल</option>
+                        <option value="खेत दोयम">खेत दोयम</option>
+                        <option value="खेत सीम">खेत सीम</option>
+                        <option value="खेत चाहार">खेत चाहार</option>
+                        <option value="पाखो अवल">पाखो अवल</option>
+                        <option value="पाखो दोयम">पाखो दोयम</option>
+                        <option value="पाखो सीम">पाखो सीम</option>
+                        <option value="पाखो चाहार">पाखो चाहार</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="col">
+                    <label>मूल्य (प्रति रोपनी)</label>
+                    <input type="number" id="ratePerRopani" placeholder="Rate Amount">
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-calc" onclick="calculate()">CALCULATE</button>
+                <button class="btn-clear" onclick="clearHistory()">Reset</button>
+            </div>
+            <div style="margin: 10px;"><a href="template.html" target="_blank" rel="noopener noreferrer" style="color: rgb(0, 238, 255); background-color: #555; margin: 100px auto; padding: 5px;" >मुल्याङ्कन चिठी(कार्यालयको लागि)</a></div>
         </div>
 
-        <label for="mulyaPratiRopani">मुल्य प्रतिरोपनी:</label>
-        <input type="number" id="mulyaPratiRopani" required><br>
-    </section>
+        <!-- Compact History Section -->
+        <div class="history-card">
+            <div class="history-header">
+                <span>Recent History</span>
+                <span>Total: रु. <span id="grandTotal">0</span></span>
+            </div>
+            <div class="history-content">
+                <table id="history-table">
+                    <!-- Javascript will populate this -->
+                </table>
+            </div>
+        </div>
+    </main>
 
-        <button type="button" onclick="calculate()">Calculate</button>
-    </form>
-
-    <h2>Results History</h2>
-    <ul id="history"></ul>
-    <h3>Total Amount: <span id="totalAmount">0</span></h3>
-    <button onclick="clearHistory()">Clear History</button>
-
-    <script src="script.js"></script>
     <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js");
-}
-function toggleMenu() {
-    var menu = document.querySelector('.slide-menu');
-    menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
-}
-</script>
+        const SQM_PER_ROPANI = 508.74;
+        let currentMode = 'rapd';
+        let historyData = JSON.parse(localStorage.getItem('min_val_history')) || [];
+        
+        // Flag to track if we are editing a known Wada/Kitta combination
+        let isMatchFound = false;
 
+        function toggleMenu() {
+            document.getElementById("slideMenu").classList.toggle('active');
+            document.getElementById("overlay").classList.toggle('active');
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('t-rapd').className = mode === 'rapd' ? 'toggle-label active' : 'toggle-label';
+            document.getElementById('t-sqm').className = mode === 'sqm' ? 'toggle-label active' : 'toggle-label';
+            
+            if(mode === 'rapd') {
+                document.getElementById('area-rapd').classList.remove('hidden');
+                document.getElementById('area-sqm').classList.add('hidden');
+                setTimeout(()=>document.getElementById('ropani').focus(), 100);
+            } else {
+                document.getElementById('area-rapd').classList.add('hidden');
+                document.getElementById('area-sqm').classList.remove('hidden');
+                setTimeout(()=>document.getElementById('sqmeter').focus(), 100);
+            }
+        }
+
+        function toggleFieldType() {
+            const bato = document.getElementById('batoType').value;
+            const col = document.getElementById('fieldTypeCol');
+            if(bato === 'नभएको') col.classList.remove('hidden');
+            else col.classList.add('hidden');
+        }
+
+        // --- Auto Fill & Match Logic ---
+        function checkAutoFill() {
+            const w = document.getElementById('wadaNo').value;
+            const k = document.getElementById('kittaNo').value;
+            
+            if(!w || !k) {
+                isMatchFound = false;
+                return;
+            }
+
+            // Look for EXACT match in history
+            const match = historyData.find(h => h.wada == w && h.kitta == k);
+            
+            if(match) {
+                // Matched! Auto-fill details
+                document.getElementById('ratePerRopani').value = match.rate;
+                document.getElementById('batoType').value = match.bato;
+                toggleFieldType();
+                if(match.field) document.getElementById('fieldTypeSelect').value = match.field;
+                
+                isMatchFound = true;
+            } else {
+                // No match, just user typing normally
+                isMatchFound = false;
+            }
+        }
+
+        document.getElementById('wadaNo').addEventListener('input', checkAutoFill);
+        document.getElementById('kittaNo').addEventListener('input', checkAutoFill);
+
+        // --- Smart Tab Trigger ---
+        // If match found, TAB on the last area field triggers calculate automatically
+        function handleSmartTab(e) {
+            if(e.key === 'Tab' && !e.shiftKey && isMatchFound) {
+                e.preventDefault(); // Prevent focus loss
+                calculate();
+            }
+        }
+
+        document.getElementById('daam').addEventListener('keydown', handleSmartTab);
+        document.getElementById('sqmeter').addEventListener('keydown', handleSmartTab);
+
+        // --- Helper: Nepali Digits ---
+        function toNepali(num) {
+            return Math.floor(num).toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
+        }
+
+        // --- Main Calculation ---
+        function calculate() {
+            const wada = document.getElementById('wadaNo').value;
+            const kitta = document.getElementById('kittaNo').value;
+            const rate = parseFloat(document.getElementById('ratePerRopani').value);
+
+            if(!wada || !kitta || !rate) {
+                alert("Please fill Wada, Kitta and Rate");
+                return;
+            }
+
+            let areaRopani = 0;
+            let areaDesc = "";
+
+            if(currentMode === 'rapd') {
+                const r = parseFloat(document.getElementById('ropani').value) || 0;
+                const a = parseFloat(document.getElementById('aana').value) || 0;
+                const p = parseFloat(document.getElementById('paisa').value) || 0;
+                const d = parseFloat(document.getElementById('daam').value) || 0;
+                areaRopani = r + (a/16) + (p/64) + (d/256);
+                areaDesc = `${r}-${a}-${p}-${d}`;
+            } else {
+                const sqm = parseFloat(document.getElementById('sqmeter').value) || 0;
+                areaRopani = sqm / SQM_PER_ROPANI;
+                areaDesc = `${sqm}m²`;
+            }
+
+            if(areaRopani <= 0) { alert("Invalid Area"); return; }
+
+            const valuation = Math.ceil(areaRopani * rate);
+            const bato = document.getElementById('batoType').value;
+            const field = (bato === 'नभएको') ? document.getElementById('fieldTypeSelect').value : null;
+
+            // Add to history (Top of list)
+            historyData.unshift({
+                wada, kitta, areaDesc, rate, bato, field, valuation
+            });
+            localStorage.setItem('min_val_history', JSON.stringify(historyData));
+
+            renderHistory();
+            
+            // --- CLEAR ALL FIELDS & FOCUS WADA ---
+            document.getElementById('wadaNo').value = '';
+            document.getElementById('kittaNo').value = '';
+            document.getElementById('ropani').value = '';
+            document.getElementById('aana').value = '';
+            document.getElementById('paisa').value = '';
+            document.getElementById('daam').value = '';
+            document.getElementById('sqmeter').value = '';
+            document.getElementById('ratePerRopani').value = '';
+            
+            // Reset dropdowns to default
+            document.getElementById('batoType').selectedIndex = 0; 
+            toggleFieldType(); 
+
+            // Reset match flag
+            isMatchFound = false;
+
+            // Focus on Wada No
+            document.getElementById('wadaNo').focus();
+        }
+
+        function renderHistory() {
+            const table = document.getElementById('history-table');
+            let html = '';
+            let grandTotal = 0;
+
+            historyData.forEach((item, index) => {
+                grandTotal += item.valuation;
+                html += `
+                    <tr>
+                        <td width="20%">
+                            <div><b>${item.wada}-${item.kitta}</b></div>
+                            <div style="font-size:0.7rem; color:#888;">${item.bato}</div>
+                        </td>
+                        <td width="30%">
+                            <div>${item.areaDesc}</div>
+                            <div style="font-size:0.7rem; color:#888;">@${item.rate}</div>
+                        </td>
+                        <td width="40%" class="val-cell">रु. ${toNepali(item.valuation)}</td>
+                        <td width="10%" style="text-align:center;">
+                            <span class="del-btn" onclick="deleteItem(${index})">×</span>
+                        </td>
+                    </tr>
+                `;
+            });
+            table.innerHTML = html;
+            document.getElementById('grandTotal').innerText = toNepali(grandTotal);
+        }
+
+        function deleteItem(index) {
+            historyData.splice(index, 1);
+            localStorage.setItem('min_val_history', JSON.stringify(historyData));
+            renderHistory();
+        }
+
+        function clearHistory() {
+            if(confirm("Clear all data?")) {
+                historyData = [];
+                localStorage.removeItem('min_val_history');
+                renderHistory();
+                document.getElementById('wadaNo').value = '';
+                document.getElementById('kittaNo').value = '';
+                document.getElementById('ratePerRopani').value = '';
+            }
+        }
+
+        // Init
+        renderHistory();
+
+        // Keyboard Shortcuts (Enter to Calculate from any input)
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter' && e.target.tagName === 'INPUT') calculate();
+        });
+
+        // PWA
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js");
+        }
+    </script>
 </body>
 </html>
