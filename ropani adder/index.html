@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Smart Land Adder</title>
-    
+
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
@@ -38,30 +41,72 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .menu-btn { font-size: 24px; cursor: pointer; margin-right: 15px; }
-        .header-title { font-weight: 600; font-size: 1.1rem; }
+        .menu-btn {
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        .header-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
 
         .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; z-index: 998;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 998;
         }
-        .overlay.active { display: block; }
+
+        .overlay.active {
+            display: block;
+        }
 
         .slide-menu {
-            position: fixed; top: 0; left: -260px; width: 260px; height: 100%;
-            background: var(--white); transition: left 0.3s ease; z-index: 999;
-            padding-top: 50px; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: -260px;
+            width: 260px;
+            height: 100%;
+            background: var(--white);
+            transition: left 0.3s ease;
+            z-index: 999;
+            padding-top: 50px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         }
-        .slide-menu.active { left: 0; }
-        .slide-menu ul { list-style: none; padding: 0; }
+
+        .slide-menu.active {
+            left: 0;
+        }
+
+        .slide-menu ul {
+            list-style: none;
+            padding: 0;
+        }
+
         .slide-menu li a {
-            display: block; padding: 12px 20px; color: var(--primary-color);
-            text-decoration: none; border-bottom: 1px solid #eee;
+            display: block;
+            padding: 12px 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
         }
-        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 28px; cursor: pointer; }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+        }
 
         /* --- Main Calculator CSS --- */
         main {
@@ -76,7 +121,7 @@
             width: 100%;
             max-width: 500px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -89,9 +134,25 @@
             text-align: center;
             border-bottom: 2px solid #d1f2eb;
         }
-        .total-label { font-size: 0.85rem; color: #16a085; font-weight: bold; text-transform: uppercase; }
-        .total-rapd { font-size: 1.4rem; color: var(--primary-color); font-weight: 700; margin: 5px 0; }
-        .total-sqm { font-size: 0.9rem; color: #7f8c8d; }
+
+        .total-label {
+            font-size: 0.85rem;
+            color: #16a085;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .total-rapd {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin: 5px 0;
+        }
+
+        .total-sqm {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
 
         /* Mode Toggles */
         .mode-switch {
@@ -101,6 +162,7 @@
             margin: 10px 15px;
             border-radius: 8px;
         }
+
         .mode-btn {
             flex: 1;
             border: none;
@@ -113,21 +175,32 @@
             font-weight: 600;
             transition: all 0.2s;
         }
+
         .mode-btn.active {
             background: var(--white);
             color: var(--secondary-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Inputs */
-        .input-section { padding: 0 15px; }
-        
+        .input-section {
+            padding: 0 15px;
+        }
+
         .rapd-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 8px;
         }
-        .input-wrapper label { display: block; font-size: 0.75rem; color: #666; margin-bottom: 2px; text-align: center; }
+
+        .input-wrapper label {
+            display: block;
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
         .input-wrapper input {
             width: 100%;
             padding: 8px 5px;
@@ -137,11 +210,20 @@
             font-size: 1rem;
             box-sizing: border-box;
         }
-        .input-wrapper input:focus { border-color: var(--secondary-color); outline: none; background: #fbfbfb; }
+
+        .input-wrapper input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            background: #fbfbfb;
+        }
 
         .sqm-container input {
-            width: 100%; padding: 10px; font-size: 1.1rem;
-            border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box;
+            width: 100%;
+            padding: 10px;
+            font-size: 1.1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
         }
 
         /* Action Buttons */
@@ -151,16 +233,32 @@
             padding: 15px;
             border-bottom: 1px solid #f0f0f0;
         }
-        
+
         .btn {
-            border: none; border-radius: 6px; padding: 12px;
-            font-weight: 600; cursor: pointer; color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
             transition: transform 0.1s;
         }
-        .btn:active { transform: scale(0.96); }
 
-        .btn-add { flex: 2; background-color: var(--secondary-color); font-size: 1rem; }
-        .btn-clear { flex: 1; background-color: var(--accent-color); font-size: 0.9rem; }
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-add {
+            flex: 2;
+            background-color: var(--secondary-color);
+            font-size: 1rem;
+        }
+
+        .btn-clear {
+            flex: 1;
+            background-color: var(--accent-color);
+            font-size: 0.9rem;
+        }
 
         /* History List */
         .history-container {
@@ -170,21 +268,40 @@
             overflow-y: auto;
             max-height: 300px;
         }
-        .history-label { font-size: 0.8rem; color: #999; margin-bottom: 5px; }
-        
+
+        .history-label {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
         .log-item {
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 8px 10px;
             margin-bottom: 6px;
-            background: white; border: 1px solid #eee; border-radius: 6px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 6px;
             font-size: 0.95rem;
             border-left: 3px solid var(--success);
             animation: fadeIn 0.3s ease-out;
         }
-        .log-item.subtracted { border-left-color: var(--accent-color); }
 
-        .log-details { display: flex; flex-direction: column; }
-        .log-sub { font-size: 0.75em; color: #bbb; }
+        .log-item.subtracted {
+            border-left-color: var(--accent-color);
+        }
+
+        .log-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .log-sub {
+            font-size: 0.75em;
+            color: #bbb;
+        }
 
         .delete-cross {
             color: #ff6b6b;
@@ -194,17 +311,38 @@
             cursor: pointer;
             line-height: 1;
         }
-        .delete-cross:hover { color: #c0392b; transform: scale(1.2); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
+        .delete-cross:hover {
+            color: #c0392b;
+            transform: scale(1.2);
         }
 
-        footer { background: var(--primary-color); color: #ccc; text-align: center; padding: 15px; font-size: 0.8rem; }
-        .hidden { display: none; }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: #ccc;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.8rem;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- Overlay & Menu -->
@@ -219,6 +357,8 @@
                 <li><a href="/malpot calculator/">मालपोत असुली</a></li>
                 <li><a href="/kutabali calculator/">कुतबाली असुली</a></li>
                 <li><a href="/ropani adder/">रोपनी जोड्न</a></li>
+                <li><a href="/Registration/">न्युनत्तम मूल्याङ्कन</a></li>
+                <li><a href="/tippani/">टिप्पणी फर्म्याटहरू</a></li>
                 <li><a href="/Contact.html">सम्पर्क</a></li>
             </ul>
         </nav>
@@ -226,7 +366,7 @@
 
     <main>
         <div id="calculator-card">
-            
+
             <!-- Result Display -->
             <div class="total-display">
                 <div class="total-label">Total Area (जम्मा क्षेत्रफल)</div>
@@ -300,8 +440,8 @@
         const SQM_D = SQM_P / 4;
 
         // --- State ---
-        let historyArray = []; 
-        let currentMode = 'rapd'; 
+        let historyArray = [];
+        let currentMode = 'rapd';
 
         // --- UI Functions ---
         function toggleMenu() {
@@ -313,8 +453,8 @@
             currentMode = mode;
             document.getElementById('btn-mode-rapd').classList.toggle('active', mode === 'rapd');
             document.getElementById('btn-mode-sqm').classList.toggle('active', mode === 'sqm');
-            
-            if(mode === 'rapd') {
+
+            if (mode === 'rapd') {
                 document.getElementById('form-rapd').classList.remove('hidden');
                 document.getElementById('form-sqm').classList.add('hidden');
                 setTimeout(() => document.getElementById('in-ropani').focus(), 100);
@@ -336,7 +476,7 @@
                 const p = parseFloat(document.getElementById('in-paisa').value) || 0;
                 const d = parseFloat(document.getElementById('in-daam').value) || 0;
 
-                if (r===0 && a===0 && p===0 && d===0) return;
+                if (r === 0 && a === 0 && p === 0 && d === 0) return;
 
                 // Calculate using exact 508.74 basis
                 valSqm = (r * SQM_R) + (a * SQM_A) + (p * SQM_P) + (d * SQM_D);
@@ -363,7 +503,7 @@
         }
 
         function resetAll() {
-            if(confirm("Are you sure you want to clear all data?")) {
+            if (confirm("Are you sure you want to clear all data?")) {
                 historyArray = [];
                 updateUI();
                 clearInputs();
@@ -390,7 +530,7 @@
                 const item = historyArray[i];
                 const isNegative = item.value < 0;
                 const cssClass = isNegative ? 'subtracted' : '';
-                
+
                 html += `<div class="log-item ${cssClass}">
                             <div class="log-details">
                                 <span>${item.text}</span>
@@ -430,13 +570,13 @@
         }
 
         // --- Event Listeners ---
-        document.getElementById('in-daam').addEventListener('keydown', function(e) {
+        document.getElementById('in-daam').addEventListener('keydown', function (e) {
             if (e.key === 'Tab' && !e.shiftKey) {
                 e.preventDefault();
                 processEntry();
             }
         });
-        document.getElementById('in-sqm').addEventListener('keydown', function(e) {
+        document.getElementById('in-sqm').addEventListener('keydown', function (e) {
             if (e.key === 'Tab' && !e.shiftKey) {
                 e.preventDefault();
                 processEntry();
@@ -444,7 +584,7 @@
         });
         document.querySelectorAll('input[type="number"]').forEach(input => {
             input.addEventListener('keydown', (e) => {
-                if(e.key === 'Enter') processEntry();
+                if (e.key === 'Enter') processEntry();
             });
         });
 
@@ -461,4 +601,5 @@
         }
     </script>
 </body>
+
 </html>
