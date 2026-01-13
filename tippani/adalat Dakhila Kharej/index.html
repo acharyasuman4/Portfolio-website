@@ -39,7 +39,7 @@
         }
 
         .preview-content {
-            line-height: 1.8;
+            line-height: 1.2;
             text-align: justify;
             background: white;
             padding: 60px;
@@ -95,6 +95,24 @@
         .font-white {
             color: #e2e8f0;
         }
+
+        /* Updated Heading Size */
+        h3 {
+            font-size: 1.6rem;
+            /* Increased from 1.3rem to stand out */
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        /* Updated Body Content Size */
+        #main_content,
+        p {
+            font-size: 1.15rem;
+            /* Slightly adjusted for better print readability */
+            line-height: 1.6;
+            /* Improved readability */
+        }
+
 
         @media print {
             .no-print {
@@ -279,6 +297,14 @@
                 <button onclick="exportToWord()"
                     class="bg-slate-800 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-black transition">WORD
                     (.DOCX)</button>
+                <!-- Add this below the Word Download button -->
+                <a href="https://fonts.google.com/download?family=Mukta" class="btn"
+                    style="background-color:#475569; text-decoration:none; text-align:center; display:block; margin-top:5px;">
+                    📥 फन्ट डाउनलोड (Mukta Font)
+                </a>
+                <p style="font-size:10px; color:red; text-align:center; margin-top:2px;">
+                    * Word मा सही देखिन यो फन्ट install गर्नुहोला ।
+                </p>
             </div>
         </div>
 
@@ -299,8 +325,10 @@
                     </div>
                 </div>
 
-                <h3 style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 25px;">
-                    टिप्पणी र आदेश</h3>
+                <h3
+                    style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 25px; font-size: 20px;">
+                    टिप्पणी र आदेश
+                </h3>
                 <p>श्रीमान्,</p>
                 <div id="main_content">
                     <p>
@@ -348,14 +376,57 @@
 
         window.onbeforeunload = function () { if (applicants.length > 0) return "के तपाईं बाहिर निस्कन चाहनुहुन्छ? भरेको डेटा हराउन सक्छ।"; };
 
-        function addApplicant() { applicants.push({ id: Date.now(), name: '', gfather: '', father: '', dist: 'सिन्धुपाल्चोक', addr: '' }); renderApplicants(); }
-        function renderApplicants() {
-            document.getElementById('applicant-list').innerHTML = applicants.map((a, i) => `
-                <div class="input-group border p-2 bg-white rounded-lg relative">
-                    <button onclick="applicants.splice(${i},1); renderApplicants(); updateAll();" class="absolute right-1 top-0 text-red-400">✕</button>
-                    <input type="text" oninput="applicants[${i}].name=this.value; updateAll()" value="${a.name}" placeholder="नाम" class="border p-1 w-full mb-1 font-bold text-xs">
-                    <div class="grid grid-cols-2 gap-1 text-[10px]"><input type="text" oninput="applicants[${i}].dist=this.value; updateAll()" value="${a.dist}" class="border p-1"><input type="text" oninput="applicants[${i}].addr=this.value; updateAll()" value="${a.addr}" placeholder="ठेगाना" class="border p-1"><input type="text" oninput="applicants[${i}].gfather=this.value; updateAll()" value="${a.gfather}" placeholder="बाजे" class="border p-1"><input type="text" oninput="applicants[${i}].father=this.value; updateAll()" value="${a.father}" placeholder="बाबु" class="border p-1"></div>
-                </div>`).join('');
+        function addApplicant() {
+            // Added 'relType': 'son' to the object
+            applicants.push({
+                id: Date.now(),
+                name: '',
+                gfather: '',
+                father: '',
+                dist: 'सिन्धुपाल्चोक',
+                addr: '',
+                relType: 'son'
+            });
+            renderApplicants();
+        } function renderApplicants() {
+            document.getElementById('applicant-list').innerHTML = applicants.map((a, i) => {
+                // Determine placeholders based on relationship type
+                let label1 = 'बाजे';
+                let label2 = 'बाबु';
+
+                if (a.relType === 'daughter') {
+                    label1 = 'बाजे';
+                    label2 = 'बाबु';
+                } else if (a.relType === 'wife') {
+                    label1 = 'ससुरा';
+                    label2 = 'पति';
+                }
+
+                return `
+        <div class="input-group border p-2 bg-white rounded-lg relative">
+            <button onclick="applicants.splice(${i},1); renderApplicants(); updateAll();" class="absolute right-1 top-0 text-red-400">✕</button>
+            
+            <div class="flex gap-2 mb-1">
+                <input type="text" oninput="applicants[${i}].name=this.value; updateAll()" value="${a.name}" placeholder="निवेदकको नाम" class="border p-1 w-full font-bold text-xs">
+                
+                <!-- Relationship Selector -->
+                <select onchange="applicants[${i}].relType=this.value; renderApplicants(); updateAll();" class="border p-1 text-[10px] bg-slate-100 rounded">
+                    <option value="son" ${a.relType === 'son' ? 'selected' : ''}>छोरा / नाति</option>
+                    <option value="daughter" ${a.relType === 'daughter' ? 'selected' : ''}>छोरी / नातिनी</option>
+                    <option value="wife" ${a.relType === 'wife' ? 'selected' : ''}>पत्नी / बुहारी</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-1 text-[10px]">
+                <input type="text" oninput="applicants[${i}].dist=this.value; updateAll()" value="${a.dist}" placeholder="जिल्ला" class="border p-1">
+                <input type="text" oninput="applicants[${i}].addr=this.value; updateAll()" value="${a.addr}" placeholder="ठेगाना" class="border p-1">
+                
+                <!-- Dynamic Placeholders -->
+                <input type="text" oninput="applicants[${i}].gfather=this.value; updateAll()" value="${a.gfather}" placeholder="${label1}" class="border p-1">
+                <input type="text" oninput="applicants[${i}].father=this.value; updateAll()" value="${a.father}" placeholder="${label2}" class="border p-1">
+            </div>
+        </div>`;
+            }).join('');
             saveToLocal();
         }
 
@@ -445,9 +516,39 @@
         function toggleSvcMode(m) { if (m === 'perc') document.getElementById('svc_fixed_mode').checked = false; else document.getElementById('svc_perc_mode').checked = false; updateAll(); }
 
         function updateAll() {
-            const groups = {}; applicants.forEach(a => { const key = `${a.dist}|${a.addr}|${a.gfather}|${a.father}`; if (!groups[key]) groups[key] = []; groups[key].push(`<span class="font-bold text-blue-900">${a.name}</span>`); });
-            let appStr = Object.keys(groups).map(k => { const [d, ad, gf, f] = k.split('|'); return `${d} जिल्ला ${ad} बस्ने ${gf}को नाति ${f}को छोरा ${nepaliJoin(groups[k])}`; });
+            // Inside updateAll() function... replace the top part with this:
+
+            const groups = {};
+            applicants.forEach(a => {
+                // We include relType in the key so we don't group different relation types together accidentally
+                const key = `${a.dist}|${a.addr}|${a.gfather}|${a.father}|${a.relType}`;
+                if (!groups[key]) groups[key] = [];
+                groups[key].push(`<span class="font-bold text-blue-900">${a.name}</span>`);
+            });
+
+            let appStr = Object.keys(groups).map(k => {
+                const [dist, addr, gf, f, relType] = k.split('|');
+                const names = nepaliJoin(groups[k]);
+
+                // Logic to determine relation text
+                let relationText = "";
+                if (relType === 'wife') {
+                    // For Wife: Sasura -> Buhari -> Pati -> Patni
+                    relationText = `${gf}को बुहारी ${f}को पत्नी`;
+                } else if (relType === 'daughter') {
+                    // For Daughter: Baaje -> Natini -> Babu -> Chhori
+                    relationText = `${gf}को नातिनी ${f}को छोरी`;
+                } else {
+                    // Default (Son): Baaje -> Naati -> Babu -> Chhora
+                    relationText = `${gf}को नाति ${f}को छोरा`;
+                }
+
+                return `${dist} जिल्ला ${addr} बस्ने ${relationText} ${names}`;
+            });
+
             document.getElementById('out_applicant_details').innerHTML = nepaliJoin(appStr) || ".......";
+
+            // ... rest of the function remains the same
             document.getElementById('out_owners').innerText = nepaliJoin([...owners]) || ".......";
             const locs = {}; lands.forEach(l => { const key = `साविक ${l.vdc} वडा नं. ${toNepali(l.ward)}`; if (!locs[key]) locs[key] = []; locs[key].push(`कि.नं. ${toNepali(l.kitta)} (${l.area})`); });
             document.getElementById('out_land_details').innerText = Object.keys(locs).map(k => `${k} को ${nepaliJoin(locs[k])}`).join(', ') || ".......";
@@ -542,13 +643,17 @@
         <div style='mso-element:header' id=h1>
             <table width="100%" style="border-collapse:collapse; border:none;">
                 <tr>
-                    <td width="100" style="border:none; text-align:left; vertical-align:middle;"><img src="${b64}" width="90"></td>
-                    <td style="border:none; text-align:center; color:red; font-weight:bold; line-height:1.0;">
-                        <div style="font-size:10pt; margin:0;">नेपाल सरकार</div>
-                        <div style="font-size:11pt; margin:0;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
-                        <div style="font-size:13pt; margin:0;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
-                        <div style="font-size:1६pt; margin:2pt 0;">मालपोत कार्यालय</div>
-                        <div style="font-size:12pt; margin:0;">चौतारा, सिन्धुपाल्चोक</div>
+                    <td width="100" style="border:none; text-align:left; vertical-align:top; padding-top: 5px;">
+                        <img src="${b64}" width="90">
+                    </td>
+                    <td style="border:none; text-align:center; color:red; font-weight:bold; vertical-align:top;">
+                        <p style="margin:0; padding:0; line-height:1.15; font-family:'Mukta', sans-serif; text-align:center;">
+                            <span style="font-size:11pt;">नेपाल सरकार</span><br>
+                            <span style="font-size:12pt;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</span><br>
+                            <span style="font-size:14pt;">भूमि व्यवस्थापन तथा अभिलेख विभाग</span><br>
+                            <span style="font-size:18pt;">मालपोत कार्यालय</span><br>
+                            <span style="font-size:12pt;">चौतारा, सिन्धुपाल्चोक</span>
+                        </p>
                     </td>
                 </tr>
             </table>
@@ -560,9 +665,9 @@
         <head><meta charset='utf-8'><style>
             @page Section1 { size: 8.5in 11in; margin: 1in 0.5in 1in 1.25in; mso-header-margin:.5in; mso-footer-margin:.5in; mso-header:h1; mso-footer:f1; }
             div.Section1 { page:Section1; }
-            body { font-family:'Mukta', sans-serif; font-size:12pt; }
-            p { text-align:justify; margin:0 0 8pt; line-height:1.6; }
-            h3 { text-align:center; font-weight:bold; text-decoration:underline; font-size:14pt; margin-bottom:15pt; }
+            body { font-family:'Mukta', sans-serif; font-size:14pt; }
+            p { text-align:justify; margin:0 0 8pt; line-height:1.5; }
+            h3 { text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin-bottom:15pt; }
             table { border-collapse:collapse; width:100%; margin-top:10pt; }
             th, td { border:1px solid black; padding:4px; text-align:center; font-size:11pt; }
         </style></head>
@@ -571,7 +676,6 @@
             <h3>टिप्पणी र आदेश</h3>
             <p>श्रीमान्,</p>
             ${document.getElementById('main_content').innerHTML}
-            <div style='mso-element:footer' id=f1><p style='text-align:right; font-size:10pt;'>पेज नं. <span style='mso-field-code:" PAGE "'></span> / <span style='mso-field-code:" NUMPAGES "'></span></p></div>
         </div></body></html>`;
 
             const blob = new Blob(['\ufeff', wordDoc], { type: 'application/msword' });

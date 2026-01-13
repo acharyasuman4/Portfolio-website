@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ne">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,30 +8,90 @@
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Mukta', sans-serif; scroll-behavior: smooth; background-color: #f1f5f9; }
-        .table-output td, .table-output th { border: 1px solid #000; padding: 5px; text-align: center; font-size: 13px; }
-        .preview-content { line-height: 1.6; text-align: justify; background: white; padding: 60px; min-height: 11in; position: relative; }
-        .office-header { display: flex; align-items: center; border-bottom: 2px double #000; padding-bottom: 10px; margin-bottom: 20px; width: 100%; }
-        .office-emblem { width: 90px; height: auto; object-fit: contain; }
-        .header-text-container { flex-grow: 1; text-align: center; font-weight: bold; color: #ff0000; margin-right: 90px; }
-        input:focus, select:focus { outline: 2px solid #3b82f6; background-color: #f0f9ff; }
-        @media print { 
-            .no-print { display: none !important; } 
-            body { background: white; } 
-            #print-area { padding-left: 1.25in; border: none; } 
-            .action-col { display: none; }
+        body {
+            font-family: 'Mukta', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #f1f5f9;
+        }
+
+        .table-output td,
+        .table-output th {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .preview-content {
+            line-height: 1.6;
+            text-align: justify;
+            background: white;
+            padding: 60px;
+            min-height: 11in;
+            position: relative;
+        }
+
+        .office-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px double #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .office-emblem {
+            width: 90px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .header-text-container {
+            flex-grow: 1;
+            text-align: center;
+            font-weight: bold;
+            color: #ff0000;
+            margin-right: 90px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 2px solid #3b82f6;
+            background-color: #f0f9ff;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            #print-area {
+                padding-left: 1.25in;
+                border: none;
+            }
+
+            .action-col {
+                display: none;
+            }
         }
     </style>
 </head>
+
 <body class="p-2 md:p-6 text-sm">
 
     <div class="max-w-[1950px] mx-auto grid grid-cols-1 xl:grid-cols-2 gap-6">
-        
+
         <!-- बायाँ भाग: इन्पुट -->
-        <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-300 overflow-y-auto max-h-[95vh] space-y-6 no-print">
+        <div
+            class="bg-white p-6 rounded-2xl shadow-xl border border-slate-300 overflow-y-auto max-h-[95vh] space-y-6 no-print">
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="text-xl font-bold text-slate-800">न्युनतम मूल्याङ्कन</h2>
-                <input type="text" id="fy" oninput="updateAll()" value="०८२/८३" class="border p-1 rounded w-24 text-center font-bold">
+                <input type="text" id="fy" oninput="updateAll()" value="०८२/८३"
+                    class="border p-1 rounded w-24 text-center font-bold">
             </div>
 
             <!-- १. सिफारिस पत्र -->
@@ -42,7 +103,9 @@
                     <input type="text" id="t3" placeholder="च.नं." class="border p-2 rounded nep-digit">
                     <input type="text" id="t4" placeholder="मिति (२०८१.०१.०१)" class="border p-2 rounded nep-digit">
                 </div>
-                <button onclick="addUpperEntry()" class="w-full bg-indigo-600 text-white py-2 rounded font-bold shadow hover:bg-indigo-700">+ विवरण थप्नुहोस्</button>
+                <button onclick="addUpperEntry()"
+                    class="w-full bg-indigo-600 text-white py-2 rounded font-bold shadow hover:bg-indigo-700">+ विवरण
+                    थप्नुहोस्</button>
                 <div id="upper-list-ui" class="space-y-1"></div>
             </section>
 
@@ -50,14 +113,17 @@
             <section class="bg-green-50 p-4 rounded-xl border border-green-200 space-y-4">
                 <h3 class="font-bold text-green-800 border-b pb-1">२. जग्गाको विवरण</h3>
                 <div class="grid grid-cols-3 gap-2">
-                    <input type="text" id="old_vdc" placeholder="साविक गा.वि.स." oninput="checkPriceMemory()" class="border p-2 rounded">
+                    <input type="text" id="old_vdc" placeholder="साविक गा.वि.स." oninput="checkPriceMemory()"
+                        class="border p-2 rounded">
                     <input type="text" id="ward" placeholder="वडा" class="border p-2 rounded nep-digit w-20">
                     <input type="text" id="kitta" placeholder="कि.नं." class="border p-2 rounded nep-digit">
                 </div>
 
                 <div class="flex items-center gap-4 bg-white p-2 rounded border text-xs">
-                    <label class="cursor-pointer font-bold"><input type="radio" name="areaType" value="traditional" checked onclick="toggleAreaInput()"> R-A-P-D</label>
-                    <label class="cursor-pointer font-bold"><input type="radio" name="areaType" value="sqm" onclick="toggleAreaInput()"> वर्गमिटर (m²)</label>
+                    <label class="cursor-pointer font-bold"><input type="radio" name="areaType" value="traditional"
+                            checked onclick="toggleAreaInput()"> R-A-P-D</label>
+                    <label class="cursor-pointer font-bold"><input type="radio" name="areaType" value="sqm"
+                            onclick="toggleAreaInput()"> वर्गमिटर (m²)</label>
                 </div>
 
                 <div id="traditionalArea" class="grid grid-cols-4 gap-2">
@@ -66,29 +132,57 @@
                     <input type="text" id="paisa" placeholder="पै" class="border p-2 rounded text-center nep-digit">
                     <input type="text" id="dam" placeholder="दा" class="border p-2 rounded text-center nep-digit">
                 </div>
-                <div id="sqmArea" class="hidden"><input type="text" id="sqm_val" placeholder="क्षेत्रफल वर्गमिटरमा" class="w-full border p-2 rounded nep-digit"></div>
+                <div id="sqmArea" class="hidden"><input type="text" id="sqm_val" placeholder="क्षेत्रफल वर्गमिटरमा"
+                        class="w-full border p-2 rounded nep-digit"></div>
 
                 <div class="grid grid-cols-2 gap-2">
-                    <input list="roadOptions" id="road" oninput="checkPriceMemory()" placeholder="घरबाटो विवरण" class="border p-2 rounded">
-                    <datalist id="roadOptions"><option value="नभएको"><option value="गोरेटो बाटो"><option value="कच्ची बाटो"><option value="पक्की बाटो"></datalist>
-                    <input list="categoryOptions" id="category" oninput="checkPriceMemory()" placeholder="वर्गिकरण" class="border p-2 rounded">
-                    <datalist id="categoryOptions"><option value="आवासीय"><option value="कृषि"><option value="व्यवसायिक"></datalist>
+                    <input list="roadOptions" id="road" oninput="checkPriceMemory()" placeholder="घरबाटो विवरण"
+                        class="border p-2 rounded">
+                    <datalist id="roadOptions">
+                        <option value="नभएको">
+                        <option value="गोरेटो बाटो">
+                        <option value="कच्ची बाटो">
+                        <option value="पक्की बाटो">
+                    </datalist>
+                    <input list="categoryOptions" id="category" oninput="checkPriceMemory()" placeholder="वर्गिकरण"
+                        class="border p-2 rounded">
+                    <datalist id="categoryOptions">
+                        <option value="आवासीय">
+                        <option value="कृषि">
+                        <option value="व्यवसायिक">
+                    </datalist>
                 </div>
 
                 <div class="flex items-center gap-2">
                     <label class="font-bold text-xs">मूल्य प्रति रोपनी (रू):</label>
-                    <input type="text" id="pricePerRopani" class="border p-2 rounded flex-grow font-bold text-blue-700 nep-digit" placeholder="मुल्य">
+                    <input type="text" id="pricePerRopani"
+                        class="border p-2 rounded flex-grow font-bold text-blue-700 nep-digit" placeholder="मुल्य">
                 </div>
 
                 <div class="flex gap-2">
-                    <button onclick="addLowerEntry('same')" class="flex-1 bg-blue-600 text-white py-2 rounded font-bold shadow hover:bg-blue-700">Add (Same Loc)</button>
-                    <button onclick="addLowerEntry('new')" class="flex-1 bg-green-700 text-white py-2 rounded font-bold shadow hover:bg-green-800">Add (New Loc)</button>
+                    <button onclick="addLowerEntry('same')"
+                        class="flex-1 bg-blue-600 text-white py-2 rounded font-bold shadow hover:bg-blue-700">Add (Same
+                        Loc)</button>
+                    <button onclick="addLowerEntry('new')"
+                        class="flex-1 bg-green-700 text-white py-2 rounded font-bold shadow hover:bg-green-800">Add (New
+                        Loc)</button>
                 </div>
             </section>
 
             <div class="grid grid-cols-2 gap-4 sticky bottom-0 bg-white pt-4">
-                <button onclick="window.print()" class="bg-blue-900 text-white py-4 rounded-xl font-bold shadow-lg">प्रिन्ट</button>
-                <button onclick="exportToWord()" class="bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg">वर्ड डाउनलोड</button>
+                <button onclick="window.print()"
+                    class="bg-blue-900 text-white py-4 rounded-xl font-bold shadow-lg">प्रिन्ट</button>
+
+                <button onclick="exportToWord()"
+                    class="bg-slate-900 text-white py-4 rounded-xl font-bold shadow-lg">वर्ड डाउनलोड</button>
+                <!-- Add this below the Word Download button -->
+                <a href="https://fonts.google.com/download?family=Mukta" class="btn"
+                    style="background-color:#475569; text-decoration:none; text-align:center; display:block; margin-top:5px;">
+                    📥 फन्ट डाउनलोड (Mukta Font)
+                </a>
+                <p style="font-size:10px; color:red; text-align:center; margin-top:2px;">
+                    * Word मा फर्मेट नबिगारी प्रिन्ट गर्न यो फन्ट install गर्नुहोला ।
+                </p>
             </div>
         </div>
 
@@ -96,9 +190,9 @@
         <div id="print-area" class="preview-content shadow-sm border border-slate-300">
             <div id="word-content">
                 <div class="office-header">
-                    <img id="nisan_img" 
+                    <img id="nisan_img"
                         src="data:image/jpeg;base64,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"
-                     class="office-emblem">
+                        class="office-emblem">
                     <div class="header-text-container">
                         <div style="font-size: 10pt;">नेपाल सरकार</div>
                         <div style="font-size: 11pt;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
@@ -111,12 +205,26 @@
                 <table class="table-output w-full border-collapse">
                     <thead>
                         <tr class="bg-gray-100">
-                            <th>क्र.सं.</th><th>जिल्ला</th><th>साविक गा.वि.स.</th><th>वडा</th><th>कि.नं.</th><th>क्षेत्रफल</th><th>घरबाटो</th><th>वर्गिकरण</th><th>मूल्य/रोपनी</th><th>न्युनतम मूल्य</th><th class="action-col no-print">Action</th>
+                            <th>क्र.सं.</th>
+                            <th>जिल्ला</th>
+                            <th>साविक गा.वि.स.</th>
+                            <th>वडा</th>
+                            <th>कि.नं.</th>
+                            <th>क्षेत्रफल</th>
+                            <th>घरबाटो</th>
+                            <th>वर्गिकरण</th>
+                            <th>मूल्य/रोपनी</th>
+                            <th>न्युनतम मूल्य</th>
+                            <th class="action-col no-print">Action</th>
                         </tr>
                     </thead>
                     <tbody id="out_tbody"></tbody>
                     <tfoot>
-                        <tr class="font-bold"><td colspan="9" id="out_sum_words" class="text-right p-2">जम्मा : शुन्य रूपैँया मात्र</td><td id="out_sum_num" class="text-center">०.००</td><td class="action-col no-print"></td></tr>
+                        <tr class="font-bold">
+                            <td colspan="9" id="out_sum_words" class="text-right p-2">जम्मा : शुन्य रूपैँया मात्र</td>
+                            <td id="out_sum_num" class="text-center">०.००</td>
+                            <td class="action-col no-print"></td>
+                        </tr>
                     </tfoot>
                 </table>
             </div>
@@ -140,7 +248,7 @@
         // ----------------- LOGIC -----------------
         function addUpperEntry() {
             const t1 = document.getElementById('t1').value, t2 = document.getElementById('t2').value, t3 = document.getElementById('t3').value, t4 = document.getElementById('t4').value;
-            if(!t1 || !t2 || !t3 || !t4) return alert("सबै विवरण भर्नुहोस्");
+            if (!t1 || !t2 || !t3 || !t4) return alert("सबै विवरण भर्नुहोस्");
             upperEntries.push({ t1, t2: engToNep(t2), t3: engToNep(t3), t4: engToNep(t4) });
             document.getElementById('t3').value = ''; document.getElementById('t3').focus();
             renderUpperList(); updateAll();
@@ -155,12 +263,12 @@
         }
 
         function generateParagraph() {
-            if(upperEntries.length === 0) return "सिफारिस पत्रको विवरण भर्नुहोस्...";
+            if (upperEntries.length === 0) return "सिफारिस पत्रको विवरण भर्नुहोस्...";
             let grouped = {};
             upperEntries.forEach(e => {
-                if(!grouped[e.t1]) grouped[e.t1] = {};
-                if(!grouped[e.t1][e.t2]) grouped[e.t1][e.t2] = {};
-                if(!grouped[e.t1][e.t2][e.t4]) grouped[e.t1][e.t2][e.t4] = [];
+                if (!grouped[e.t1]) grouped[e.t1] = {};
+                if (!grouped[e.t1][e.t2]) grouped[e.t1][e.t2] = {};
+                if (!grouped[e.t1][e.t2][e.t4]) grouped[e.t1][e.t2][e.t4] = [];
                 grouped[e.t1][e.t2][e.t4].push(e.t3);
             });
             let localParts = [];
@@ -183,22 +291,22 @@
             const road = document.getElementById('road').value;
             const cat = document.getElementById('category').value;
             const key = `${vdc}|${road}|${cat}`;
-            if(priceMemory[key]) document.getElementById('pricePerRopani').value = engToNep(priceMemory[key]);
+            if (priceMemory[key]) document.getElementById('pricePerRopani').value = engToNep(priceMemory[key]);
         }
 
         function addLowerEntry(type) {
             const vdc = document.getElementById('old_vdc').value, ward = document.getElementById('ward').value, kitta = document.getElementById('kitta').value;
             const road = document.getElementById('road').value, cat = document.getElementById('category').value;
             const price = parseFloat(nepToEng(document.getElementById('pricePerRopani').value)) || 0;
-            if(!kitta || !vdc) return alert("गा.वि.स. र कित्ता अनिवार्य छ");
+            if (!kitta || !vdc) return alert("गा.वि.स. र कित्ता अनिवार्य छ");
             priceMemory[`${vdc}|${road}|${cat}`] = price;
 
             let totalRopani = 0, areaStr = "";
             const areaType = document.querySelector('input[name="areaType"]:checked').value;
-            if(areaType === 'traditional') {
+            if (areaType === 'traditional') {
                 const r = parseFloat(nepToEng(document.getElementById('ropani').value)) || 0, a = parseFloat(nepToEng(document.getElementById('aana').value)) || 0, p = parseFloat(nepToEng(document.getElementById('paisa').value)) || 0, d = parseFloat(nepToEng(document.getElementById('dam').value)) || 0;
-                totalRopani = r + (a/16) + (p/64) + (d/256);
-                areaStr = `${engToNep(r)}-${engToNep(a)}-${engToNep(p)}-${engToNep(d)}<br><small>(${engToNep((totalRopani*508.74).toFixed(2))} व.मि)</small>`;
+                totalRopani = r + (a / 16) + (p / 64) + (d / 256);
+                areaStr = `${engToNep(r)}-${engToNep(a)}-${engToNep(p)}-${engToNep(d)}<br><small>(${engToNep((totalRopani * 508.74).toFixed(2))} व.मि)</small>`;
             } else {
                 const sqm = parseFloat(nepToEng(document.getElementById('sqm_val').value)) || 0;
                 totalRopani = sqm / 508.74;
@@ -206,12 +314,12 @@
             }
 
             lowerEntries.push({ vdc, ward: engToNep(ward), kitta: engToNep(kitta), areaStr, totalRopani, road, cat, price, minValue: totalRopani * price });
-            
+
             // Clean fields as requested
             document.getElementById('kitta').value = ''; document.getElementById('road').value = ''; document.getElementById('category').value = '';
-            ['ropani','aana','paisa','dam','sqm_val','pricePerRopani'].forEach(id => document.getElementById(id).value = '');
-            
-            if(type === 'new') { document.getElementById('old_vdc').value = ''; document.getElementById('ward').value = ''; document.getElementById('old_vdc').focus(); }
+            ['ropani', 'aana', 'paisa', 'dam', 'sqm_val', 'pricePerRopani'].forEach(id => document.getElementById(id).value = '');
+
+            if (type === 'new') { document.getElementById('old_vdc').value = ''; document.getElementById('ward').value = ''; document.getElementById('old_vdc').focus(); }
             else { document.getElementById('kitta').focus(); }
             updateAll();
         }
@@ -227,7 +335,7 @@
             let html = "", totalSum = 0;
             lowerEntries.forEach((e, i) => {
                 totalSum += e.minValue;
-                html += `<tr><td>${engToNep(i+1)}</td><td>सिन्धुपाल्चोक</td><td>${e.vdc}</td><td>${e.ward}</td><td>${e.kitta}</td><td style="line-height:1.1">${e.areaStr}</td><td>${e.road}</td><td>${e.cat}</td><td>${engToNep(e.price.toLocaleString())}</td><td>${engToNep(e.minValue.toFixed(2).toLocaleString())}</td><td class="action-col no-print"><button onclick="lowerEntries.splice(${i},1); updateAll();" class="text-red-500 font-bold">✕</button></td></tr>`;
+                html += `<tr><td>${engToNep(i + 1)}</td><td>सिन्धुपाल्चोक</td><td>${e.vdc}</td><td>${e.ward}</td><td>${e.kitta}</td><td style="line-height:1.1">${e.areaStr}</td><td>${e.road}</td><td>${e.cat}</td><td>${engToNep(e.price.toLocaleString())}</td><td>${engToNep(e.minValue.toFixed(2).toLocaleString())}</td><td class="action-col no-print"><button onclick="lowerEntries.splice(${i},1); updateAll();" class="text-red-500 font-bold">✕</button></td></tr>`;
             });
             document.getElementById('out_tbody').innerHTML = html;
             document.getElementById('out_sum_num').innerText = engToNep(totalSum.toFixed(2).toLocaleString());
@@ -235,11 +343,11 @@
         }
 
         // ----------------- HELPERS -----------------
-        function nepaliJoin(arr) { if(!arr || !arr.length) return ""; if(arr.length===1) return arr[0]; const last = arr.pop(); return arr.join(', ') + ' र ' + last; }
-        
+        function nepaliJoin(arr) { if (!arr || !arr.length) return ""; if (arr.length === 1) return arr[0]; const last = arr.pop(); return arr.join(', ') + ' र ' + last; }
+
         function numberToNepaliWords(num) {
             if (num === 0) return "जम्मा : शुन्य रूपैँया मात्र";
-            const NUM_NE = ["शुन्य","एक","दुई","तीन","चार","पाँच","छ","सात","आठ","नौ","दस","एघार","बाह्र","तेह्र","चौध","पन्ध्र","सोह्र","सत्र","अठार","उन्नाइस","बीस","एक्काइस","बाइस","तेइस","चौबीस","पच्चीस","छब्बीस","सत्ताइस","अठ्ठाइस","उनन्तीस","तीस","एकतीस","बत्तीस","तेत्तीस","चौँतीस","पैंतीस","छत्तीस","सैंतीस","अठतीस","उनन्चालीस","चालीस","एकचालीस","बयालीस","त्रिचालीस","चवालीस","पैँतालीस","छयालीस","सत्चालीस","अठचालीस","उनन्चास","पचास","एकाउन्न","बाउन्न","त्रिपन्न","चवन्न","पचपन्न","छपन्न","सन्ताउन्न","अन्ठाउन्न","उनन्साठी","साठी","एकसट्ठी","बैसट्ठी","त्रिसट्ठी","चौसट्ठी","पैंसट्ठी","छैंसट्ठी","सडसट्ठी","अठसट्ठी","उनन्सत्तरी","सत्तरी","एकहत्तर","बहत्तर","त्रिहत्तर","चौरहत्तर","पचहत्तर","छयहत्तर","सतहत्तर","अठहत्तर","उनासी","अस्सी","एकासी","बयासी","त्रियासी","चौरासी","पचासी","छयासी","सतासी","अठासी","उनान्नब्बे","नब्बे","एकान्नब्बे","बयान्नब्बे","त्रियान्नब्बे","चौरान्नब्बे","पन्चान्नब्बे","छयान्नब्बे","सन्तानब्बे","अन्ठान्नब्बे","उनान्सय","सय"];
+            const NUM_NE = ["शुन्य", "एक", "दुई", "तीन", "चार", "पाँच", "छ", "सात", "आठ", "नौ", "दस", "एघार", "बाह्र", "तेह्र", "चौध", "पन्ध्र", "सोह्र", "सत्र", "अठार", "उन्नाइस", "बीस", "एक्काइस", "बाइस", "तेइस", "चौबीस", "पच्चीस", "छब्बीस", "सत्ताइस", "अठ्ठाइस", "उनन्तीस", "तीस", "एकतीस", "बत्तीस", "तेत्तीस", "चौँतीस", "पैंतीस", "छत्तीस", "सैंतीस", "अठतीस", "उनन्चालीस", "चालीस", "एकचालीस", "बयालीस", "त्रिचालीस", "चवालीस", "पैँतालीस", "छयालीस", "सत्चालीस", "अठचालीस", "उनन्चास", "पचास", "एकाउन्न", "बाउन्न", "त्रिपन्न", "चवन्न", "पचपन्न", "छपन्न", "सन्ताउन्न", "अन्ठाउन्न", "उनन्साठी", "साठी", "एकसट्ठी", "बैसट्ठी", "त्रिसट्ठी", "चौसट्ठी", "पैंसट्ठी", "छैंसट्ठी", "सडसट्ठी", "अठसट्ठी", "उनन्सत्तरी", "सत्तरी", "एकहत्तर", "बहत्तर", "त्रिहत्तर", "चौरहत्तर", "पचहत्तर", "छयहत्तर", "सतहत्तर", "अठहत्तर", "उनासी", "अस्सी", "एकासी", "बयासी", "त्रियासी", "चौरासी", "पचासी", "छयासी", "सतासी", "अठासी", "उनान्नब्बे", "नब्बे", "एकान्नब्बे", "बयान्नब्बे", "त्रियान्नब्बे", "चौरान्नब्बे", "पन्चान्नब्बे", "छयान्नब्बे", "सन्तानब्बे", "अन्ठान्नब्बे", "उनान्सय", "सय"];
             let n = Math.floor(num);
             let words = "";
             const crore = Math.floor(n / 10000000); n %= 10000000;
@@ -269,7 +377,8 @@
             const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `valuation-${Date.now()}.doc`; link.click();
         }
 
-        function resetData() { if(confirm("सबै डेटा मेटाउन चाहनुहुन्छ?")) location.reload(); }
+        function resetData() { if (confirm("सबै डेटा मेटाउन चाहनुहुन्छ?")) location.reload(); }
     </script>
 </body>
+
 </html>

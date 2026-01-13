@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>टिप्पणीहरू | Tippani Formats</title>
-    
+
     <!-- Google Fonts for beautiful Nepali and English text -->
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
@@ -37,7 +40,7 @@
             padding: 15px 20px;
             display: flex;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -71,6 +74,7 @@
             display: none;
             z-index: 998;
         }
+
         .overlay.active {
             display: block;
         }
@@ -79,11 +83,12 @@
         .slide-menu {
             position: fixed;
             top: 0;
-            left: -280px; /* Hidden by default */
+            left: -280px;
+            /* Hidden by default */
             width: 280px;
             height: 100%;
             background-color: var(--white);
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             transition: left 0.3s ease-in-out;
             z-index: 999;
             padding-top: 60px;
@@ -130,7 +135,8 @@
 
         /* --- Main Content CSS --- */
         main {
-            flex: 1; /* Pushes footer down */
+            flex: 1;
+            /* Pushes footer down */
             max-width: 800px;
             margin: 40px auto;
             padding: 20px;
@@ -244,14 +250,14 @@
             color: var(--secondary-color);
             text-decoration: none;
             font-weight: 600;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             padding: 8px 16px;
             border-radius: 50px;
             transition: background 0.3s ease;
         }
 
         .contact-link:hover {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             color: var(--white);
         }
 
@@ -264,11 +270,17 @@
 
         /* Responsive */
         @media (max-width: 600px) {
-            h1 { font-size: 1.5rem; }
-            .subjects li a { font-size: 1rem; }
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .subjects li a {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Overlay for closing menu -->
@@ -278,7 +290,7 @@
     <header>
         <div class="menu-btn" onclick="toggleMenu()">☰</div>
         <div class="header-title">मालपोत तथा भूमि व्यवस्थापन</div> <!-- Optional Site Title -->
-        
+
         <nav class="slide-menu" id="slideMenu">
             <div class="close-btn" onclick="toggleMenu()">&times;</div>
             <ul>
@@ -297,7 +309,7 @@
     <main>
         <div class="container">
             <h1>टिप्पणीका फर्म्याटहरू</h1>
-            
+
             <div class="subjects" id="subjects">
                 <label for="subjects">विषयहरू</label>
                 <ul>
@@ -312,9 +324,14 @@
                         </a>
                     </li>
                     <li>
-                        <a href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap">
-                            टिप्पणीमा प्रयोग भएको फन्ट डाउनलोड
+                        <!-- Add this below the Word Download button -->
+                        <a href="https://fonts.google.com/download?family=Mukta" class="btn"
+                            style="background-color:#475569; text-decoration:none; text-align:center; display:block; margin-top:5px;">
+                            📥 फन्ट डाउनलोड (Mukta Font)
                         </a>
+                        <p style="font-size:10px; color:red; text-align:center; margin-top:2px;">
+                            * टिप्पणीमा प्रयोग भएको यो फन्ट डाउनलोड गरि इन्टल गरे वर्डमा फर्मेट बिग्रिदैँन है ।
+                        </p>
                     </li>
                     <!-- Example of adding more items neatly -->
                     <!-- <li><a href="#">मोही लगत कट्टा</a></li> -->
@@ -329,11 +346,12 @@
             <div class="footer-text">
                 Designed by: <strong>Suman Acharya Sameer</strong> (Using AI)
             </div>
-            
+
             <a href="mailto:acharyasuma874@gmail.com" class="contact-link">
                 <!-- SVG Email Icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    <path
+                        d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                 </svg>
                 सम्पर्क: acharyasuma874@gmail.com
             </a>
@@ -345,7 +363,7 @@
         function toggleMenu() {
             var menu = document.getElementById("slideMenu");
             var overlay = document.getElementById("overlay");
-            
+
             // Toggle active class
             if (menu.classList.contains('active')) {
                 menu.classList.remove('active');
@@ -357,4 +375,5 @@
         }
     </script>
 </body>
+
 </html>
