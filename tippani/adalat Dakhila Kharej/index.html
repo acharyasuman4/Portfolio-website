@@ -112,6 +112,15 @@
             line-height: 1.6;
             /* Improved readability */
         }
+        /* Add this to your CSS */
+.highlight-active {
+    background-color: #fef9c3; /* Yellow background */
+    color: #000;
+    outline: 2px dashed #ca8a04;
+    transition: all 0.5s ease;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
 
 
         @media print {
@@ -515,96 +524,128 @@
         function toggleRevUI() { document.getElementById('rev_ui').classList.toggle('hidden', !document.getElementById('rev_applicable').checked); updateAll(); }
         function toggleSvcMode(m) { if (m === 'perc') document.getElementById('svc_fixed_mode').checked = false; else document.getElementById('svc_perc_mode').checked = false; updateAll(); }
 
-        function updateAll() {
-            // Inside updateAll() function... replace the top part with this:
+       function updateAll() {
+    const groups = {};
+    applicants.forEach(a => {
+        const key = `${a.dist}|${a.addr}|${a.gfather}|${a.father}|${a.relType}`;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(`<span class="font-bold text-blue-900">${a.name}</span>`);
+    });
 
-            const groups = {};
-            applicants.forEach(a => {
-                // We include relType in the key so we don't group different relation types together accidentally
-                const key = `${a.dist}|${a.addr}|${a.gfather}|${a.father}|${a.relType}`;
-                if (!groups[key]) groups[key] = [];
-                groups[key].push(`<span class="font-bold text-blue-900">${a.name}</span>`);
-            });
+    let appStr = Object.keys(groups).map(k => {
+        const [dist, addr, gf, f, relType] = k.split('|');
+        const names = nepaliJoin(groups[k]);
+        let relationText = "";
+        if (relType === 'wife') relationText = `${gf}को बुहारी ${f}को पत्नी`;
+        else if (relType === 'daughter') relationText = `${gf}को नातिनी ${f}को छोरी`;
+        else relationText = `${gf}को नाति ${f}को छोरा`;
+        return `${dist} जिल्ला ${addr} बस्ने ${relationText} ${names}`;
+    });
 
-            let appStr = Object.keys(groups).map(k => {
-                const [dist, addr, gf, f, relType] = k.split('|');
-                const names = nepaliJoin(groups[k]);
+    document.getElementById('out_applicant_details').innerHTML = nepaliJoin(appStr) || ".......";
+    document.getElementById('out_owners').innerText = nepaliJoin([...owners]) || ".......";
+    
+    const locs = {}; 
+    lands.forEach(l => { 
+        const key = `साविक ${l.vdc} वडा नं. ${toNepali(l.ward)}`; 
+        if (!locs[key]) locs[key] = []; 
+        locs[key].push(`कि.नं. ${toNepali(l.kitta)} (${l.area})`); 
+    });
+    
+    document.getElementById('out_land_details').innerText = Object.keys(locs).map(k => `${k} को ${nepaliJoin(locs[k])}`).join(', ') || ".......";
+    document.getElementById('out_court_details').innerText = nepaliJoin([...courtEntries]) || ".......";
+    document.getElementById('out_other_docs').innerText = nepaliJoin([...otherDocs]) || ".......";
+    
+    ['danum', 'dadate', 'napi_ch', 'napi_dt'].forEach(f => { 
+        const el = document.getElementById('out_' + f); 
+        if (el) el.innerText = toNepali(document.getElementById('in_' + f)?.value); 
+    });
 
-                // Logic to determine relation text
-                let relationText = "";
-                if (relType === 'wife') {
-                    // For Wife: Sasura -> Buhari -> Pati -> Patni
-                    relationText = `${gf}को बुहारी ${f}को पत्नी`;
-                } else if (relType === 'daughter') {
-                    // For Daughter: Baaje -> Natini -> Babu -> Chhori
-                    relationText = `${gf}को नातिनी ${f}को छोरी`;
-                } else {
-                    // Default (Son): Baaje -> Naati -> Babu -> Chhora
-                    relationText = `${gf}को नाति ${f}को छोरा`;
-                }
+    let clean = []; let grouped = {};
+    lands.forEach(l => {
+        let rel = rokkaEntries.filter(re => re.kittaIds.includes(l.id));
+        if (!rel.length || rel.every(re => !re.isRokka)) clean.push(toNepali(l.kitta));
+        else {
+            let key = rel.filter(re => re.isRokka).map(re => `${re.auth}को च.नं. ${toNepali(re.chanum)} मिति ${toNepali(re.date)}`).join(' र ');
+            if (!grouped[key]) grouped[key] = []; grouped[key].push(toNepali(l.kitta));
+        }
+    });
+    
+    let rParts = [];
+    if (clean.length) rParts.push(`कि.नं. ${nepaliJoin(clean)} रोक्का नरहेको`);
+    Object.keys(grouped).forEach(k => rParts.push(`कि.नं. ${nepaliJoin(grouped[k])} ${k} को पत्रबाट रोक्का रहेको`));
+    document.getElementById('out_rokka_details').innerText = nepaliJoin(rParts) || ".......";
 
-                return `${dist} जिल्ला ${addr} बस्ने ${relationText} ${names}`;
-            });
+    renderTable();
+    document.getElementById('out_final_decision').innerHTML = generateDecision();
 
-            document.getElementById('out_applicant_details').innerHTML = nepaliJoin(appStr) || ".......";
-
-            // ... rest of the function remains the same
-            document.getElementById('out_owners').innerText = nepaliJoin([...owners]) || ".......";
-            const locs = {}; lands.forEach(l => { const key = `साविक ${l.vdc} वडा नं. ${toNepali(l.ward)}`; if (!locs[key]) locs[key] = []; locs[key].push(`कि.नं. ${toNepali(l.kitta)} (${l.area})`); });
-            document.getElementById('out_land_details').innerText = Object.keys(locs).map(k => `${k} को ${nepaliJoin(locs[k])}`).join(', ') || ".......";
-            document.getElementById('out_court_details').innerText = nepaliJoin([...courtEntries]) || ".......";
-            document.getElementById('out_other_docs').innerText = nepaliJoin([...otherDocs]) || ".......";
-            ['danum', 'dadate', 'napi_ch', 'napi_dt'].forEach(f => { const el = document.getElementById('out_' + f); if (el) el.innerText = toNepali(document.getElementById('in_' + f)?.value); });
-
-            let clean = []; let grouped = {};
-            lands.forEach(l => {
-                let rel = rokkaEntries.filter(re => re.kittaIds.includes(l.id));
-                if (!rel.length || rel.every(re => !re.isRokka)) clean.push(toNepali(l.kitta));
-                else {
-                    let key = rel.filter(re => re.isRokka).map(re => `${re.auth}को च.नं. ${toNepali(re.chanum)} मिति ${toNepali(re.date)}`).join(' र ');
-                    if (!grouped[key]) grouped[key] = []; grouped[key].push(toNepali(l.kitta));
-                }
-            });
-            let rParts = [];
-            if (clean.length) rParts.push(`कि.नं. ${nepaliJoin(clean)} रोक्का नरहेको`);
-            Object.keys(grouped).forEach(k => rParts.push(`कि.नं. ${nepaliJoin(grouped[k])} ${k} को पत्रबाट रोक्का रहेको`));
-            document.getElementById('out_rokka_details').innerText = nepaliJoin(rParts) || ".......";
-
-            renderTable();
-            document.getElementById('out_final_decision').innerHTML = generateDecision();
+    // ---------------------------------------------------------
+    // Auto Scroll and Highlight Logic
+    // ---------------------------------------------------------
         }
 
-        function generateDecision() {
-            let extra = document.getElementById('decision_extra').value;
-            let d = `यसमा उल्लिखित प्रमाणहरू ${extra ? 'साथै ' + extra : ''} समेतको आधारमा `;
-            if (document.getElementById('need_fukuwa').checked) {
-                let sel = []; document.querySelectorAll('.fukuwa-cb:checked').forEach(cb => { let re = rokkaEntries.filter(r => r.isRokka)[cb.dataset.index]; sel.push(`${re.auth}को च.नं. ${toNepali(re.chanum)} मिति ${toNepali(re.date)}`); });
-                if (sel.length) d += `${nepaliJoin(sel)} को पत्रले रोक्का भएका जग्गाहरू फुकुवा गरि `;
-            }
-            if (document.getElementById('rev_applicable').checked) {
-                const muchulka = toEnglish(document.getElementById('v_muchulka').value);
-                let regTotal = 0; lands.forEach(l => { if (haalKittas[l.id]?.length) { haalKittas[l.id].forEach(h => { if (h.owner === 'निवेदक') regTotal += toEnglish(h.valuation); }); } else { regTotal += toEnglish(baseValuations[l.id]); } });
-                const maxVal = Math.max(muchulka, regTotal);
+function generateDecision() {
+    let extra = document.getElementById('decision_extra').value;
+    let d = `यसमा उल्लिखित प्रमाणहरू ${extra ? 'साथै ' + extra : ''} समेतको आधारमा `;
+
+    // Rokka / Fukuwa Logic
+    if (document.getElementById('need_fukuwa').checked) {
+        let sel = []; document.querySelectorAll('.fukuwa-cb:checked').forEach(cb => { let re = rokkaEntries.filter(r => r.isRokka)[cb.dataset.index]; sel.push(`${re.auth}को च.नं. ${toNepali(re.chanum)} मिति ${toNepali(re.date)}`); });
+        if (sel.length) d += `${nepaliJoin(sel)} को पत्रले रोक्का भएका जग्गाहरू फुकुवा गरि `;
+    }
+
+    // Revenue Logic
+    if (document.getElementById('rev_applicable').checked) {
+        // Check which boxes are ticked
+        const isProfit = document.getElementById('has_profit_tax').checked;
+        const isSvcPerc = document.getElementById('svc_perc_mode').checked;
+        const isSvcFixed = document.getElementById('svc_fixed_mode').checked;
+
+        // --- NEW LOGIC: If ONLY Fixed Service is ticked ---
+        if (isSvcFixed && !isProfit && !isSvcPerc) {
+            const fixedVal = document.getElementById('svc_fixed_val').value;
+            d += `रू. ${toNepali(fixedVal)} सेवा शुल्क असुल भई `;
+        } 
+        else {
+            // --- STANDARD LOGIC (For multiple ticks or Percentage/Profit) ---
+            const muchulka = toEnglish(document.getElementById('v_muchulka').value);
+            let regTotal = 0;
+            lands.forEach(l => { if (haalKittas[l.id]?.length) { haalKittas[l.id].forEach(h => { if (h.owner === 'निवेदक') regTotal += toEnglish(h.valuation); }); } else { regTotal += toEnglish(baseValuations[l.id]); } });
+
+            const maxVal = Math.max(muchulka, regTotal);
+
+            // Thaili Sentence (hides Muchulka comparison if 0)
+            if (muchulka > 0) {
                 d += ` रजिष्ट्रेशन थैली रू. ${toNepali(regTotal.toLocaleString())} र मुचुल्काको थैली रू. ${toNepali(muchulka.toLocaleString())} मध्ये ठूलो थैली रू. ${toNepali(maxVal.toLocaleString())} को `;
-                let rev = [];
-                if (document.getElementById('has_profit_tax').checked) rev.push(`${toNepali(document.getElementById('profit_tax_perc').value)}% ले रू. ${toNepali(Math.round(maxVal * toEnglish(document.getElementById('profit_tax_perc').value) / 100).toLocaleString())} लाभकर`);
-                if (document.getElementById('svc_perc_mode').checked) rev.push(`${toNepali(document.getElementById('svc_perc_val').value)}% ले रू. ${toNepali(Math.round(maxVal * toEnglish(document.getElementById('svc_perc_val').value) / 100).toLocaleString())} सेवा शुल्क`);
-                if (document.getElementById('svc_fixed_mode').checked) rev.push(`रू. ${toNepali(document.getElementById('svc_fixed_val').value)} सेवा शुल्क`);
-                d += `${nepaliJoin(rev)} असुल भई `;
+            } else {
+                d += ` रजिष्ट्रेशन थैली रू. ${toNepali(regTotal.toLocaleString())} को `;
             }
-            let appsK = [], ownsK = [];
-            lands.forEach(l => { if (haalKittas[l.id]?.length) { haalKittas[l.id].forEach(h => { if (h.owner === 'निवेदक') appsK.push(toNepali(h.kitta)); else ownsK.push(toNepali(h.kitta)); }); } else { appsK.push(toNepali(l.kitta)); } });
-            d += `कि.नं. ${nepaliJoin(appsK)} निवेदक ${nepaliJoin(applicants.map(a => a.name))}को नाममा दा.खा. हुन `;
-            if (ownsK.length) d += `र कि.नं. ${nepaliJoin(ownsK)} ज.ध. ${nepaliJoin([...owners])}को नाममा बाँकी रहन `;
-            d += `आवश्यक निर्णयार्थ पेश । श्रीमानको जो आदेश ।`;
-            return d;
+
+            // Collection Sentence
+            let rev = [];
+            if (isProfit) rev.push(`${toNepali(document.getElementById('profit_tax_perc').value)}% ले रू. ${toNepali(Math.round(maxVal * toEnglish(document.getElementById('profit_tax_perc').value) / 100).toLocaleString())} लाभकर`);
+            if (isSvcPerc) rev.push(`${toNepali(document.getElementById('svc_perc_val').value)}% ले रू. ${toNepali(Math.round(maxVal * toEnglish(document.getElementById('svc_perc_val').value) / 100).toLocaleString())} सेवा शुल्क`);
+            if (isSvcFixed) rev.push(`रू. ${toNepali(document.getElementById('svc_fixed_val').value)} सेवा शुल्क`);
+
+            d += `${nepaliJoin(rev)} असुल भई `;
         }
+    }
+
+    // Final Decision Part
+    let appsK = [], ownsK = [];
+    lands.forEach(l => { if (haalKittas[l.id]?.length) { haalKittas[l.id].forEach(h => { if (h.owner === 'निवेदक') appsK.push(toNepali(h.kitta)); else ownsK.push(toNepali(h.kitta)); }); } else { appsK.push(toNepali(l.kitta)); } });
+    d += `कि.नं. ${nepaliJoin(appsK)} निवेदक ${nepaliJoin(applicants.map(a => a.name))}को नाममा दा.खा. हुन `;
+    if (ownsK.length) d += `र कि.नं. ${nepaliJoin(ownsK)} ज.ध. ${nepaliJoin([...owners])}को नाममा बाँकी रहन `;
+    d += `आवश्यक निर्णयार्थ पेश । श्रीमानको जो आदेश ।`;
+    return d;
+}   
+    
 
         function renderTable() {
             const hasKK = document.getElementById('has_kk').checked;
             document.getElementById('out_napi_intro').innerText = hasKK ? `नापी कार्यालयको च.नं. ${toNepali(document.getElementById('napi_ch').value)} मिति ${toNepali(document.getElementById('napi_dt').value)} को पत्रबाट कित्ताकाट भई आएको देहाय बमोजिम हुने ।` : `माग भएका कित्ता जग्गाहरूको मुल्याङ्कन देहाय बमोजिम हुने ।`;
 
-            let head = hasKK ? `<tr style="background:#eee;"><th rowspan="2">सि.नं.</th><th colspan="3">साविक</th><th colspan="3">हाल</th><th rowspan="2">थैली</th></tr><tr><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th></tr>` : `<tr style="background:#eee;"><th>सि.नं.</th><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th><th>थैली</th></tr>`;
+            let head = hasKK ? `<tr style="background:#eee;"><th rowspan="2">सि.नं.</th><th colspan="3">साविक</th><th colspan="3">हाल</th><th rowspan="2">थैली</th></tr><tr><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th></tr>` : `<tr style="background:#eee;"><th>सि.नं.</th><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th><th>न्युनतम मुल्याङ्कन</th></tr>`;
             document.getElementById('out_table_head').innerHTML = head;
             document.getElementById('total_label_cell').colSpan = hasKK ? 7 : 5;
 
