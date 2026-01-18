@@ -1,0 +1,649 @@
+<!-- START OF FILE Paste January 18, 2026 - 7:12PM -->
+<!DOCTYPE html>
+<html lang="ne">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>संसोधन-सुचना आदेश-acharyasuman4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* RESET & BODY */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', sans-serif;
+            background-color: #cbd5e1;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* LAYOUT CONTAINER */
+        .main-layout {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- LEFT: INPUT PANEL (SCROLLABLE) --- */
+        .input-panel {
+            flex: 0 0 340px;
+            background: white;
+            padding: 15px;
+            border-right: 1px solid #94a3b8;
+            overflow-y: auto;
+            height: 100%;
+            z-index: 10;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- RIGHT: PREVIEW AREA (ZOOMED OUT) --- */
+        .preview-container {
+            flex: 1;
+            background: #94a3b8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        /* --- THE ZOOM TRICK --- */
+        .zoom-wrapper {
+            transform: scale(0.85);
+            transform-origin: top center;
+            margin-bottom: -150px;
+        }
+
+        /* PAPER STYLE */
+        .preview-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 2.54cm;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            text-align: justify;
+            line-height: 1.5;
+            font-size: 14pt;
+        }
+
+        /* INPUT STYLING */
+        .input-group {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .bg-indigo {
+            background-color: #eef2ff;
+            border-color: #c7d2fe;
+        }
+
+        /* Changed from bg-rose to bg-orange for Amendment */
+        .bg-orange {
+            background-color: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .bg-green {
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .bg-sky {
+            background-color: #f0f9ff;
+            border-color: #bae6fd;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            color: #475569;
+        }
+
+        .input-box {
+            border: 1px solid #94a3b8;
+            padding: 5px;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 13px;
+            font-family: 'Mukta', sans-serif;
+        }
+
+        textarea.input-box {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .input-box:focus {
+            outline: 2px solid #2563eb;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        /* TABS */
+        .tab-container {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .tab-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: none;
+            background: transparent;
+            font-weight: bold;
+            color: #64748b;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+        }
+
+        .tab-active {
+            background-color: #ea580c; /* Orange for amendment */
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-size: 13px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-blue {
+            background-color: #2563eb;
+        }
+
+        .btn-dark {
+            background-color: #0f172a;
+        }
+
+        .btn-red {
+            background-color: #ef4444;
+            width: auto;
+            font-size: 11px;
+            padding: 4px 10px;
+            float: right;
+        }
+
+        /* TABLE */
+        .aadesh-table {
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .aadesh-table td {
+            border: 1px solid black;
+            padding: 10px;
+            vertical-align: top;
+            font-size: 14pt;
+        }
+
+        #in_p_s {
+            display: none;
+        }
+
+        /* PRINT MODE */
+        @media print {
+            @page {
+                margin: 0.5in 0.5in 0.5in 1.25in;
+                size: A4 portrait;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+                overflow: visible;
+                height: auto;
+            }
+
+            .input-panel,
+            .tab-container,
+            button,
+            .no-print {
+                display: none !important;
+            }
+
+            .main-layout {
+                display: block;
+                height: auto;
+            }
+
+            .preview-container {
+                display: block;
+                background: white;
+                padding: 0;
+                overflow: visible;
+            }
+
+            .zoom-wrapper {
+                transform: none;
+                margin: 0;
+                width: 100%;
+            }
+
+            .preview-page {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                padding: 0;
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-layout">
+
+        <!-- LEFT: INPUTS -->
+        <div class="input-panel no-print">
+            <div style="margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid #e2e8f0; overflow:hidden;">
+                <h2 style="margin:0; float:left; font-size:1.2rem; color:#c2410c;">संसोधन विवरण</h2>
+                <button onclick="resetData()" class="btn btn-red">Reset</button>
+            </div>
+
+            <div class="input-group" style="background:#f8fafc;">
+                <div class="row-2">
+                    <div><label>प.सं.:</label><input type="text" id="in_p_s" oninput="scheduleUpdate()"
+                            placeholder="२०८१/८२" class="input-box"></div>
+                    <div><label>च.नं.:</label><input type="text" id="in_c_n" oninput="scheduleUpdate()"
+                            placeholder="च.नं." class="input-box"></div>
+                </div>
+                <div class="row-3" style="margin-top:8px;">
+                    <div><label>मिति:</label><input type="text" id="in_date" oninput="scheduleUpdate()"
+                            placeholder="२०८२।०९।१५" class="input-box"></div>
+                    <div><label>पद:</label><input type="text" id="in_officer" oninput="scheduleUpdate()"
+                            value="मालपोत अधिकृत" class="input-box"></div>
+                    <div><label>मिसिल:</label><input type="text" id="in_misil" oninput="scheduleUpdate()"
+                            placeholder="नं." class="input-box"></div>
+                </div>
+            </div>
+
+            <div class="input-group bg-indigo">
+                <div style="font-weight:bold; color:#3730a3; margin-bottom:8px; font-size:12px;">निवेदक</div>
+                <div style="display:flex; gap:5px; margin-bottom:8px;">
+                    <input type="text" id="in_name" oninput="scheduleUpdate()" placeholder="निवेदकको नाम"
+                        class="input-box" style="font-weight:bold; flex:1;">
+                    <select id="in_rel_type" onchange="scheduleUpdate()" class="input-box"
+                        style="width:auto; font-size:11px;">
+                        <option value="son">छोरा/नाति</option>
+                        <option value="daughter">छोरी/नातिनी</option>
+                        <option value="wife">पत्नी/बुहारी</option>
+                    </select>
+                </div>
+                <div class="row-2" style="margin-bottom:8px;">
+                    <input type="text" id="in_dist" oninput="scheduleUpdate()" value="सिन्धुपाल्चोक" class="input-box">
+                    <input type="text" id="in_addr" oninput="scheduleUpdate()" placeholder="ठेगाना" class="input-box">
+                </div>
+                <div class="row-2">
+                    <input type="text" id="in_gf" oninput="scheduleUpdate()" placeholder="बाजे" class="input-box">
+                    <input type="text" id="in_f" oninput="scheduleUpdate()" placeholder="बाबु" class="input-box">
+                </div>
+            </div>
+
+            <!-- New Amendment Section -->
+            <div class="input-group bg-orange">
+                <div style="font-weight:bold; color:#c2410c; margin-bottom:8px; font-size:12px;">संशोधन विवरण</div>
+                
+                <label>जग्गाधनीको नाम:</label>
+                <input type="text" id="in_owner_name" oninput="scheduleUpdate()" placeholder="जग्गाधनीको नाम" class="input-box" style="font-weight:bold; margin-bottom:8px;">
+                
+                <label>संशोधनको संक्षिप्त व्यहोरा:</label>
+                <input type="text" id="in_short_desc" oninput="scheduleUpdate()" placeholder="नाम र ससुराको नाम" class="input-box" style="margin-bottom:8px;">
+                
+                <label>संशोधनको पूर्ण व्यहोरा (Auto-Expand):</label>
+                <textarea id="in_full_desc" oninput="scheduleUpdate()" placeholder="जग्गाधनी दर्ता श्रेस्तामा हरि र नागरिकतामा राम भई फरक परेकोले..." class="input-box"></textarea>
+            </div>
+
+            <div class="input-group bg-green">
+                <div style="font-weight:bold; color:#166534; margin-bottom:8px; font-size:12px;">जग्गाको विवरण</div>
+                <div class="row-3" style="margin-bottom:8px;">
+                    <input type="text" id="l_vdc" placeholder="गा.वि.स." class="input-box">
+                    <input type="text" id="l_ward" placeholder="वडा" class="input-box">
+                    <input type="text" id="l_kitta" placeholder="कि.नं." class="input-box">
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button onclick="addLand('same')" class="btn btn-blue" style="padding:5px; font-size:11px;">+ Same
+                        VDC</button>
+                    <button onclick="addLand('new')" class="btn btn-dark"
+                        style="background:#15803d; padding:5px; font-size:11px;">+ New VDC</button>
+                </div>
+                <div id="land-list-ui" style="margin-top:10px; display:flex; flex-wrap:wrap; gap:5px;"></div>
+            </div>
+
+            <div class="input-group bg-sky">
+                <div class="row-2" style="margin-bottom:8px;">
+                    <input type="text" id="in_t_n" oninput="scheduleUpdate()" value="श्री जिल्ला प्रशासन कार्यालय,"
+                        class="input-box">
+                    <input type="text" id="in_t_a" oninput="scheduleUpdate()" value="चौतारा, सिन्धुपाल्चोक ।"
+                        class="input-box">
+                </div>
+                <div class="row-3" style="margin-bottom:8px;">
+                    <input type="text" id="in_s_auth" oninput="scheduleUpdate()" placeholder="सिफारिस गर्ने"
+                        class="input-box">
+                    <input type="text" id="in_s_ch" oninput="scheduleUpdate()" placeholder="च.नं." class="input-box">
+                    <input type="text" id="in_s_date" oninput="scheduleUpdate()" placeholder="मिति" class="input-box">
+                </div>
+                <div class="row-2">
+                    <input type="text" id="in_local" oninput="scheduleUpdate()" placeholder="स्थानीय तह"
+                        class="input-box">
+                    <input type="text" id="in_paper" oninput="scheduleUpdate()" value="राष्ट्रिय दैनिक"
+                        class="input-box">
+                </div>
+            </div>
+
+            <div style="margin-top:15px; display:grid; gap:8px;">
+                <button onclick="window.print()" class="btn btn-blue">🖨️ सिधै प्रिन्ट (Print)</button>
+                <button onclick="exportAllToWord()" class="btn btn-dark">📄 वर्डमा डाउनलोड (Word)</button>
+                <a href="https://fonts.google.com/download?family=Mukta" class="btn"
+                    style="background-color:#475569; text-decoration:none; text-align:center; display:block; margin-top:5px;">
+                    📥 फन्ट डाउनलोड (Mukta Font)
+                </a>
+            </div>
+        </div>
+
+        <!-- RIGHT: PREVIEW (ZOOMED) -->
+        <div class="preview-container">
+            <!-- TABS -->
+            <div class="tab-container no-print">
+                <button onclick="switchView('aadesh')" id="btn_aadesh" class="tab-btn tab-active">आदेश</button>
+                <button onclick="switchView('suchana')" id="btn_suchana" class="tab-btn">सूचना</button>
+                <button onclick="switchView('chithi')" id="btn_chithi" class="tab-btn">चिठ्ठी</button>
+            </div>
+
+            <!-- PAPER WRAPPER (SCALED) -->
+            <div class="zoom-wrapper">
+                <div id="tippani-preview" class="preview-page">
+                    <div id="dynamic_body">
+                        <!-- JS CONTENT -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- VARIABLES ---
+        let lands = [];
+        let currentView = 'aadesh';
+        let debounceTimer;
+
+        // --- UTILS ---
+        const toNepali = (num) => { if (!num && num !== 0) return ""; const n = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९']; return num.toString().replace(/[0-9]/g, s => n[s]); };
+        function nepaliJoin(arr) { if (!arr.length) return ""; if (arr.length === 1) return arr[0]; const last = arr.pop(); return arr.join(', ') + ' र ' + last; }
+        function scheduleUpdate() { clearTimeout(debounceTimer); debounceTimer = setTimeout(() => { updateAll(); saveToLocal(); }, 300); }
+
+        // --- LAND LOGIC ---
+        function addLand(type) {
+            const vdc = document.getElementById('l_vdc').value; const ward = document.getElementById('l_ward').value; const kitta = toNepali(document.getElementById('l_kitta').value.trim());
+            if (!kitta) return;
+            let loc = lands.find(l => l.vdc === vdc && l.ward === ward);
+            if (loc) { loc.kittas.push(kitta); } else { lands.push({ vdc, ward, kittas: [kitta] }); }
+            document.getElementById('l_kitta').value = "";
+            if (type === 'new') { document.getElementById('l_vdc').value = ""; document.getElementById('l_ward').value = ""; document.getElementById('l_vdc').focus(); } else { document.getElementById('l_kitta').focus(); }
+            renderLandUI(); scheduleUpdate();
+        }
+
+        function renderLandUI() {
+            document.getElementById('land-list-ui').innerHTML = lands.map((l, i) => `
+                <div style="background:#f1f5f9; border:1px solid #cbd5e1; padding:4px 8px; border-radius:4px; font-size:11px; display:flex; align-items:center; gap:5px;">
+                    <b>${l.vdc}-${l.ward}:</b> ${l.kittas.join(',')}
+                    <button onclick="lands.splice(${i},1); renderLandUI(); scheduleUpdate();" style="color:red; font-weight:bold; border:none; background:none; cursor:pointer;">✕</button>
+                </div>`).join('');
+        }
+
+        // --- TABS ---
+        function switchView(view) {
+            currentView = view;
+            ['btn_aadesh', 'btn_suchana', 'btn_chithi'].forEach(b => document.getElementById(b).className = 'tab-btn');
+            document.getElementById('btn_' + view).className = 'tab-btn tab-active';
+            updateAll();
+        }
+
+        // --- DATA ---
+        function getData() {
+            const relType = document.getElementById('in_rel_type').value;
+            return {
+                ps: document.getElementById('in_p_s').value || "२०८२।०८३",
+                cn: toNepali(document.getElementById('in_c_n').value) || ".......",
+                off: document.getElementById('in_officer').value,
+                dt: document.getElementById('in_date').value || ".......",
+                mis: toNepali(document.getElementById('in_misil').value) || ".......",
+                name: document.getElementById('in_name').value || ".......",
+                dist: document.getElementById('in_dist').value || ".......",
+                addr: document.getElementById('in_addr').value || ".......",
+                gf: document.getElementById('in_gf').value || ".......",
+                f: document.getElementById('in_f').value || ".......",
+                relType: relType,
+                // New Fields
+                ownerName: document.getElementById('in_owner_name').value || ".......",
+                shortDesc: document.getElementById('in_short_desc').value || ".......",
+                fullDesc: document.getElementById('in_full_desc').value || ".......",
+                
+                tn: document.getElementById('in_t_n').value || ".......",
+                ta: document.getElementById('in_t_a').value || ".......",
+                loc: document.getElementById('in_local').value || ".......",
+                papr: document.getElementById('in_paper').value || ".........",
+                sa: document.getElementById('in_s_auth').value || "......."
+            };
+        }
+
+        // --- UPDATE UI ---
+        function updateAll() {
+            const d = getData();
+
+            if (d.relType === 'wife') { document.getElementById('in_gf').placeholder = "ससुरा"; document.getElementById('in_f').placeholder = "पति"; }
+            else { document.getElementById('in_gf').placeholder = "बाजे"; document.getElementById('in_f').placeholder = "बाबु"; }
+
+            let applicantDesc = "";
+            if (d.relType === 'wife') applicantDesc = `${d.gf}को बुहारी ${d.f}को पत्नी`;
+            else if (d.relType === 'daughter') applicantDesc = `${d.gf}को नातिनी ${d.f}को छोरी`;
+            else applicantDesc = `${d.gf}को नाति ${d.f}को छोरा`;
+
+            const landText = lands.length > 0 ? lands.map(l => `साविक ${l.vdc} वडा नं. ${toNepali(l.ward)} को कि.नं. ${nepaliJoin([...l.kittas])}`).join(', ') : "साविक ....... वडा नं. ....... को कि.नं. .......";
+
+            const letterhead = `
+                <table style="width: 100%; border-bottom: 2px double black; margin-bottom: 15px; border-collapse: collapse; border: none;">
+                    <tr>
+                        <td style="width: 15%; text-align: left; vertical-align: top; border: none;">
+                            <img src="data:image/jpeg;base64,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" width="90">
+                        </td>
+                        <td style="text-align: center; color: red; vertical-align: top; border: none; line-height: 1.1;">
+                            <div style="font-size: 10pt; font-weight: bold;">नेपाल सरकार</div>
+                            <div style="font-size: 11pt; font-weight: bold;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
+                            <div style="font-size: 12pt; font-weight: bold;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
+                            <div style="font-size: 16pt; font-weight: bold;">मालपोत कार्यालय</div>
+                            <div style="font-size: 11pt; font-weight: bold;">चौतारा, सिन्धुपाल्चोक</div>
+                        </td>
+                        <td style="width: 15%; border: none;"></td>
+                    </tr>
+                </table>`;
+
+            // Updated Aadesh Body for Sanshodhan
+            const aadeshBody = `यसमा ${d.dist} जिल्ला ${d.addr} बस्ने ${applicantDesc} ${d.name}ले ${d.ownerName}को नाममा दर्ता रहेको सिन्धुपाल्चोक जिल्ला ${landText} का जग्गाहरूमा ${d.shortDesc} संसोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc} थप प्रमाण बुझ्नुपर्ने देखियो । अतः उल्लिखित कित्ता जग्गाको हकभोग कसले गरेको छ ? निवेदकको माग बमोजिम संशोधन गरिदिँदा कोही कसैको हकभोगमा प्रतिकूल असर पर्छ/पर्दैन? लगायतका उल्लिखित सम्पूर्ण व्यहोरा खुलाई हकदावी सम्बन्धमा ३५ दिने सार्वजानिक सूचना ${d.papr}मा समेत प्रकाशित गर्नू । सूचनाको म्यादभित्र दावि परे मिसिल सामेल गरि र नपरे म्याद भुक्तान भएपछि सूचना प्रकाशित भएको पत्रिका र सूचना टाँसको जानकारी समेत मिसिल सामेल गरी पेश गर्नू ।`;
+
+            // Updated Suchana Body for Sanshodhan
+            const suchanaBody = `यसमा ${d.dist} जिल्ला ${d.addr} बस्ने ${applicantDesc} ${d.name}ले ${d.ownerName}को नाममा दर्ता रहेको सिन्धुपाल्चोक जिल्ला ${landText} का जग्गाहरूमा ${d.shortDesc} संसोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc} यो सूचना प्रकाशित गरिएको छ । उल्लिखित जग्गाको अन्य कोही कानुनी हकवाला भए वा उल्लिखित व्यहोरा झुट्टा भए यो सूचना प्रकाशित भएको मितिले ३५ दिनभित्र आफूसँग भएको सबुत प्रमाणहरू संलग्न राखी आफैं वा वारेस मार्फत दावी/उजुरी गर्न आउनुहोला/हकदावी गर्नुहोला । म्याद नाघी आएको दावी/उजुरी उपर कुनै कार्यवाही नहुने र नियमानुसार भई जाने व्यहोरा समेत यसै सूचनाद्वारा जानकारी गराइन्छ ।`;
+
+            let bodyHtml = "";
+
+            if (currentView === 'aadesh') {
+                bodyHtml = `
+                ${letterhead}
+                <div class="text-center font-bold mb-4 text-lg underline" style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin-bottom:15px; margin-top:20px;">${d.off}बाट जारी भएको हकदावी सम्बन्धी आदेश</div>
+                <table class="aadesh-table">
+                    <tr>
+                        <td style="width: 25%; font-size: 14pt;"><b>निवेदक:</b><br>${d.name}<br><br><b>मिति:</b> ${d.dt}<br><b>मि.नं.:</b> ${d.mis}</td>
+                        <td style="font-size: 14pt; text-align: justify;">${aadeshBody}</td>
+                    </tr>
+                </table>`;
+            } else if (currentView === 'suchana') {
+                bodyHtml = `
+                ${letterhead}
+                <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin-bottom:15px; margin-top:20px;">हकदावी सम्बन्धी ३५ दिने सार्वजनिक सूचना</div>
+                <div style="font-size: 14pt; text-indent: 50px;">${suchanaBody}</div>`;
+            } else {
+                // CHITHI VIEW
+                // If view is Chithi, replace paper name with dots if it's the default text, or use input
+                const chithiPaper = "...............................";
+
+                bodyHtml = `
+                ${letterhead}
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14pt;"><div>पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</div><div style="padding-top:20px;">मिति: ${d.dt}</div></div>
+                <div style="text-align:center; font-weight:bold; margin-bottom:15px; font-size:16pt;">विषय: सूचना टाँस गरी जानकारी पठाइदिने सम्बन्धमा ।</div>
+                <div style="font-weight:bold; margin-bottom:10px; font-size:14pt;">${d.tn}<br>${d.ta}</div>
+                <p style="text-indent: 50px; font-size: 14pt; margin-bottom: 10px;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${d.dist} जिल्ला ${d.addr} बस्ने ${d.name}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संसोधन गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
+                <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14pt; border:none;">
+                  <tr><td style="width:65%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;"><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br></td><td style="width:35%; vertical-align:top; text-align:right; border:none;"><table align="right" cellpadding="0" cellspacing="0" style="width:220px;"><tr><td style="font-weight:bold; text-align:center;">.........................<br>${d.off}</td></tr></table></td></tr>
+                  <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.sa}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ${chithiPaper}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
+                </table>`;
+            }
+            document.getElementById('dynamic_body').innerHTML = bodyHtml;
+        }
+
+        // --- EXPORT WORD ---
+        async function exportAllToWord() {
+            const d = getData();
+
+            let applicantDesc = "";
+            if (d.relType === 'wife') applicantDesc = `${d.gf}को बुहारी ${d.f}को पत्नी`;
+            else if (d.relType === 'daughter') applicantDesc = `${d.gf}को नातिनी ${d.f}को छोरी`;
+            else applicantDesc = `${d.gf}को नाति ${d.f}को छोरा`;
+
+            const landText = lands.length > 0 ? lands.map(l => `साविक ${l.vdc} वडा नं. ${toNepali(l.ward)} को कि.नं. ${nepaliJoin([...l.kittas])}`).join(', ') : ".......";
+
+            const headerHTML = `
+            <table style="width:100%; border:none; border-bottom: 2px double black; margin-bottom: 0px;">
+                <tr>
+                    <td width="15%" style="border:none; vertical-align:top;">
+                        <img src="data:image/jpeg;base64,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" width="90">
+                    </td>
+                    <td width="85%" style="border:none; text-align:center; color:red; vertical-align:top;">
+                        <p style="margin:0; font-size:10pt; font-weight:bold; line-height: 1.1;">नेपाल सरकार</p>
+                        <p style="margin:0; font-size:11pt; font-weight:bold; line-height: 1.1;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</p>
+                        <p style="margin:1pt 0; font-size:12pt; font-weight:bold; line-height: 1.1;">भूमि व्यवस्थापन तथा अभिलेख विभाग</p>
+                        <p style="margin:0; font-size:16pt; font-weight:bold; line-height: 1.1;">मालपोत कार्यालय</p>
+                        <p style="margin:0; font-size:11pt; font-weight:bold; line-height: 1.1;">चौतारा, सिन्धुपाल्चोक</p>
+                    </td>
+                </tr>
+            </table>`;
+
+            // Updated Aadesh for Sanshodhan Word Export
+            const aadeshBody = `यसमा ${d.dist} जिल्ला ${d.addr} बस्ने ${applicantDesc} ${d.name}ले ${d.ownerName}को नाममा दर्ता रहेको सिन्धुपाल्चोक जिल्ला ${landText} का जग्गाहरूमा ${d.shortDesc} संसोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc} थप प्रमाण बुझ्नुपर्ने देखियो। अतः उल्लिखित कित्ता जग्गाको हकभोग कसले गरेको छ ? निवेदकको माग बमोजिम संशोधन गरिदिँदा कोही कसैको हकभोगमा प्रतिकूल असर पर्छ/पर्दैन? लगायतका उल्लिखित सम्पूर्ण व्यहोरा खुलाई हकदावी सम्बन्धमा ३५ दिने सार्वजानिक सूचना ${d.papr}मा समेत प्रकाशित गर्नू । सूचनाको म्यादभित्र दावि परे मिसिल सामेल गरि र नपरे म्याद भुक्तान भएपछि सूचना प्रकाशित भएको पत्रिका र सूचना टाँसको जानकारी समेत मिसिल सामेल गरी पेश गर्नू ।`;
+
+            // Updated Suchana for Sanshodhan Word Export
+            const suchanaBody = `यसमा ${d.dist} जिल्ला ${d.addr} बस्ने ${applicantDesc} ${d.name}ले ${d.ownerName}को नाममा दर्ता रहेको सिन्धुपाल्चोक जिल्ला ${landText} का जग्गाहरूमा ${d.shortDesc} संसोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc} यो सूचना प्रकाशित गरिएको छ । उल्लिखित जग्गाको अन्य कोही कानुनी हकवाला भए वा उल्लिखित व्यहोरा झुट्टा भए यो सूचना प्रकाशित भएको मितिले ३५ दिनभित्र आफूसँग भएको सबुत प्रमाणहरू संलग्न राखी आफैं वा वारेस मार्फत दावी/उजुरी गर्न आउनुहोला/हकदावी गर्नुहोला । म्याद नाघी आएको दावी/उजुरी उपर कुनै कार्यवाही नहुने र नियमानुसार भई जाने व्यहोरा समेत यसै सूचनाद्वारा जानकारी गराइन्छ ।`;
+
+            const contentAadesh = `
+            <p style="text-align:center; font-weight:bold; text-decoration:underline; font-size:14pt; margin-bottom:15px; margin-top:20px;">${d.off}बाट जारी भएको हकदावी सम्बन्धी आदेश</p>
+            <table style="width:100%; border-collapse:collapse; border:1px solid black; margin-top: 10px; font-size:14pt;">
+                <tr><td style="width:25%; border:1px solid black; padding:10px; vertical-align:top;"><b>निवेदक:</b><br>${d.name}<br><br><b>मिति:</b> ${d.dt}<br><b>मि.नं.:</b> ${d.mis}</td><td style="border:1px solid black; padding:10px; text-align:justify; line-height:1.5;">${aadeshBody}</td></tr>
+            </table>`;
+
+            const contentSuchana = `
+            <p style="text-align:center; font-weight:bold; font-size:16pt; text-decoration:underline; margin-bottom:15px; margin-top:20px;">हकदावी सम्बन्धी ३५ दिने सार्वजनिक सूचना</p>
+            <p style="text-align:justify; font-size:14pt; text-indent:50px; line-height:1.5;">${suchanaBody}</p>`;
+
+            // Updated Chithi for Sanshodhan Word Export
+            const chithiPaper = "...............................";
+
+            const contentChithi = `
+            <table style="width:100%; border:none; margin-bottom:10px; margin-top:20px; font-size:14pt;"><tr><td style="border:none;">पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</td><td style="border:none; text-align:right;">मिति: ${d.dt}</td></tr></table>
+            <p style="text-align:center; font-weight:bold; font-size:16pt; margin:15px 0;">विषय: सूचना टाँस गरी जानकारी पठाइदिने सम्बन्धमा ।</p>
+            <p style="font-weight:bold; margin-bottom:10px; font-size:14pt;">${d.tn}<br>${d.ta}</p>
+            <p style="text-align:justify; text-indent:50px; line-height:1.5; font-size:14pt;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${d.dist} जिल्ला ${d.addr} बस्ने ${d.name}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संसोधन गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14pt; border:none;">
+              <tr><td style="width:65%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;"><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br></td><td style="width:35%; vertical-align:top; text-align:right; border:none;"><table align="right" cellpadding="0" cellspacing="0" style="width:220px;"><tr><td style="font-weight:bold; text-align:center;">.........................<br>${d.off}</td></tr></table></td></tr>
+              <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.sa}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ${chithiPaper}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
+            </table>`;
+
+            const pageBreak = "<br clear=all style='mso-special-character:line-break; page-break-before:always'>";
+            const fullContent = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head>
+                <meta charset='utf-8'>
+                <style>
+                    @page Section1 { size: 8.5in 11in; margin: 1.5in 0.5in 0.5in 1.25in; mso-header-margin: 0.5in; mso-footer-margin: 0.5in; mso-header: h1; } 
+                    div.Section1 { page:Section1; font-family:'Mukta', sans-serif; }
+                    body { font-family:'Mukta', sans-serif; font-size: 14pt; }
+                </style>
+            </head>
+            <body>
+                <div class="Section1">
+                    <div style='mso-element:header' id="h1">${headerHTML}</div>
+                    ${contentAadesh}
+                    ${pageBreak}
+                    ${contentSuchana}
+                    ${pageBreak}
+                    ${contentChithi}
+                </div>
+            </body>
+            </html>`;
+
+            const blob = new Blob(['\ufeff', fullContent], { type: 'application/msword' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `संसोधन_सुचना_(${d.name}).doc`;
+            link.click();
+        }
+
+        // --- LOCAL STORAGE ---
+        function saveToLocal() { const d = getData(); const inputs = Array.from(document.querySelectorAll('input, select, textarea')).map(i => ({ id: i.id, val: i.value })); localStorage.setItem('sanshodhan_v1', JSON.stringify({ lands, inputs })); }
+        function loadFromLocal() {
+            const raw = localStorage.getItem('sanshodhan_v1');
+            if (raw) {
+                const d = JSON.parse(raw);
+                lands = d.lands || [];
+                if (d.inputs) d.inputs.forEach(item => { if (document.getElementById(item.id)) document.getElementById(item.id).value = item.val; });
+                renderLandUI(); updateAll();
+            } else { updateAll(); }
+        }
+        function resetData() { if (confirm("सबै डाटा मेटाउन चाहनुहुन्छ?")) { localStorage.removeItem('sanshodhan_v1'); location.reload(); } }
+
+        window.onload = loadFromLocal;
+    </script>
+</body>
+
+</html>
