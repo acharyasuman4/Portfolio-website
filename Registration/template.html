@@ -6,14 +6,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>न्युनतम मुल्याङकन रिपोर्ट- -acharyasuman4 </title>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
+
+<style>
+        /* --- Base Reset & Fonts --- */
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Mukta', sans-serif;
-            scroll-behavior: smooth;
+            font-family: 'Mukta', sans-serif, Arial;
             background-color: #f1f5f9;
+            margin: 0;
+            padding: 10px;
+            font-size: 14px;
         }
 
+        /* --- Utility Classes (Replacing Tailwind) --- */
+        .w-full { width: 100%; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .font-bold { font-weight: 700; }
+        .text-xs { font-size: 0.75rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xl { font-size: 1.25rem; }
+        .hidden { display: none; }
+        .cursor-pointer { cursor: pointer; }
+        
+        /* Flexbox */
+        .flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .items-center { align-items: center; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .flex-grow { flex-grow: 1; }
+        .flex-1 { flex: 1 1 0%; }
+
+        /* Grid System */
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        
+        .max-w-\[1950px\] { max-width: 1950px; margin: 0 auto; }
+
+        @media (min-width: 1280px) {
+            .xl\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        /* Spacing & Layout */
+        .p-2 { padding: 0.5rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .pb-2 { padding-bottom: 0.5rem; }
+        .pt-4 { padding-top: 1rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+
+        /* Colors & Borders */
+        .bg-white { background-color: #ffffff; }
+        .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .rounded { border-radius: 0.25rem; }
+        .border { border: 1px solid #e2e8f0; }
+        .border-b { border-bottom: 1px solid #e2e8f0; }
+
+        /* Inputs */
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+        }
+        input:focus, select:focus {
+            border-color: #3b82f6;
+            background-color: #f0f9ff;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Specific Section Colors */
+        .text-slate-800 { color: #1e293b; }
+        
+        /* Blue Section (Recommendation) */
+        .bg-indigo-50 { background-color: #eef2ff; }
+        .border-indigo-200 { border-color: #c7d2fe; }
+        .text-indigo-800 { color: #3730a3; }
+        .bg-indigo-600 { background-color: #4f46e5; color: white; border: none; cursor: pointer; }
+        .bg-indigo-600:hover { background-color: #4338ca; }
+
+        /* Green Section (Land) */
+        .bg-green-50 { background-color: #f0fdf4; }
+        .border-green-200 { border-color: #bbf7d0; }
+        .text-green-800 { color: #166534; }
+        
+        /* Action Buttons */
+        .bg-blue-600 { background-color: #2563eb; color: white; border: none; cursor: pointer; }
+        .bg-blue-600:hover { background-color: #1d4ed8; }
+        
+        .bg-green-700 { background-color: #15803d; color: white; border: none; cursor: pointer; }
+        .bg-green-700:hover { background-color: #166534; }
+
+        .bg-blue-900 { background-color: #1e3a8a; color: white; border: none; cursor: pointer; }
+        .bg-slate-900 { background-color: #0f172a; color: white; border: none; cursor: pointer; }
+        
+        .text-red-500 { color: #ef4444; background: none; border: none; cursor: pointer; }
+        .text-blue-700 { color: #1d4ed8; }
+
+        /* Sticky Footer */
+        .sticky { position: sticky; }
+        .bottom-0 { bottom: 0; }
+        .overflow-y-auto { overflow-y: auto; }
+        .max-h-\[95vh\] { max-height: 95vh; }
+
+        /* --- Original Custom CSS --- */
         .table-output td,
         .table-output th {
             border: 1px solid #000;
@@ -54,32 +163,19 @@
             margin-right: 90px;
         }
 
-        input:focus,
-        select:focus {
-            outline: 2px solid #3b82f6;
-            background-color: #f0f9ff;
-        }
-
         @media print {
-            .no-print {
-                display: none !important;
-            }
-
-            body {
-                background: white;
-            }
-
-            #print-area {
-                padding-left: 1.25in;
-                border: none;
-            }
-
-            .action-col {
-                display: none;
-            }
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            #print-area { padding-left: 0; border: none; box-shadow: none; }
+            .preview-content { padding: 0; margin: 0; }
+            .max-w-\[1950px\] { display: block; }
+            .grid { display: block; }
+            /* Hide the input section completely */
+            .grid-cols-1 > div:first-child { display: none; } 
+            .action-col { display: none; }
         }
     </style>
-</head>
+    </head>
 
 <body class="p-2 md:p-6 text-sm">
 
