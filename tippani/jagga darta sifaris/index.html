@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jagga Darta Sifaris Generator</title>
+    <style>
+        /* GENERAL RESET */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Kalimati', 'Arial', sans-serif;
+            background-color: #eef2f5;
+            box-sizing: border-box;
+        }
+
+        /* SPLIT SCREEN LAYOUT */
+        .main-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* LEFT: INPUT FORM */
+        .form-pane {
+            flex: 1;
+            min-width: 480px;
+            overflow-y: auto;
+            background: #ffffff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            border-right: 1px solid #ddd;
+            z-index: 10;
+        }
+
+/* RIGHT: PREVIEW - Updated for better scrolling */
+.preview-pane {
+    flex: 1.3;
+    background: #525659;
+    padding: 30px;
+    /* Allows the gray background to scroll if paper is very long */
+    overflow-y: auto; 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Aligns paper to top */
+}
+
+/* A4 PAPER ON SCREEN - Updated to grow automatically */
+#print-preview {
+    background: white;
+    width: 210mm;
+    min-height: 297mm; 
+    height: auto; /* IMPORTANT: Allows paper to grow for 2nd/3rd page */
+    padding: 20mm 12.7mm 20mm 35mm; 
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #000;
+    margin-bottom: 50px; /* Space at bottom for scrolling */
+}
+        /* FORM ELEMENTS */
+        h2.form-header { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; margin-top: 0; }
+        h3 { color: #2c3e50; font-size: 15px; margin-top: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; padding: 5px; }
+        
+        .form-group { margin-bottom: 10px; }
+        label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 3px; color: #444; }
+        
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            box-sizing: border-box;
+            font-size: 13px;
+        }
+        input:focus, select:focus, textarea:focus { border-color: #3498db; outline: none; background: #f0f8ff; }
+
+        .row { display: flex; gap: 10px; }
+        .col { flex: 1; }
+        
+        /* TABLE STYLES */
+        .input-table, .result-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 5px; }
+        
+        /* Form Table */
+        .input-table th { background: #f1f1f1; text-align: left; padding: 4px; border: 1px solid #ddd; }
+        .input-table td { padding: 2px; border: 1px solid #ddd; }
+        .input-table input { border: none; padding: 5px; width: 100%; }
+
+        /* Print Table */
+        .result-table th, .result-table td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            vertical-align: top;
+            text-align: left;
+        }
+        .result-table th { background-color: #f0f0f0; font-weight: bold; text-align: center; }
+
+        /* BUTTONS */
+        .btn-group { margin-top: 5px; margin-bottom: 15px; }
+        .btn { padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; color: white; margin-right: 5px; }
+        .btn-green { background-color: #27ae60; }
+        .btn-blue { background-color: #2980b9; }
+        .btn-red { background-color: #c0392b; }
+        .btn-print { background-color: #34495e; font-size: 16px; padding: 12px; width: 100%; margin-top: 20px; font-weight: bold; }
+        .btn-word { background-color: #2c3e50; font-size: 16px; padding: 12px; width: 100%; margin-top: 10px; font-weight: bold; }
+
+        .bold-text { font-weight: bold; }
+        .hidden { display: none; }
+        
+        /* Kitta Selector Box */
+        .kitta-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: #fff;
+            margin-top: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .kitta-item { display: inline-block; margin-right: 10px; font-size: 12px; }
+
+        /* PRINT MEDIA QUERY */
+        @media print {
+            /* Hide the UI, Show the Paper */
+            .form-pane { display: none !important; }
+            .preview-pane { display: block !important; padding: 0 !important; background: white !important; overflow: visible !important; }
+            .main-container { display: block !important; height: auto !important; overflow: visible !important; }
+            
+            body, html { height: auto !important; overflow: visible !important; background: white !important; }
+
+            #print-preview {
+                width: 100% !important;
+                height: auto !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important; /* Padding handled by @page */
+                border: none !important;
+            }
+
+            /* Page Margins: Top Right Bottom Left */
+            @page {
+                size: A4;
+                margin: 20mm 12.7mm 20mm 35mm; /* 0.5in Right = 12.7mm */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <!-- LEFT SIDE: INPUT FORM -->
+    <div class="form-pane">
+        <h2 class="form-header">जग्गा दर्ता सिफारिस फारम</h2>
+        
+        <div style="background:#e3f2fd; padding:10px; border-radius:5px; margin-bottom:15px; border:1px solid #b3e5fc;">
+            <label>निवेदन प्रकार:</label>
+            <input type="radio" name="req_type" value="दर्ता" checked onchange="updatePreview()"> छुट जग्गा दर्ता
+            <input type="radio" name="req_type" value="नामसारी दर्ता" onchange="updatePreview()" style="margin-left:15px;"> नामसारी दर्ता
+        </div>
+
+        <div class="row form-group">
+            <div class="col">
+                <label>मिति (YYYY.MM.DD):</label>
+                <input type="text" id="date" value="" placeholder="२०८२.०१.०२" oninput="updatePreview()">
+            </div>
+            <div class="col"><label>दर्ता नं.:</label><input type="text" id="reg_no" oninput="updatePreview()"></div>
+        </div>
+
+        <div class="form-group">
+            <label>विषय:</label>
+            <select id="subject_opt" onchange="checkSubject(); updatePreview()">
+                <option value="छुट जग्गा दर्ता गरी ज.ध. प्रमाणपुर्जा पाउँ ।">छुट जग्गा दर्ता गरी ज.ध. प्रमाणपुर्जा पाउँ ।</option>
+                <option value="custom">अन्य लेख्नुहोस्</option>
+            </select>
+            <input type="text" id="subject_custom" class="hidden" style="margin-top:5px;" placeholder="विषय लेख्नुहोस्" oninput="updatePreview()">
+        </div>
+
+        <h3>१. निवेदकको विवरण</h3>
+        <div class="row form-group">
+            <div class="col"><label>नाम थर:</label><input type="text" id="app_name" oninput="updateDatalist(); updatePreview()"></div>
+            <div class="col"><label>वतन:</label><input type="text" id="app_addr" oninput="updatePreview()"></div>
+        </div>
+        <div class="row form-group">
+            <div class="col"><label>ना.प्र.नं.:</label><input type="text" id="app_citizenship" oninput="updatePreview()"></div>
+            <div class="col"><label>जारी जिल्ला:</label><input type="text" id="app_district" value="सिन्धुपाल्चोक" oninput="updatePreview()"></div>
+            <div class="col"><label>जारी मिति:</label><input type="text" id="app_c_date" oninput="updatePreview()"></div>
+        </div>
+        <div class="row form-group">
+            <div class="col" style="flex:0.4;">
+                <select id="rel_type_1" onchange="updatePreview()"><option value="बाबु">बाबुको नाम</option><option value="पति">पतिको नाम</option></select>
+            </div>
+            <div class="col"><input type="text" id="app_father" oninput="updatePreview()"></div>
+        </div>
+        <div class="row form-group">
+            <div class="col" style="flex:0.4;">
+                <select id="rel_type_2" onchange="updatePreview()"><option value="बाजे">बाजेको नाम</option><option value="ससुरा">ससुराको नाम</option></select>
+            </div>
+            <div class="col"><input type="text" id="app_grandfather" oninput="updatePreview()"></div>
+        </div>
+
+        <h3>२. हकदार विवरण (नामसारी भएमा)</h3>
+        <div class="row form-group">
+            <div class="col"><label>साविक दर्तावालाको नाम:</label><input type="text" id="old_owner_name" oninput="updateDatalist(); updatePreview()"></div>
+            <div class="col"><label>वतन:</label><input type="text" id="old_owner_addr" oninput="updatePreview()"></div>
+        </div>
+        <div class="form-group"><label>हकदार प्रमाण:</label><input type="text" id="heir_proof" value="" oninput="updatePreview()"></div>
+        
+        <label>हकदारहरुको तालिका:</label>
+        <table class="input-table" id="heir_table">
+            <thead><tr><th width="30%">नाता</th><th>नामथर</th><th width="30%">कैफियत</th><th></th></tr></thead>
+            <tbody></tbody>
+        </table>
+        <datalist id="person_list"></datalist>
+        <div class="btn-group"><button class="btn btn-green" onclick="addHeirRow()">+ Add Row</button></div>
+        <div class="form-group"><label>घ. अन्य हकदारले हक छोडेकोमा नाम:</label><input type="text" id="heir_consent" value="छैन" oninput="updatePreview()"></div>
+
+        <h3>३. जग्गाको विवरण</h3>
+        <div class="row form-group">
+            <div class="col"><label>र.नं./हा.नं. (एकभन्दा बढि भए कमा दिएर):</label><input type="text" id="land_rec_no" oninput="updatePreview()"></div>
+        </div>
+        <table class="input-table" id="land_table">
+            <thead>
+                <tr>
+                    <th>मौजा/गा.वि.स.</th><th width="40px">वडा</th><th width="40px">कि.नं.</th><th width="50px">क्षे.फ.</th>
+                    <th>खलो</th><th>विरह</th><th>किसिम</th><th>प्रकृति</th><th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="btn-group">
+            <button class="btn btn-blue" onclick="addSameGavisa()">+ Add (Same Gavisa)</button>
+            <button class="btn btn-green" onclick="addNewGavisa()">+ Add (New Gavisa)</button>
+        </div>
+
+        <h3>अन्य विवरण</h3>
+        <div class="form-group"><label>४. ७ नं. फाँटवारी भिड्छ?</label><input type="text" id="q4" value="भिड्छ ।" oninput="updatePreview()"></div>
+        <div class="form-group"><label>५. थप प्रमाण (फिल्डबुक... बाहेक):</label><input type="text" id="q5_extra" placeholder="छैन" oninput="updatePreview()"></div>
+        <div class="form-group"><label>६. बाँकी दर्ता विवरण:</label><input type="text" id="q6" value="छैन" oninput="updatePreview()"></div>
+        <div class="form-group"><label>७. पहिले निवेदन दिएको भएको भएको कारवाहीको व्यहोरा:</label><input type="text" id="q7" value="छैन" oninput="updatePreview()"></div>
+        <div class="form-group"><label>8. मालपोत/धरौटी:</label><input type="text" id="q8" value="तिरो मिसिल संलग्न छ । धरौटी विवरण छैन" oninput="updatePreview()"></div>
+
+        <h3>९. कार्यालयको श्रेष्ता</h3>
+        
+        <!-- Mohi Logic -->
+        <div class="form-group" style="background:#f9f9f9; padding:5px; border:1px solid #ddd;">
+            <label>मोही विवरण:</label>
+            <input type="radio" name="mohi_opt" value="chhaina" checked onchange="toggleMohi()"> छैन
+            <input type="radio" name="mohi_opt" value="chha" onchange="toggleMohi()"> छ
+            <div id="mohi_section" class="hidden">
+                <input type="text" id="mohi_name" placeholder="मोहीको नाम" oninput="updatePreview()" style="margin-top:5px;">
+                <div style="font-size:11px; margin-top:3px; color:#666;">मोही लाग्ने कित्ताहरु छान्नुहोस्:</div>
+                <div id="mohi_kitta_container" class="kitta-box"></div>
+            </div>
+        </div>
+
+        <!-- Jhagada Logic -->
+        <div class="form-group" style="background:#f9f9f9; padding:5px; border:1px solid #ddd;">
+            <label>झगडा विवरण:</label>
+            <input type="radio" name="jhagada_opt" value="chhaina" checked onchange="toggleJhagada()"> छैन
+            <input type="radio" name="jhagada_opt" value="chha" onchange="toggleJhagada()"> छ
+            <div id="jhagada_section" class="hidden">
+                <div style="font-size:11px; margin-top:3px; color:#666;">झगडा भएका कित्ताहरु छान्नुहोस्:</div>
+                <div id="jhagada_kitta_container" class="kitta-box"></div>
+            </div>
+        </div>
+
+        <div class="row form-group">
+            <div class="col"><label>मोठ विवरण:</label><input type="text" id="moth_desc" value="छैन" oninput="updatePreview()"></div>
+            <div class="col"><label>रोक्का:</label><input type="text" id="rocca_desc" value="छैन" oninput="updatePreview()"></div>
+        </div>
+        <div class="row form-group">
+            <div class="col"><label>साविक लगत:</label><input type="text" id="sabik_desc" value="छ" oninput="updatePreview()"></div>
+            <div class="col"><label>लुजसीट भिडेको:</label><select id="loose_sheet" onchange="updatePreview()"><option value="छ">छ</option><option value="छैन">छैन</option></select></div>
+        </div>
+
+        <h3>१०-२२. सिफारिस तथा राय</h3>
+        <div class="form-group"><label>१०. स्थानीय तह सिफारिस:</label><textarea rows="2" id="q10" oninput="updatePreview()">निवेदकले हकभोग गरी आएको जग्गा दर्ता हुन छुट भएकोले नियमानुसार गरी दिनू ।</textarea></div>
+        <div class="form-group"><label>११. सर्जमिनको भनाइ:</label><textarea rows="2" id="q11" oninput="updatePreview()">साबिक समय देखिको हकभोग भित्रको नम्बरी जग्गा यी निवेदकका नाउँमा दर्ता गरी दिए फरक पर्दैन ।</textarea></div>
+        <div class="form-group"><label>१२. स्थलगत नीरिक्षण:</label><textarea rows="2" id="q12" placeholder="स्थलगत निरीक्षणबाट..." oninput="updatePreview()"></textarea></div>
+        <div class="form-group"><label>१५. सूचना विवरण:</label><textarea rows="3" id="q15" oninput="updatePreview()">सरकारी सार्वजनिक ऐलानी पर्ती गुठी व्यक्ति बिशेषको हक लाग्ने जग्गा भए वा सो प्रकारका जग्गा समेत नाप नक्सा वा भोग समेत गरेको भए दाबी बिरोध गर्नु हुन भनी राष्ट्रिय दैनिक पत्रिका समेतमा ३५ दिने हकदाबी सम्बन्धि सूचना प्रकाशन भएको ।</textarea></div>
+        <div class="form-group"><label>१९. अन्य विवरण:</label><textarea rows="2" id="q19" oninput="updatePreview()">नभएको</textarea></div>
+        <div class="form-group"><label>२१. कार्यालयको राय:</label><textarea rows="3" id="q21" oninput="updatePreview()">निवेदकले दर्ताका लागि चाहिने आवश्यक प्रमाण साथ हकदार र हकभोग खुली आएको स्थानीय निकायको सिफारिस साथ मागदाबी लिएको जग्गा निवेदकका नाउँमा दर्ता हुने देखि पेश भएको ।</textarea></div>
+
+        <br>
+        <button class="btn btn-print" onclick="window.print()">🖨 Print / Save PDF</button>
+        <button class="btn btn-word" onclick="exportToWord()">⬇ Download Word (.doc)</button>
+        <br><br>
+        <!-- Add this button where you want a "New Form" trigger -->
+<button class="btn btn-red" onclick="resetForm()" style="width:100%; margin-bottom:10px;">↻ New Form / Reset</button>
+    </div>
+
+    <!-- RIGHT SIDE: PREVIEW -->
+    <div class="preview-pane">
+        <div id="print-preview">
+            <!-- JS Content -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- INITIALIZATION ---
+    window.onload = function() {
+        addHeirRow(true); 
+        addNewGavisa();
+        updatePreview();
+    };
+
+    // --- DATALIST LOGIC ---
+    function updateDatalist() {
+        const appName = getValue('app_name');
+        const oldName = getValue('old_owner_name');
+        const datalist = document.getElementById('person_list');
+        datalist.innerHTML = ''; 
+        if (appName) { let opt = document.createElement('option'); opt.value = appName; datalist.appendChild(opt); }
+        if (oldName) { let opt = document.createElement('option'); opt.value = oldName; datalist.appendChild(opt); }
+    }
+
+    // --- HELPER FUNCTIONS ---
+    function getValue(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+    function checkSubject() {
+        const val = document.getElementById('subject_opt').value;
+        const custom = document.getElementById('subject_custom');
+        val === 'custom' ? custom.classList.remove('hidden') : custom.classList.add('hidden');
+    }
+
+    // --- HEIR TABLE ---
+    function addHeirRow(isFirst = false) {
+        const tbody = document.querySelector('#heir_table tbody');
+        const tr = document.createElement('tr');
+        const remarkVal = isFirst ? 'फिल्डबुकको ज.ध.' : '';
+        const nameInput = `<input type="text" class="h-name" list="person_list" oninput="updatePreview()">`;
+
+        tr.innerHTML = `
+            <td><input type="text" class="h-rel" oninput="updatePreview()"></td>
+            <td>${nameInput}</td>
+            <td><input type="text" class="h-rem" value="${remarkVal}" oninput="updatePreview()"></td>
+            <td style="text-align:center;"><button class="btn btn-red" style="margin:0;" onclick="removeRow(this)">X</button></td>
+        `;
+        tbody.appendChild(tr);
+        if(!isFirst) {
+            tr.querySelector('.h-rel').focus(); // Focus on Naata
+            updatePreview();
+        }
+    }
+
+    // --- LAND TABLE & KITTA SELECTORS ---
+    function addLandRowHTML(vdcVal, wardVal) {
+        const tbody = document.querySelector('#land_table tbody');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" class="l-vdc" value="${vdcVal}" oninput="updateKittaSelectors(); updatePreview()"></td>
+            <td><input type="text" class="l-ward" value="${wardVal}" oninput="updatePreview()"></td>
+            <td><input type="text" class="l-kit" oninput="updateKittaSelectors(); updatePreview()"></td>
+            <td><input type="text" class="l-area" oninput="updatePreview()"></td>
+            <td><input type="text" class="l-khalo" oninput="updatePreview()"></td>
+            <td><input type="text" class="l-virah" oninput="updatePreview()"></td>
+            <td><input type="text" class="l-kisim" oninput="updatePreview()"></td>
+            <td><input type="text" class="l-prakriti" value="रैकर" oninput="updatePreview()"></td>
+            <td style="text-align:center;"><button class="btn btn-red" style="margin:0;" onclick="removeRow(this)">X</button></td>
+        `;
+        tbody.appendChild(tr);
+        return tr;
+    }
+
+    function addSameGavisa() {
+        const rows = document.querySelectorAll('#land_table tbody tr');
+        let lastVdc = '', lastWard = '';
+        if(rows.length > 0) {
+            const lastRow = rows[rows.length - 1];
+            lastVdc = lastRow.querySelector('.l-vdc').value;
+            lastWard = lastRow.querySelector('.l-ward').value;
+        }
+        const newRow = addLandRowHTML(lastVdc, lastWard);
+        updateKittaSelectors();
+        updatePreview();
+        newRow.querySelector('.l-kit').focus();
+    }
+
+    function addNewGavisa() {
+        const newRow = addLandRowHTML('', '');
+        updateKittaSelectors();
+        updatePreview();
+        newRow.querySelector('.l-vdc').focus();
+    }
+
+    function removeRow(btn) {
+        btn.closest('tr').remove();
+        updateKittaSelectors();
+        updatePreview();
+    }
+
+    // --- MOHI & JHAGADA LOGIC ---
+    function toggleMohi() {
+        const val = document.querySelector('input[name="mohi_opt"]:checked').value;
+        const section = document.getElementById('mohi_section');
+        section.classList.toggle('hidden', val === 'chhaina');
+        updatePreview();
+    }
+    
+    function toggleJhagada() {
+        const val = document.querySelector('input[name="jhagada_opt"]:checked').value;
+        const section = document.getElementById('jhagada_section');
+        section.classList.toggle('hidden', val === 'chhaina');
+        updatePreview();
+    }
+
+    function updateKittaSelectors() {
+        // Collect all kittas
+        const kittas = [];
+        document.querySelectorAll('.l-kit').forEach(input => {
+            if(input.value.trim() !== '') kittas.push(input.value);
+        });
+
+        renderCheckboxes('mohi_kitta_container', kittas, 'mohi_chk');
+        renderCheckboxes('jhagada_kitta_container', kittas, 'jhagada_chk');
+    }
+
+    function renderCheckboxes(containerId, kittas, prefix) {
+        const container = document.getElementById(containerId);
+        // Save current checked state
+        const checkedValues = new Set();
+        container.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => checkedValues.add(cb.value));
+        
+        container.innerHTML = '';
+        if(kittas.length === 0) {
+            container.innerHTML = '<i>माथि कित्ता नं. भर्नुहोस्</i>';
+            return;
+        }
+
+        kittas.forEach(k => {
+            const span = document.createElement('span');
+            span.className = 'kitta-item';
+            const isChecked = checkedValues.has(k) ? 'checked' : '';
+            span.innerHTML = `<input type="checkbox" id="${prefix}_${k}" value="${k}" ${isChecked} onchange="updatePreview()"> ${k}`;
+            container.appendChild(span);
+        });
+    }
+
+    // --- TABLE MERGING ---
+    function calculateSpans(data) {
+        if (data.length === 0) return [];
+        let spans = data.map(() => ({ vdc: 0, ward: 0 }));
+        
+        // VDC Merge
+        let p = 0;
+        while(p < data.length) {
+            let count = 1;
+            let val = data[p].vdc;
+            for(let next = p+1; next < data.length; next++) {
+                if(data[next].vdc === val) count++; else break;
+            }
+            spans[p].vdc = count;
+            p += count;
+        }
+        // Ward Merge (Same VDC & Ward)
+        p = 0;
+        while(p < data.length) {
+            let count = 1;
+            let valVdc = data[p].vdc;
+            let valWard = data[p].ward;
+            for(let next = p+1; next < data.length; next++) {
+                if(data[next].vdc === valVdc && data[next].ward === valWard) count++; else break;
+            }
+            spans[p].ward = count;
+            p += count;
+        }
+        return spans;
+    }
+
+    // --- GENERATE PREVIEW ---
+    function updatePreview() {
+        const typeVal = document.querySelector('input[name="req_type"]:checked').value;
+        const isNamsari = (typeVal === 'नामसारी दर्ता');
+        const typeText = typeVal; // "दर्ता" or "नामसारी दर्ता"
+
+        const date = getValue('date');
+        const regNo = getValue('reg_no');
+        let subject = getValue('subject_opt');
+        if (subject === 'custom') subject = getValue('subject_custom');
+
+        const appName = getValue('app_name');
+        const appAddr = getValue('app_addr');
+        const appCit = getValue('app_citizenship');
+        const appDist = getValue('app_district');
+        const appDate = getValue('app_c_date');
+        
+        const rel1 = document.getElementById('rel_type_1').value;
+        const name1 = getValue('app_father');
+        const rel2 = document.getElementById('rel_type_2').value;
+        const name2 = getValue('app_grandfather');
+
+        const oldOwnerName = getValue('old_owner_name');
+        const oldOwnerAddr = getValue('old_owner_addr');
+        const displayOldOwner = oldOwnerAddr ? `${oldOwnerAddr} बस्ने ${oldOwnerName}` : (oldOwnerName || '');
+        
+        // Heir Table
+        let heirTableRows = '';
+        document.querySelectorAll('.h-rel').forEach((rel, index) => {
+            const hName = document.querySelectorAll('.h-name')[index].value;
+            const hRem = document.querySelectorAll('.h-rem')[index].value;
+            if(hName || rel.value) {
+                const combinedName = hRem ? `${hName} - ${hRem}` : hName;
+                heirTableRows += `<tr><td>${rel.value}</td><td>${combinedName}</td></tr>`;
+            }
+        });
+
+        // Land Data & Mohi/Jhagada Check
+        const lVdcs = document.querySelectorAll('.l-vdc');
+        const lWards = document.querySelectorAll('.l-ward');
+        const lKits = document.querySelectorAll('.l-kit');
+        const lAreas = document.querySelectorAll('.l-area');
+        const lKhalos = document.querySelectorAll('.l-khalo');
+        const lVirahs = document.querySelectorAll('.l-virah');
+        const lKisims = document.querySelectorAll('.l-kisim');
+        const lPrakritis = document.querySelectorAll('.l-prakriti');
+
+        const isMohiEnabled = document.querySelector('input[name="mohi_opt"]:checked').value === 'chha';
+        const mohiTextInput = getValue('mohi_name');
+        const isJhagadaEnabled = document.querySelector('input[name="jhagada_opt"]:checked').value === 'chha';
+
+        let landData = [];
+        let summaryVDC = new Set();
+        let summaryWard = new Set();
+        let summaryKit = [];
+
+        for(let i=0; i<lVdcs.length; i++){
+            const kit = lKits[i].value;
+            // Determine Mohi Text for this specific row
+            let rowMohi = 'छैन';
+            if(isMohiEnabled && kit) {
+                const isChecked = document.getElementById(`mohi_chk_${kit}`)?.checked;
+                if(isChecked) rowMohi = mohiTextInput;
+            }
+
+            // Determine Jhagada Text
+            let rowJhagada = 'छैन';
+            if(isJhagadaEnabled && kit) {
+                const isChecked = document.getElementById(`jhagada_chk_${kit}`)?.checked;
+                if(isChecked) rowJhagada = 'छ';
+            }
+
+            landData.push({
+                vdc: lVdcs[i].value, ward: lWards[i].value, kit: kit,
+                area: lAreas[i].value, khalo: lKhalos[i].value,
+                virah: lVirahs[i].value, kisim: lKisims[i].value,
+                prakriti: lPrakritis[i].value,
+                mohi: rowMohi, jhagada: rowJhagada
+            });
+
+            if(lVdcs[i].value) summaryVDC.add(lVdcs[i].value);
+            if(lWards[i].value) summaryWard.add(lWards[i].value);
+            if(kit) summaryKit.push(kit);
+        }
+
+        const spans = calculateSpans(landData);
+        let sec3Rows = '', sec9aRows = '', sec9bRows = '';
+        const fieldbookOwner = isNamsari ? oldOwnerName : appName;
+        const landRec = getValue('land_rec_no');
+
+        landData.forEach((row, i) => {
+            const sp = spans[i];
+            
+            // Section 3
+            sec3Rows += '<tr>';
+            if (sp.vdc > 0) {
+                sec3Rows += `<td rowspan="${sp.vdc}">${row.vdc}</td>`;
+                if (i === 0) sec3Rows += `<td rowspan="${landData.length}">${landRec}</td>`;
+            }
+            sec3Rows += `<td>${row.khalo}</td><td>${row.prakriti}</td>`;
+            if (sp.vdc > 0) sec3Rows += `<td rowspan="${sp.vdc}">${row.vdc}</td>`;
+            if (sp.ward > 0) sec3Rows += `<td rowspan="${sp.ward}">${row.ward}</td>`;
+            sec3Rows += `<td>${row.kit}</td><td>${row.area}</td><td>${row.virah} ${row.kisim}</td></tr>`;
+
+            // Section 9A
+            sec9aRows += '<tr>';
+            if (sp.vdc > 0) sec9aRows += `<td rowspan="${sp.vdc}">${row.vdc}</td>`;
+            sec9aRows += `<td>${row.ward} / ${row.kit}</td><td>${fieldbookOwner}</td>`;
+            sec9aRows += `<td>${row.mohi}</td><td>${getValue('moth_desc')}</td>`;
+            sec9aRows += `<td>उल्लेख छैन</td><td>${row.jhagada}</td><td>${row.virah} ${row.kisim}</td></tr>`;
+
+            // Section 9B
+            sec9bRows += '<tr>';
+            if (sp.vdc > 0) sec9bRows += `<td rowspan="${sp.vdc}">${row.vdc}</td>`;
+            sec9bRows += `<td>${row.ward} / ${row.kit}</td><td>${getValue('moth_desc')}</td>`;
+            sec9bRows += `<td>${getValue('rocca_desc')}</td><td>${getValue('sabik_desc')}</td>`;
+            sec9bRows += `<td>${getValue('q7') === 'छैन' ? 'देखिन्न' : 'देखिन्छ'}</td><td></td></tr>`;
+        });
+
+        // Text Replacements
+        const replacer = (text) => text.replace(/दर्ता|दर्ता नामसारी/g, typeText);
+        const q10Text = replacer(getValue('q10'));
+        const q21Text = replacer(getValue('q21'));
+
+        const vdcStr = Array.from(summaryVDC).join(', ');
+        const wardStr = Array.from(summaryWard).join(', ');
+        const kitStr = summaryKit.join(', ');
+
+        // HTML
+        const html = `
+            <div style="font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 16px;">
+                जग्गादर्ताको लागि सिफारिस गर्दा भर्नु पर्ने फारम
+            </div>
+
+            <div class="bold-text" style="margin-bottom: 10px;">मालपोत नियमावली २०३६ को नियम ४ख बमोजिमको जग्गादर्ता समितिको बैठकको निर्णय</div>
+            <div class="bold-text" style="margin-bottom: 10px;">निवेदनको मिति र दर्ता नम्बरः ${date} , ${regNo}</div>
+            <div class="bold-text" style="margin-bottom: 10px;">निवेदनको विवरणः ${subject}</div>
+
+            <div class="bold-text" style="margin-bottom: 5px;">१. निवेदकको विवरणः-</div>
+            <div style="margin-left: 15px; margin-bottom: 10px;">
+                क. नाम थर वतनः- ${appAddr ? appAddr + ' बस्ने ' : ''}${appName}<br>
+                ख. ना.प्र.नं.: ${appCit}। ${appDist}, ${appDate}<br>
+                ग. ${rel1} नामः- ${name1}<br>
+                घ. ${rel2} नामः- ${name2}
+            </div>
+
+            <div class="bold-text" style="margin-bottom: 5px;">२. हकदारले दर्ता नामसारी माग गरेकोमाः</div>
+            <div style="margin-left: 15px; margin-bottom: 10px;">
+                क. साविक दर्तावालाको नाम थर वतनः-  ${displayOldOwner}<br>
+                ख. हकदार प्रमाणः- ${getValue('heir_proof')}<br>
+                ग. प्रमाणबाट देखिएको हकदारको विवरणः <br>
+                <table class="result-table" style="width:70%; margin-top:5px;">
+                    <tr><th width="30%">नाता</th><th>नामथर</th></tr>
+                    ${heirTableRows}
+                </table>
+                घ. धैरै हकदार भई केहीका नाममा दर्ता गर्न माग भएकोमा ककस्को नाममा दर्ता हुनुपर्ने हो सो र अरू हकदारको मन्जुरी छ छैन ? भएको भए क-कस्को खुलाउनेः-<br>
+                - ${getValue('heir_consent')}
+            </div>
+
+            <div class="bold-text" style="margin-bottom: 5px;">३. दर्ता माग भएको जग्गाको नापी अनुसारको विवरणः-</div>
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">मौजा</th><th rowspan="2">र.नं. हा.नं. र पोता नं.</th><th rowspan="2">खलो</th><th rowspan="2">राज गुठी, निजी गुठी विर्ता के हो?</th>
+                        <th colspan="5" style="text-align:center">जग्गाको विवरण</th>
+                    </tr>
+                    <tr><th>पञ्चायत</th><th>वडा नं.</th><th>कि.नं.</th><th>क्षे.फ.</th><th>विरह</th></tr>
+                </thead>
+                <tbody>${sec3Rows}</tbody>
+            </table>
+
+            <div class="bold-text" style="margin-bottom: 8px;">४. ७ नं. फाँटवारीमा उक्त साविकको विवरण भिड्छ भिड्दैन ?</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q4')}</div>
+
+            <div class="bold-text" style="margin-bottom: 8px;">५. उक्त जग्गा दर्ताको लागि के कस्तो प्रमाण पेश भएको छ?</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- फिल्डबुक, साबिक लगत, साबिक तिरोको रसिद, १ र २नं. अनुसूचि ${getValue('q5_extra') ? ', ' + getValue('q5_extra') : ''} समेत ।</div>
+
+            <div class="bold-text" style="margin-bottom: 8px;">६. साविक लगतको जग्गा मध्ये कति दर्ता भयो र कति दर्ता हुन बाँकी छ भनी निवेदकले खुलाएको छ ?</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q6')}</div>
+
+            <div class="bold-text" style="margin-bottom: 8px;">७. पहिले निवेदन दिएको भए भएको कारवाहीको व्यहोरा ?</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q7')}</div>
+
+            <div class="bold-text" style="margin-bottom: 8px;">८. दर्ता माग भएको जग्गाको कुन साल सम्मको मालपोत बुझाएको छ र कुन साल देखिको मालपोत बुझाउन बाँकी छ भनी निवेदकले खुलाएको छ ? धरौटी रहेको भए कुन साल सम्मको धरौटी कहाँ रहेको प्रमाण के पेश छ ?</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q8')}</div>
+
+            <div class="bold-text" style="margin-bottom: 5px;">९. कार्यालयको श्रेष्ता भिडाएको विवरणः-</div>
+            <div style="margin-left: 10px;"><b>क. फिल्डबुकबाट देखिएकोः-</b></div>
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>पञ्चायत</th><th>वडा नं./कि.नं.</th><th>जग्गाधनीको नाम थर</th><th>मोहीको नाम, थर</th>
+                        <th>कैफियत व्यहोरा</th><th>फिल्डबुक प्रमाणित गर्ने</th><th>झगडा जनाएको छ छैन</th><th>विरह/किसिम</th>
+                    </tr>
+                </thead>
+                <tbody>${sec9aRows}</tbody>
+            </table>
+
+            <div style="margin-left: 10px;"><b>ख. अन्य श्रेष्ता भिडाएकोः-</b></div>
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>पञ्चायत</th><th>वडा नं./कि.नं.</th><th>मोठ श्रेष्ताबाट देखिएको विवरण</th><th>रोक्का छ/छैन?</th>
+                        <th>साविक लगत भिडेको छ/छैन</th><th>अरू कारबाही वा मुद्दा चलेको देखिन्छ/ देखिन्न</th><th>अन्य व्यहोरा</th>
+                    </tr>
+                </thead>
+                <tbody>${sec9bRows}</tbody>
+            </table>
+
+            <div class="bold-text" style="margin-left: 10px; margin-bottom:8px;">ग. लुजसीट भिडेको छ/छैन ? - <span style="font-weight:normal">${getValue('loose_sheet')}</span></div>
+
+            <div class="bold-text" style="margin-bottom: 5px;">१०. सम्बन्धित स्थानीय तहको सिफारिसको व्यहोरा</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- ${q10Text}</div>
+            <div class="bold-text" style="margin-bottom: 5px;">११. सर्जमिनको भनाइः</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q11')}</div>
+            <div class="bold-text" style="margin-bottom: 5px;">१२. स्थलगत नीरिक्षण गरिएकोमा स्थलगत नीरिक्षणबाट देखिएको जग्गाको स्थितिः-</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q12')}</div>
+            <div class="bold-text" style="margin-bottom: 5px;">१३. फिल्डबुकमा देखिएको जग्गाधनी बुझिएको भए भरपाई</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- छैन</div>
+            <div class="bold-text" style="margin-bottom: 5px;">१४. फिल्डबुकमा देखिएको मोही बुझिएको भए मोहीको भनाइः</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- छैन</div>
+            <div class="bold-text" style="margin-bottom: 5px;">१५. सार्वजनिक सूचनाको संक्षिप्त विवरण र दाबी परे नपरेकोः</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q15')}</div>
+            <div class="bold-text" style="margin-bottom: 5px;">१६. नदी उकास जग्गा भए सम्बन्धित प्राविधिक पक्षको मन्तव्य के हो ?</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- होइन</div>
+
+            <div class="bold-text" style="margin-bottom: 8px;">१७. वन कार्यालयको स्वीकृति लिनुपर्ने भए स्वीकृति दिने कार्यालयको नाम........................................ पत्र संख्या............................... मिति..................</div>
+            <div class="bold-text" style="margin-bottom: 8px;">१८. जलाधार संरक्षण अधिकृतको स्वीकृति लिनु पर्ने भए स्वीकृति दिने कार्यालयको नाम.............................. पत्र संख्या....................................... मिति</div>
+            <div class="bold-text" style="margin-bottom: 5px;">१९. अन्य केही खुलाउनुपर्ने विवरण भए खुलाउने</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q19')}</div>
+
+            <div class="bold-text" style="margin-top: 15px; margin-bottom: 25px;">२०. पेश भएको मिसिल संरक्षण कागजात सबुत प्रमाण तथा कार्यालयको श्रेष्ता समेत भिडेको उपयुक्त विवरण भरेको हो भनी सही गर्ने कर्मचारीः</div>
+            <div style="width: 200px; border-bottom: 1px none black; margin-bottom: 5px;"></div>
+            <div></div>
+
+            <div class="bold-text" style="margin-bottom: 5px; margin-top: 10px;">२१. कार्यालयको रायः-</div>
+            <div style="margin-left: 20px; margin-bottom:8px;">${q21Text}</div>
+
+            <div class="bold-text" style="margin-bottom: 5px;">२२. समितिको सिफारिसः-</div>
+            <div style="text-align: justify; margin-bottom: 30px;">
+            निवेदकको आफ्नै नाउको फिल्डबुक, साबिक लगत, साबिक तिरोको दरपिठ रसिद, १ नं. २ नं. अनुसूचिका फारम, किटानी हकदार र हकभोग खुलेको स्थानीय निकायको सिफारिस, ${getValue('q5_extra') ? getValue('q5_extra') + ',' : ''} हकदाबी सम्बन्धि प्रकाशित ३५ दिने सार्वजनिक सूचना, सोको म्याद भुक्तान हुँदा कोही कसैको पनि नपरेको दाबी विरोध, कार्यालयको तर्फबाट बुझिएको स्थलगत सर्जमिन सिफारिसबाट समेत निवेदक <b>${appName}</b> हकदार हुन भन्ने कुरामा मतैक्य रहेको देखिएको हुँदा निजका नाउँमा साबिक <b>${vdcStr}</b> वडा नं. <b>${wardStr}</b> का कि.नं. <b>${kitStr}</b> को जग्गा ${typeText} गरी श्रेष्ता पुर्जा कायम गरिदिन आवश्यक निर्णय सहित सिफारिस गरियो ।
+            </div>
+
+            <!-- FOOTER SIGNATURES -->
+            <table style="width:100%; border:none; margin-top:30px;">
+                <tr>
+                    <td style="border:none; text-align:center; vertical-align:top;">
+                        ...........................<br>
+                        मालपोत कार्यालयको<br>
+                        वरिष्ठ कर्मचारी<br>
+                        सदस्य
+                    </td>
+                    <td style="border:none; text-align:center; vertical-align:top;">
+                        ...........................<br>
+                        नापी कार्यालयको <br>
+                        प्रतिनिधि<br>
+                        सदस्य
+                    </td>
+                    <td style="border:none; text-align:center; vertical-align:top;">
+                        ...........................<br>
+                        प्रमुख मालपोत अधिकृत<br>
+                        अध्यक्ष
+                    </td>
+                </tr>
+            </table>
+        `;
+
+        document.getElementById('print-preview').innerHTML = html;
+        window.generatedAppName = appName || 'निवेदक';
+    }
+
+    function exportToWord() {
+        const content = document.getElementById('print-preview').innerHTML;
+        const header = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head><meta charset='utf-8'><title>Export</title>
+            <style>body{font-family:'Kalimati',Arial,sans-serif}table{border-collapse:collapse;width:100%}td,th{border:1px solid #000;padding:5px;vertical-align:top}.bold-text{font-weight:bold}</style>
+            </head><body>`;
+        const footer = "</body></html>";
+        const sourceHTML = header + content + footer;
+        const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+        const fileDownload = document.createElement("a");
+        document.body.appendChild(fileDownload);
+        fileDownload.href = source;
+        fileDownload.download = `दर्ता_सिफारिस_${window.generatedAppName}.doc`;
+        fileDownload.click();
+        document.body.removeChild(fileDownload);
+    }
+// --- 1. AUTO-SAVE LOGIC ---
+    const FORM_KEY = 'jagga_darta_autosave';
+
+    // Listen for inputs to save
+    document.querySelector('.form-pane').addEventListener('input', () => saveToLocal());
+    document.querySelector('.form-pane').addEventListener('change', () => saveToLocal());
+
+    function saveToLocal() {
+        // Collect Inputs
+        const inputs = {};
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            if(el.id) inputs[el.id] = (el.type === 'checkbox' || el.type === 'radio') ? el.checked : el.value;
+            else if(el.name && el.type === 'radio' && el.checked) inputs[el.name] = el.value;
+        });
+        
+        // Collect Tables (HTML content is easier to restore for exact replication)
+        const heirRows = [];
+        document.querySelectorAll('#heir_table tbody tr').forEach(tr => {
+            heirRows.push({
+                rel: tr.querySelector('.h-rel').value,
+                name: tr.querySelector('.h-name').value,
+                rem: tr.querySelector('.h-rem').value
+            });
+        });
+
+        const landRows = [];
+        document.querySelectorAll('#land_table tbody tr').forEach(tr => {
+            landRows.push({
+                vdc: tr.querySelector('.l-vdc').value,
+                ward: tr.querySelector('.l-ward').value,
+                kit: tr.querySelector('.l-kit').value,
+                area: tr.querySelector('.l-area').value,
+                khalo: tr.querySelector('.l-khalo').value,
+                virah: tr.querySelector('.l-virah').value,
+                kisim: tr.querySelector('.l-kisim').value,
+                prakriti: tr.querySelector('.l-prakriti').value
+            });
+        });
+
+        const data = { inputs, heirRows, landRows };
+        localStorage.setItem(FORM_KEY, JSON.stringify(data));
+    }
+
+    // --- 2. RESTORE LOGIC ---
+    function restoreFromLocal() {
+        const raw = localStorage.getItem(FORM_KEY);
+        if(!raw) return false;
+
+        const data = JSON.parse(raw);
+
+        // Restore Inputs
+        for(const [key, val] of Object.entries(data.inputs)) {
+            const el = document.getElementById(key);
+            if(el) {
+                if(el.type === 'checkbox') el.checked = val;
+                else el.value = val;
+            } else {
+                // Radio buttons by name
+                const radio = document.querySelector(`input[name="${key}"][value="${val}"]`);
+                if(radio) radio.checked = true;
+            }
+        }
+
+        // Restore Tables (Clear current -> Rebuild)
+        document.querySelector('#heir_table tbody').innerHTML = '';
+        data.heirRows.forEach(row => {
+            addHeirRow();
+            const tr = document.querySelector('#heir_table tbody tr:last-child');
+            tr.querySelector('.h-rel').value = row.rel;
+            tr.querySelector('.h-name').value = row.name;
+            tr.querySelector('.h-rem').value = row.rem;
+        });
+
+        document.querySelector('#land_table tbody').innerHTML = '';
+        data.landRows.forEach(row => {
+            // Create row structure
+            const tr = addLandRowHTML(row.vdc, row.ward);
+            tr.querySelector('.l-kit').value = row.kit;
+            tr.querySelector('.l-area').value = row.area;
+            tr.querySelector('.l-khalo').value = row.khalo;
+            tr.querySelector('.l-virah').value = row.virah;
+            tr.querySelector('.l-kisim').value = row.kisim;
+            tr.querySelector('.l-prakriti').value = row.prakriti;
+        });
+
+        // Trigger UI updates
+        checkSubject();
+        toggleMohi();
+        toggleJhagada();
+        updateKittaSelectors(); 
+        updatePreview();
+        return true;
+    }
+
+    // --- 3. RESET FORM ---
+    function resetForm() {
+        if(confirm("Are you sure you want to clear everything?")) {
+            localStorage.removeItem(FORM_KEY);
+            location.reload();
+        }
+    }
+
+    // --- 4. INITIALIZATION ---
+    window.onload = function() {
+        const hasData = localStorage.getItem(FORM_KEY);
+        
+        let restored = false;
+        
+        // ASK THE USER
+        if(hasData) {
+            if(confirm("Unsaved data found! \nPress OK to Recover it.\nPress Cancel for a New Form.")) {
+                restored = restoreFromLocal();
+            } else {
+                localStorage.removeItem(FORM_KEY); // User wants new form
+            }
+        }
+
+        // If not restored, set defaults
+        if(!restored) {
+            addHeirRow(true);
+            addNewGavisa();
+            updatePreview();
+        }
+
+        // FORCE FOCUS ON DATE (Wait 100ms to override other events)
+        setTimeout(() => {
+            document.getElementById('date').focus();
+        }, 100);
+    };
+    // --- ENGLISH TO NEPALI NUMBER CONVERTER ---
+    const nepaliNumMap = {
+        '0': '०', '1': '१', '2': '२', '3': '३', '4': '४',
+        '5': '५', '6': '६', '7': '७', '8': '८', '9': '९'
+    };
+
+    document.querySelector('.form-pane').addEventListener('input', function(e) {
+        // Target specific input types (text, number, or mostly any input in your form)
+        const target = e.target;
+        
+        // Skip if it's a checkbox or radio
+        if (target.type === 'checkbox' || target.type === 'radio') return;
+
+        const val = target.value;
+        
+        // Only run if there are English numbers (0-9) present
+        if (/[0-9]/.test(val)) {
+            // 1. Save the cursor position (so typing doesn't jump to the end)
+            const start = target.selectionStart;
+            const end = target.selectionEnd;
+
+            // 2. Replace numbers
+            const newVal = val.replace(/[0-9]/g, match => nepaliNumMap[match]);
+            target.value = newVal;
+
+            // 3. Restore cursor position
+            if (target.setSelectionRange) {
+                target.setSelectionRange(start, end);
+            }
+
+            // 4. Force Preview Update again (to ensure the Nepali number shows up immediately)
+            updatePreview(); 
+            
+            // 5. (Optional) Force Auto-Save update if you are using the previous auto-save code
+            if(typeof saveToLocal === 'function') {
+                saveToLocal();
+            }
+        }
+    });
+</script>
+</body>
+</html>
