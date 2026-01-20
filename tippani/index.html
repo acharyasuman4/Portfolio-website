@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>टिप्पणीहरू | Tippani Formats</title>
+    <title>टिप्पणीहरू | Tippani Formats - acharyasuman4</title>
 
     <!-- Google Fonts for beautiful Nepali and English text -->
     <link
@@ -383,6 +383,14 @@
                 overlay.classList.add('active');
             }
         }
+        if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.error('SW registration failed:', err));
+  });
+}
+
     </script>
 </body>
 

@@ -777,6 +777,14 @@ function generateDecision() {
         function addOtherDoc() { const v = document.getElementById('other_doc_input').value; if (v) { otherDocs.push(v); document.getElementById('other_doc_input').value = ''; updateAll(); saveToLocal(); } }
 
         addApplicant(); loadFromLocal(); updateAll();
+        if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.error('SW registration failed:', err));
+  });
+}
+
     </script>
 </body>
 
