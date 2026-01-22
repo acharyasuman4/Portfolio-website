@@ -75,8 +75,8 @@
         </div>
 
         <div class="row form-group">
-            <div class="col"><label>मिति (YYYY.MM.DD):</label><input type="text" id="date" placeholder="२०८२.०१.०२" oninput="updatePreview()"></div>
             <div class="col"><label>दर्ता नं.:</label><input type="text" id="reg_no" oninput="updatePreview()"></div>
+            <div class="col"><label>मिति (YYYY.MM.DD):</label><input type="text" id="date" placeholder="२०८२.०१.०२" oninput="updatePreview()"></div>
         </div>
 
         <div class="form-group">
@@ -217,7 +217,7 @@
         <h3>१०-२२. सिफारिस तथा राय</h3>
         <div class="form-group"><label>१०. स्थानीय तह सिफारिस:</label><textarea rows="2" id="q10" oninput="updatePreview()">निवेदकले हकभोग गरी आएको जग्गा दर्ता हुन छुट भएकोले नियमानुसार दर्ता गरी दिनू ।</textarea></div>
         <div class="form-group"><label>११. सर्जमिनको भनाइ:</label><textarea rows="2" id="q11" oninput="updatePreview()">साबिक समय देखिको हकभोग भित्रको नम्बरी जग्गा यी निवेदकका नाउँमा दर्ता गरी दिए फरक पर्दैन ।</textarea></div>
-        <div class="form-group"><label>१२. स्थलगत नीरिक्षण:</label><textarea rows="2" id="q12" placeholder="स्थलगत निरीक्षणबाट..." oninput="updatePreview()"></textarea></div>
+        <div class="form-group"><label>१२. स्थलगत नीरिक्षण:</label><textarea rows="2" id="q12" oninput="updatePreview()">नापी कार्यालयबाट प्राप्त फिल्ड प्रतिवेदन मिसिलमा संलग्न गरिएको ।</textarea></div>
         <div class="form-group"><label>१५. सूचना विवरण:</label><textarea rows="3" id="q15" oninput="updatePreview()">सरकारी सार्वजनिक ऐलानी पर्ती गुठी व्यक्ति बिशेषको हक लाग्ने जग्गा भए वा सो प्रकारका जग्गा समेत नाप नक्सा वा भोग समेत गरेको भए दाबी बिरोध गर्नु हुन भनी राष्ट्रिय दैनिक पत्रिका समेतमा ३५ दिने हकदाबी सम्बन्धि सूचना प्रकाशन भएको ।</textarea></div>
         <div class="form-group"><label>१९. अन्य विवरण:</label><textarea rows="2" id="q19" oninput="updatePreview()">नभएको</textarea></div>
         <div class="form-group"><label>२१. कार्यालयको राय:</label><textarea rows="3" id="q21" oninput="updatePreview()">निवेदकले दर्ताका लागि चाहिने आवश्यक प्रमाण साथ हकदार र हकभोग खुली आएको स्थानीय निकायको सिफारिस साथ मागदाबी लिएको जग्गा निवेदकका नाउँमा दर्ता हुने देखि पेश भएको ।</textarea></div>
@@ -390,14 +390,25 @@
         const custom = document.getElementById('subject_custom');
         val === 'custom' ? custom.classList.remove('hidden') : custom.classList.add('hidden');
     }
-    function addHeirRow(isFirst = false) {
-        const tbody = document.querySelector('#heir_table tbody');
-        const tr = document.createElement('tr');
-        const remarkVal = isFirst ? 'फिल्डबुकको ज.ध.' : '';
-        tr.innerHTML = `<td><input type="text" class="h-rel" oninput="updatePreview()"></td><td><input type="text" class="h-name" list="person_list" oninput="updatePreview()"></td><td><input type="text" class="h-rem" value="${remarkVal}" oninput="updatePreview()"></td><td style="text-align:center;"><button class="btn btn-red" style="margin:0;" onclick="removeRow(this)">X</button></td>`;
-        tbody.appendChild(tr);
-        if (!isFirst) { tr.querySelector('.h-rel').focus(); updatePreview(); }
+  function addHeirRow(isFirst = false, doFocus = true) {
+    const tbody = document.querySelector('#heir_table tbody');
+    const tr = document.createElement('tr');
+    const remarkVal = isFirst ? 'फिल्डबुकको ज.ध.' : '';
+    
+    tr.innerHTML = `
+        <td><input type="text" class="h-rel" oninput="updatePreview()"></td>
+        <td><input type="text" class="h-name" list="person_list" oninput="updatePreview()"></td>
+        <td><input type="text" class="h-rem" value="${remarkVal}" oninput="updatePreview()"></td>
+        <td style="text-align:center;"><button class="btn btn-red" style="margin:0;" onclick="removeRow(this)">X</button></td>
+    `;
+    tbody.appendChild(tr);
+    
+    // Only focus if it is NOT the first row AND doFocus is true
+    if (!isFirst && doFocus) { 
+        tr.querySelector('.h-rel').focus(); 
+        updatePreview(); 
     }
+}
     function addLandRowHTML(vdcVal, wardVal) {
         const tbody = document.querySelector('#land_table tbody');
         const tr = document.createElement('tr');
@@ -410,8 +421,13 @@
         if (rows.length > 0) { const lastRow = rows[rows.length - 1]; lastVdc = lastRow.querySelector('.l-vdc').value; lastWard = lastRow.querySelector('.l-ward').value; }
         const newRow = addLandRowHTML(lastVdc, lastWard); updateKittaSelectors(); updatePreview(); newRow.querySelector('.l-kit').focus();
     }
-    function addNewGavisa() { const newRow = addLandRowHTML('', ''); updateKittaSelectors(); updatePreview(); newRow.querySelector('.l-vdc').focus(); }
-    function removeRow(btn) { btn.closest('tr').remove(); updateKittaSelectors(); updatePreview(); }
+function addNewGavisa(doFocus = true) { // Added parameter
+        const newRow = addLandRowHTML('', '');
+        updateKittaSelectors();
+        updatePreview();
+        // Only focus if requested (True for buttons, False for page load)
+        if(doFocus) newRow.querySelector('.l-vdc').focus(); 
+    }    function removeRow(btn) { btn.closest('tr').remove(); updateKittaSelectors(); updatePreview(); }
 
     function toggleMohi() {
         const val = document.querySelector('input[name="mohi_opt"]:checked').value;
@@ -473,6 +489,7 @@
     }
 
     // --- PREVIEW LOGIC ---
+// --- PREVIEW LOGIC ---
     function updatePreview() {
         const typeVal = document.querySelector('input[name="req_type"]:checked').value;
         const isNamsari = (typeVal === 'नामसारी दर्ता');
@@ -616,6 +633,8 @@
         }
 
         const replacer = (text) => text.replace(/दर्ता|दर्ता नामसारी/g, typeText);
+        const mohiStatement = isMohiEnabled ? getValue('mohi_statement') : 'छैन';
+
         const html = `
             <div style="font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 16px;">जग्गादर्ताको लागि सिफारिस गर्दा भर्नु पर्ने फारम</div>
             <div class="bold-text" style="margin-bottom: 10px;">मालपोत नियमावली २०३६ को नियम ४ख बमोजिमको जग्गादर्ता समितिको बैठकको निर्णय</div>
@@ -636,31 +655,87 @@
                 <thead><tr><th rowspan="2">मौजा</th><th rowspan="2" style="min-width:100px;"><span style="white-space:nowrap;">र.नं., हा.नं.</span><br>र पोता नं.</th><th rowspan="2">खलो</th><th rowspan="2">राज गुठी, निजी गुठी विर्ता के हो?</th><th colspan="5" style="text-align:center">जग्गाको विवरण</th></tr><tr><th>पञ्चायत</th><th>वडा नं.</th><th>कि.नं.</th><th>क्षे.फ.</th><th>विरह</th></tr></thead>
                 <tbody>${sec3Rows}</tbody>
             </table>
-            <div class="bold-text" style="margin-bottom: 8px;">४. ७ नं. फाँटवारीमा उक्त साविकको विवरण भिड्छ भिड्दैन ?</div><div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q4')}</div>
-            <div class="bold-text" style="margin-bottom: 8px;">५. उक्त जग्गा दर्ताको लागि के कस्तो प्रमाण पेश भएको छ?</div><div style="margin-left: 20px; margin-bottom:8px;">- फिल्डबुक, साबिक लगत, साबिक तिरोको रसिद, १ र २नं. अनुसूचि ${getValue('q5_extra') ? ', ' + getValue('q5_extra') : ''} समेत ।</div>
-            <div class="bold-text" style="margin-bottom: 8px;">६. साविक लगतको जग्गा मध्ये कति दर्ता भयो र कति दर्ता हुन बाँकी छ भनी निवेदकले खुलाएको छ ?</div><div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q6')}</div>
-            <div class="bold-text" style="margin-bottom: 8px;">७. पहिले निवेदन दिएको भए भएको कारवाहीको व्यहोरा ?</div><div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q7')}</div>
-            <div class="bold-text" style="margin-bottom: 8px;">८. दर्ता माग भएको जग्गाको कुन साल सम्मको मालपोत बुझाएको छ र कुन साल देखिको मालपोत बुझाउन बाँकी छ भनी निवेदकले खुलाएको छ ? धरौटी रहेको भए कुन साल सम्मको धरौटी कहाँ रहेको प्रमाण के पेश छ ?</div><div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q8')}</div>
-            <div class="bold-text" style="margin-bottom: 5px;">९. कार्यालयको श्रेष्ता भिडाएको विवरणः-</div>
-            <div style="margin-left: 10px;"><b>क. फिल्डबुकबाट देखिएकोः-</b></div>
-            <table class="result-table"><thead><tr><th>पञ्चायत</th><th>वडा नं./कि.नं.</th><th>जग्गाधनीको नाम थर</th><th>मोहीको नाम, थर</th><th>कैफियत व्यहोरा</th><th>फिल्डबुक प्रमाणित गर्ने</th><th>झगडा जनाएको छ छैन</th><th>विरह/किसिम</th></tr></thead><tbody>${sec9aRows}</tbody></table>
-            <div style="margin-left: 10px;"><b>ख. अन्य श्रेष्ता भिडाएकोः-</b></div>
-            <table class="result-table"><thead><tr><th>पञ्चायत</th><th>वडा नं./कि.नं.</th><th>मोठ श्रेष्ताबाट देखिएको विवरण</th><th>रोक्का छ/छैन?</th><th>साविक लगत भिडेको छ/छैन</th><th>अरू कारबाही वा मुद्दा चलेको देखिन्छ/ देखिन्न</th><th>अन्य व्यहोरा</th></tr></thead><tbody>${sec9bRows}</tbody></table>
-            <div class="bold-text" style="margin-left: 10px; margin-bottom:8px;">ग. लुजसीट भिडेको छ/छैन ? - <span style="font-weight:normal">${getValue('loose_sheet')}</span></div>
-            <div class="bold-text" style="margin-bottom: 5px;">१०. सम्बन्धित स्थानीय तहको सिफारिसको व्यहोरा</div><div style="margin-left: 20px; margin-bottom:8px;">- ${replacer(getValue('q10'))}</div>
-            <div class="bold-text" style="margin-bottom: 5px;">११. सर्जमिनको भनाइः</div><div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q11')}</div>
-            <div class="bold-text" style="margin-bottom: 5px;">१२. स्थलगत नीरिक्षण गरिएकोमा स्थलगत नीरिक्षणबाट देखिएको जग्गाको स्थितिः-</div><div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q12')}</div>
-            <div class="bold-text" style="margin-bottom: 5px;">१३. फिल्डबुकमा देखिएको जग्गाधनी बुझिएको भए भरपाई</div><div style="margin-left: 20px; margin-bottom:8px;">- छैन</div>
-            <div class="bold-text" style="margin-bottom: 5px;">१४. फिल्डबुकमा देखिएको मोही बुझिएको भए मोहीको भनाइः</div><div style="margin-left: 20px; margin-bottom:8px;">- ${isMohiEnabled ? getValue('mohi_statement') : 'छैन'}</div>
-            <div class="bold-text" style="margin-bottom: 5px;">१५. सार्वजनिक सूचनाको संक्षिप्त विवरण र दाबी परे नपरेकोः</div><div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q15')}</div>
-            <div class="bold-text" style="margin-bottom: 5px;">१६. नदी उकास जग्गा भए सम्बन्धित प्राविधिक पक्षको मन्तव्य के हो ?</div><div style="margin-left: 20px; margin-bottom:8px;">- होइन</div>
-            <div class="bold-text" style="margin-bottom: 8px;">१७. वन कार्यालयको स्वीकृति लिनुपर्ने भए स्वीकृति दिने कार्यालयको नाम........................................ पत्र संख्या............................... मिति..................</div>
-            <div class="bold-text" style="margin-bottom: 8px;">१८. जलाधार संरक्षण अधिकृतको स्वीकृति लिनु पर्ने भए स्वीकृति दिने कार्यालयको नाम.............................. पत्र संख्या....................................... मिति</div>
-            <div class="bold-text" style="margin-bottom: 5px;">१९. अन्य केही खुलाउनुपर्ने विवरण भए खुलाउने</div><div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q19')}</div>
-            <div class="bold-text" style="margin-top: 15px; margin-bottom: 25px;">२०. पेश भएको मिसिल संरक्षण कागजात सबुत प्रमाण तथा कार्यालयको श्रेष्ता समेत भिडेको उपयुक्त विवरण भरेको हो भनी सही गर्ने कर्मचारीः</div><div style="width: 200px; border-bottom: 1px none black; margin-bottom: 5px;"></div><div></div>
-            <div class="bold-text" style="margin-bottom: 5px; margin-top: 10px;">२१. कार्यालयको रायः-</div><div style="margin-left: 20px; margin-bottom:8px;">${replacer(getValue('q21'))}</div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 8px;">४. ७ नं. फाँटवारीमा उक्त साविकको विवरण भिड्छ भिड्दैन ?</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q4')}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 8px;">५. उक्त जग्गा दर्ताको लागि के कस्तो प्रमाण पेश भएको छ?</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- फिल्डबुक, साबिक लगत, साबिक तिरोको रसिद, १ र २नं. अनुसूचि ${getValue('q5_extra') ? ', ' + getValue('q5_extra') : ''} समेत ।</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 8px;">६. साविक लगतको जग्गा मध्ये कति दर्ता भयो र कति दर्ता हुन बाँकी छ भनी निवेदकले खुलाएको छ ?</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q6')}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 8px;">७. पहिले निवेदन दिएको भए भएको कारवाहीको व्यहोरा ?</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q7')}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 8px;">८. दर्ता माग भएको जग्गाको कुन साल सम्मको मालपोत बुझाएको छ र कुन साल देखिको मालपोत बुझाउन बाँकी छ भनी निवेदकले खुलाएको छ ? धरौटी रहेको भए कुन साल सम्मको धरौटी कहाँ रहेको प्रमाण के पेश छ ?</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q8')}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 5px;">९. कार्यालयको श्रेष्ता भिडाएको विवरणः-</div>
+                <div style="margin-left: 10px;"><b>क. फिल्डबुकबाट देखिएकोः-</b></div>
+                <table class="result-table"><thead><tr><th>पञ्चायत</th><th>वडा नं./कि.नं.</th><th>जग्गाधनीको नाम थर</th><th>मोहीको नाम, थर</th><th>कैफियत व्यहोरा</th><th>फिल्डबुक प्रमाणित गर्ने</th><th>झगडा जनाएको छ छैन</th><th>विरह/किसिम</th></tr></thead><tbody>${sec9aRows}</tbody></table>
+            </div>
+
+            <div class="keep-together">
+                <div style="margin-left: 10px;"><b>ख. अन्य श्रेष्ता भिडाएकोः-</b></div>
+                <table class="result-table"><thead><tr><th>पञ्चायत</th><th>वडा नं./कि.नं.</th><th>मोठ श्रेष्ताबाट देखिएको विवरण</th><th>रोक्का छ/छैन?</th><th>साविक लगत भिडेको छ/छैन</th><th>अरू कारबाही वा मुद्दा चलेको देखिन्छ/ देखिन्न</th><th>अन्य व्यहोरा</th></tr></thead><tbody>${sec9bRows}</tbody></table>
+                <div class="bold-text" style="margin-left: 10px; margin-bottom:8px;">ग. लुजसीट भिडेको छ/छैन ? - <span style="font-weight:normal">${getValue('loose_sheet')}</span></div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 5px;">१४. फिल्डबुकमा देखिएको मोही बुझिएको भए मोहीको भनाइः</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${mohiStatement}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 5px;">१०. सम्बन्धित स्थानीय तहको सिफारिसको व्यहोरा</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${replacer(getValue('q10'))}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 5px;">११. सर्जमिनको भनाइः</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q11')}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 5px;">१२. स्थलगत नीरिक्षण गरिएकोमा स्थलगत नीरिक्षणबाट देखिएको जग्गाको स्थितिः-</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q12')}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 5px;">१५. सार्वजनिक सूचनाको संक्षिप्त विवरण र दाबी परे नपरेकोः</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q15')}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 5px;">१९. अन्य केही खुलाउनुपर्ने विवरण भए खुलाउने</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">- ${getValue('q19')}</div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-top: 15px; margin-bottom: 25px;">२०. पेश भएको मिसिल संरक्षण कागजात सबुत प्रमाण तथा कार्यालयको श्रेष्ता समेत भिडेको उपयुक्त विवरण भरेको हो भनी सही गर्ने कर्मचारीः</div>
+                <div style="width: 200px; border-bottom: 1px none black; margin-bottom: 5px;"></div><div></div>
+            </div>
+
+            <div class="keep-together">
+                <div class="bold-text" style="margin-bottom: 5px; margin-top: 10px;">२१. कार्यालयको रायः-</div>
+                <div style="margin-left: 20px; margin-bottom:8px;">${replacer(getValue('q21'))}</div>
+            </div>
+
             <div class="bold-text" style="margin-bottom: 5px;">२२. समितिको सिफारिसः-</div>
             <div style="text-align: justify; margin-bottom: 30px;">मिसिल साथ संलग्न फिल्डबुक, साबिक लगत, साबिक तिरोको दरपिठ रसिद, १ नं. र २ नं. अनुसूचिका फारम, किटानी हकदार र हकभोग खुलेको स्थानीय निकायको सिफारिस, ${getValue('q5_extra') ? getValue('q5_extra') + ',' : ''} हकदाबी सम्बन्धि प्रकाशित ३५ दिने सार्वजनिक सूचना, सोको म्याद भुक्तान हुँदा कोही कसैको पनि नपरेको दाबी विरोध, कार्यालयको तर्फबाट बुझिएको स्थलगत सर्जमिन सिफारिसबाट समेत निवेदक <b>${firstAppName} ${applicants.length > 1 ? 'समेत' : ''}</b> हकदार हुन भन्ने कुरामा मतैक्य रहेको देखिएको हुँदा निजका नाउँमा ${recText} को जग्गा ${typeText} गरी श्रेष्ता पुर्जा कायम गरिदिन आवश्यक निर्णय सहित सिफारिस गरियो ।</div>
+            
             <table style="width:100%; border:none; margin-top:30px;"><tr><td style="border:none; text-align:center; vertical-align:top;">...........................<br>मालपोत कार्यालयको<br>वरिष्ठ कर्मचारी<br>सदस्य</td><td style="border:none; text-align:center; vertical-align:top;">...........................<br>नापी कार्यालयको <br>प्रतिनिधि<br>सदस्य</td><td style="border:none; text-align:center; vertical-align:top;">...........................<br>प्रमुख मालपोत अधिकृत<br>अध्यक्ष</td></tr></table>
         `;
         document.getElementById('print-preview').innerHTML = html;
@@ -748,6 +823,53 @@
         fileDownload.click();
         document.body.removeChild(fileDownload);
     }
+    window.onload = function () {
+        // If no data found (Reset or First Load)
+        if (!restoreFromLocal()) {
+            addHeirRow(true,false);
+            addNewGavisa(false); 
+            updateKittaSelectors();
+            
+            // --- FOCUS ON DATE ONLY AFTER RESET/NEW FORM ---
+            setTimeout(() => { document.getElementById('reg_no').focus(); }, 100);
+        }
+        
+        updatePreview();
+
+        // Nepali Numbers Input Handler
+      // INPUT HANDLER: Nepali Numbers & Dot to Danda
+        document.querySelector('.form-pane').addEventListener('input', function (e) {
+            const target = e.target;
+            if (target.type === 'checkbox' || target.type === 'radio') return;
+            
+            let val = target.value;
+            let changed = false;
+            const start = target.selectionStart;
+            const end = target.selectionEnd;
+
+            // 1. Convert English Numbers to Nepali
+            if (/[0-9]/.test(val)) {
+                val = val.replace(/[0-9]/g, m => '०१२३४५६७८९'[m]);
+                changed = true;
+            }
+
+            // 2. Convert Dot (.) to Danda (।) for Specific Fields
+            // IDs: date (Main Date), inp_app_date (Issue Date), inp_app_cit (Citizenship No)
+            if (['date', 'inp_app_date', 'inp_app_cit'].includes(target.id) && val.includes('.')) {
+                val = val.replace(/\./g, '।');
+                changed = true;
+            }
+
+            // Apply Changes
+            if (changed) {
+                target.value = val;
+                if (target.setSelectionRange) target.setSelectionRange(start, end);
+                updatePreview();
+                saveToLocal();
+            }
+        
+        });
+    };
 </script>
 </body>
 </html>
