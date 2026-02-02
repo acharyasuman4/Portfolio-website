@@ -427,8 +427,8 @@
                     <div style="text-align:center; font-weight:bold; font-size:14pt; margin-bottom:15px;">मिति: ${d.dt}</div>
                     <div style="font-size: 14pt; text-indent: 50px;">${suchanaBody}</div>`;
                 } else {
-                    const wardAddress = `श्री ${d.local} ${d.ward} नं. वडा कार्यालय, सिन्धुपाल्चोक ।`;
-                    const localAddress = `श्री ${d.local}, सिन्धुपाल्चोक ।`;
+                    const wardAddress = `श्री ${d.local} ${d.ward} नं. वडा कार्यालय, सिन्धुपाल्चोक`;
+                    const localAddress = `श्री ${d.local}, सिन्धुपाल्चोक`;
 
                     bodyHtml = `
                     ${letterhead}
@@ -438,7 +438,7 @@
                     <p style="text-indent: 50px; font-size: 14pt; margin-bottom: 10px; text-align: justify;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संसोधन गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
                     <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14pt; border:none;">
                     <tr><td style="width:65%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;"><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br></td><td style="width:35%; vertical-align:top; text-align:right; border:none;"><table align="right" cellpadding="0" cellspacing="0" style="width:220px;"><tr><td style="font-weight:bold; text-align:center;">.........................<br>${d.off}</td></tr></table></td></tr>
-                    <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. ${wardAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. ${localAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
+                    <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. ${wardAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. ${localAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ............ राष्ट्रिय दैनिक पत्रिका: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
                     </table>`;
                 }
                 document.getElementById('dynamic_body').innerHTML = bodyHtml;
@@ -497,7 +497,7 @@ async function exportAllToWord() {
                 <p style="text-align:justify; text-indent:50px; line-height:1.5; font-size:14pt;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संसोधन गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
                 <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14pt; border:none;">
                   <tr><td style="width:65%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;"><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br></td><td style="width:35%; vertical-align:top; text-align:right; border:none;"><table align="right" cellpadding="0" cellspacing="0" style="width:220px;"><tr><td style="font-weight:bold; text-align:center;">.........................<br>${d.off}</td></tr></table></td></tr>
-                  <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. ${wardAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. ${localAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
+                  <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. ${wardAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. ${localAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री .............. राष्ट्रिय दैनिक पत्रिका: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
                 </table>`;
 
                 const pageBreak = "<br clear=all style='mso-special-character:line-break; page-break-before:always'>";
