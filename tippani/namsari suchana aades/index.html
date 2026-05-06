@@ -92,7 +92,7 @@
                     <div><label>मिति:</label><input type="text" id="in_date" oninput="scheduleUpdate()" placeholder="२०८..." class="input-box"></div>
                 </div>
                 <div class="row-2" style="margin-top:8px;">
-                    <div><label>पद:</label><input type="text" id="in_officer" oninput="scheduleUpdate()" value="मालपोत अधिकृत" class="input-box"></div>
+                    <div><label>पद:</label><input type="text" id="in_officer" oninput="scheduleUpdate()" value="भूमि प्रशासन अधिकृत" class="input-box"></div>
                     <div><label>मिसिल:</label><input type="text" id="in_misil" oninput="scheduleUpdate()" placeholder="नं." class="input-box"></div>
                 </div>
             </div>
@@ -439,7 +439,7 @@
                             <div style="font-size: 10pt; font-weight: bold;">नेपाल सरकार</div>
                             <div style="font-size: 11pt; font-weight: bold;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
                             <div style="font-size: 12pt; font-weight: bold;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
-                            <div style="font-size: 16pt; font-weight: bold;">मालपोत कार्यालय</div>
+                            <div style="font-size: 16pt; font-weight: bold;">भूमि प्रशासन कार्यालय</div>
                             <div style="font-size: 11pt; font-weight: bold;">चौतारा, सिन्धुपाल्चोक</div>
                         </td>
                         <td style="width: 15%; border: none;"></td>
@@ -479,7 +479,7 @@
                 <p style="text-indent: 50px; font-size: 14pt; margin-bottom: 10px; text-align: justify;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले मृतक ज.ध. ${t.deceasedNames}को नाममा रहेको जग्गा नामसारी गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
                 <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14pt; border:none;">
                   <tr><td style="width:65%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;"><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br></td><td style="width:35%; vertical-align:top; text-align:right; border:none;"><table align="right" cellpadding="0" cellspacing="0" style="width:220px;"><tr><td style="font-weight:bold; text-align:center;">.........................<br>${d.off}</td></tr></table></td></tr>
-                  <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.sa}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
+                  <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.sa}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ............${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
                 </table>`;
             }
             document.getElementById('dynamic_body').innerHTML = bodyHtml;
@@ -505,7 +505,7 @@
                         <p style="margin:0; font-size:10pt; font-weight:bold; line-height: 1.1;">नेपाल सरकार</p>
                         <p style="margin:0; font-size:11pt; font-weight:bold; line-height: 1.1;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</p>
                         <p style="margin:1pt 0; font-size:12pt; font-weight:bold; line-height: 1.1;">भूमि व्यवस्थापन तथा अभिलेख विभाग</p>
-                        <p style="margin:0; font-size:16pt; font-weight:bold; line-height: 1.1;">मालपोत कार्यालय</p>
+                        <p style="margin:0; font-size:16pt; font-weight:bold; line-height: 1.1;">भूमि प्रशासन कार्यालय</p>
                         <p style="margin:0; font-size:11pt; font-weight:bold; line-height: 1.1;">चौतारा, सिन्धुपाल्चोक</p>
                     </td>
                 </tr>
@@ -529,7 +529,7 @@
             <p style="text-align:justify; text-indent:50px; line-height:1.5; font-size:14pt;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले मृतक ज.ध. ${t.deceasedNames}को नाममा रहेको जग्गा नामसारी गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
             <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14pt; border:none;">
               <tr><td style="width:65%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;"><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br></td><td style="width:35%; vertical-align:top; text-align:right; border:none;"><table align="right" cellpadding="0" cellspacing="0" style="width:220px;"><tr><td style="font-weight:bold; text-align:center;">.........................<br>${d.off}</td></tr></table></td></tr>
-              <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.sa}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
+              <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.sa}, सिन्धुपाल्चोक: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ............ ${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
             </table>`;
 
             const pageBreak = "<br clear=all style='mso-special-character:line-break; page-break-before:always'>";
