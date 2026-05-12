@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नामसारी टिप्पणी प्रणाली</title>
+    <title>नामसारी टिप्पणी</title>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -152,21 +152,50 @@
         }
 
         @media print {
+
+            /* १. ब्राउजरको डिफल्ट मार्जिन र साइज कन्ट्रोल गर्ने */
+            @page {
+                size: A4;
+                margin: 0;
+                /* ब्राउजरको मार्जिन शून्य पार्ने, कन्टिएन्टको प्याडिङले काम गर्छ */
+            }
+
             .no-print {
                 display: none !important;
             }
 
+            body,
+            html {
+                overflow: visible !important;
+                height: auto !important;
+                background: white !important;
+            }
+
             .preview-container {
-                display: block;
-                background: white;
-                padding: 0;
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                background: white !important;
+                overflow: visible !important;
             }
 
             .preview-page {
-                box-shadow: none;
-                width: 100%;
-                margin: 0;
-                padding: 1.5cm 1.27cm 1.5cm 2.54cm;
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                /* २. प्रिन्ट गर्दा min-height हटाउने ताकि कन्टिएन्ट जति छ त्यतिमै रोकिओस् */
+                min-height: auto !important;
+                height: auto !important;
+                margin: 0 !important;
+                /* ३. प्याडिङ कायम राख्ने ताकि मार्जिन देखियोस् */
+                padding: 1.5cm 1.27cm 1.5cm 2.54cm !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
+            }
+
+            /* ४. स्क्रोलबार लुकाउने */
+            ::-webkit-scrollbar {
+                display: none;
             }
         }
     </style>
@@ -397,7 +426,7 @@
                 <div style="text-align:right;">मिति: ${v('in_dt')}</div>
             </div>`;
 
-           
+
 
             // Side-by-Side Table wrapping for Word compatibility
             let tableHtml = `<table style="width:100%; border:none; border-collapse:collapse; margin-bottom:10px;">
