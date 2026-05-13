@@ -353,11 +353,18 @@
             if (!k) return;
             let match = state.lands.find(x => x.vdc === v && x.ward === w);
             if (match) match.ks.push(k); else state.lands.push({ vdc: v, ward: w, ks: [k] });
+
             document.getElementById('l_kitta').value = "";
-            if (mode === 'new') { document.getElementById('l_vdc').value = ""; document.getElementById('l_ward').value = ""; }
+
+            if (mode === 'new') {
+                document.getElementById('l_vdc').value = "";
+                document.getElementById('l_ward').value = "";
+                document.getElementById('l_vdc').focus(); // Autofocus to VDC
+            } else {
+                document.getElementById('l_kitta').focus(); // Autofocus to Kitta No.
+            }
             update();
         }
-
         function nepJoin(arr) {
             let localArr = [...arr];
             if (!localArr.length) return "";
@@ -393,6 +400,7 @@
             const isPlural = state.apps.length > 1;
             const nijaText = state.mrtks.length > 1 ? "निजहरू" : "निज";
             const activeNivedakLabel = activeApps.length > 1 ? "निवेदकहरू" : "निवेदक";
+            const activehakdar = activeApps.length > 1 ? "हकदारहरू" : "हकदार";
             const nivedakWord = isPlural ? "निवेदकहरूको" : "निवेदकको";
             const nivedakWordPlain = isPlural ? "निवेदकहरू" : "निवेदक";
             const nivedakKa = isPlural ? "निवेदकहरूका" : "निवेदकका";
@@ -480,10 +488,12 @@
             let bodyHtml = `
             <p style="text-indent:50px; margin-top:15px;">श्रीमान्,</p>
             <p style="text-indent:50px;">सिन्धुपाल्चोक जिल्ला ${landFinal} जग्गाहरू मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा ${nivedakWordPlain}को ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${isPlural ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakWord} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन ।</p>
-            <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको को च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा माग भए बमोजिम नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिम ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा नामसारी हुन आवश्यक निर्णयार्थ पेश गर्दछु ।</p>
+            <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको को च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा माग भए बमोजिम नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको ${activehakdar} ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा नामसारी हुन आवश्यक निर्णयार्थ पेश गर्दछु ।</p>
         `;
 
             document.getElementById('preview').innerHTML = headerHtml + tableHtml + bodyHtml;
+            saveState();
+
         }
 
         function resetAll() { if (confirm("विवरण मेटाउने?")) { localStorage.clear(); location.reload(); } }
@@ -492,12 +502,22 @@
             const content = document.getElementById('preview').innerHTML;
             const appName = state.apps.length > 0 ? state.apps[0].name.replace(/\s+/g, '_') : 'विवरण';
             const style = `
-            <style>
-                @page { size: A4; margin: 1.5cm 1.27cm 1.5cm 2.54cm; }
-                body { font-family: 'Mukta', 'Arial', sans-serif; line-height: 1.5; font-size: 14pt; }
-                .doc-table { width: 100%; border-collapse: collapse; border: 1px solid black; }
-                .doc-table th, .doc-table td { border: 1px solid black; padding: 4px; text-align: center; font-size: 11pt; }
-            </style>`;
+           <style>
+        @page { size: A4; margin: 1cm 1.27cm 1cm 2.54cm; }
+        body { font-family: 'Mukta', 'Arial', sans-serif; line-height: 1.2; font-size: 14pt; color: black; }
+        
+        /* Justify text and remove extra paragraph spacing in Word */
+        p { text-align: justify; margin: 0 0 10pt 0; text-justify: inter-word; }
+        
+        /* Spacing fixes for Header */
+        table { border-collapse: collapse; width: 100%; margin: 0; padding: 0; }
+        td { vertical-align: top; padding: 0; margin: 0; }
+        div { margin: 0; padding: 0; line-height: 1.1; }
+        
+        /* Table for details */
+        .doc-table { border: 1px solid black; margin-top: 10px; }
+        .doc-table th, .doc-table td { border: 1px solid black; padding: 3px; text-align: center; font-size: 11pt; }
+    </style>`;
             const html = `<html><head><meta charset="utf-8">${style}</head><body>${content}</body></html>`;
             const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
             const a = document.createElement('a');
@@ -505,7 +525,6 @@
             a.download = `नामसारी_टिप्पणी_${appName}.doc`;
             a.click();
         }
-
         window.onload = () => {
             const saved = localStorage.getItem('namsari_v2_storage');
             if (saved) {
@@ -516,6 +535,17 @@
                 }
             }
             update(); renderHaqUI();
+        }
+        function saveState() {
+            const inputs = {};
+            // सबै input, textarea र checkbox को भ्यालु जम्मा गर्ने
+            document.querySelectorAll('.input-box, textarea, input[type="checkbox"]').forEach(el => {
+                if (el.id) {
+                    inputs[el.id] = (el.type === 'checkbox') ? el.checked : el.value;
+                }
+            });
+            // localStorage मा सेभ गर्ने
+            localStorage.setItem('namsari_v2_storage', JSON.stringify({ state, inputs }));
         }
     </script>
 </body>
