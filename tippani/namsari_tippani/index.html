@@ -290,6 +290,11 @@
                     <input type="text" id="fee_l" value="१००" class="input-box" oninput="update()">
                 </div>
             </div>
+            <div class="input-group">
+                <label style="color: #1e40af; font-weight: bold;">
+                    <input type="checkbox" id="chk_hissa" onchange="update()"> हकहिस्सा मात्र नामसारी हो?
+                </label>
+            </div>
 
             <button onclick="window.print()" class="btn btn-blue">🖨️ Print</button>
             <button onclick="exportWord()" class="btn btn-green">📄 Word Export</button>
@@ -303,16 +308,37 @@
     <script>
         let state = { apps: [], mrtks: [], lands: [] };
 
-        function toNep(num) {
-            return num.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
-        }
 
-        document.addEventListener('input', e => {
-            if (e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
-                if (e.target.id !== 'in_landowner')
-                    e.target.value = e.target.value.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+        // १. अङ्क र डटलाई तत्काल बदल्ने फङ्सन
+document.addEventListener('input', e => {
+    if (e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
+        if (e.target.id !== 'in_landowner') {
+            // कर्सरको पोजिसन सेभ गर्ने (ताकि टाइप गर्दा कर्सर अन्तिममा नभागोस्)
+            let start = e.target.selectionStart;
+            let end = e.target.selectionEnd;
+
+            let originalValue = e.target.value;
+            let newValue = originalValue
+                .replace(/\d/g, d => "०१२३४५६७८९"[d]) // अङ्क बदल्ने
+                .replace(/\./g, "।");               // डटलाई । मा बदल्ने
+
+            if (originalValue !== newValue) {
+                e.target.value = newValue;
+                // कर्सरलाई पुरानै ठाउँमा फर्काउने
+                e.target.setSelectionRange(start, end);
             }
-        });
+        }
+    }
+    update();
+});
+
+// २. सिरियल नम्बर आदिको लागि प्रयोग हुने फङ्सन अपडेट
+function toNep(num) {
+    if (!num) return "";
+    return num.toString()
+        .replace(/\d/g, d => "०१२३४५६७८९"[d])
+        .replace(/\./g, "।");
+}
 
         function syncLandowner(val) {
             if (state.mrtks.length === 0) {
@@ -405,6 +431,20 @@
             const nivedakWordPlain = isPlural ? "निवेदकहरू" : "निवेदक";
             const nivedakKa = isPlural ? "निवेदकहरूका" : "निवेदकका";
 
+            // जम्मा कतिवटा कित्ता छन् गन्ने (सबै गा.वि.स. को कित्ता जोडेर)
+const totalKittas = state.lands.reduce((acc, land) => acc + land.ks.length, 0);
+
+// १ कित्ता भए 'को जग्गा', १ भन्दा बढी भए 'का जग्गाहरू'
+const landPluralLabel = totalKittas > 1 ? "का जग्गाहरू" : "को जग्गा";
+
+           // मृतकहरूको नाम 'र' ले जोड्ने
+const allMrtkNames = nepJoin(state.mrtks.map(m => `<b>${m.name}</b>`));
+
+// चेक गरिएको छ भने मात्र नाम + 'को हकहिस्सा मात्र' राख्ने, नत्र खाली राख्ने
+let hissaText = ""; 
+if (document.getElementById('chk_hissa') && document.getElementById('chk_hissa').checked) {
+    hissaText = "को " + allMrtkNames + "को हकहिस्सा मात्र";
+}
             const decNames = nepJoin(state.mrtks.map(m => `<b>${m.name}</b>`));
             const decDts = state.mrtks.map(m => `<b>${m.rel} ${m.name}</b>को मिति <b>${m.dt}</b>`).join(' र ');
             const landFinal = nepJoin(state.lands.map(l => `साविक <b>${l.vdc}</b> वडा नं. <b>${l.ward}</b> को कि.नं. <b>${nepJoin([...l.ks])}</b>`));
@@ -429,10 +469,12 @@
                     </tr>
                 </table>
                  <div style="text-align:center; font-weight:bold; font-size:18pt; text-decoration:underline; margin:15px 0;">टिप्पणी र आदेश</div>
-            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:13pt; margin-bottom:15px;">
-                <div style="text-align:left;">मि.नं.: ${v('in_mn')}</div>
-                <div style="text-align:right;">मिति: ${v('in_dt')}</div>
-            </div>`;
+<table style="width: 100%; font-weight: bold; font-size: 13pt; margin-bottom: 15px; border: none; border-collapse: collapse;">
+    <tr>
+        <td style="text-align: left; border: none; padding: 0;">मि.नं.: ${v('in_mn')}</td>
+        <td style="text-align: right; border: none; padding: 0;">मिति: ${v('in_dt')}</td>
+    </tr>
+</table>`;
 
 
 
@@ -488,7 +530,7 @@
             let bodyHtml = `
             <p style="text-indent:50px; margin-top:15px;">श्रीमान्,</p>
             <p style="text-indent:50px;">सिन्धुपाल्चोक जिल्ला ${landFinal} जग्गाहरू मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा ${nivedakWordPlain}को ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${isPlural ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakWord} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन ।</p>
-            <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको को च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा माग भए बमोजिम नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको ${activehakdar} ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा नामसारी हुन आवश्यक निर्णयार्थ पेश गर्दछु ।</p>
+            <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसिल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको को च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको ${activehakdar} ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा सिन्धुपाल्चोक जिल्ला ${landFinal} ${landPluralLabel}${hissaText} नामसारी हुन आवश्यक निर्णयार्थ पेश ।</p>
         `;
 
             document.getElementById('preview').innerHTML = headerHtml + tableHtml + bodyHtml;
@@ -503,7 +545,7 @@
             const appName = state.apps.length > 0 ? state.apps[0].name.replace(/\s+/g, '_') : 'विवरण';
             const style = `
            <style>
-        @page { size: A4; margin: 1cm 1.27cm 1cm 2.54cm; }
+        @page { size: A4; margin: 1cm 1cm 1cm 2.2cm; }
         body { font-family: 'Mukta', 'Arial', sans-serif; line-height: 1.2; font-size: 14pt; color: black; }
         
         /* Justify text and remove extra paragraph spacing in Word */
@@ -513,6 +555,9 @@
         table { border-collapse: collapse; width: 100%; margin: 0; padding: 0; }
         td { vertical-align: top; padding: 0; margin: 0; }
         div { margin: 0; padding: 0; line-height: 1.1; }
+
+table { border: none; border-collapse: collapse; width: 100%; }
+td { border: none; }
         
         /* Table for details */
         .doc-table { border: 1px solid black; margin-top: 10px; }
