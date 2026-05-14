@@ -73,13 +73,30 @@
             margin-right: 95px;
         }
 
-        .h-gov { font-size: 11px; }
-        .h-ministry { font-size: 13px; }
-        .h-dept { font-size: 15px; margin: 0; }
-        .h-office { font-size: 22px; }
-        .h-loc { font-size: 14px; }
+        .h-gov {
+            font-size: 11px;
+        }
 
-        .font-white { color: #e2e8f0; }
+        .h-ministry {
+            font-size: 13px;
+        }
+
+        .h-dept {
+            font-size: 15px;
+            margin: 0;
+        }
+
+        .h-office {
+            font-size: 22px;
+        }
+
+        .h-loc {
+            font-size: 14px;
+        }
+
+        .font-white {
+            color: #e2e8f0;
+        }
 
         h3 {
             font-size: 1.6rem;
@@ -87,7 +104,8 @@
             margin-bottom: 15px;
         }
 
-        #main_content, p {
+        #main_content,
+        p {
             font-size: 1.15rem;
             line-height: 1.6;
         }
@@ -102,7 +120,10 @@
         }
 
         @media print {
-            .no-print { display: none !important; }
+            .no-print {
+                display: none !important;
+            }
+
             #tippani-preview {
                 border: none;
                 padding: 0;
@@ -110,7 +131,10 @@
                 width: 100%;
                 padding-left: 1.25in;
             }
-            body { background: white; }
+
+            body {
+                background: white;
+            }
         }
     </style>
 </head>
@@ -120,106 +144,34 @@
     <div class="max-w-[1950px] mx-auto grid grid-cols-1 xl:grid-cols-2 gap-8">
 
         <!-- बायाँ भाग: इन्पुट -->
-        <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-300 overflow-y-auto max-h-[95vh] space-y-6 no-print">
+        <div
+            class="bg-white p-6 rounded-2xl shadow-xl border border-slate-300 overflow-y-auto max-h-[95vh] space-y-6 no-print">
 
             <div class="flex justify-between items-center border-b pb-2">
                 <h2 class="text-xl font-bold text-slate-800">अदालतको दाखिला खारेज</h2>
                 <div class="flex gap-2">
-                    <button onclick="resetData()" class="bg-red-500 text-white px-2 py-1 rounded text-xs shadow-sm">Clear All</button>
-                    <input type="text" id="in_danum" oninput="updateAll()" placeholder="द.नं." class="border p-2 rounded w-20" autofocus>
-                    <input type="text" id="in_dadate" oninput="updateAll()" placeholder="मिति" class="border p-2 rounded w-32">
+                    <button onclick="resetData()"
+                        class="bg-red-500 text-white px-2 py-1 rounded text-xs shadow-sm">Clear All</button>
+                    <input type="text" id="in_danum" oninput="updateAll()" placeholder="द.नं."
+                        class="border p-2 rounded w-20" autofocus>
+                    <input type="text" id="in_dadate" oninput="updateAll()" placeholder="मिति"
+                        class="border p-2 rounded w-32">
                 </div>
             </div>
 
             <!-- १. निवेदक र धनी -->
             <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 shadow-sm">
-                    <div class="flex justify-between mb-2 font-bold text-indigo-800">निवेदकहरू <button onclick="addApplicant()" class="bg-indigo-600 text-white px-2 py-1 rounded text-[10px]">+ थप्नुहोस्</button></div>
+                    <div class="flex justify-between mb-2 font-bold text-indigo-800">निवेदकहरू <button
+                            onclick="addApplicant()" class="bg-indigo-600 text-white px-2 py-1 rounded text-[10px]">+
+                            थप्नुहोस्</button></div>
                     <div id="applicant-list" class="space-y-3"></div>
                 </div>
                 <div class="bg-rose-50 p-4 rounded-xl border border-rose-200 shadow-sm">
-                    <div class="flex justify-between mb-2 font-bold text-rose-800">जग्गाधनीहरू <button onclick="addOwner()" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px]">+ थप्नुहोस्</button></div>
+                    <div class="flex justify-between mb-2 font-bold text-rose-800">जग्गाधनीहरू <button
+                            onclick="addOwner()" class="bg-rose-600 text-white px-2 py-1 rounded text-[10px]">+
+                            थप्नुहोस्</button></div>
                     <div id="owner-list" class="flex flex-wrap gap-2"></div>
-                </div>
-            </section>
-
-            <!-- २. जग्गा इन्ट्री -->
-            <section class="bg-green-50 p-4 rounded-xl border border-green-200 shadow-sm">
-                <h3 class="font-bold text-green-800 mb-2">जग्गाको विवरण (साविक)</h3>
-                <div class="grid grid-cols-3 gap-2 mb-3">
-                    <input type="text" id="l_vdc" placeholder="गा.वि.स." class="border p-2 rounded">
-                    <input type="text" id="l_ward" placeholder="वडा" class="border p-2 rounded">
-                    <input type="text" id="l_kitta" placeholder="कि.नं." class="border p-2 rounded">
-                </div>
-                <div class="flex items-center gap-4 mb-3 p-2 bg-white rounded border text-xs">
-                    <label class="cursor-pointer font-bold"><input type="radio" name="unit" value="rapd" checked onclick="toggleUnitUI()"> R-A-P-D</label>
-                    <label class="cursor-pointer font-bold"><input type="radio" name="unit" value="sqm" onclick="toggleUnitUI()"> वर्ग मिटर</label>
-                </div>
-                <div id="ui_rapd" class="grid grid-cols-4 gap-2 mb-3">
-                    <input type="text" id="l_r" placeholder="रोपनी" class="border p-2 rounded text-center">
-                    <input type="text" id="l_a" placeholder="आना" class="border p-2 rounded text-center">
-                    <input type="text" id="l_p" placeholder="पैसा" class="border p-2 rounded text-center">
-                    <input type="text" id="l_d" placeholder="दाम" class="border p-2 rounded text-center">
-                </div>
-                <div id="ui_sqm" class="hidden mb-3">
-                    <input type="text" id="l_sqm" placeholder="क्षेत्रफल (व.मि.)" class="w-full border p-2 rounded">
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="addLand('same')" class="flex-1 bg-blue-600 text-white py-2 rounded font-bold shadow">+ Same गा.वि.स.</button>
-                    <button onclick="addLand('new')" class="flex-1 bg-green-700 text-white py-2 rounded font-bold shadow">+ New गा.वि.स.</button>
-                </div>
-                <div id="land-list-ui" class="mt-3 flex flex-wrap gap-1"></div>
-            </section>
-
-            <!-- ३. रोक्का र फुकुवा -->
-            <section id="rokka-section" class="hidden bg-orange-50 p-4 rounded-xl border border-orange-200 space-y-4">
-                <h3 class="font-bold text-orange-800 border-b pb-1">रोक्का र फुकुवा व्यवस्थापन</h3>
-                <div id="rokka-kitta-selector" class="grid grid-cols-4 md:grid-cols-6 gap-2"></div>
-                <div class="bg-white p-4 rounded border space-y-3">
-                    <div class="flex gap-4 mb-2 font-bold text-xs">
-                        <label class="cursor-pointer"><input type="radio" name="r_status" value="no" checked onclick="toggleRFields()"> रोक्का छैन</label>
-                        <label class="cursor-pointer text-red-600"><input type="radio" name="r_status" value="yes" onclick="toggleRFields()"> रोक्का छ</label>
-                    </div>
-                    <div id="r_fields" class="hidden space-y-2">
-                        <input type="text" id="r_auth" placeholder="निकाय" class="w-full border p-2 rounded text-xs">
-                        <div class="grid grid-cols-2 gap-2"><input type="text" id="r_chanum" placeholder="च.नं." class="border p-2 rounded text-xs"><input type="text" id="r_date" placeholder="मिति" class="border p-2 rounded text-xs"></div>
-                    </div>
-                    <button onclick="addRokka()" class="w-full bg-orange-600 text-white py-2 rounded font-bold">रोक्का सुरक्षित गर्नुहोस्</button>
-                </div>
-                <div id="rokka-summary" class="space-y-1"></div>
-                <div class="bg-white p-3 rounded border border-orange-300">
-                    <label class="flex items-center gap-2 font-bold text-blue-800 cursor-pointer text-xs"><input type="checkbox" id="need_fukuwa" onchange="updateAll()"> फुकुवा आवश्यक छ ?</label>
-                    <div id="fukuwa_options" class="mt-2 space-y-1 pl-6"></div>
-                </div>
-            </section>
-
-            <!-- ४. कित्ताकाट र मुल्याङ्कन -->
-            <section class="bg-yellow-50 p-4 rounded-xl border border-yellow-200 space-y-4">
-                <label class="flex items-center gap-2 font-bold cursor-pointer"><input type="checkbox" id="has_kk" onchange="toggleKKUI()"> कित्ताकाट विवरण छ ?</label>
-                <div id="kk_ui" class="hidden space-y-3">
-                    <div class="grid grid-cols-2 gap-2"><input type="text" id="napi_ch" oninput="updateAll()" placeholder="नापी च.नं." class="border p-2 rounded text-xs"><input type="text" id="napi_dt" oninput="updateAll()" placeholder="नापी मिति" class="border p-2 rounded text-xs"></div>
-                    <div id="kk_sabik_buttons" class="flex flex-wrap gap-1"></div>
-                    <div id="kk_haal_inputs" class="space-y-2"></div>
-                </div>
-                <div id="base-valuation-area" class="space-y-2 border-t pt-2">
-                    <h3 class="text-xs font-bold text-slate-600 italic">जग्गाको थैली अङ्क (Valuation):</h3>
-                    <div id="base-valuation-list" class="grid grid-cols-1 gap-2 font-white"></div>
-                </div>
-            </section>
-
-            <!-- ५. राजश्व -->
-            <section class="bg-slate-800 text-white p-5 rounded-xl space-y-5">
-                <textarea id="decision_extra" oninput="updateAll()" placeholder="निर्णय खण्डमा थप विवरण..." class="w-full border p-2 rounded h-20 text-xs text-black"></textarea>
-                <div class="pt-4 border-t border-slate-700">
-                    <label class="flex items-center gap-2 font-bold cursor-pointer text-xs"><input type="checkbox" id="rev_applicable" onchange="toggleRevUI()"> राजश्व/लाभकर लाग्छ ?</label>
-                    <div id="rev_ui" class="hidden mt-3 space-y-4">
-                        <input type="text" id="v_muchulka" oninput="updateAll()" placeholder="मुचुल्कामा भएको थैली" class="w-full p-2 rounded text-black font-bold">
-                        <div class="grid grid-cols-3 gap-2 text-[10px]">
-                            <label><input type="checkbox" id="has_profit_tax" onchange="updateAll()"> लाभकर (%) <input type="text" id="profit_tax_perc" oninput="updateAll()" class="w-8 p-1 rounded text-black"></label>
-                            <label><input type="checkbox" id="svc_perc_mode" onchange="toggleSvcMode('perc')"> सेवा शुल्क (%) <input type="text" id="svc_perc_val" oninput="updateAll()" class="w-8 p-1 rounded text-black"></label>
-                            <label><input type="checkbox" id="svc_fixed_mode" onchange="toggleSvcMode('fixed')"> सेवा (Fixed) <input type="text" id="svc_fixed_val" oninput="updateAll()" class="w-16 p-1 rounded text-black"></label>
-                        </div>
-                    </div>
                 </div>
             </section>
 
@@ -232,18 +184,151 @@
                     <input type="text" id="c_dt" placeholder="मिति" class="w-1/4 border p-1 rounded text-xs">
                     <button onclick="addCourt()" class="bg-sky-600 text-white px-3 rounded shadow">+</button>
                 </div>
+                <div class="mt-4 border-t pt-2">
+                    <label class="block text-xs font-bold text-sky-800">मुद्दाको प्रकार:</label>
+                    <input type="text" id="case_type_input" list="case_list"
+                        oninput="selectedCaseType=this.value; updateAll()" placeholder="उदा: दर्ताफारी"
+                        class="w-full border p-2 rounded text-xs">
+                    <datalist id="case_list">
+                        <option value="दर्ताफारी">
+                        <option value="अंशवण्डा">
+                    </datalist>
+                </div>
                 <div id="court-list-ui" class="space-y-1"></div>
                 <div class="flex gap-1 mt-2">
-                    <input type="text" id="other_doc_input" placeholder="अन्य..." class="flex-1 border p-1 rounded text-xs">
+                    <input type="text" id="other_doc_input" placeholder="अन्य..."
+                        class="flex-1 border p-1 rounded text-xs">
                     <button onclick="addOtherDoc()" class="bg-amber-600 text-white px-4 rounded shadow">+</button>
                 </div>
                 <div id="doc-list-ui" class="flex flex-wrap gap-1 mt-1"></div>
             </section>
 
+
+            <!-- २. जग्गा इन्ट्री -->
+            <section class="bg-green-50 p-4 rounded-xl border border-green-200 shadow-sm">
+                <h3 class="font-bold text-green-800 mb-2">जग्गाको विवरण (साविक)</h3>
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <input type="text" id="l_vdc" placeholder="गा.वि.स." class="border p-2 rounded">
+                    <input type="text" id="l_ward" placeholder="वडा" class="border p-2 rounded">
+                    <input type="text" id="l_kitta" placeholder="कि.नं." class="border p-2 rounded">
+                </div>
+                <div class="flex items-center gap-4 mb-3 p-2 bg-white rounded border text-xs">
+                    <label class="cursor-pointer font-bold"><input type="radio" name="unit" value="rapd" checked
+                            onclick="toggleUnitUI()"> R-A-P-D</label>
+                    <label class="cursor-pointer font-bold"><input type="radio" name="unit" value="sqm"
+                            onclick="toggleUnitUI()"> वर्ग मिटर</label>
+                </div>
+                <div id="ui_rapd" class="grid grid-cols-4 gap-2 mb-3">
+                    <input type="text" id="l_r" placeholder="रोपनी" class="border p-2 rounded text-center">
+                    <input type="text" id="l_a" placeholder="आना" class="border p-2 rounded text-center">
+                    <input type="text" id="l_p" placeholder="पैसा" class="border p-2 rounded text-center">
+                    <input type="text" id="l_d" placeholder="दाम" class="border p-2 rounded text-center">
+                </div>
+                <div id="ui_sqm" class="hidden mb-3">
+                    <input type="text" id="l_sqm" placeholder="क्षेत्रफल (व.मि.)" class="w-full border p-2 rounded">
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="addLand('same')"
+                        class="flex-1 bg-blue-600 text-white py-2 rounded font-bold shadow">+ Same गा.वि.स.</button>
+                    <button onclick="addLand('new')"
+                        class="flex-1 bg-green-700 text-white py-2 rounded font-bold shadow">+ New गा.वि.स.</button>
+                </div>
+                <div id="land-list-ui" class="mt-3 flex flex-wrap gap-1"></div>
+            </section>
+
+            <!-- ३. रोक्का र फुकुवा -->
+            <section id="rokka-section" class="hidden bg-orange-50 p-4 rounded-xl border border-orange-200 space-y-4">
+                <h3 class="font-bold text-orange-800 border-b pb-1">रोक्का र फुकुवा व्यवस्थापन</h3>
+                <div id="rokka-kitta-selector" class="grid grid-cols-4 md:grid-cols-6 gap-2"></div>
+                <div class="bg-white p-4 rounded border space-y-3">
+                    <div class="flex gap-4 mb-2 font-bold text-xs">
+                        <label class="cursor-pointer"><input type="radio" name="r_status" value="no" checked
+                                onclick="toggleRFields()"> रोक्का छैन</label>
+                        <label class="cursor-pointer text-red-600"><input type="radio" name="r_status" value="yes"
+                                onclick="toggleRFields()"> रोक्का छ</label>
+                    </div>
+                    <div id="r_fields" class="hidden space-y-2">
+                        <input type="text" id="r_auth" placeholder="निकाय" class="w-full border p-2 rounded text-xs">
+                        <div class="grid grid-cols-2 gap-2"><input type="text" id="r_chanum" placeholder="च.नं."
+                                class="border p-2 rounded text-xs"><input type="text" id="r_date" placeholder="मिति"
+                                class="border p-2 rounded text-xs"></div>
+                    </div>
+                    <button onclick="addRokka()" class="w-full bg-orange-600 text-white py-2 rounded font-bold">रोक्का
+                        सुरक्षित गर्नुहोस्</button>
+                </div>
+                <div id="rokka-summary" class="space-y-1"></div>
+                <div class="bg-white p-3 rounded border border-orange-300">
+                    <label class="flex items-center gap-2 font-bold text-blue-800 cursor-pointer text-xs"><input
+                            type="checkbox" id="need_fukuwa" onchange="updateAll()"> फुकुवा आवश्यक छ ?</label>
+                    <div id="fukuwa_options" class="mt-2 space-y-1 pl-6"></div>
+                </div>
+            </section>
+
+            <!-- ४. कित्ताकाट र मुल्याङ्कन -->
+            <section class="bg-yellow-50 p-4 rounded-xl border border-yellow-200 space-y-4">
+                <label class="flex items-center gap-2 font-bold cursor-pointer"><input type="checkbox" id="has_kk"
+                        onchange="toggleKKUI()"> कित्ताकाट विवरण छ ?</label>
+                <div id="kk_ui" class="hidden space-y-3">
+                    <div class="grid grid-cols-2 gap-2"><input type="text" id="napi_ch" oninput="updateAll()"
+                            placeholder="नापी च.नं." class="border p-2 rounded text-xs"><input type="text" id="napi_dt"
+                            oninput="updateAll()" placeholder="नापी मिति" class="border p-2 rounded text-xs"></div>
+                    <div id="kk_sabik_buttons" class="flex flex-wrap gap-1"></div>
+                    <div id="kk_haal_inputs" class="space-y-2"></div>
+                </div>
+                <div id="base-valuation-area" class="space-y-2 border-t pt-2">
+                    <h3 class="text-xs font-bold text-slate-600 italic">जग्गाको थैली अङ्क (Valuation):</h3>
+                    <div id="base-valuation-list" class="grid grid-cols-1 gap-2 font-white"></div>
+                </div>
+            </section>
+
+            <!-- ५. राजश्व -->
+            <section class="bg-slate-800 text-white p-5 rounded-xl space-y-5">
+                <textarea id="decision_extra" oninput="updateAll()" placeholder="निर्णय खण्डमा थप विवरण..."
+                    class="w-full border p-2 rounded h-20 text-xs text-black"></textarea>
+                <div class="pt-4 border-t border-slate-700">
+                    <label class="flex items-center gap-2 font-bold cursor-pointer text-xs"><input type="checkbox"
+                            id="rev_applicable" onchange="toggleRevUI()"> राजश्व/लाभकर लाग्छ ?</label>
+                    <div id="rev_ui" class="hidden mt-3 space-y-4">
+                        <input type="text" id="v_muchulka" oninput="updateAll()" placeholder="मुचुल्कामा भएको थैली"
+                            class="w-full p-2 rounded text-black font-bold">
+                        <div class="grid grid-cols-3 gap-2 text-[10px]">
+                            <label><input type="checkbox" id="has_profit_tax" onchange="updateAll()"> लाभकर (%) <input
+                                    type="text" id="profit_tax_perc" oninput="updateAll()"
+                                    class="w-8 p-1 rounded text-black"></label>
+                            <label><input type="checkbox" id="svc_perc_mode" onchange="toggleSvcMode('perc')"> सेवा
+                                शुल्क (%) <input type="text" id="svc_perc_val" oninput="updateAll()"
+                                    class="w-8 p-1 rounded text-black"></label>
+                            <label><input type="checkbox" id="svc_fixed_mode" onchange="toggleSvcMode('fixed')"> सेवा
+                                (Fixed) <input type="text" id="svc_fixed_val" oninput="updateAll()"
+                                    class="w-16 p-1 rounded text-black"></label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-pink-50 p-4 rounded-xl border border-pink-200 mt-4">
+                <label class="flex items-center gap-2 font-bold text-pink-800 cursor-pointer text-xs">
+                    <input type="checkbox" id="post_rokka_enable"
+                        onchange="postTransferRokka.enabled=this.checked; updateAll(); renderPostRokkaUI();"> रोक्का
+                    गर्ने?
+                </label>
+                <div id="post_rokka_ui" class="hidden mt-2 space-y-2">
+                    <div id="post_rokka_list" class="flex flex-wrap gap-2"></div>
+                    <input type="text" id="post_rokka_purpose"
+                        oninput="postTransferRokka.purpose=this.value; updateAll()"
+                        placeholder="प्रयोजन (उदा: फुकुवा हुनेगरी)" class="w-full border p-2 rounded text-xs">
+                </div>
+            </section>
+
+
             <div class="grid grid-cols-2 gap-4 sticky bottom-0 bg-white pt-4">
-                <button onclick="window.print()" class="bg-blue-800 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-blue-900 transition">सिधै प्रिन्ट</button>
-                <button onclick="exportToWord()" class="bg-slate-800 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-black transition">WORD (.DOCX)</button>
-                <a href="https://fonts.google.com/download?family=Mukta" class="btn" style="background-color:#475569; text-decoration:none; text-align:center; display:block; margin-top:5px;">
+                <button onclick="window.print()"
+                    class="bg-blue-800 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-blue-900 transition">सिधै
+                    प्रिन्ट</button>
+                <button onclick="exportToWord()"
+                    class="bg-slate-800 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-black transition">WORD
+                    (.DOCX)</button>
+                <a href="https://fonts.google.com/download?family=Mukta" class="btn"
+                    style="background-color:#475569; text-decoration:none; text-align:center; display:block; margin-top:5px;">
                     📥 फन्ट डाउनलोड (Mukta Font)
                 </a>
                 <p style="font-size:10px; color:red; text-align:center; margin-top:2px;">
@@ -270,19 +355,26 @@
                     </div>
                 </div>
 
-                <h3 style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 25px; font-size: 20px;">
+                <h3
+                    style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 25px; font-size: 20px;">
                     टिप्पणी र आदेश
                 </h3>
                 <p>श्रीमान्,</p>
                 <div id="main_content">
                     <p>
-                        <span id="out_applicant_details">.......</span>ले <span id="out_owners" class="font-bold text-red-800">.......</span>को नाममा जग्गाधनी श्रेस्ता कायम रहेको
+                        <span id="out_applicant_details">.......</span>ले <span id="out_owners"
+                            class="font-bold text-red-800">.......</span>को नाममा जग्गाधनी श्रेस्ता कायम रहेको
                         सिन्धुपाल्चोक जिल्ला <span id="out_land_details" class="font-bold text-green-700">.......</span>
-                        <span id="land_grammar_suffix">का जग्गाहरू</span> अदालतबाट भएको फैसला बमोजिम दा.खा. गरिदिन <span id="out_court_details" class="font-bold text-blue-800">.......</span> को पत्र, <span id="out_other_docs" class="font-bold">.......</span> संलग्न राखी दाखिला खारेज गरिपाउन द.नं. <span id="out_danum" class="font-bold">.......</span> मिति <span id="out_dadate" class="font-bold">.......</span>
+                        <span id="land_grammar_suffix">का जग्गाहरू</span> अदालतबाट भएको फैसला बमोजिम दा.खा. गरिदिन <span
+                            id="out_court_details" class="font-bold text-blue-800">.......</span> को पत्र, <span
+                            id="out_other_docs" class="font-bold">.......</span> संलग्न राखी दाखिला खारेज गरिपाउन द.नं.
+                        <span id="out_danum" class="font-bold">.......</span> मिति <span id="out_dadate"
+                            class="font-bold">.......</span>
                         मा निवेदन गर्नुभएको ।
                     </p>
                     <p id="rokka_para">
-                        उल्लिखित कित्ता जग्गाहरू मोठ कायम रहेको र <span id="out_rokka_details" class="font-bold text-orange-800">.......</span> व्यहोरा मोठ र कम्प्युटर फाँटबाट भिडि आएको ।
+                        उल्लिखित कित्ता जग्गाहरू मोठ कायम रहेको र <span id="out_rokka_details"
+                            class="font-bold text-orange-800">.......</span> व्यहोरा मोठ र कम्प्युटर फाँटबाट भिडि आएको ।
                     </p>
                     <div id="kk_table_area" class="my-6">
                         <p id="out_napi_intro" class="mb-2">...</p>
@@ -291,7 +383,8 @@
                             <tbody id="kk_rows"></tbody>
                             <tfoot>
                                 <tr style="font-weight: bold;">
-                                    <td id="total_label_cell" colspan="5" style="text-align: right;">जम्मा थैली अङ्कः</td>
+                                    <td id="total_label_cell" colspan="5" style="text-align: right;">जम्मा थैली अङ्कः
+                                    </td>
                                     <td id="out_total_v">...</td>
                                 </tr>
                             </tfoot>
@@ -307,22 +400,26 @@
 
     <script>
         let applicants = []; let owners = []; let lands = []; let rokkaEntries = []; let courtEntries = []; let otherDocs = []; let haalKittas = {}; let baseValuations = {};
-
+        let caseTypes = ["दर्ताफारी", "अंशवण्डा", "हकदावी", "नामसारी"];
+        let selectedCaseType = "";
         // --- CORE HELPER FUNCTIONS ---
-        
-        // Convert digits to Nepali and handle date separators
-        const toNepali = (str) => { 
-            if (str == null) return ""; 
-            return str.toString()
-                .replace(/[0-9]/g, s => "०१२३४५६७८९"[s])
-                .replace(/[\.\/-]/g, "।"); // Replace . / - with Purniram
+
+        // Change: Separated logic for Numbers vs Dates
+        const toNepali = (str) => {
+            if (str == null) return "";
+            return str.toString().replace(/[0-9]/g, s => "०१२३४५६७८९"[s]);
         };
 
-        const toEnglish = (str) => { 
-            if (!str) return 0; 
-            const n = { '०': 0, '१': 1, '२': 2, '३': 3, '४': 4, '५': 5, '६': 6, '७': 7, '८': 8, '९': 9 }; 
-            let res = str.toString().replace(/[०-९]/g, s => n[s]); 
-            return parseFloat(res.replace(/,/g, '')) || 0; 
+        const toNepaliDate = (str) => {
+            if (str == null) return "";
+            return toNepali(str).replace(/[\.\/-]/g, "।");
+        };
+
+        const toEnglish = (str) => {
+            if (!str) return 0;
+            const n = { '०': 0, '१': 1, '२': 2, '३': 3, '४': 4, '५': 5, '६': 6, '७': 7, '८': 8, '९': 9 };
+            let res = str.toString().replace(/[०-९]/g, s => n[s]);
+            return parseFloat(res.replace(/,/g, '')) || 0;
         };
 
         function nepaliJoin(arr) { if (!arr || !arr.length) return ""; if (arr.length === 1) return arr[0]; const last = arr.pop(); return arr.join(', ') + ' र ' + last; }
@@ -331,7 +428,7 @@
         const NUM_NE = ["शुन्य", "एक", "दुई", "तीन", "चार", "पाँच", "छ", "सात", "आठ", "नौ", "दस", "एघार", "बाह्र", "तेह्र", "चौध", "पन्ध्र", "सोह्र", "सत्र", "अठार", "उन्नाइस", "बीस", "एक्काइस", "बाइस", "तेइस", "चौबीस", "पच्चीस", "छब्बीस", "सत्ताइस", "अठ्ठाइस", "उनन्तीस", "तीस", "एकतीस", "बत्तीस", "तेत्तीस", "चौँतीस", "पैंतीस", "छत्तीस", "सैंतीस", "अठतीस", "उनन्चालीस", "चालीस", "एकचालीस", "बयालीस", "त्रिचालीस", "चवालीस", "पैँतालीस", "छयालीस", "सत्चालीस", "अठचालीस", "उनन्चास", "पचास", "एकाउन्न", "बाउन्न", "त्रिपन्न", "चवन्न", "पचपन्न", "छपन्न", "सन्ताउन्न", "अन्ठाउन्न", "उनन्साठी", "साठी", "एकसट्ठी", "बैसट्ठी", "त्रिसट्ठी", "चौसट्ठी", "पैंसट्ठी", "छैंसट्ठी", "सडसट्ठी", "अठसट्ठी", "उनन्सत्तरी", "सत्तरी", "एकहत्तर", "बहत्तर", "त्रिहत्तर", "चौरहत्तर", "पचहत्तर", "छयहत्तर", "सतहत्तर", "अठहत्तर", "उनासी", "अस्सी", "एकासी", "बयासी", "त्रियासी", "चौरासी", "पचासी", "छयासी", "सतासी", "अठासी", "उनान्नब्बे", "नब्बे", "एकान्नब्बे", "बयान्नब्बे", "त्रियान्नब्बे", "चौरान्नब्बे", "पन्चान्नब्बे", "छयान्नब्बे", "सन्तानब्बे", "अन्ठान्नब्बे", "उनान्सय"];
 
         function convertToWordsLessThan100(n) {
-            if(n < 100) return NUM_NE[n];
+            if (n < 100) return NUM_NE[n];
             return "";
         }
 
@@ -345,7 +442,7 @@
             const thousand = Math.floor(n / 1000); n %= 1000;
             const hundred = Math.floor(n / 100); n %= 100;
 
-            if (crore > 0) words += (crore < 100 ? NUM_NE[crore] : numberToNepaliWords(crore).replace(' रूपैँया','')) + " करोड ";
+            if (crore > 0) words += (crore < 100 ? NUM_NE[crore] : numberToNepaliWords(crore).replace(' रूपैँया', '')) + " करोड ";
             if (lakh > 0) words += NUM_NE[lakh] + " लाख ";
             if (thousand > 0) words += NUM_NE[thousand] + " हजार ";
             if (hundred > 0) words += NUM_NE[hundred] + " सय ";
@@ -356,18 +453,18 @@
         }
 
         function formatMoneyWithWords(num) {
-            if(!num && num !== 0) return "";
-            
+            if (!num && num !== 0) return "";
+
             // Nepali Comma System: 12,34,567
             let str = num.toFixed(0).toString();
             let lastThree = str.substring(str.length - 3);
             let otherNumbers = str.substring(0, str.length - 3);
             if (otherNumbers != '') lastThree = ',' + lastThree;
             let res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
-            
+
             const nepaliNum = toNepali(res);
             const inWords = numberToNepaliWords(num);
-            
+
             return `${nepaliNum} (${inWords})`;
         }
 
@@ -386,13 +483,13 @@
                 relType: 'son'
             });
             renderApplicants();
-        } 
-        
+        }
+
         function renderApplicants() {
             document.getElementById('applicant-list').innerHTML = applicants.map((a, i) => {
                 let label1 = 'बाजे';
                 let label2 = 'बाबु';
-                if (a.relType === 'daughter') { label1 = 'बाजे'; label2 = 'बाबु'; } 
+                if (a.relType === 'daughter') { label1 = 'बाजे'; label2 = 'बाबु'; }
                 else if (a.relType === 'wife') { label1 = 'ससुरा'; label2 = 'पति'; }
 
                 return `
@@ -423,31 +520,37 @@
         function toggleUnitUI() { const u = document.querySelector('input[name="unit"]:checked').value; document.getElementById('ui_rapd').classList.toggle('hidden', u !== 'rapd'); document.getElementById('ui_sqm').classList.toggle('hidden', u !== 'sqm'); }
 
         function addLand(type) {
-            const vdc = document.getElementById('l_vdc').value, ward = document.getElementById('l_ward').value, kitta = document.getElementById('l_kitta').value;
+            const vdc = document.getElementById('l_vdc').value,
+                ward = document.getElementById('l_ward').value,
+                kitta = document.getElementById('l_kitta').value;
             const unit = document.querySelector('input[name="unit"]:checked').value;
-            
-            // CONVERT RAPD TO NEPALI HERE
+
             let area = "";
             if (unit === 'rapd') {
-                const r = toNepali(document.getElementById('l_r').value || '0');
-                const a = toNepali(document.getElementById('l_a').value || '0');
-                const p = toNepali(document.getElementById('l_p').value || '0');
-                const d = toNepali(document.getElementById('l_d').value || '0');
-                area = `${r}-${a}-${p}-${d}`;
+                const r = document.getElementById('l_r').value || '०';
+                const a = document.getElementById('l_a').value || '०';
+                const p = document.getElementById('l_p').value || '०';
+                const d = document.getElementById('l_d').value || '०';
+                area = `${toNepali(r)}-${toNepali(a)}-${toNepali(p)}-${toNepali(d)}`;
             } else {
                 area = toNepali(document.getElementById('l_sqm').value) + " व.मि.";
             }
 
             if (!kitta) return;
-            const id = Date.now();
-            lands.push({ id, vdc, ward, kitta, area, unit });
-            haalKittas[id] = [];
-            if (type === 'new') { document.getElementById('l_vdc').value = ''; document.getElementById('l_ward').value = ''; document.getElementById('l_vdc').focus(); }
-            document.getElementById('l_kitta').value = ''; document.getElementById('l_kitta').focus();
-            renderLandUI(); updateAll(); saveToLocal();
-            document.getElementById('rokka-section').classList.remove('hidden');
-        }
+            lands.push({ id: Date.now(), vdc, ward, kitta, area, unit });
 
+            // Clear Area Fields
+            ['l_r', 'l_a', 'l_p', 'l_d', 'l_sqm', 'l_kitta'].forEach(id => document.getElementById(id).value = '');
+
+            if (type === 'new') {
+                document.getElementById('l_vdc').value = '';
+                document.getElementById('l_ward').value = '';
+                document.getElementById('l_vdc').focus();
+            } else {
+                document.getElementById('l_kitta').focus();
+            }
+            renderLandUI(); updateAll(); saveToLocal();
+        }
         function renderLandUI() {
             document.getElementById('land-list-ui').innerHTML = lands.map(l => `<div class="bg-white border rounded px-2 py-1 text-[10px] flex gap-1 shadow-sm"><span>${l.vdc}-${l.ward} (${l.kitta})</span><button onclick="lands=lands.filter(x=>x.id!==${l.id}); renderLandUI(); updateAll();">✕</button></div>`).join('');
             renderRokkaSelectors(); renderKKButtons(); renderBaseValuationUI();
@@ -498,11 +601,25 @@
 
         function renderKKInputs() {
             let html = "";
+            // Build names list: Unique combined list of applicants and owners
+            const nameOptions = [...new Set([...applicants.map(a => a.name), ...owners])];
+
             lands.forEach(l => {
                 if (haalKittas[l.id]?.length) {
-                    html += `<div class="bg-white p-2 border rounded mb-2"><div class="font-bold text-[10px] border-b mb-1">कि.नं. ${l.kitta} का टुक्राहरू</div>`;
+                    html += `<div class="bg-white p-2 border rounded mb-2"><div class="font-bold text-[10px] border-b mb-1">कि.नं. ${toNepali(l.kitta)} का टुक्राहरू</div>`;
                     haalKittas[l.id].forEach((h, idx) => {
-                        html += `<div class="flex gap-1 mb-1"><input type="text" placeholder="कि.नं." oninput="uH(${l.id},${idx},'kitta',this.value)" class="border p-1 rounded text-[10px] w-12" value="${h.kitta}"><input type="text" placeholder="क्षे.फ." oninput="uH(${l.id},${idx},'area',this.value)" class="border p-1 rounded text-[10px] w-16" value="${h.area}"><select onchange="uH(${l.id},${idx},'owner',this.value)" class="border p-1 rounded text-[10px]"><option value="निवेदक" ${h.owner === 'निवेदक' ? 'selected' : ''}>निवेदक</option><option value="बाँकी" ${h.owner === 'बाँकी' ? 'selected' : ''}>बाँकी</option></select><input type="text" placeholder="थैली" oninput="uH(${l.id},${idx},'valuation',this.value)" class="border p-1 rounded text-[10px] w-16" value="${h.valuation}"><button onclick="haalKittas[${l.id}].splice(${idx},1); renderKKInputs(); updateAll(); renderBaseValuationUI();">✕</button></div>`;
+                        let optionsHtml = nameOptions.map(name => `<option value="${name}" ${h.owner === name ? 'selected' : ''}>${name}</option>`).join('');
+                        optionsHtml += `<option value="बाँकी" ${h.owner === 'बाँकी' ? 'selected' : ''}>बाँकी</option>`;
+
+                        html += `<div class="flex gap-1 mb-1">
+                    <input type="text" placeholder="कि.नं." oninput="uH(${l.id},${idx},'kitta',this.value)" class="border p-1 rounded text-[10px] w-12" value="${h.kitta}">
+                    <input type="text" placeholder="क्षे.फ." oninput="uH(${l.id},${idx},'area',this.value)" class="border p-1 rounded text-[10px] w-16" value="${h.area}">
+                    <select onchange="uH(${l.id},${idx},'owner',this.value)" class="border p-1 rounded text-[10px] w-24">
+                        ${optionsHtml}
+                    </select>
+                    <input type="text" placeholder="थैली" oninput="uH(${l.id},${idx},'valuation',this.value)" class="border p-1 rounded text-[10px] w-16" value="${h.valuation}">
+                    <button onclick="haalKittas[${l.id}].splice(${idx},1); renderKKInputs(); updateAll();">✕</button>
+                </div>`;
                     });
                     html += `</div>`;
                 }
@@ -514,7 +631,32 @@
         function toggleRevUI() { document.getElementById('rev_ui').classList.toggle('hidden', !document.getElementById('rev_applicable').checked); updateAll(); }
         function toggleSvcMode(m) { if (m === 'perc') document.getElementById('svc_fixed_mode').checked = false; else document.getElementById('svc_perc_mode').checked = false; updateAll(); }
 
-       function updateAll() {
+        let postTransferRokka = { enabled: false, kittas: [], purpose: "" };
+
+        function renderPostRokkaUI() {
+            const ui = document.getElementById('post_rokka_ui');
+            if (!postTransferRokka.enabled) { ui.classList.add('hidden'); return; }
+            ui.classList.remove('hidden');
+
+            let availableKittas = [];
+            lands.forEach(l => {
+                if (haalKittas[l.id]?.length) haalKittas[l.id].forEach(h => availableKittas.push(h.kitta));
+                else availableKittas.push(l.kitta);
+            });
+
+            document.getElementById('post_rokka_list').innerHTML = availableKittas.map(k => `
+        <label class="bg-white px-2 py-1 border rounded text-[10px] cursor-pointer">
+            <input type="checkbox" onchange="togglePostKitta('${k}')" ${postTransferRokka.kittas.includes(k) ? 'checked' : ''}> ${toNepali(k)}
+        </label>
+    `).join('');
+        }
+        function togglePostKitta(k) {
+            const idx = postTransferRokka.kittas.indexOf(k);
+            if (idx > -1) postTransferRokka.kittas.splice(idx, 1); else postTransferRokka.kittas.push(k);
+            updateAll();
+        }
+
+        function updateAll() {
             const groups = {};
             applicants.forEach(a => {
                 const key = `${a.dist}|${a.addr}|${a.gfather}|${a.father}|${a.relType}`;
@@ -534,48 +676,57 @@
 
             document.getElementById('out_applicant_details').innerHTML = nepaliJoin(appStr) || ".......";
             document.getElementById('out_owners').innerText = nepaliJoin([...owners]) || ".......";
-            
+
             // Land Grammar
             document.getElementById('land_grammar_suffix').innerText = (lands.length > 1) ? "का जग्गाहरू" : "को जग्गा";
 
-            const locs = {}; 
-            lands.forEach(l => { 
-                const key = `साविक ${l.vdc} वडा नं. ${toNepali(l.ward)}`; 
-                if (!locs[key]) locs[key] = []; 
-                locs[key].push(`कि.नं. ${toNepali(l.kitta)} (${l.area})`); 
+            const locs = {};
+            lands.forEach(l => {
+                const key = `साविक ${l.vdc} वडा नं. ${toNepali(l.ward)}`;
+                if (!locs[key]) locs[key] = [];
+                locs[key].push(toNepali(l.kitta));
             });
-            
-            document.getElementById('out_land_details').innerText = Object.keys(locs).map(k => `${k} को ${nepaliJoin(locs[k])}`).join(', ') || ".......";
-            document.getElementById('out_court_details').innerText = nepaliJoin([...courtEntries]) || ".......";
-            document.getElementById('out_other_docs').innerText = nepaliJoin([...otherDocs]) || ".......";
-            
-            ['danum', 'dadate', 'napi_ch', 'napi_dt'].forEach(f => { 
-                const el = document.getElementById('out_' + f); 
-                if (el) el.innerText = toNepali(document.getElementById('in_' + f)?.value); 
-            });
+            const landStr = Object.keys(locs).map(k => `${k} को कि.नं. ${nepaliJoin(locs[k])}`).join(', ');
+            document.getElementById('out_land_details').innerText = landStr || ".......";
 
+            // 2. Updated Rokka Para Logic
             let clean = []; let grouped = {};
             lands.forEach(l => {
-                let rel = rokkaEntries.filter(re => re.kittaIds.includes(l.id));
-                if (!rel.length || rel.every(re => !re.isRokka)) clean.push(toNepali(l.kitta));
+                let rel = rokkaEntries.filter(re => re.kittaIds.includes(l.id) && re.isRokka);
+                if (!rel.length) clean.push(toNepali(l.kitta));
                 else {
-                    let key = rel.filter(re => re.isRokka).map(re => `${re.auth}को च.नं. ${toNepali(re.chanum)} मिति ${toNepali(re.date)}`).join(' र ');
+                    let key = rel.map(re => `${re.auth}को च.नं. ${toNepali(re.chanum)} मिति ${toNepaliDate(re.date)}`).join(' र ');
                     if (!grouped[key]) grouped[key] = []; grouped[key].push(toNepali(l.kitta));
                 }
             });
-            
-            let rParts = [];
-            if (clean.length) rParts.push(`कि.नं. ${nepaliJoin(clean)} रोक्का नरहेको`);
-            Object.keys(grouped).forEach(k => rParts.push(`कि.नं. ${nepaliJoin(grouped[k])} ${k} को पत्रबाट रोक्का रहेको`));
-            document.getElementById('out_rokka_details').innerText = nepaliJoin(rParts) || ".......";
 
-            renderTable();
+            let rokkaParaText = "";
+            const totalGroupCount = Object.keys(grouped).length;
+            if (clean.length === lands.length) {
+                rokkaParaText = "उल्लिखित कित्ता जग्गाहरू रोक्का नरहेको";
+            } else if (totalGroupCount === 1 && clean.length === 0) {
+                rokkaParaText = `उल्लिखित कित्ता जग्गाहरू ${Object.keys(grouped)[0]} को पत्रबाट रोक्का रहेको`;
+            } else {
+                let rParts = [];
+                if (clean.length) rParts.push(`कि.नं. ${nepaliJoin(clean)} रोक्का नरहेको`);
+                Object.keys(grouped).forEach(k => rParts.push(`कि.नं. ${nepaliJoin(grouped[k])} ${k} को पत्रबाट रोक्का रहेको`));
+                rokkaParaText = nepaliJoin(rParts);
+            }
+            document.getElementById('out_rokka_details').innerText = rokkaParaText;
+
+            // 3. Update Decision & Other fields
+            document.getElementById('out_dadate').innerText = toNepaliDate(document.getElementById('in_dadate').value);
+            // (Inside updateAll, update the decision part below)
             document.getElementById('out_final_decision').innerHTML = generateDecision();
+            renderTable();
         }
 
         function generateDecision() {
             let extra = document.getElementById('decision_extra').value;
-            let d = `यसमा उल्लिखित प्रमाणहरू ${extra ? 'साथै ' + extra : ''} समेतको आधारमा `;
+            let caseTypePart = selectedCaseType ? `${selectedCaseType} मुद्दाको` : "भएको";
+            let d = `यसमा उल्लिखित प्रमाणहरू ${extra ? 'साथै ' + extra : ''} समेतको आधारमा अदालतबाट ${caseTypePart} फैसला बमोजिम `;
+
+
 
             // Rokka / Fukuwa Logic
             if (document.getElementById('need_fukuwa').checked) {
@@ -592,7 +743,7 @@
                 if (isSvcFixed && !isProfit && !isSvcPerc) {
                     const fixedVal = toEnglish(document.getElementById('svc_fixed_val').value);
                     d += `रू. ${formatMoneyWithWords(fixedVal)} सेवा शुल्क असुल भई `;
-                } 
+                }
                 else {
                     const muchulka = toEnglish(document.getElementById('v_muchulka').value);
                     let regTotal = 0;
@@ -613,11 +764,11 @@
                     }
                     if (isSvcPerc) {
                         const svcAmt = Math.round(maxVal * toEnglish(document.getElementById('svc_perc_val').value) / 100);
-                        rev.push(`${toNepali(document.getElementById('svc_perc_val').value)}% ले रू. ${formatMoneyWithWords(svcAmt)} सेवा शुल्क`);
+                        rev.push(`प्रदेश आर्थिक ऐन बमोजिम ${toNepali(document.getElementById('svc_perc_val').value)}% ले रू. ${formatMoneyWithWords(svcAmt)} सेवा शुल्क`);
                     }
                     if (isSvcFixed) {
                         const fVal = toEnglish(document.getElementById('svc_fixed_val').value);
-                        rev.push(`रू. ${formatMoneyWithWords(fVal)} सेवा शुल्क`);
+                        rev.push(`प्रदेश आर्थिक ऐन बमोजिम रू. ${formatMoneyWithWords(fVal)} सेवा शुल्क`);
                     }
 
                     d += `${nepaliJoin(rev)} असुल भई `;
@@ -626,7 +777,7 @@
 
             let appsK = [], ownsK = [];
             lands.forEach(l => { if (haalKittas[l.id]?.length) { haalKittas[l.id].forEach(h => { if (h.owner === 'निवेदक') appsK.push(toNepali(h.kitta)); else ownsK.push(toNepali(h.kitta)); }); } else { appsK.push(toNepali(l.kitta)); } });
-            
+
             // Applicant Plural Logic
             const appTerm = applicants.length > 1 ? "निवेदकहरू" : "निवेदक";
 
@@ -634,19 +785,27 @@
             if (ownsK.length) d += `र कि.नं. ${nepaliJoin(ownsK)} ज.ध. ${nepaliJoin([...owners])}को नाममा बाँकी रहन `;
             d += `आवश्यक निर्णयार्थ पेश । श्रीमानको जो आदेश ।`;
             return d;
-        }   
 
-function renderTable() {
+            if (postTransferRokka.enabled && postTransferRokka.kittas.length) {
+                d += ` साथै कि.नं. ${nepaliJoin(postTransferRokka.kittas.map(k => toNepali(k)))} ${postTransferRokka.purpose} रोक्का रहन `;
+            }
+
+            d += `आवश्यक निर्णयार्थ पेश । श्रीमानको जो आदेश ।`;
+            return d;
+
+        }
+
+        function renderTable() {
             const hasKK = document.getElementById('has_kk').checked;
-            
+
             // Introduction Text
-            document.getElementById('out_napi_intro').innerText = hasKK ? 
-                `नापी कार्यालयको च.नं. ${toNepali(document.getElementById('napi_ch').value)} मिति ${toNepali(document.getElementById('napi_dt').value)} को पत्रबाट कित्ताकाट भई आएको देहाय बमोजिम हुने ।` : 
+            document.getElementById('out_napi_intro').innerText = hasKK ?
+                `नापी कार्यालयको च.नं. ${toNepali(document.getElementById('napi_ch').value)} मिति ${toNepali(document.getElementById('napi_dt').value)} को पत्रबाट कित्ताकाट भई आएको देहाय बमोजिम हुने ।` :
                 `माग भएका कित्ता जग्गाहरूको मुल्याङ्कन देहाय बमोजिम हुने ।`;
 
             // 1. Setup Header
-            let head = hasKK ? 
-                `<tr style="background:#eee;"><th rowspan="2">सि.नं.</th><th colspan="3">साविक</th><th colspan="3">हाल</th><th rowspan="2">थैली</th></tr><tr><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th></tr>` : 
+            let head = hasKK ?
+                `<tr style="background:#eee;"><th rowspan="2">सि.नं.</th><th colspan="3">साविक</th><th colspan="3">हाल</th><th rowspan="2">थैली</th></tr><tr><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th></tr>` :
                 `<tr style="background:#eee;"><th>सि.नं.</th><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th><th>न्युनतम मुल्याङ्कन</th></tr>`;
             document.getElementById('out_table_head').innerHTML = head;
 
@@ -659,7 +818,7 @@ function renderTable() {
                     hs.forEach((h, idx) => {
                         html += `<tr>`;
                         if (idx === 0) html += `<td rowspan="${hs.length}">${toNepali(sn++)}</td><td rowspan="${hs.length}">${l.vdc} ${toNepali(l.ward)}</td><td rowspan="${hs.length}">${toNepali(l.kitta)}</td><td rowspan="${hs.length}">${l.area}</td>`;
-                        
+
                         let valStr = "";
                         if (h.owner === 'निवेदक') {
                             const v = toEnglish(h.valuation);
@@ -668,15 +827,15 @@ function renderTable() {
                         } else {
                             valStr = "बाँकी";
                         }
-                        
+
                         html += `<td>${toNepali(h.kitta)}</td><td>${toNepali(h.area)}</td><td>${h.owner === 'निवेदक' ? nepaliJoin(applicants.map(a => a.name)) : nepaliJoin([...owners])}</td><td>${valStr}</td></tr>`;
                     });
                 } else {
                     // Normal Case
-                    const val = toEnglish(baseValuations[l.id]); 
+                    const val = toEnglish(baseValuations[l.id]);
                     total += val;
                     const valStr = val ? toNepali(val) : '';
-                    
+
                     if (hasKK) {
                         html += `<tr><td>${toNepali(sn++)}</td><td>${l.vdc} ${toNepali(l.ward)}</td><td>${toNepali(l.kitta)}</td><td>${l.area}</td><td>${toNepali(l.kitta)}</td><td>${l.area}</td><td>${nepaliJoin(applicants.map(a => a.name))}</td><td>${valStr}</td></tr>`;
                     } else {
@@ -689,18 +848,18 @@ function renderTable() {
             // 3. New Footer Logic (Merged Cells for better looking)
             const labelCell = document.getElementById('total_label_cell');
             const valueCell = document.getElementById('out_total_v');
-            
+
             // Calculate total string with words
             let totalStr = "...";
-            if(total > 0) {
-                 // Manual Comma Formatting for Nepali (12,34,567)
-                 const str = total.toFixed(0).toString();
-                 let lastThree = str.substring(str.length - 3);
-                 let otherNumbers = str.substring(0, str.length - 3);
-                 if (otherNumbers != '') lastThree = ',' + lastThree;
-                 let res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
-                 
-                 totalStr = `रू. ${toNepali(res)}।- (${numberToNepaliWords(total)})`;
+            if (total > 0) {
+                // Manual Comma Formatting for Nepali (12,34,567)
+                const str = total.toFixed(0).toString();
+                let lastThree = str.substring(str.length - 3);
+                let otherNumbers = str.substring(0, str.length - 3);
+                if (otherNumbers != '') lastThree = ',' + lastThree;
+                let res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+
+                totalStr = `रू. ${toNepali(res)}।- (${numberToNepaliWords(total)})`;
             }
 
             // Merge cells: Hide the value cell and stretch the label cell
@@ -785,10 +944,7 @@ function renderTable() {
             const date = document.getElementById('c_dt').value;
 
             if (name) {
-                // date replaces . or / with Purniram
-                const cleanDate = toNepali(date);
-                courtEntries.push(`${name}को च.नं. ${toNepali(chanum)} मिति ${cleanDate}`);
-
+                courtEntries.push(`${name}को च.नं. ${toNepali(chanum)} मिति ${toNepaliDate(date)}`);
                 document.getElementById('c_name').value = '';
                 document.getElementById('c_ch').value = '';
                 document.getElementById('c_dt').value = '';
@@ -800,6 +956,9 @@ function renderTable() {
                 alert("अदालतको नाम अनिवार्य छ !");
             }
         }
+
+
+
         function renderCourts() {
             const listContainer = document.getElementById('court-list-ui');
             listContainer.innerHTML = courtEntries.map((c, i) => `
@@ -822,12 +981,13 @@ function renderTable() {
 
         addApplicant(); loadFromLocal(); updateAll();
         if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
-              .then(reg => console.log('SW registered:', reg.scope))
-              .catch(err => console.error('SW registration failed:', err));
-          });
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.error('SW registration failed:', err));
+            });
         }
     </script>
 </body>
+
 </html>
