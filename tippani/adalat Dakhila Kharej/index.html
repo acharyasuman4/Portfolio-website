@@ -142,7 +142,6 @@
                     <button onclick="addLand('new')" class="flex-1 bg-green-700 text-white py-1 rounded font-bold">+
                         New</button>
                 </div>
-                <div id="land-list-ui" class="flex flex-wrap gap-1 border-b pb-2 mb-2"></div>
 
                 <!-- कित्ताकाट सब-सेक्सन -->
                 <div class="mt-2 p-2 bg-white rounded border">
@@ -162,6 +161,9 @@
                         <div id="kk_haal_inputs" class="space-y-3 bg-slate-50 p-2 rounded"></div>
                     </div>
                 </div>
+                <label for="land-list-ui">ससिम कित्ताको थैली अङ्क</label>
+                  <div id="land-list-ui" class="flex flex-wrap gap-1 border-b pb-2 mb-2"></div>
+
             </section>
 
             <!-- ३. रोक्का/फुकुवा -->
@@ -260,12 +262,12 @@
                 </div>
             </section>
 
-                        <div class="grid grid-cols-2 gap-4 sticky bottom-0 bg-white pt-4">
+            <div class="grid grid-cols-2 gap-4 sticky bottom-0 bg-white pt-4">
 
-             <button onclick="window.print()"
+                <button onclick="window.print()"
                     class="bg-blue-800 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-blue-900 transition">सिधै
                     प्रिन्ट</button>
- <button onclick="exportToWord()"
+                <button onclick="exportToWord()"
                     class="bg-slate-800 text-white py-4 rounded-xl font-bold text-lg shadow-xl hover:bg-black transition">WORD
                     (.DOCX)</button>
                 <a href="https://fonts.google.com/download?family=Mukta" class="btn"
@@ -275,15 +277,15 @@
                 <p style="font-size:10px; color:red; text-align:center; margin-top:2px;">
                     * Word मा सही देखिन यो फन्ट install गर्नुहोला ।
                 </p>
-</button>
-</div>
+                </button>
+            </div>
         </div>
 
         <!-- RIGHT: PREVIEW -->
         <div id="tippani-preview" class="preview-content shadow-sm border border-slate-300">
             <div class="office-header">
                 <img style="width:90px"
-                        src="data:image/jpeg;base64,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">
+                    src="data:image/jpeg;base64,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">
                 <div class="header-text-container">
                     <div>नेपाल सरकार</div>
                     <div style="font-size:14px">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
@@ -301,7 +303,7 @@
                     नाममा जग्गाधनी श्रेस्ता कायम रहेको
                     सिन्धुपाल्चोक जिल्ला <span id="out_land_details" class="font-bold text-green-700">.......</span> को
                     जग्गा
-                    अदालतबाट भएको <span id="out_case_type" class="font-bold">.......</span> फैसला बमोजिम दा.खा. गरिदिन
+                    अदालतबाट भएको <span id="out_case_type" class="font-bold">.......</span> मुद्दाको फैसला बमोजिम दा.खा. गरिदिन
                     <span id="out_court_details" class="font-bold text-blue-800">.......</span> को पत्र,
                     <span id="out_other_docs" class="font-bold">.......</span> संलग्न राखी दाखिला खारेज गरिपाउन द.नं.
                     <span id="out_danum" class="font-bold">.......</span> मिति <span id="out_dadate"
@@ -394,132 +396,164 @@
         }
         // 1. Persistence Logic
         function saveAndUpdate() {
-    // Collect all UI states into one object
-    const dataToSave = {
-        applicants,
-        owners,
-        lands,
-        rokkaEntries,
-        courtEntries,
-        otherDocs,
-        haalKittas,
-        baseValuations,
-        post_rokka: postTransferRokka,
-        case_type: document.getElementById('case_type_input').value,
-        has_kk: document.getElementById('has_kk').checked,
-        // New: Capture toggle/checkbox states
-        rev_applicable: document.getElementById('rev_applicable').checked,
-        need_fukuwa: document.getElementById('need_fukuwa').checked,
-        has_profit_tax: document.getElementById('has_profit_tax').checked,
-        svc_perc_mode: document.getElementById('svc_perc_mode').checked,
-        svc_fixed_mode: document.getElementById('svc_fixed_mode').checked,
-        v_muchulka: document.getElementById('v_muchulka').value,
-        profit_tax_perc: document.getElementById('profit_tax_perc').value,
-        svc_perc_val: document.getElementById('svc_perc_val').value,
-        svc_fixed_val: document.getElementById('svc_fixed_val').value,
-        decision_extra: document.getElementById('decision_extra').value,
-        danum: document.getElementById('in_danum').value,
-        dadate: document.getElementById('in_dadate').value,
-        napi_ch: document.getElementById('napi_ch').value,
-        napi_dt: document.getElementById('napi_dt').value
-    };
+            // Collect all UI states into one object
+            const dataToSave = {
+                applicants,
+                owners,
+                lands,
+                rokkaEntries,
+                courtEntries,
+                otherDocs,
+                haalKittas,
+                baseValuations,
+                post_rokka: postTransferRokka,
+                case_type: document.getElementById('case_type_input').value,
+                has_kk: document.getElementById('has_kk').checked,
+                // New: Capture toggle/checkbox states
+                rev_applicable: document.getElementById('rev_applicable').checked,
+                need_fukuwa: document.getElementById('need_fukuwa').checked,
+                has_profit_tax: document.getElementById('has_profit_tax').checked,
+                svc_perc_mode: document.getElementById('svc_perc_mode').checked,
+                svc_fixed_mode: document.getElementById('svc_fixed_mode').checked,
+                v_muchulka: document.getElementById('v_muchulka').value,
+                profit_tax_perc: document.getElementById('profit_tax_perc').value,
+                svc_perc_val: document.getElementById('svc_perc_val').value,
+                svc_fixed_val: document.getElementById('svc_fixed_val').value,
+                decision_extra: document.getElementById('decision_extra').value,
+                danum: document.getElementById('in_danum').value,
+                dadate: document.getElementById('in_dadate').value,
+                napi_ch: document.getElementById('napi_ch').value,
+                napi_dt: document.getElementById('napi_dt').value
+                
+            };
+             postTransferRokka.enabled = document.getElementById('post_rokka_enable').checked;
+    postTransferRokka.purpose = document.getElementById('post_rokka_purpose').value;
 
-    localStorage.setItem('court_dakha_v1', JSON.stringify(dataToSave));
-    updateAll();
-}
+            localStorage.setItem('court_dakha_v1', JSON.stringify(dataToSave));
+            updateAll();
+        }
 
-       function loadFromLocal() {
-    const data = JSON.parse(localStorage.getItem('court_dakha_v1'));
-    if (data) {
-        applicants = data.applicants || [];
-        owners = data.owners || [];
-        lands = data.lands || [];
-        rokkaEntries = data.rokkaEntries || [];
-        courtEntries = data.courtEntries || [];
-        otherDocs = data.otherDocs || [];
-        haalKittas = data.haalKittas || {};
-        baseValuations = data.baseValuations || {};
-        postTransferRokka = data.post_rokka || { enabled: false, kittas: [], purpose: "" };
+        function loadFromLocal() {
+            const data = JSON.parse(localStorage.getItem('court_dakha_v1'));
+            if (data) {
+                applicants = data.applicants || [];
+                owners = data.owners || [];
+                lands = data.lands || [];
+                rokkaEntries = data.rokkaEntries || [];
+                courtEntries = data.courtEntries || [];
+                otherDocs = data.otherDocs || [];
+                haalKittas = data.haalKittas || {};
+                baseValuations = data.baseValuations || {};
+                postTransferRokka = data.post_rokka || { enabled: false, kittas: [], purpose: "" };
 
-        // Restore UI States
-        document.getElementById('case_type_input').value = data.case_type || "";
-        document.getElementById('has_kk').checked = data.has_kk || false;
-        document.getElementById('rev_applicable').checked = data.rev_applicable || false;
-        document.getElementById('need_fukuwa').checked = data.need_fukuwa || false;
-        document.getElementById('has_profit_tax').checked = data.has_profit_tax || false;
-        document.getElementById('svc_perc_mode').checked = data.svc_perc_mode || false;
-        document.getElementById('svc_fixed_mode').checked = data.svc_fixed_mode || false;
-        
-        // Restore values
-        document.getElementById('v_muchulka').value = data.v_muchulka || "";
-        document.getElementById('profit_tax_perc').value = data.profit_tax_perc || "";
-        document.getElementById('svc_perc_val').value = data.svc_perc_val || "";
-        document.getElementById('svc_fixed_val').value = data.svc_fixed_val || "";
-        document.getElementById('decision_extra').value = data.decision_extra || "";
-        document.getElementById('in_danum').value = data.danum || "";
-        document.getElementById('in_dadate').value = data.dadate || "";
-        document.getElementById('napi_ch').value = data.napi_ch || "";
-        document.getElementById('napi_dt').value = data.napi_dt || "";
-        document.getElementById('post_rokka_enable').checked = postTransferRokka.enabled || false;
-        document.getElementById('post_rokka_purpose').value = postTransferRokka.purpose || "";
+                // Restore UI States
+                document.getElementById('case_type_input').value = data.case_type || "";
+                document.getElementById('has_kk').checked = data.has_kk || false;
+                document.getElementById('rev_applicable').checked = data.rev_applicable || false;
+                document.getElementById('need_fukuwa').checked = data.need_fukuwa || false;
+                document.getElementById('has_profit_tax').checked = data.has_profit_tax || false;
+                document.getElementById('svc_perc_mode').checked = data.svc_perc_mode || false;
+                document.getElementById('svc_fixed_mode').checked = data.svc_fixed_mode || false;
 
-        // Trigger UI toggles
-        toggleRevUI();
-        toggleKKUI();
-        renderApplicants(); renderOwners(); renderLandUI(); renderRokkaUI(); renderCourts(); renderDocs(); renderPostRokkaUI();
-        updateAll();
-    }
-}
+                // Restore values
+                document.getElementById('v_muchulka').value = data.v_muchulka || "";
+                document.getElementById('profit_tax_perc').value = data.profit_tax_perc || "";
+                document.getElementById('svc_perc_val').value = data.svc_perc_val || "";
+                document.getElementById('svc_fixed_val').value = data.svc_fixed_val || "";
+                document.getElementById('decision_extra').value = data.decision_extra || "";
+                document.getElementById('in_danum').value = data.danum || "";
+                document.getElementById('in_dadate').value = data.dadate || "";
+                document.getElementById('napi_ch').value = data.napi_ch || "";
+                document.getElementById('napi_dt').value = data.napi_dt || "";
+                document.getElementById('post_rokka_enable').checked = postTransferRokka.enabled || false;
+                document.getElementById('post_rokka_purpose').value = postTransferRokka.purpose || "";
+
+                // Trigger UI toggles
+                toggleRevUI();
+                toggleKKUI();
+                renderApplicants(); renderOwners(); renderLandUI(); renderRokkaUI(); renderCourts(); renderDocs(); renderPostRokkaUI();
+                updateAll();
+            }
+        }
 
         function resetData() { if (confirm("सबै मेट्न चाहनुहुन्छ?")) { localStorage.clear(); location.reload(); } }
 
         // 2. Applicant / Owner Logic
-        function addApplicant() {
-            applicants.push({ id: Date.now(), name: '', gfather: '', father: '', dist: 'सिन्धुपाल्चोक', addr: '', rel: 'son' });
-            renderApplicants(); saveAndUpdate();
-        }
-function updateApplicantSummary() {
-    const groups = {};
-    applicants.forEach(a => {
-        // बाजे, बाबु, जिल्ला, ठेगाना र नाताको आधारमा ग्रुपिङ
-        const key = `${a.gfather}|${a.father}|${a.dist}|${a.addr}|${a.rel}`;
-        if (!groups[key]) groups[key] = [];
-        groups[key].push(`<span class="font-bold">${a.name}</span>`);
+function addApplicant() {
+    // डिफल्ट विवरणहरू
+    let baseDetails = {
+        gfather: '',
+        father: '',
+        dist: 'सिन्धुपाल्चोक',
+        addr: '',
+        rel: 'son'
+    };
+
+    // यदि पहिले नै कुनै निवेदक थपिएको छ भने, त्यसैको विवरण लिने
+    if (applicants.length > 0) {
+        const lastApp = applicants[applicants.length - 1]; // अन्तिम निवेदकको विवरण लिने
+        baseDetails = {
+            gfather: lastApp.gfather,
+            father: lastApp.father,
+            dist: lastApp.dist,
+            addr: lastApp.addr,
+            rel: lastApp.rel
+        };
+    }
+
+    // नयाँ निवेदक थप्ने (नाम खाली, अरु विवरण माथिको जस्तै)
+    applicants.push({ 
+        id: Date.now(), 
+        name: '', 
+        ...baseDetails 
     });
 
-    let appSummaries = Object.keys(groups).map(k => {
-        const [gf, f, dist, addr, rel] = k.split('|');
-        const names = nepaliJoin(groups[k]);
-        let relationText = "";
-        if (rel === 'daughter') relationText = `${gf}को नातिनी ${f}को छोरी`;
-        else if (rel === 'wife') relationText = `${gf}को बुहारी ${f}को पत्नी`;
-        else relationText = `${gf}को नाति ${f}को छोरा`; 
-
-        return `${dist} ${addr} बस्ने ${relationText} ${names}`;
-    });
-
-    document.getElementById('out_app_details').innerHTML = nepaliJoin(appSummaries) || ".......";
+    renderApplicants(); 
+    saveAndUpdate();
 }
+        function updateApplicantSummary() {
+            const groups = {};
+            applicants.forEach(a => {
+                // बाजे, बाबु, जिल्ला, ठेगाना र नाताको आधारमा ग्रुपिङ
+                const key = `${a.gfather}|${a.father}|${a.dist}|${a.addr}|${a.rel}`;
+                if (!groups[key]) groups[key] = [];
+                groups[key].push(`<span class="font-bold">${a.name}</span>`);
+            });
 
-function renderApplicants() {
-    document.getElementById('applicant-list').innerHTML = applicants.map((a, i) => `
+            let appSummaries = Object.keys(groups).map(k => {
+                const [gf, f, dist, addr, rel] = k.split('|');
+                const names = nepaliJoin(groups[k]);
+                let relationText = "";
+                if (rel === 'daughter') relationText = `${gf}को नातिनी ${f}को छोरी`;
+                else if (rel === 'wife') relationText = `${gf}को बुहारी ${f}को पत्नी`;
+                else relationText = `${gf}को नाति ${f}को छोरा`;
+
+                return `${dist} ${addr} बस्ने ${relationText} ${names}`;
+            });
+
+            document.getElementById('out_app_details').innerHTML = nepaliJoin(appSummaries) || ".......";
+        }
+
+        function renderApplicants() {
+            document.getElementById('applicant-list').innerHTML = applicants.map((a, i) => `
         <div class="bg-white p-2 border rounded relative text-[10px] mb-2 shadow-sm">
             <button onclick="applicants.splice(${i},1); renderApplicants(); saveAndUpdate();" class="absolute right-1 top-0 text-red-500 font-bold">✕</button>
             <input type="text" oninput="applicants[${i}].name=this.value; saveAndUpdate()" value="${a.name}" placeholder="निवेदकको नाम" class="w-full border p-1 mb-1 font-bold">
-            <div class="grid grid-cols-2 gap-1 mb-1">
-                <input type="text" oninput="applicants[${i}].dist=this.value; saveAndUpdate()" value="${a.dist}" placeholder="जिल्ला" class="border p-1">
-                <input type="text" oninput="applicants[${i}].addr=this.value; saveAndUpdate()" value="${a.addr}" placeholder="ठेगाना" class="border p-1">
-                <input type="text" oninput="applicants[${i}].gfather=this.value; saveAndUpdate()" value="${a.gfather}" placeholder="बाजेको नाम" class="border p-1">
-                <input type="text" oninput="applicants[${i}].father=this.value; saveAndUpdate()" value="${a.father}" placeholder="बाबुको नाम" class="border p-1">
-            </div>
             <select onchange="applicants[${i}].rel=this.value; saveAndUpdate()" class="w-full border p-1 bg-blue-50">
                 <option value="son" ${a.rel === 'son' ? 'selected' : ''}>नाति / छोरा</option>
                 <option value="daughter" ${a.rel === 'daughter' ? 'selected' : ''}>नातिनी / छोरी</option>
                 <option value="wife" ${a.rel === 'wife' ? 'selected' : ''}>बुहारी / पत्नी</option>
             </select>
+            <div class="grid grid-cols-2 gap-1 mb-1">
+                <input type="text" oninput="applicants[${i}].dist=this.value; saveAndUpdate()" value="${a.dist}" placeholder="जिल्ला" class="border p-1">
+                <input type="text" oninput="applicants[${i}].addr=this.value; saveAndUpdate()" value="${a.addr}" placeholder="ठेगाना" class="border p-1">
+                <input type="text" oninput="applicants[${i}].father=this.value; saveAndUpdate()" value="${a.father}" placeholder="बाबुको नाम" class="border p-1">
+                <input type="text" oninput="applicants[${i}].gfather=this.value; saveAndUpdate()" value="${a.gfather}" placeholder="बाजेको नाम" class="border p-1">
+            </div>
+            
         </div>
     `).join('');
-}
+        }
         function addOwner() { const n = prompt("धनीको नाम:"); if (n) { owners.push(n); renderOwners(); saveAndUpdate(); } }
         function renderOwners() { document.getElementById('owner-list').innerHTML = owners.map((o, i) => `<span class="bg-white border px-2 py-1 rounded text-[10px]">${o} <button onclick="owners.splice(${i},1); renderOwners(); saveAndUpdate()">✕</button></span>`).join(''); }
 
@@ -531,57 +565,57 @@ function renderApplicants() {
 
 
         // 3. Land / Kittakat Logic
-function addLand(type) {
-    const vdc = document.getElementById('l_vdc').value;
-    const ward = document.getElementById('l_ward').value;
-    const kitta = document.getElementById('l_kitta').value;
-    const sqm = document.getElementById('l_sqm').value;
-    
-    let areaStr = sqm ? toNepali(sqm) + " व.मि." : `${toNepali(document.getElementById('l_r').value || '०')}-${toNepali(document.getElementById('l_a').value || '०')}-${toNepali(document.getElementById('l_p').value || '०')}-${toNepali(document.getElementById('l_d').value || '०')}`;
+        function addLand(type) {
+            const vdc = document.getElementById('l_vdc').value;
+            const ward = document.getElementById('l_ward').value;
+            const kitta = document.getElementById('l_kitta').value;
+            const sqm = document.getElementById('l_sqm').value;
 
-    if (!kitta) return alert("कि.नं. हाल्नुहोस्");
+            let areaStr = sqm ? toNepali(sqm) + " व.मि." : `${toNepali(document.getElementById('l_r').value || '०')}-${toNepali(document.getElementById('l_a').value || '०')}-${toNepali(document.getElementById('l_p').value || '०')}-${toNepali(document.getElementById('l_d').value || '०')}`;
 
-    const id = Date.now();
-    lands.push({ id, vdc, ward, kitta, area: areaStr });
-    haalKittas[id] = []; 
-    baseValuations[id] = ''; // कित्ताकाट नभएकाको लागि थैली
+            if (!kitta) return alert("कि.नं. हाल्नुहोस्");
 
-    // अटोफोकस लजिक
-    if (type === 'new') {
-        document.getElementById('l_vdc').value = '';
-        document.getElementById('l_ward').value = '';
-        document.getElementById('l_vdc').focus();
-    } else {
-        document.getElementById('l_ward').focus(); // Same मा वडा नं. मा फोकस
-    }
-    
-    document.getElementById('l_kitta').value = '';
-    ['l_r', 'l_a', 'l_p', 'l_d', 'l_sqm'].forEach(x => document.getElementById(x).value = '');
+            const id = Date.now();
+            lands.push({ id, vdc, ward, kitta, area: areaStr });
+            haalKittas[id] = [];
+            baseValuations[id] = ''; // कित्ताकाट नभएकाको लागि थैली
 
-    renderLandUI();
-    saveAndUpdate();
-}
+            // अटोफोकस लजिक
+            if (type === 'new') {
+                document.getElementById('l_vdc').value = '';
+                document.getElementById('l_ward').value = '';
+                document.getElementById('l_vdc').focus();
+            } else {
+                document.getElementById('l_kitta').focus(); // Same मा वडा नं. मा फोकस
+            }
 
-function renderLandUI() {
-    // जग्गाको लिस्ट देखाउने UI
-    let html = lands.map(l => `
+            document.getElementById('l_kitta').value = '';
+            ['l_r', 'l_a', 'l_p', 'l_d', 'l_sqm'].forEach(x => document.getElementById(x).value = '');
+
+            renderLandUI();
+            saveAndUpdate();
+        }
+
+        function renderLandUI() {
+            // जग्गाको लिस्ट देखाउने UI
+            let html = lands.map(l => `
         <div class="bg-white border-2 border-slate-200 p-2 rounded text-[11px] shadow-sm">
             <div class="flex justify-between items-center mb-1">
                 <span class="font-bold">${l.vdc}-${toNepali(l.ward)} (${toNepali(l.kitta)})</span>
                 <button onclick="removeLand(${l.id})" class="text-red-500">✕</button>
             </div>
-            ${(!haalKittas[l.id] || haalKittas[l.id].length === 0) ? 
-                `<input type="text" placeholder="थैली" oninput="baseValuations[${l.id}]=this.value; saveAndUpdate();" value="${baseValuations[l.id] || ''}" class="w-full border p-1 rounded bg-yellow-50">` 
-                : `<div class="text-blue-600 font-bold">कित्ताकाट गरिएको</div>`
-            }
+            ${(!haalKittas[l.id] || haalKittas[l.id].length === 0) ?
+                    `<input type="text" placeholder="थैली" oninput="baseValuations[${l.id}]=this.value; saveAndUpdate();" value="${baseValuations[l.id] || ''}" class="w-full border p-1 rounded bg-yellow-50">`
+                    : `<div class="text-blue-600 font-bold">कित्ताकाट गरिएको</div>`
+                }
         </div>
     `).join('');
-    document.getElementById('land-list-ui').innerHTML = html;
-    renderKKButtons();
-    renderKKInputs();
-        renderRokkaSelectors(); 
+            document.getElementById('land-list-ui').innerHTML = html;
+            renderKKButtons();
+            renderKKInputs();
+            renderRokkaSelectors();
 
-}
+        }
         function removeLand(id) { lands = lands.filter(x => x.id !== id); delete haalKittas[id]; renderLandUI(); saveAndUpdate(); }
 
         function renderKKButtons() {
@@ -639,25 +673,25 @@ function renderLandUI() {
             document.querySelectorAll('.rk-cb').forEach(c => { c.checked = false; c.parentElement.classList.remove('selected'); });
             renderRokkaUI(); saveAndUpdate();
         }
-       function renderRokkaUI() {
-    document.getElementById('rokka-summary').innerHTML = rokkaEntries.map((re, i) => `
+        function renderRokkaUI() {
+            document.getElementById('rokka-summary').innerHTML = rokkaEntries.map((re, i) => `
         <div class="bg-white border p-1 text-[10px] flex justify-between">
             <span>${re.isRokka ? '🚩' : '✅'} ${re.auth} (${toNepali(re.chanum)})</span>
             <button onclick="rokkaEntries.splice(${i},1); renderRokkaUI(); saveAndUpdate();" class="text-red-500">✕</button>
         </div>
     `).join('');
 
-    // Mapping over active Rokka entries for the Fukuwa section
-    document.getElementById('fukuwa_options').innerHTML = rokkaEntries
-        .map((r, i) => r.isRokka ? `
-            <label class="flex items-center gap-2 text-[10px]">
-                <input type="checkbox" class="f-cb" 
-                    ${r.selectedForFukuwa ? 'checked' : ''} 
-                    onchange="rokkaEntries[${i}].selectedForFukuwa = this.checked; saveAndUpdate();"> 
-                ${r.auth} (${toNepali(r.chanum)})
-            </label>
-        ` : '').join('');
-}
+            // Mapping over active Rokka entries for the Fukuwa section
+            document.getElementById('fukuwa_options').innerHTML = rokkaEntries
+                .map((r, i) => r.isRokka ? `
+        <label class="flex items-center gap-2 text-[10px]">
+            <input type="checkbox" class="f-cb" data-idx="${i}" 
+                ${r.selectedForFukuwa ? 'checked' : ''} 
+                onchange="rokkaEntries[${i}].selectedForFukuwa = this.checked; saveAndUpdate();"> 
+            ${r.auth} (${toNepali(r.chanum)})
+        </label>
+    ` : '').join('');
+        }
 
         // 5. Post-Transfer Rokka
         function renderPostRokkaUI() {
@@ -689,8 +723,17 @@ function renderLandUI() {
 
         // 6. Court & Docs
         function addCourt() {
-            const n = document.getElementById('c_name').value, c = document.getElementById('c_ch').value, d = document.getElementById('c_dt').value;
-            if (n) { courtEntries.push(`${n}को च.नं. ${toNepali(c)} मिति ${toNepaliDate(d)}`); renderCourts(); saveAndUpdate(); }
+            const n = document.getElementById('c_name').value,
+                c = document.getElementById('c_ch').value,
+                d = document.getElementById('c_dt').value;
+            if (n) {
+                courtEntries.push(`${n}को च.नं. ${toNepali(c)} मिति ${toNepaliDate(d)}`);
+                // Add these lines:
+                document.getElementById('c_ch').value = '';
+                document.getElementById('c_dt').value = '';
+                renderCourts();
+                saveAndUpdate();
+            }
         }
         function renderCourts() { document.getElementById('court-list-ui').innerHTML = courtEntries.map((c, i) => `<div class="bg-sky-100 p-1 rounded text-[10px] flex justify-between"><span>${c}</span><button onclick="courtEntries.splice(${i},1); renderCourts(); saveAndUpdate();">✕</button></div>`).join(''); }
         function addOtherDoc() {
@@ -707,34 +750,34 @@ function renderLandUI() {
         // 7. MAIN UPDATE LOGIC
         function updateAll() {
             // Applicant Details
-    // १. निवेदकहरूको ग्रुपिङ र नाता व्यवस्थापन
-    const groups = {};
-    applicants.forEach(a => {
-        // बाजे, बाबु, जिल्ला, ठेगाना र नातालाई एउटा युनिक कि (Key) बनाउने
-        const key = `${a.gfather}|${a.father}|${a.dist}|${a.addr}|${a.rel}`;
-        if (!groups[key]) groups[key] = [];
-        groups[key].push(`<span class="font-bold">${a.name}</span>`);
-    });
+            // १. निवेदकहरूको ग्रुपिङ र नाता व्यवस्थापन
+            const groups = {};
+            applicants.forEach(a => {
+                // बाजे, बाबु, जिल्ला, ठेगाना र नातालाई एउटा युनिक कि (Key) बनाउने
+                const key = `${a.gfather}|${a.father}|${a.dist}|${a.addr}|${a.rel}`;
+                if (!groups[key]) groups[key] = [];
+                groups[key].push(`<span class="font-bold">${a.name}</span>`);
+            });
 
-    let appSummaries = Object.keys(groups).map(k => {
-        const [gf, f, dist, addr, rel] = k.split('|');
-        const names = nepaliJoin(groups[k]);
-        let relationText = "";
+            let appSummaries = Object.keys(groups).map(k => {
+                const [gf, f, dist, addr, rel] = k.split('|');
+                const names = nepaliJoin(groups[k]);
+                let relationText = "";
 
-        // नाता अनुसार शब्द चयन
-        if (rel === 'daughter') {
-            relationText = `${gf}को नातिनी ${f}को छोरी`;
-        } else if (rel === 'wife') {
-            relationText = `${gf}को बुहारी ${f}को पत्नी`;
-        } else {
-            relationText = `${gf}को नाति ${f}को छोरा`;
-        }
+                // नाता अनुसार शब्द चयन
+                if (rel === 'daughter') {
+                    relationText = `${gf}को नातिनी ${f}को छोरी`;
+                } else if (rel === 'wife') {
+                    relationText = `${gf}को बुहारी ${f}को पत्नी`;
+                } else {
+                    relationText = `${gf}को नाति ${f}को छोरा`;
+                }
 
-        return `${dist} ${addr} बस्ने ${relationText} ${names}`;
-    });
+                return `${dist} जिल्ला ${addr} बस्ने ${relationText} ${names}`;
+            });
 
-    // निवेदकको विवरण राख्ने
-    document.getElementById('out_app_details').innerHTML = nepaliJoin(appSummaries) || ".......";
+            // निवेदकको विवरण राख्ने
+            document.getElementById('out_app_details').innerHTML = nepaliJoin(appSummaries) || ".......";
 
             document.getElementById('out_owners').innerText = nepaliJoin([...owners]) || ".......";
 
@@ -776,62 +819,65 @@ function renderLandUI() {
 
             renderTable();
             generateDecision();
-            
+
         }
 
-      function renderTable() {
-    const hasKK = document.getElementById('has_kk').checked;
-    let html = "";
-    let totalVal = 0;
+        function renderTable() {
+            const hasKK = document.getElementById('has_kk').checked;
+            let html = "";
+            let totalVal = 0;
 
-    // टेवलको हेडर
-    if (hasKK) {
-        document.getElementById('out_intro_napi').innerText = `नापी कार्यालयको च.नं. ${toNepali(document.getElementById('napi_ch').value)} मिति ${toNepaliDate(document.getElementById('napi_dt').value)} को पत्रबाट देहाय बमोजिम कित्ताकाट भई आएको ।`;
+            // टेवलको हेडर
+            if (hasKK) {
+                document.getElementById('out_intro_napi').innerText = `नापी कार्यालयको च.नं. ${toNepali(document.getElementById('napi_ch').value)} मिति ${toNepaliDate(document.getElementById('napi_dt').value)} को पत्रबाट देहाय बमोजिम कित्ताकाट भई आएको र देहाय बमोजिमको न्युनत्तम मुल्याङकन कायम हुने ।`;
 
-        document.getElementById('out_table_head').innerHTML = `
+                document.getElementById('out_table_head').innerHTML = `
             <tr><th rowspan="2">सि.नं.</th><th colspan="3">साविक</th><th colspan="4">हाल कायम</th></tr>
             <tr><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th><th>थैली</th></tr>`;
-    } else {
-        document.getElementById('out_table_head').innerHTML = `
-            <tr><th>सि.नं.</th><th>साविक गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षेत्रफल</th><th>दाखा हुने जग्गाधनी</th><th>थैली</th></tr>`;
-    }
-
-    lands.forEach((l, sn) => {
-        const hs = haalKittas[l.id] || [];
-        if (hasKK && hs.length > 0) {
-            // कित्ताकाट भएका जग्गाहरू
-            hs.forEach((h, i) => {
-                const val = toEnglish(h.valuation);
-                totalVal += val;
-                let dharaniName = h.owner === 'निवेदक' ? nepaliJoin(applicants.map(a => a.name)) : (h.owner === 'बाँकी' ? nepaliJoin([...owners]) : h.owner);
-                
-                html += `<tr>`;
-                if (i === 0) html += `<td rowspan="${hs.length}">${toNepali(sn + 1)}</td><td rowspan="${hs.length}">${l.vdc} ${toNepali(l.ward)}</td><td rowspan="${hs.length}">${toNepali(l.kitta)}</td><td rowspan="${hs.length}">${l.area}</td>`;
-                html += `<td>${toNepali(h.kitta)}</td><td>${toNepali(h.area)}</td><td>${dharaniName}</td><td>${toNepali(val) || '-'}</td></tr>`;
-            });
-        } else {
-            // कित्ताकाट नभएका वा कित्ताकाट नखोलिएका जग्गाहरू
-            const val = toEnglish(baseValuations[l.id]);
-            totalVal += val;
-            const dharaniName = nepaliJoin(applicants.map(a => a.name));
-            
-            if (hasKK) {
-                html += `<tr><td>${toNepali(sn + 1)}</td><td>${l.vdc} ${toNepali(l.ward)}</td><td>${toNepali(l.kitta)}</td><td>${l.area}</td><td>${toNepali(l.kitta)}</td><td>${l.area}</td><td>${dharaniName}</td><td>${toNepali(val) || '-'}</td></tr>`;
             } else {
-                html += `<tr><td>${toNepali(sn + 1)}</td><td>${l.vdc} ${toNepali(l.ward)}</td><td>${toNepali(l.kitta)}</td><td>${l.area}</td><td>${dharaniName}</td><td>${toNepali(val) || '-'}</td></tr>`;
+             document.getElementById('out_intro_napi').innerText = `माग भएका जग्गाहरूको न्युनत्तम मुल्याङ्कन देहाय बमोजिम कायम हुने ।`;
+
+
+                document.getElementById('out_table_head').innerHTML = `
+            <tr><th>सि.नं.</th><th>साविक गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षेत्रफल</th><th>दाखा हुने जग्गाधनी</th><th>थैली</th></tr>`;
             }
+
+            lands.forEach((l, sn) => {
+                const hs = haalKittas[l.id] || [];
+                if (hasKK && hs.length > 0) {
+                    // कित्ताकाट भएका जग्गाहरू
+                    hs.forEach((h, i) => {
+                        const val = toEnglish(h.valuation);
+                        totalVal += val;
+                        let dharaniName = h.owner === 'निवेदक' ? nepaliJoin(applicants.map(a => a.name)) : (h.owner === 'बाँकी' ? nepaliJoin([...owners]) : h.owner);
+
+                        html += `<tr>`;
+                        if (i === 0) html += `<td rowspan="${hs.length}">${toNepali(sn + 1)}</td><td rowspan="${hs.length}">${l.vdc} ${toNepali(l.ward)}</td><td rowspan="${hs.length}">${toNepali(l.kitta)}</td><td rowspan="${hs.length}">${l.area}</td>`;
+                        html += `<td>${toNepali(h.kitta)}</td><td>${toNepali(h.area)}</td><td>${dharaniName}</td><td>${toNepali(val) || '-'}</td></tr>`;
+                    });
+                } else {
+                    // कित्ताकाट नभएका वा कित्ताकाट नखोलिएका जग्गाहरू
+                    const val = toEnglish(baseValuations[l.id]);
+                    totalVal += val;
+                    const dharaniName = nepaliJoin(applicants.map(a => a.name));
+
+                    if (hasKK) {
+                        html += `<tr><td>${toNepali(sn + 1)}</td><td>${l.vdc} ${toNepali(l.ward)}</td><td>${toNepali(l.kitta)}</td><td>${l.area}</td><td>${toNepali(l.kitta)}</td><td>${l.area}</td><td>${dharaniName}</td><td>${toNepali(val) || '-'}</td></tr>`;
+                    } else {
+                        html += `<tr><td>${toNepali(sn + 1)}</td><td>${l.vdc} ${toNepali(l.ward)}</td><td>${toNepali(l.kitta)}</td><td>${l.area}</td><td>${dharaniName}</td><td>${toNepali(val) || '-'}</td></tr>`;
+                    }
+                }
+            });
+
+            // फुटरमा जम्मा
+            if (totalVal > 0) {
+                const cols = hasKK ? 7 : 5;
+                html += `<tr class="font-bold"><td colspan="${cols}" style="text-align:right">जम्मा थैली अङ्कः</td><td>${toNepali(totalVal)}</td></tr>`;
+                html += `<tr class="font-bold"><td colspan="${cols + 1}" style="text-align:right">अक्षरेपि: ${numberToNepaliWords(totalVal)} मात्र ।</td></tr>`;
+            }
+
+            document.getElementById('kk_rows').innerHTML = html;
         }
-    });
-
-    // फुटरमा जम्मा
-    if (totalVal > 0) {
-        const cols = hasKK ? 7 : 5;
-        html += `<tr class="font-bold"><td colspan="${cols}" style="text-align:right">जम्मा थैली अङ्कः</td><td>${toNepali(totalVal)}</td></tr>`;
-        html += `<tr class="font-bold"><td colspan="${cols+1}" style="text-align:right">अक्षरेपि: ${numberToNepaliWords(totalVal)} मात्र ।</td></tr>`;
-    }
-
-    document.getElementById('kk_rows').innerHTML = html;
-}
 
         function toggleSvcMode(mode) {
             if (mode === 'perc') {
@@ -864,26 +910,29 @@ function renderLandUI() {
     `).join('');
         }
 
-function toggleRevUI() {
-    const revBox = document.getElementById('rev_ui');
-    const isChecked = document.getElementById('rev_applicable').checked;
-    
-    if (isChecked) {
-        revBox.classList.remove('hidden');
-    } else {
-        revBox.classList.add('hidden');
-    }
-    saveAndUpdate();
-}
+        function toggleRevUI() {
+            const revBox = document.getElementById('rev_ui');
+            const isChecked = document.getElementById('rev_applicable').checked;
+
+            if (isChecked) {
+                revBox.classList.remove('hidden');
+            } else {
+                revBox.classList.add('hidden');
+            }
+            saveAndUpdate();
+        }
 
         function generateDecision() {
-            let d = "यसमा उल्लिखित प्रमाणहरू समेतको आधारमा ";
+            const extra = document.getElementById('decision_extra').value.trim();
+    let d = "यसमा उल्लिखित प्रमाणहरूको ";
 
-            // थप विवरण (Extra text) जोड्ने
-            const extra = document.getElementById('decision_extra').value;
-            if (extra) {
-                d += "साथै " + extra + ", ";
-            }
+    if (extra) {
+        // यदि एक्स्ट्रा फिल्डमा केही लेखिएको छ भने 'साथै' र 'समेतको' थप्ने
+        d += "साथै " + extra + " समेतको आधारमा ";
+    } else {
+        // यदि खाली छ भने सिधै 'आधारमा' मात्र लेख्ने
+        d += "आधारमा ";
+    }
 
             // फुकुवा लजिक
             if (document.getElementById('need_fukuwa').checked) {
@@ -895,7 +944,7 @@ function toggleRevUI() {
                 if (sel.length) d += `${nepaliJoin(sel)} को पत्रले रोक्का भएका जग्गाहरू फुकुवा गरि `;
             }
 
-          // Revenue Logic
+            // Revenue Logic
             if (document.getElementById('rev_applicable').checked) {
                 const isProfit = document.getElementById('has_profit_tax').checked;
                 const isSvcPerc = document.getElementById('svc_perc_mode').checked;
@@ -943,118 +992,199 @@ function toggleRevUI() {
             const appTerm = applicants.length > 1 ? "निवेदकहरू" : "निवेदक";
 
 
-    let recipientsMap = {}; // { "निवेदक राम": ["५५", "६६"], "ज.ध. हरि": ["७७"] }
+// १. नाम र भूमिका तयारी
+    const appList = [...new Set(applicants.map(a => a.name.trim()))];
+    const ownerList = [...new Set(owners.map(o => typeof o === 'string' ? o.trim() : o.name.trim()))];
+    const pureOwners = ownerList.filter(name => !appList.includes(name));
 
-    const appNames = nepaliJoin(applicants.map(a => a.name));
-    const ownNames = nepaliJoin([...owners]);
+    // २. डेटा संकलनका लागि दुईवटा अजेण्डा (Group by specific owner sets)
+    let dakhaGroups = {}; // { "राम": [५], "राम र हरि": [६] }
+    let bakiGroups = {};  // { "शिव": [७] }
 
     lands.forEach(l => {
         const hs = haalKittas[l.id] || [];
-        if (hs.length > 0) {
-            // कित्ताकाट भएको अवस्थामा
-            hs.forEach(h => {
-                let key = "";
-                if (h.owner === 'निवेदक') key = `निवेदक ${appNames}`;
-                else if (h.owner === 'बाँकी') key = `ज.ध. ${ownNames}`;
-                else key = h.owner; // अन्य कुनै नाम भए
-
-                if (!recipientsMap[key]) recipientsMap[key] = [];
-                recipientsMap[key].push(toNepali(h.kitta));
-            });
+        if (hs.length === 0) {
+            // कित्ताकाट नभएको - सबै निवेदकको नाममा
+            const key = nepaliJoin([...appList]);
+            if (!dakhaGroups[key]) dakhaGroups[key] = [];
+            dakhaGroups[key].push(toNepali(l.kitta));
         } else {
-            // कित्ताकाट नभएको अवस्थामा (सिधै निवेदकको नाममा दाखा हुने मान्दा)
-            let key = `निवेदक ${appNames}`;
-            if (!recipientsMap[key]) recipientsMap[key] = [];
-            recipientsMap[key].push(toNepali(l.kitta));
+            hs.forEach(h => {
+                if (!h.kitta) return;
+                let targetNames = [];
+                let isDakha = true;
+
+                if (h.owner === 'निवेदक') {
+                    targetNames = [...appList];
+                    isDakha = true;
+                } else if (h.owner === 'बाँकी') {
+                    targetNames = [...pureOwners];
+                    isDakha = false;
+                } else {
+                    // विशिष्ट नाम छानिएको बेला
+                    targetNames = [h.owner.trim()];
+                    // यदि त्यो नाम निवेदकको लिष्टमा छ भने दाखा, नत्र बाँकी
+                    isDakha = appList.includes(h.owner.trim());
+                }
+
+                const key = nepaliJoin(targetNames);
+                if (isDakha) {
+                    if (!dakhaGroups[key]) dakhaGroups[key] = [];
+                    dakhaGroups[key].push(toNepali(h.kitta));
+                } else {
+                    if (!bakiGroups[key]) bakiGroups[key] = [];
+                    bakiGroups[key].push(toNepali(h.kitta));
+                }
+            });
         }
     });
 
-    // ग्रुपिङ गरिएको विवरणलाई वाक्यमा बदल्ने
-    let transferStrings = [];
-    for (let person in recipientsMap) {
-        let kittas = nepaliJoin(recipientsMap[person]);
-        transferStrings.push(`कि.नं. ${kittas} ${person}`);
+    // ३. वाक्य निर्माण (Grouping by Role Actions)
+    let dakhaParts = [];
+    for (let names in dakhaGroups) {
+        const kittas = nepaliJoin([...new Set(dakhaGroups[names])]);
+        // लेबल (निवेदक/निवेदकहरू) व्यवस्थापन
+        const isAllApps = names === nepaliJoin(appList) || names.split(' र ').every(n => appList.includes(n.trim()));
+        const label = isAllApps ? (names.includes(' र ') ? "निवेदकहरू " : "निवेदक ") : "";
+        dakhaParts.push(`कि.नं. ${kittas} ${label}${names}को`);
     }
 
-    // टिप्पणीको अन्तिम वाक्य निर्माण
-    d += nepaliJoin(transferStrings) + " को नाममा दा.खा. हुन ";
+    let bakiParts = [];
+    for (let names in bakiGroups) {
+        const kittas = nepaliJoin([...new Set(bakiGroups[names])]);
+        const isAllOwners = names === nepaliJoin(pureOwners) || names.split(' र ').every(n => pureOwners.includes(n.trim()));
+        const label = isAllOwners ? (names.includes(' र ') ? "जग्गाधनीहरू " : "जग्गाधनी ") : "";
+        bakiParts.push(`कि.नं. ${kittas} ${label}${names}को`);
+    }
 
-    // नयाँ रोक्का (Post Transfer Rokka) लजिक
-    if (document.getElementById('post_rokka_enable').checked) {
-        const postKittas = postTransferRokka.kittas.map(k => toNepali(k));
-        const purpose = document.getElementById('post_rokka_purpose').value || "";
-        if (postKittas.length > 0) {
-            d += ` र कि.नं. ${nepaliJoin(postKittas)} ${purpose} रोक्का रहन `;
+    // ४. अन्तिम वाक्य संयोजन
+    let finalDecisionText = "";
+    if (dakhaParts.length > 0) {
+        finalDecisionText += nepaliJoin(dakhaParts) + " नाममा दा.खा. हुन";
+    }
+    
+    if (bakiParts.length > 0) {
+        if (finalDecisionText !== "") finalDecisionText += " र ";
+        finalDecisionText += nepaliJoin(bakiParts) + " नाममा बाँकी रहन";
+    }
+
+    if (finalDecisionText !== "") {
+        d += finalDecisionText + "";
+    }
+
+
+
+
+    
+            // नयाँ रोक्का (Post Transfer Rokka) लजिक
+            if (document.getElementById('post_rokka_enable').checked) {
+                const postKittas = postTransferRokka.kittas.map(k => toNepali(k));
+                const purpose = document.getElementById('post_rokka_purpose').value || "";
+                if (postKittas.length > 0) {
+                    d += ` तथा कि.नं. ${nepaliJoin(postKittas)} ${purpose} रोक्का रहन `;
+                }
+            }
+
+            d += `आवश्यक निर्णयार्थ पेश ।`;
+            document.getElementById('out_decision').innerText = d;
         }
-    }
-
-    d += `आवश्यक निर्णयार्थ पेश ।`;
-    document.getElementById('out_decision').innerText = d;
-}
 
 function exportToWord() {
-    // १. पहिलो निवेदकको नाम लिने (यदि छ भने)
     let applicantName = "";
     if (applicants.length > 0 && applicants[0].name) {
         applicantName = applicants[0].name.trim().replace(/\s+/g, '_') + "_";
     }
 
-    // २. लोगो र अफिस हेडर लिनुहोस्
     const logoSrc = document.querySelector('.office-header img').src;
     const headerTitle = document.querySelector('.header-text-container').innerHTML;
 
-    // ३. वर्डका लागि टेवल लेआउट (निशान छाप बायाँ राख्न)
-    const wordHeaderLayout = `
-        <table style="width:100%; border:none; margin-bottom:20px; border-bottom: 2px double #000;">
+    // हेडरको ग्याप अझै कम गर्न (Negative margin and tight line height)
+    
+const wordHeaderLayout = `
+        <table style="width:100%; border:none; margin:0; border-bottom: 2pt double black; border-collapse:collapse;">
             <tr>
-                <td style="width:15%; border:none; vertical-align:middle; text-align:left;">
-                    <img src="${logoSrc}" width="90" height="85">
+                <td style="width:15%; border:none; padding:0; vertical-align:middle; text-align:left;">
+                    <img src="${logoSrc}" width="80" height="80">
                 </td>
-                <td style="width:85%; border:none; vertical-align:middle; text-align:center;">
-                    <div style="color:red; font-family:'Mukta', sans-serif;">
-                        ${headerTitle}
+                <td style="width:85%; border:none; padding:0; vertical-align:middle; text-align:center;">
+                    <div style="color:red; font-family:'Mukta', sans-serif; line-height:1.2; margin:0; padding:0;">
+                        ${headerTitle.replace(/<div>/g, '<div style="margin:0; padding:0; line-height:1.2;">')}
                     </div>
                 </td>
             </tr>
         </table>
     `;
 
-    // ४. मुख्य सामग्री
     const remainingContent = `
-        <h3 style="text-align:center; font-weight:bold; text-decoration:underline;">टिप्पणी र आदेश</h3>
-        <p>श्रीमान्,</p>
-        <div style="text-align:justify;">
+        <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin:10pt 0 5pt 0; font-size:16pt;">टिप्पणी र आदेश</h3>
+        <p style="margin:0; padding:0;">श्रीमान्,</p>
+        <div style="text-align:justify; line-height:1.5; margin-top:5pt;">
             ${document.getElementById('main_content').innerHTML}
         </div>
     `;
 
-    // ५. पूर्ण HTML र CSS संरचना
+    // Word XML Configuration with Page Setup and Border Fixes
     const header = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' 
               xmlns:w='urn:schemas-microsoft-com:office:word' 
               xmlns='http://www.w3.org/TR/REC-html40'>
         <head>
             <meta charset='utf-8'>
+            <!--[if gte mso 9]>
+            <xml>
+                <w:WordDocument>
+                    <w:View>Print</w:View>
+                    <w:Zoom>100</w:Zoom>
+                    <w:DoNotOptimizeForBrowser/>
+                </w:WordDocument>
+            </xml>
+            <![endif]-->
             <style>
-                @page { size: A4; margin: 1in 0.75in 1in 1.25in; }
-                body { font-family: 'Mukta', 'Arial Unicode MS', sans-serif; line-height: 1.5; font-size: 12pt; }
-                table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-                th, td { border: 0.5pt solid black; padding: 4px; text-align: center; font-size: 11pt; }
-                p { margin: 0 0 10px 0; }
+                @page Section1 {
+                    size: 595.3pt 841.9pt; /* A4 */
+                    margin: 0.5in 0.5in 0.5in 1.2in; /* Left: 1.2", Others: 0.5" */
+                    mso-header-margin: 0.2in;
+                    mso-footer-margin: 0.2in;
+                }
+                div.Section1 { page: Section1; }
+                body { 
+                    font-family: 'Mukta', 'Arial Unicode MS', sans-serif; 
+                    font-size: 12pt; 
+                    margin: 0;
+                }
+                
+                /* टेबल बोर्डरको समस्या समाधान गर्ने मुख्य CSS */
+                table.table-output { 
+                    border-collapse: collapse; 
+                    width: 100%; 
+                    border: 0.5pt solid black;
+                    mso-border-alt: 0.5pt solid black;
+                }
+                .table-output th, .table-output td { 
+                    border: 0.5pt solid black; 
+                    mso-border-alt: 0.5pt solid black;
+                    padding: 3pt; 
+                    text-align: center; 
+                    font-size: 11pt; 
+                }
+                
+                /* हेडर टेवलमा बोर्डर नदेखाउन */
+                .office-header table, .office-header td { border: none !important; }
+                
+                p { margin: 0 0 10pt 0; }
                 .font-bold { font-weight: bold; }
             </style>
         </head>
         <body>
-            ${wordHeaderLayout}
-            ${remainingContent}
+            <div class="Section1">
+                ${wordHeaderLayout}
+                ${remainingContent}
+            </div>
         </body></html>`;
 
-    // ६. फाइल डाउनलोड प्रक्रिया
     const blob = new Blob(['\ufeff', header], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const fileLink = document.createElement("a");
-    
-    // फाइलको नाम: {निवेदकको नाम}_Dakhaa_Tippani.doc
     const fileName = applicantName + 'Dakhaa_Tippani.doc';
     
     document.body.appendChild(fileLink);
