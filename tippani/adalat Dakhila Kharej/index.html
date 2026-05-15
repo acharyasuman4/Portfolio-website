@@ -394,40 +394,82 @@
         }
         // 1. Persistence Logic
         function saveAndUpdate() {
-localStorage.setItem('rev_state', document.getElementById('rev_applicable').checked);
+    // Collect all UI states into one object
+    const dataToSave = {
+        applicants,
+        owners,
+        lands,
+        rokkaEntries,
+        courtEntries,
+        otherDocs,
+        haalKittas,
+        baseValuations,
+        post_rokka: postTransferRokka,
+        case_type: document.getElementById('case_type_input').value,
+        has_kk: document.getElementById('has_kk').checked,
+        // New: Capture toggle/checkbox states
+        rev_applicable: document.getElementById('rev_applicable').checked,
+        need_fukuwa: document.getElementById('need_fukuwa').checked,
+        has_profit_tax: document.getElementById('has_profit_tax').checked,
+        svc_perc_mode: document.getElementById('svc_perc_mode').checked,
+        svc_fixed_mode: document.getElementById('svc_fixed_mode').checked,
+        v_muchulka: document.getElementById('v_muchulka').value,
+        profit_tax_perc: document.getElementById('profit_tax_perc').value,
+        svc_perc_val: document.getElementById('svc_perc_val').value,
+        svc_fixed_val: document.getElementById('svc_fixed_val').value,
+        decision_extra: document.getElementById('decision_extra').value,
+        danum: document.getElementById('in_danum').value,
+        dadate: document.getElementById('in_dadate').value,
+        napi_ch: document.getElementById('napi_ch').value,
+        napi_dt: document.getElementById('napi_dt').value
+    };
 
-            localStorage.setItem('court_dakha_v1', JSON.stringify({
-                applicants, owners, lands, rokkaEntries, courtEntries, otherDocs, haalKittas, baseValuations,
-                post_rokka: postTransferRokka,
-                case_type: document.getElementById('case_type_input').value,
-                has_kk: document.getElementById('has_kk').checked
-            }));
-            updateAll();
-        }
+    localStorage.setItem('court_dakha_v1', JSON.stringify(dataToSave));
+    updateAll();
+}
 
-        function loadFromLocal() {
-            const revState = localStorage.getItem('rev_state') === 'true';
-document.getElementById('rev_applicable').checked = revState;
-toggleRevUI();
-            const data = JSON.parse(localStorage.getItem('court_dakha_v1'));
-            if (data) {
-                applicants = data.applicants || [];
-                owners = data.owners || [];
-                lands = data.lands || [];
-                rokkaEntries = data.rokkaEntries || [];
-                courtEntries = data.courtEntries || [];
-                otherDocs = data.otherDocs || [];
-                haalKittas = data.haalKittas || {};
-                baseValuations = data.baseValuations || {};
-                postTransferRokka = data.post_rokka || { enabled: false, kittas: [], purpose: "" };
+       function loadFromLocal() {
+    const data = JSON.parse(localStorage.getItem('court_dakha_v1'));
+    if (data) {
+        applicants = data.applicants || [];
+        owners = data.owners || [];
+        lands = data.lands || [];
+        rokkaEntries = data.rokkaEntries || [];
+        courtEntries = data.courtEntries || [];
+        otherDocs = data.otherDocs || [];
+        haalKittas = data.haalKittas || {};
+        baseValuations = data.baseValuations || {};
+        postTransferRokka = data.post_rokka || { enabled: false, kittas: [], purpose: "" };
 
-                document.getElementById('case_type_input').value = data.case_type || "";
-                document.getElementById('has_kk').checked = data.has_kk || false;
+        // Restore UI States
+        document.getElementById('case_type_input').value = data.case_type || "";
+        document.getElementById('has_kk').checked = data.has_kk || false;
+        document.getElementById('rev_applicable').checked = data.rev_applicable || false;
+        document.getElementById('need_fukuwa').checked = data.need_fukuwa || false;
+        document.getElementById('has_profit_tax').checked = data.has_profit_tax || false;
+        document.getElementById('svc_perc_mode').checked = data.svc_perc_mode || false;
+        document.getElementById('svc_fixed_mode').checked = data.svc_fixed_mode || false;
+        
+        // Restore values
+        document.getElementById('v_muchulka').value = data.v_muchulka || "";
+        document.getElementById('profit_tax_perc').value = data.profit_tax_perc || "";
+        document.getElementById('svc_perc_val').value = data.svc_perc_val || "";
+        document.getElementById('svc_fixed_val').value = data.svc_fixed_val || "";
+        document.getElementById('decision_extra').value = data.decision_extra || "";
+        document.getElementById('in_danum').value = data.danum || "";
+        document.getElementById('in_dadate').value = data.dadate || "";
+        document.getElementById('napi_ch').value = data.napi_ch || "";
+        document.getElementById('napi_dt').value = data.napi_dt || "";
+        document.getElementById('post_rokka_enable').checked = postTransferRokka.enabled || false;
+        document.getElementById('post_rokka_purpose').value = postTransferRokka.purpose || "";
 
-                renderApplicants(); renderOwners(); renderLandUI(); renderRokkaUI(); renderCourts(); renderDocs(); renderPostRokkaUI();
-                updateAll();
-            }
-        }
+        // Trigger UI toggles
+        toggleRevUI();
+        toggleKKUI();
+        renderApplicants(); renderOwners(); renderLandUI(); renderRokkaUI(); renderCourts(); renderDocs(); renderPostRokkaUI();
+        updateAll();
+    }
+}
 
         function resetData() { if (confirm("सबै मेट्न चाहनुहुन्छ?")) { localStorage.clear(); location.reload(); } }
 
@@ -597,10 +639,25 @@ function renderLandUI() {
             document.querySelectorAll('.rk-cb').forEach(c => { c.checked = false; c.parentElement.classList.remove('selected'); });
             renderRokkaUI(); saveAndUpdate();
         }
-        function renderRokkaUI() {
-            document.getElementById('rokka-summary').innerHTML = rokkaEntries.map((re, i) => `<div class="bg-white border p-1 text-[10px] flex justify-between"><span>${re.isRokka ? '🚩' : '✅'} ${re.auth} (${toNepali(re.chanum)})</span><button onclick="rokkaEntries.splice(${i},1); renderRokkaUI(); saveAndUpdate();">✕</button></div>`).join('');
-            document.getElementById('fukuwa_options').innerHTML = rokkaEntries.filter(r => r.isRokka).map((r, i) => `<label class="flex items-center gap-2 text-[10px]"><input type="checkbox" class="f-cb" data-idx="${i}" onchange="saveAndUpdate()"> ${r.auth} (${toNepali(r.chanum)})</label>`).join('');
-        }
+       function renderRokkaUI() {
+    document.getElementById('rokka-summary').innerHTML = rokkaEntries.map((re, i) => `
+        <div class="bg-white border p-1 text-[10px] flex justify-between">
+            <span>${re.isRokka ? '🚩' : '✅'} ${re.auth} (${toNepali(re.chanum)})</span>
+            <button onclick="rokkaEntries.splice(${i},1); renderRokkaUI(); saveAndUpdate();" class="text-red-500">✕</button>
+        </div>
+    `).join('');
+
+    // Mapping over active Rokka entries for the Fukuwa section
+    document.getElementById('fukuwa_options').innerHTML = rokkaEntries
+        .map((r, i) => r.isRokka ? `
+            <label class="flex items-center gap-2 text-[10px]">
+                <input type="checkbox" class="f-cb" 
+                    ${r.selectedForFukuwa ? 'checked' : ''} 
+                    onchange="rokkaEntries[${i}].selectedForFukuwa = this.checked; saveAndUpdate();"> 
+                ${r.auth} (${toNepali(r.chanum)})
+            </label>
+        ` : '').join('');
+}
 
         // 5. Post-Transfer Rokka
         function renderPostRokkaUI() {
@@ -650,8 +707,35 @@ function renderLandUI() {
         // 7. MAIN UPDATE LOGIC
         function updateAll() {
             // Applicant Details
-            const apps = applicants.map(a => `${a.dist} ${a.addr} बस्ने ${a.gfather}को नाति ${a.father}को छोरा ${a.name}`);
-            document.getElementById('out_app_details').innerText = nepaliJoin(apps) || ".......";
+    // १. निवेदकहरूको ग्रुपिङ र नाता व्यवस्थापन
+    const groups = {};
+    applicants.forEach(a => {
+        // बाजे, बाबु, जिल्ला, ठेगाना र नातालाई एउटा युनिक कि (Key) बनाउने
+        const key = `${a.gfather}|${a.father}|${a.dist}|${a.addr}|${a.rel}`;
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(`<span class="font-bold">${a.name}</span>`);
+    });
+
+    let appSummaries = Object.keys(groups).map(k => {
+        const [gf, f, dist, addr, rel] = k.split('|');
+        const names = nepaliJoin(groups[k]);
+        let relationText = "";
+
+        // नाता अनुसार शब्द चयन
+        if (rel === 'daughter') {
+            relationText = `${gf}को नातिनी ${f}को छोरी`;
+        } else if (rel === 'wife') {
+            relationText = `${gf}को बुहारी ${f}को पत्नी`;
+        } else {
+            relationText = `${gf}को नाति ${f}को छोरा`;
+        }
+
+        return `${dist} ${addr} बस्ने ${relationText} ${names}`;
+    });
+
+    // निवेदकको विवरण राख्ने
+    document.getElementById('out_app_details').innerHTML = nepaliJoin(appSummaries) || ".......";
+
             document.getElementById('out_owners').innerText = nepaliJoin([...owners]) || ".......";
 
             // Land Intro (No area, no repeated "कि.नं.")
@@ -692,6 +776,7 @@ function renderLandUI() {
 
             renderTable();
             generateDecision();
+            
         }
 
       function renderTable() {
