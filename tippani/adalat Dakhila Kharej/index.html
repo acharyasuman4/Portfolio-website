@@ -60,6 +60,31 @@
             font-weight: bold;
             color: #ff0000;
         }
+        /* मुख्य बडीलाई स्क्रिनमा फिट गर्ने */
+html, body {
+    height: 100%;
+    overflow: hidden; /* पूरै पेजको स्क्रोलबार हटाउने */
+}
+
+/* मुख्य ग्रिड कन्टेनरको हाइट १००% गर्ने */
+.main-grid-container {
+    height: 100vh;
+}
+
+/* प्रत्येक कोलमलाई छुट्टाछुट्टै स्क्रोल गराउने */
+.scrollable-column {
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: thin; /* सानो स्क्रोलबारको लागि */
+}
+
+/* प्रिन्ट गर्दा सबै देखिने बनाउने */
+@media print {
+    html, body, .main-grid-container, .scrollable-column {
+        overflow: visible !important;
+        height: auto !important;
+    }
+}
 
         @media print {
 
@@ -121,28 +146,32 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+            @media (min-width: 1024px) { /* lg breakpoint - ल्यापटपको लागि */
+    .scrollable-column {
+        height: 100%;
+        overflow-y: auto;
+        scrollbar-width: thin;
+    }
+}
         }
     </style>
 </head>
 
 <body class="p-2 md:p-4 text-sm">
 
-    <div class="max-w-[1900px] mx-auto grid grid-cols-1 xl:grid-cols-2 gap-6">
-
-        <!-- LEFT: INPUTS -->
-        <div
-            class="bg-white p-5 rounded-xl shadow-lg border border-slate-300 overflow-y-auto max-h-[96vh] space-y-5 no-print">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h2 class="text-lg font-bold text-slate-800">अदालतको दाखिला खारेज</h2>
-                <div class="flex gap-2">
-                    <button onclick="resetData()" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Clear
-                        All</button>
-                    <input type="text" id="in_danum" oninput="saveAndUpdate()" placeholder="द.नं."
-                        class="border p-2 rounded w-16">
-                    <input type="text" id="in_dadate" oninput="saveAndUpdate()" placeholder="मिति"
-                        class="border p-2 rounded w-28">
-                </div>
+<div class="max-w-[1950px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 main-grid-container">
+    
+    <!-- LEFT: INPUTS (यसमा .scrollable-column थपिएको छ) -->
+    <div class="bg-white p-5 shadow-lg border border-slate-300 scrollable-column space-y-5 no-print">
+        <!-- स्टिकी हेडर: स्क्रोल गर्दा पनि द.नं. र मिति नहराउने बनाउन -->
+        <div class="flex justify-between items-center border-b pb-2 top-0 bg-white z-10 pt-2">
+            <h2 class="text-lg font-bold text-slate-800">अदालतको दाखिला खारेज</h2>
+            <div class="flex gap-2">
+                <button onclick="resetData()" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Clear All</button>
+                <input type="text" id="in_danum" oninput="saveAndUpdate()" placeholder="द.नं." class="border p-2 rounded w-16">
+                <input type="text" id="in_dadate" oninput="saveAndUpdate()" placeholder="मिति" class="border p-2 rounded w-28">
             </div>
+        </div>
 
             <!-- १. निवेदक र धनी -->
             <section class="grid grid-cols-2 gap-4">
@@ -385,7 +414,8 @@
         </div>
 
         <!-- RIGHT: PREVIEW -->
-        <div id="tippani-preview" class="preview-content shadow-sm border border-slate-300">
+    <div class="scrollable-column bg-slate-100 py-4">
+        <div id="tippani-preview" class="preview-content shadow-xl border border-slate-300 mx-auto">
             <!-- Preview भित्रको हेडर सेक्सन -->
             <div class="office-header" style="position:relative;">
                 <!-- लेफ्ट: निसाना छाप -->
@@ -394,10 +424,10 @@
 
                 <!-- सेन्टर: कार्यालय विवरण -->
                 <div class="header-text-container" style="flex-grow: 1; text-align: center;">
-                    <div id="disp_gov">नेपाल सरकार</div>
-                    <div id="disp_ministry" style="font-size:14px">मन्त्रालयको नाम</div>
-                    <div id="disp_dept">विभागको नाम</div>
-                    <div id="disp_office" style="font-size:22px">कार्यालयको नाम</div>
+                    <div id="disp_gov" style="font-size: 10;">नेपाल सरकार</div>
+                    <div id="disp_ministry" style="font-size:12px">मन्त्रालयको नाम</div>
+                    <div id="disp_dept" style="font-size: 14;">विभागको नाम</div>
+                    <div id="disp_office" style="font-size:16px">कार्यालयको नाम</div>
                     <div id="disp_addr" style="font-size:14px">ठेगाना</div>
                 </div>
 
