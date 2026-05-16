@@ -291,9 +291,9 @@
                         class="office-emblem">
                     <div class="header-text-container">
                         <div style="font-size: 10pt;">नेपाल सरकार</div>
-                        <div style="font-size: 11pt;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
+                        <div style="font-size: 11pt;">भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय</div>
                         <div style="font-size: 13pt; margin: 2px 0;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
-                        <div style="font-size: 18pt;">मालपोत कार्यालय</div>
+                        <div style="font-size: 18pt;">भूमि प्रशासन कार्यालय</div>
                         <div style="font-size: 12pt;">चौतारा, सिन्धुपाल्चोक</div>
                     </div>
                 </div>
@@ -467,7 +467,7 @@
             canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
             const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0);
             const b64 = canvas.toDataURL('image/png');
-            const header = `<div style='mso-element:header' id=h1><table width="100%" style="border-collapse:collapse; border:none;"><tr><td width="100" style="border:none;"><img src="${b64}" width="90"></td><td style="border:none; text-align:center; color:red; font-weight:bold; line-height:1.0;"><div style="font-size:10pt;">नेपाल सरकार</div><div style="font-size:11pt;">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div><div style="font-size:13pt; margin:1pt 0;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div><div style="font-size:18pt;">मालपोत कार्यालय</div><div style="font-size:12pt;">चौतारा, सिन्धुपाल्चोक</div></td></tr></table><div style="border-bottom:2.25pt double black; margin-top:5pt;"></div></div>`;
+            const header = `<div style='mso-element:header' id=h1><table width="100%" style="border-collapse:collapse; border:none;"><tr><td width="100" style="border:none;"><img src="${b64}" width="90"></td><td style="border:none; text-align:center; color:red; font-weight:bold; line-height:1.0;"><div style="font-size:10pt;">नेपाल सरकार</div><div style="font-size:11pt;">भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय</div><div style="font-size:13pt; margin:1pt 0;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div><div style="font-size:18pt;">भूमि प्रशासन कार्यालय</div><div style="font-size:12pt;">चौतारा, सिन्धुपाल्चोक</div></td></tr></table><div style="border-bottom:2.25pt double black; margin-top:5pt;"></div></div>`;
             const doc = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><style>@page Section1 { size: 8.5in 11in; margin: 1in 0.5in 1in 1.25in; mso-header-margin:.5in; mso-footer-margin:.5in; mso-header:h1; } div.Section1 { page:Section1; } body { font-family:'Mukta', sans-serif; font-size:12pt; } p { text-align:justify; margin-bottom:10pt; line-height:1.5; } table { border-collapse:collapse; width:100%; } th, td { border:1px solid black; padding:4px; text-align:center; font-size:10pt; }</style></head><body><div class="Section1">${header}${document.getElementById('out_paragraph').outerHTML}<table border="1" style="border-collapse:collapse; width:100%">${document.querySelector('.table-output').innerHTML}</table><div style='mso-element:footer' id=f1><p style='text-align:right; font-size:10pt;'>पेज नं. <span style='mso-field-code:" PAGE "'></span> / <span style='mso-field-code:" NUMPAGES "'></span></p></div></div></body></html>`;
             const blob = new Blob(['\ufeff', doc], { type: 'application/msword' });
             const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `valuation-${Date.now()}.doc`; link.click();
