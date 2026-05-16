@@ -162,7 +162,7 @@
                     </div>
                 </div>
                 <label for="land-list-ui">ससिम कित्ताको थैली अङ्क</label>
-                  <div id="land-list-ui" class="flex flex-wrap gap-1 border-b pb-2 mb-2"></div>
+                <div id="land-list-ui" class="flex flex-wrap gap-1 border-b pb-2 mb-2"></div>
 
             </section>
 
@@ -230,22 +230,64 @@
                 <div class="pt-4 border-t border-slate-700">
                     <label class="flex items-center gap-2 font-bold cursor-pointer text-xs"><input type="checkbox"
                             id="rev_applicable" onchange="toggleRevUI()"> राजश्व/लाभकर लाग्छ ?</label>
-                    <div id="rev_ui" class="hidden mt-3 space-y-4">
-                        <input type="text" id="v_muchulka" oninput="saveAndUpdate()" placeholder="मुचुल्कामा भएको थैली"
-                            class="w-full p-2 rounded text-black font-bold">
-                        <div class="grid grid-cols-3 gap-2 text-[10px]">
-                            <label><input type="checkbox" id="has_profit_tax" onchange="saveAndUpdate()"> लाभकर (%)
-                                <input type="text" id="profit_tax_perc" oninput="saveAndUpdate()"
-                                    class="w-8 p-1 rounded text-black"></label>
-                            <label><input type="checkbox" id="svc_perc_mode" onchange="toggleSvcMode('perc')"> सेवा
-                                शुल्क (%) <input type="text" id="svc_perc_val" oninput="saveAndUpdate()"
-                                    class="w-8 p-1 rounded text-black"></label>
-                            <label><input type="checkbox" id="svc_fixed_mode" onchange="toggleSvcMode('fixed')"> सेवा
-                                (Fixed) <input type="text" id="svc_fixed_val" oninput="saveAndUpdate()"
-                                    class="w-16 p-1 rounded text-black"></label>
-                        </div>
-                    </div>
+<div id="rev_ui" class="hidden mt-3 space-y-4">
+    <!-- 1. Muchulka Value (Full Width) -->
+    <div class="space-y-1">
+        <label class="text-[10px] text-slate-400">मुचुल्कामा भएको थैली:</label>
+        <input type="text" id="v_muchulka" oninput="saveAndUpdate()" placeholder="मुचुल्कामा भएको थैली"
+            class="w-full p-2 rounded text-black font-bold border-2 border-amber-500">
+    </div>
+
+    <!-- 2. Service Fees (Grid - Top) -->
+    <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-700 p-2 rounded">
+        <label class="flex items-center gap-1 border-r border-slate-600">
+            <input type="checkbox" id="svc_perc_mode" onchange="toggleSvcMode('perc')"> सेवा शुल्क (%) 
+            <input type="text" id="svc_perc_val" oninput="saveAndUpdate()" class="w-8 p-1 rounded text-black ml-1">
+        </label>
+        <label class="flex items-center gap-1 pl-1">
+            <input type="checkbox" id="svc_fixed_mode" onchange="toggleSvcMode('fixed')"> सेवा (Fixed) 
+            <input type="text" id="svc_fixed_val" oninput="saveAndUpdate()" class="w-16 p-1 rounded text-black ml-1">
+        </label>
+    </div>
+
+    <!-- 3. Profit Tax (Full Width - Bottom) -->
+    <div class="bg-slate-700 p-3 rounded border border-slate-600 space-y-3">
+        <div class="flex items-center justify-between">
+            <label class="flex items-center gap-2 font-bold cursor-pointer text-xs">
+                <input type="checkbox" id="has_profit_tax" onchange="saveAndUpdate()"> पुँजीगत लाभकर लाग्ने ?
+            </label>
+            <div class="flex items-center gap-1 text-xs">
+                <span>दर (%):</span>
+                <input type="text" id="profit_tax_perc" oninput="saveAndUpdate()" 
+                       class="w-12 p-1 rounded text-black font-bold text-center" placeholder="५">
+            </div>
+        </div>
+
+        <!-- Expense Section (Nested inside Profit Tax block) -->
+        <div id="expense_toggle_ui" class="hidden pt-2 border-t border-slate-600">
+            <label class="flex items-center gap-2 text-[10px] cursor-pointer text-orange-400 font-bold mb-2">
+                <input type="checkbox" id="claim_expense_chk" onchange="toggleExpenseUI()"> खर्च दावी (Cost Deduction) छ ?
+            </label>
+            
+            <div id="expense_detail_ui" class="hidden space-y-2 bg-slate-800 p-2 rounded">
+                <div class="space-y-1">
+                    <label class="text-[9px] text-slate-400">खर्चको आधार (प्रमाण):</label>
+                    <input type="text" id="expense_doc_input" oninput="saveAndUpdate()" 
+                        placeholder="उदा: र.नं.२५ मिति २०८३।०१।३२को लिखत," 
+                        class="w-full p-2 text-[11px] text-black rounded font-medium">
                 </div>
+                
+                <div class="space-y-1">
+                    <label class="text-[9px] text-slate-400">खर्च विवरणहरू:</label>
+                    <div id="expense_items_list" class="space-y-1"></div>
+                    <button onclick="addExpenseItem()" class="w-full mt-1 text-[10px] bg-emerald-600 hover:bg-emerald-700 py-1 rounded text-white transition">
+                        + नयाँ खर्च शीर्षक थप्नुहोस्
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
             </section>
 
             <!-- ५. नयाँ रोक्का -->
@@ -294,16 +336,17 @@
                     <div style="font-size:14px">चौतारा, सिन्धुपाल्चोक</div>
                 </div>
             </div>
-            <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin-bottom:20px;">टिप्पणी र
+            <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin-bottom:5px;">टिप्पणी र
                 आदेश</h3>
-            <p>श्रीमान्,</p>
+            <p style="margin: 5px;">श्रीमान्,</p>
             <div id="main_content">
                 <p>
                     <span id="out_app_details">.......</span>ले <span id="out_owners" class="font-bold">.......</span>को
                     नाममा जग्गाधनी श्रेस्ता कायम रहेको
                     सिन्धुपाल्चोक जिल्ला <span id="out_land_details" class="font-bold text-green-700">.......</span> को
                     जग्गा
-                    अदालतबाट भएको <span id="out_case_type" class="font-bold">.......</span> मुद्दाको फैसला बमोजिम दा.खा. गरिदिन
+                    अदालतबाट भएको <span id="out_case_type" class="font-bold">.......</span> मुद्दाको फैसला बमोजिम दा.खा.
+                    गरिदिन
                     <span id="out_court_details" class="font-bold text-blue-800">.......</span> को पत्र,
                     <span id="out_other_docs" class="font-bold">.......</span> संलग्न राखी दाखिला खारेज गरिपाउन द.नं.
                     <span id="out_danum" class="font-bold">.......</span> मिति <span id="out_dadate"
@@ -336,6 +379,10 @@
         let haalKittas = {};
         let baseValuations = {};
         let postTransferRokka = { enabled: false, kittas: [], purpose: "" };
+        // Add these to your global state variables
+        let claimExpense = false;
+        let expenseDoc = "";
+        let expenses = [{ title: 'खरिद मूल्य', amount: '' }, { title: 'रजिष्ट्रेशन दस्तुर', amount: '' }];
 
         // Helper: Nepali Digits
         const toNepali = (s) => s ? s.toString().replace(/[0-9]/g, d => "०१२३४५६७८९"[d]) : "";
@@ -407,6 +454,9 @@
                 haalKittas,
                 baseValuations,
                 post_rokka: postTransferRokka,
+                claim_expense: claimExpense,
+
+                expenses: expenses,
                 case_type: document.getElementById('case_type_input').value,
                 has_kk: document.getElementById('has_kk').checked,
                 // New: Capture toggle/checkbox states
@@ -423,11 +473,14 @@
                 danum: document.getElementById('in_danum').value,
                 dadate: document.getElementById('in_dadate').value,
                 napi_ch: document.getElementById('napi_ch').value,
-                napi_dt: document.getElementById('napi_dt').value
-                
+                napi_dt: document.getElementById('napi_dt').value,
+                expense_doc: document.getElementById('expense_doc_input').value
+
             };
-             postTransferRokka.enabled = document.getElementById('post_rokka_enable').checked;
-    postTransferRokka.purpose = document.getElementById('post_rokka_purpose').value;
+            postTransferRokka.enabled = document.getElementById('post_rokka_enable').checked;
+            postTransferRokka.purpose = document.getElementById('post_rokka_purpose').value;
+
+            document.getElementById('expense_toggle_ui').classList.toggle('hidden', !document.getElementById('has_profit_tax').checked);
 
             localStorage.setItem('court_dakha_v1', JSON.stringify(dataToSave));
             updateAll();
@@ -445,6 +498,13 @@
                 haalKittas = data.haalKittas || {};
                 baseValuations = data.baseValuations || {};
                 postTransferRokka = data.post_rokka || { enabled: false, kittas: [], purpose: "" };
+                claimExpense = data.claim_expense || false;
+                expenses = data.expenses || [{ title: 'खरिद मूल्य', amount: '' }, { title: 'रजिष्ट्रेशन दस्तुर', amount: '' }];
+                document.getElementById('claim_expense_chk').checked = claimExpense;
+                document.getElementById('expense_doc_input').value = data.expense_doc || "";
+                document.getElementById('expense_toggle_ui').classList.toggle('hidden', !document.getElementById('has_profit_tax').checked);
+                document.getElementById('expense_detail_ui').classList.toggle('hidden', !claimExpense);
+                renderExpenseItems();
 
                 // Restore UI States
                 document.getElementById('case_type_input').value = data.case_type || "";
@@ -479,38 +539,38 @@
         function resetData() { if (confirm("सबै मेट्न चाहनुहुन्छ?")) { localStorage.clear(); location.reload(); } }
 
         // 2. Applicant / Owner Logic
-function addApplicant() {
-    // डिफल्ट विवरणहरू
-    let baseDetails = {
-        gfather: '',
-        father: '',
-        dist: 'सिन्धुपाल्चोक',
-        addr: '',
-        rel: 'son'
-    };
+        function addApplicant() {
+            // डिफल्ट विवरणहरू
+            let baseDetails = {
+                gfather: '',
+                father: '',
+                dist: 'सिन्धुपाल्चोक',
+                addr: '',
+                rel: 'son'
+            };
 
-    // यदि पहिले नै कुनै निवेदक थपिएको छ भने, त्यसैको विवरण लिने
-    if (applicants.length > 0) {
-        const lastApp = applicants[applicants.length - 1]; // अन्तिम निवेदकको विवरण लिने
-        baseDetails = {
-            gfather: lastApp.gfather,
-            father: lastApp.father,
-            dist: lastApp.dist,
-            addr: lastApp.addr,
-            rel: lastApp.rel
-        };
-    }
+            // यदि पहिले नै कुनै निवेदक थपिएको छ भने, त्यसैको विवरण लिने
+            if (applicants.length > 0) {
+                const lastApp = applicants[applicants.length - 1]; // अन्तिम निवेदकको विवरण लिने
+                baseDetails = {
+                    gfather: lastApp.gfather,
+                    father: lastApp.father,
+                    dist: lastApp.dist,
+                    addr: lastApp.addr,
+                    rel: lastApp.rel
+                };
+            }
 
-    // नयाँ निवेदक थप्ने (नाम खाली, अरु विवरण माथिको जस्तै)
-    applicants.push({ 
-        id: Date.now(), 
-        name: '', 
-        ...baseDetails 
-    });
+            // नयाँ निवेदक थप्ने (नाम खाली, अरु विवरण माथिको जस्तै)
+            applicants.push({
+                id: Date.now(),
+                name: '',
+                ...baseDetails
+            });
 
-    renderApplicants(); 
-    saveAndUpdate();
-}
+            renderApplicants();
+            saveAndUpdate();
+        }
         function updateApplicantSummary() {
             const groups = {};
             applicants.forEach(a => {
@@ -835,7 +895,7 @@ function addApplicant() {
             <tr><th rowspan="2">सि.नं.</th><th colspan="3">साविक</th><th colspan="4">हाल कायम</th></tr>
             <tr><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th><th>थैली</th></tr>`;
             } else {
-             document.getElementById('out_intro_napi').innerText = `माग भएका जग्गाहरूको न्युनत्तम मुल्याङ्कन देहाय बमोजिम कायम हुने ।`;
+                document.getElementById('out_intro_napi').innerText = `माग भएका जग्गाहरूको न्युनत्तम मुल्याङ्कन देहाय बमोजिम कायम हुने ।`;
 
 
                 document.getElementById('out_table_head').innerHTML = `
@@ -922,17 +982,40 @@ function addApplicant() {
             saveAndUpdate();
         }
 
+        function toggleExpenseUI() {
+            claimExpense = document.getElementById('claim_expense_chk').checked;
+            document.getElementById('expense_detail_ui').classList.toggle('hidden', !claimExpense);
+            saveAndUpdate();
+        }
+
+        function addExpenseItem() {
+            expenses.push({ title: '', amount: '' });
+            renderExpenseItems();
+            saveAndUpdate();
+        }
+
+        function renderExpenseItems() {
+            const container = document.getElementById('expense_items_list');
+            container.innerHTML = expenses.map((ex, i) => `
+        <div class="flex gap-1">
+            <input type="text" value="${ex.title}" oninput="expenses[${i}].title=this.value; saveAndUpdate()" placeholder="शीर्षक" class="w-1/2 p-1 text-[9px] text-black rounded">
+            <input type="text" value="${ex.amount}" oninput="expenses[${i}].amount=this.value; saveAndUpdate()" placeholder="रकम" class="w-1/3 p-1 text-[9px] text-black rounded">
+            <button onclick="expenses.splice(${i},1); renderExpenseItems(); saveAndUpdate()" class="text-red-400 text-xs">✕</button>
+        </div>
+    `).join('');
+        }
+
         function generateDecision() {
             const extra = document.getElementById('decision_extra').value.trim();
-    let d = "यसमा उल्लिखित प्रमाणहरूको ";
+            let d = "यसमा उल्लिखित प्रमाणहरूको ";
 
-    if (extra) {
-        // यदि एक्स्ट्रा फिल्डमा केही लेखिएको छ भने 'साथै' र 'समेतको' थप्ने
-        d += "साथै " + extra + " समेतको आधारमा ";
-    } else {
-        // यदि खाली छ भने सिधै 'आधारमा' मात्र लेख्ने
-        d += "आधारमा ";
-    }
+            if (extra) {
+                // यदि एक्स्ट्रा फिल्डमा केही लेखिएको छ भने 'साथै' र 'समेतको' थप्ने
+                d += "साथै " + extra + " समेतको आधारमा ";
+            } else {
+                // यदि खाली छ भने सिधै 'आधारमा' मात्र लेख्ने
+                d += "आधारमा ";
+            }
 
             // फुकुवा लजिक
             if (document.getElementById('need_fukuwa').checked) {
@@ -968,10 +1051,7 @@ function addApplicant() {
                     }
 
                     let rev = [];
-                    if (isProfit) {
-                        const taxAmt = Math.round(maxVal * toEnglish(document.getElementById('profit_tax_perc').value) / 100);
-                        rev.push(`${toNepali(document.getElementById('profit_tax_perc').value)}% ले रू. ${formatMoneyWithWords(taxAmt)} लाभकर`);
-                    }
+
                     if (isSvcPerc) {
                         const svcAmt = Math.round(maxVal * toEnglish(document.getElementById('svc_perc_val').value) / 100);
                         rev.push(`प्रदेश आर्थिक ऐन बमोजिम ${toNepali(document.getElementById('svc_perc_val').value)}% ले रू. ${formatMoneyWithWords(svcAmt)} सेवा शुल्क`);
@@ -979,6 +1059,31 @@ function addApplicant() {
                     if (isSvcFixed) {
                         const fVal = toEnglish(document.getElementById('svc_fixed_val').value);
                         rev.push(`प्रदेश आर्थिक ऐन बमोजिम रू. ${formatMoneyWithWords(fVal)} सेवा शुल्क`);
+                    }
+                    if (isProfit) {
+                        const profitPerc = toEnglish(document.getElementById('profit_tax_perc').value);
+
+                        if (claimExpense) {
+                            let totalExpAmt = 0;
+                            let expDetails = [];
+                            expenses.forEach(ex => {
+                                let amt = toEnglish(ex.amount);
+                                if (amt > 0) {
+                                    totalExpAmt += amt;
+                                    expDetails.push(`${ex.title}: ${toNepali(amt)}`);
+                                }
+                            });
+
+                            const netProfit = maxVal - totalExpAmt;
+                            const taxAmt = Math.round(netProfit * profitPerc / 100);
+                            const docInfo = document.getElementById('expense_doc_input').value;
+                            const expBreakdown = expDetails.length > 1 ? ` (${nepaliJoin(expDetails)})` : "";
+
+                            rev.push(`${docInfo} र पुँजीगत लाभको घोषणा फारामको आधारमा रू. ${toNepali(totalExpAmt)}${expBreakdown} खर्च घटाई बाँकी रू. ${formatMoneyWithWords(netProfit)} को ${toNepali(profitPerc)}% ले रू. ${formatMoneyWithWords(taxAmt)} लाभकर`);
+                        } else {
+                            const taxAmt = Math.round(maxVal * profitPerc / 100);
+                            rev.push(`${toNepali(profitPerc)}% ले रू. ${formatMoneyWithWords(taxAmt)} लाभकर`);
+                        }
                     }
 
                     d += `${nepaliJoin(rev)} असुल भई `;
@@ -992,100 +1097,100 @@ function addApplicant() {
             const appTerm = applicants.length > 1 ? "निवेदकहरू" : "निवेदक";
 
 
-// १. नाम र भूमिका तयारी
-    const appList = [...new Set(applicants.map(a => a.name.trim()))];
-    const ownerList = [...new Set(owners.map(o => typeof o === 'string' ? o.trim() : o.name.trim()))];
-    const pureOwners = ownerList.filter(name => !appList.includes(name));
+            // १. नाम र भूमिका तयारी
+            const appList = [...new Set(applicants.map(a => a.name.trim()))];
+            const ownerList = [...new Set(owners.map(o => typeof o === 'string' ? o.trim() : o.name.trim()))];
+            const pureOwners = ownerList.filter(name => !appList.includes(name));
 
-    // २. डेटा संकलनका लागि दुईवटा अजेण्डा (Group by specific owner sets)
-    let dakhaGroups = {}; // { "राम": [५], "राम र हरि": [६] }
-    let bakiGroups = {};  // { "शिव": [७] }
+            // २. डेटा संकलनका लागि दुईवटा अजेण्डा (Group by specific owner sets)
+            let dakhaGroups = {}; // { "राम": [५], "राम र हरि": [६] }
+            let bakiGroups = {};  // { "शिव": [७] }
 
-    lands.forEach(l => {
-        const hs = haalKittas[l.id] || [];
-        if (hs.length === 0) {
-            // कित्ताकाट नभएको - सबै निवेदकको नाममा
-            const key = nepaliJoin([...appList]);
-            if (!dakhaGroups[key]) dakhaGroups[key] = [];
-            dakhaGroups[key].push(toNepali(l.kitta));
-        } else {
-            hs.forEach(h => {
-                if (!h.kitta) return;
-                let targetNames = [];
-                let isDakha = true;
-
-                if (h.owner === 'निवेदक') {
-                    targetNames = [...appList];
-                    isDakha = true;
-                } else if (h.owner === 'बाँकी') {
-                    targetNames = [...pureOwners];
-                    isDakha = false;
-                } else {
-                    // विशिष्ट नाम छानिएको बेला
-                    targetNames = [h.owner.trim()];
-                    // यदि त्यो नाम निवेदकको लिष्टमा छ भने दाखा, नत्र बाँकी
-                    isDakha = appList.includes(h.owner.trim());
-                }
-
-                const key = nepaliJoin(targetNames);
-                if (isDakha) {
+            lands.forEach(l => {
+                const hs = haalKittas[l.id] || [];
+                if (hs.length === 0) {
+                    // कित्ताकाट नभएको - सबै निवेदकको नाममा
+                    const key = nepaliJoin([...appList]);
                     if (!dakhaGroups[key]) dakhaGroups[key] = [];
-                    dakhaGroups[key].push(toNepali(h.kitta));
+                    dakhaGroups[key].push(toNepali(l.kitta));
                 } else {
-                    if (!bakiGroups[key]) bakiGroups[key] = [];
-                    bakiGroups[key].push(toNepali(h.kitta));
+                    hs.forEach(h => {
+                        if (!h.kitta) return;
+                        let targetNames = [];
+                        let isDakha = true;
+
+                        if (h.owner === 'निवेदक') {
+                            targetNames = [...appList];
+                            isDakha = true;
+                        } else if (h.owner === 'बाँकी') {
+                            targetNames = [...pureOwners];
+                            isDakha = false;
+                        } else {
+                            // विशिष्ट नाम छानिएको बेला
+                            targetNames = [h.owner.trim()];
+                            // यदि त्यो नाम निवेदकको लिष्टमा छ भने दाखा, नत्र बाँकी
+                            isDakha = appList.includes(h.owner.trim());
+                        }
+
+                        const key = nepaliJoin(targetNames);
+                        if (isDakha) {
+                            if (!dakhaGroups[key]) dakhaGroups[key] = [];
+                            dakhaGroups[key].push(toNepali(h.kitta));
+                        } else {
+                            if (!bakiGroups[key]) bakiGroups[key] = [];
+                            bakiGroups[key].push(toNepali(h.kitta));
+                        }
+                    });
                 }
             });
-        }
-    });
 
-    // ३. वाक्य निर्माण (Grouping by Role Actions)
-    let dakhaParts = [];
-    for (let names in dakhaGroups) {
-        const kittas = nepaliJoin([...new Set(dakhaGroups[names])]);
-        // लेबल (निवेदक/निवेदकहरू) व्यवस्थापन
-        const isAllApps = names === nepaliJoin(appList) || names.split(' र ').every(n => appList.includes(n.trim()));
-        const label = isAllApps ? (names.includes(' र ') ? "निवेदकहरू " : "निवेदक ") : "";
-        dakhaParts.push(`कि.नं. ${kittas} ${label}${names}को`);
-    }
+            // ३. वाक्य निर्माण (Grouping by Role Actions)
+            let dakhaParts = [];
+            for (let names in dakhaGroups) {
+                const kittas = nepaliJoin([...new Set(dakhaGroups[names])]);
+                // लेबल (निवेदक/निवेदकहरू) व्यवस्थापन
+                const isAllApps = names === nepaliJoin(appList) || names.split(' र ').every(n => appList.includes(n.trim()));
+                const label = isAllApps ? (names.includes(' र ') ? "निवेदकहरू " : "निवेदक ") : "";
+                dakhaParts.push(`कि.नं. ${kittas} ${label}${names}को`);
+            }
 
-    let bakiParts = [];
-    for (let names in bakiGroups) {
-        const kittas = nepaliJoin([...new Set(bakiGroups[names])]);
-        const isAllOwners = names === nepaliJoin(pureOwners) || names.split(' र ').every(n => pureOwners.includes(n.trim()));
-        const label = isAllOwners ? (names.includes(' र ') ? "जग्गाधनीहरू " : "जग्गाधनी ") : "";
-        bakiParts.push(`कि.नं. ${kittas} ${label}${names}को`);
-    }
+            let bakiParts = [];
+            for (let names in bakiGroups) {
+                const kittas = nepaliJoin([...new Set(bakiGroups[names])]);
+                const isAllOwners = names === nepaliJoin(pureOwners) || names.split(' र ').every(n => pureOwners.includes(n.trim()));
+                const label = isAllOwners ? (names.includes(' र ') ? "जग्गाधनीहरू " : "जग्गाधनी ") : "";
+                bakiParts.push(`कि.नं. ${kittas} ${label}${names}को`);
+            }
 
-    // ४. अन्तिम वाक्य संयोजन
-    let finalDecisionText = "";
-    if (dakhaParts.length > 0) {
-        finalDecisionText += nepaliJoin(dakhaParts) + " नाममा दा.खा. हुन";
-    }
-    
-    if (bakiParts.length > 0) {
-        if (finalDecisionText !== "") finalDecisionText += " र ";
-        finalDecisionText += nepaliJoin(bakiParts) + " नाममा बाँकी रहन";
-    }
+            // ४. अन्तिम वाक्य संयोजन
+            let finalDecisionText = "";
+            if (dakhaParts.length > 0) {
+                finalDecisionText += nepaliJoin(dakhaParts) + " नाममा दा.खा. हुन";
+            }
 
-    if (finalDecisionText !== "") {
-        d += finalDecisionText + "";
-    }
+            if (bakiParts.length > 0) {
+                if (finalDecisionText !== "") finalDecisionText += " र ";
+                finalDecisionText += nepaliJoin(bakiParts) + " नाममा बाँकी रहन";
+            }
+
+            if (finalDecisionText !== "") {
+                d += finalDecisionText + "";
+            }
 
 
 
 
-    
+
             // नयाँ रोक्का (Post Transfer Rokka) लजिक
             if (document.getElementById('post_rokka_enable').checked) {
                 const postKittas = postTransferRokka.kittas.map(k => toNepali(k));
                 const purpose = document.getElementById('post_rokka_purpose').value || "";
                 if (postKittas.length > 0) {
-                    d += ` तथा कि.नं. ${nepaliJoin(postKittas)} ${purpose} रोक्का रहन `;
+                    d += ` तथा कि.नं. ${nepaliJoin(postKittas)} ${purpose} रोक्का रहन`;
                 }
             }
 
-            d += `आवश्यक निर्णयार्थ पेश ।`;
+            d += ` आवश्यक निर्णयार्थ पेश ।`;
             document.getElementById('out_decision').innerText = d;
         }
 
@@ -1098,9 +1203,14 @@ function exportToWord() {
     const logoSrc = document.querySelector('.office-header img').src;
     const headerTitle = document.querySelector('.header-text-container').innerHTML;
 
-    // हेडरको ग्याप अझै कम गर्न (Negative margin and tight line height)
-    
-const wordHeaderLayout = `
+    // मुख्य सामग्री लिने
+    let mainContentHtml = document.getElementById('main_content').innerHTML;
+
+    // Word को लागि टेबल बोर्डर फिक्स: 
+    // यहाँ हामी 'table-output' क्लास भएको टेबलमा बोर्डर एट्रिब्युट थप्छौं
+    mainContentHtml = mainContentHtml.replace(/<table class="table-output/g, '<table border="1" cellspacing="0" cellpadding="4" class="table-output" style="border-collapse:collapse; width:100%;"');
+
+    const wordHeaderLayout = `
         <table style="width:100%; border:none; margin:0; border-bottom: 2pt double black; border-collapse:collapse;">
             <tr>
                 <td style="width:15%; border:none; padding:0; vertical-align:middle; text-align:left;">
@@ -1116,63 +1226,44 @@ const wordHeaderLayout = `
     `;
 
     const remainingContent = `
-        <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin:10pt 0 5pt 0; font-size:16pt;">टिप्पणी र आदेश</h3>
+        <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin:5pt 0 1pt 0; font-size:16pt;">टिप्पणी र आदेश</h3>
         <p style="margin:0; padding:0;">श्रीमान्,</p>
-        <div style="text-align:justify; line-height:1.5; margin-top:5pt;">
-            ${document.getElementById('main_content').innerHTML}
+        <div style="text-align:justify; line-height:1; margin-top:5pt;">
+            ${mainContentHtml}
         </div>
     `;
 
-    // Word XML Configuration with Page Setup and Border Fixes
     const header = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' 
               xmlns:w='urn:schemas-microsoft-com:office:word' 
               xmlns='http://www.w3.org/TR/REC-html40'>
         <head>
             <meta charset='utf-8'>
-            <!--[if gte mso 9]>
-            <xml>
-                <w:WordDocument>
-                    <w:View>Print</w:View>
-                    <w:Zoom>100</w:Zoom>
-                    <w:DoNotOptimizeForBrowser/>
-                </w:WordDocument>
-            </xml>
-            <![endif]-->
             <style>
                 @page Section1 {
-                    size: 595.3pt 841.9pt; /* A4 */
-                    margin: 0.5in 0.5in 0.5in 1.2in; /* Left: 1.2", Others: 0.5" */
-                    mso-header-margin: 0.2in;
-                    mso-footer-margin: 0.2in;
+                    size: 595.3pt 841.9pt;
+                    margin: 0.5in 0.5in 0.5in 1.2in;
                 }
                 div.Section1 { page: Section1; }
-                body { 
-                    font-family: 'Mukta', 'Arial Unicode MS', sans-serif; 
-                    font-size: 12pt; 
-                    margin: 0;
-                }
+                body { font-family: 'Mukta', sans-serif; font-size: 12pt; }
                 
-                /* टेबल बोर्डरको समस्या समाधान गर्ने मुख्य CSS */
+                /* टेबललाई कम्प्याक्ट बनाउन र बोर्डर हाल्न */
                 table.table-output { 
                     border-collapse: collapse; 
-                    width: 100%; 
-                    border: 0.5pt solid black;
-                    mso-border-alt: 0.5pt solid black;
+                    width: 100%;
+                    mso-table-lspace: 0pt; 
+                    mso-table-rspace: 0pt;
                 }
                 .table-output th, .table-output td { 
                     border: 0.5pt solid black; 
-                    mso-border-alt: 0.5pt solid black;
-                    padding: 3pt; 
+                    mso-border-alt: 0.5pt solid windowtext;
+                    padding: 2pt 4pt; /* प्याडिङ कम गरियो */
                     text-align: center; 
-                    font-size: 11pt; 
+                    font-size: 11pt; /* फन्ट अलिकति सानो ताकि कोठा नफैलियोस् */
+                    line-height: 1.1;  /* लाइन ग्याप कम गरियो */
                 }
-                
-                /* हेडर टेवलमा बोर्डर नदेखाउन */
-                .office-header table, .office-header td { border: none !important; }
-                
-                p { margin: 0 0 10pt 0; }
                 .font-bold { font-weight: bold; }
+                p { margin-bottom: 5pt; }
             </style>
         </head>
         <body>
@@ -1185,14 +1276,11 @@ const wordHeaderLayout = `
     const blob = new Blob(['\ufeff', header], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const fileLink = document.createElement("a");
-    const fileName = applicantName + 'Dakhaa_Tippani.doc';
-    
-    document.body.appendChild(fileLink);
     fileLink.href = url;
-    fileLink.download = fileName;
+    fileLink.download = applicantName + 'Dakhaa_Tippani.doc';
+    document.body.appendChild(fileLink);
     fileLink.click();
     document.body.removeChild(fileLink);
-    URL.revokeObjectURL(url);
 }
         // Init
         document.addEventListener('DOMContentLoaded', loadFromLocal);
