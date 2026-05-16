@@ -307,6 +307,57 @@
 
     <!-- Main Content -->
     <main>
+        <!-- Settings Button -->
+<div style="text-align: right; padding: 10px 20px;" class="no-print">
+    <button onclick="openSettings()" style="background:#2c3e50; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-family:'Mukta';">⚙️ कार्यालय सेटिङ</button>
+</div>
+
+<!-- Settings Modal -->
+<div id="settingsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; overflow-y:auto;">
+    <div style="background:white; max-width:500px; margin:50px auto; padding:30px; border-radius:15px; font-family:'Mukta';">
+        <h2 style="border-bottom:2px solid #3498db; padding-bottom:10px;">कार्यालयको विवरण सेट गर्नुहोस्</h2>
+        
+        <div style="display:grid; gap:10px; margin-top:20px;">
+            <label>सरकारको तह:</label>
+            <select id="set_gov" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+                <option value="नेपाल सरकार">नेपाल सरकार</option>
+                <option value="प्रदेश सरकार">प्रदेश सरकार</option>
+                <option value="स्थानीय सरकार">स्थानीय सरकार</option>
+                <option value="">(खाली छाड्नुहोस्)</option>
+            </select>
+
+            <label>मन्त्रालय:</label>
+            <input type="text" id="set_ministry" placeholder="उदा: भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+
+            <label>विभाग:</label>
+            <input type="text" id="set_dept" placeholder="उदा: भूमि व्यवस्थापन तथा अभिलेख विभाग" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+
+            <label>कार्यालयको नाम:</label>
+            <input type="text" id="set_office" placeholder="उदा: भूमि प्रशासन कार्यालय" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+
+            <label>ठेगाना (जिल्ला समेत):</label>
+            <input type="text" id="set_addr" placeholder="उदा: चौतारा, सिन्धुपाल्चोक" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+
+            <label>डिफल्ट जिल्ला (टिप्पणी भित्र आउने):</label>
+            <input type="text" id="set_def_dist" placeholder="उदा: सिन्धुपाल्चोक" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+
+<div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;">                <div><label>फोन नं.:</label><input type="text" id="set_phone" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:5px;"></div>
+                <div><label>इमेल:</label><input type="text" id="set_email" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:5px;"></div>
+            </div>
+
+            <label>फुटर टेक्स्ट (Centre Align):</label>
+            <input type="text" id="set_footer" placeholder="उदा: सफा र सुदृढ प्रशासन, हाम्रो अभियान" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+        </div>
+
+        <div style="margin-top:20px; display:flex; gap:10px;">
+            <button onclick="saveSettings()" style="flex:1; background:#27ae60; color:white; border:none; padding:12px; border-radius:5px; cursor:pointer;">सुरक्षित गर्नुहोस्</button>
+            <button onclick="closeSettings()" style="flex:1; background:#e74c3c; color:white; border:none; padding:12px; border-radius:5px; cursor:pointer;">बन्द गर्नुहोस्</button>
+        </div>
+    </div>
+</div>
+
+
+
         <div class="container">
             <h1>टिप्पणीका र आदेशका फर्म्याटहरू</h1>
 
@@ -399,6 +450,38 @@
       .then(reg => console.log('SW registered:', reg.scope))
       .catch(err => console.error('SW registration failed:', err));
   });
+}
+function openSettings() {
+    const data = JSON.parse(localStorage.getItem('global_office_settings')) || {};
+    document.getElementById('set_gov').value = data.gov || "नेपाल सरकार";
+    document.getElementById('set_ministry').value = data.ministry || "";
+    document.getElementById('set_dept').value = data.dept || "";
+    document.getElementById('set_office').value = data.office || "";
+    document.getElementById('set_addr').value = data.addr || "";
+    document.getElementById('set_def_dist').value = data.def_dist || "सिन्धुपाल्चोक";
+    document.getElementById('set_phone').value = data.phone || "";
+    document.getElementById('set_email').value = data.email || "";
+    document.getElementById('set_footer').value = data.footer || "";
+    document.getElementById('settingsModal').style.display = 'block';
+}
+
+function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
+
+function saveSettings() {
+    const settings = {
+        gov: document.getElementById('set_gov').value,
+        ministry: document.getElementById('set_ministry').value,
+        dept: document.getElementById('set_dept').value,
+        office: document.getElementById('set_office').value,
+        addr: document.getElementById('set_addr').value,
+        def_dist: document.getElementById('set_def_dist').value,
+        phone: document.getElementById('set_phone').value,
+        email: document.getElementById('set_email').value,
+        footer: document.getElementById('set_footer').value
+    };
+    localStorage.setItem('global_office_settings', JSON.stringify(settings));
+    alert("विवरण सुरक्षित भयो! अब सबै टिप्पणीहरूमा यो लागू हुनेछ।");
+    closeSettings();
 }
 
     </script>

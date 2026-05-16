@@ -62,12 +62,64 @@
         }
 
         @media print {
-            .no-print {
+
+            /* १. ब्राउजरको डिफल्ट मार्जिन र साइज कन्ट्रोल */
+            @page {
+                size: A4;
+                margin: 0.5in 0.4in 0.4in 1.1in !important;
+                /* Left 1.1" for punching */
+            }
+
+            /* २. मुख्य कन्टेनरहरूको हाइट फिक्स */
+            html,
+            body {
+                height: auto !important;
+                overflow: visible !important;
+                background: white !important;
+            }
+
+            .main-grid-container {
+                display: block !important;
+                /* Grid हटाउने */
+                height: auto !important;
+            }
+
+            .scrollable-column {
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            /* ३. अनावश्यक स्पेस हटाउने */
+            .preview-content {
+                padding: 0 !important;
+                /* स्क्रिनको ४०-५०px हटाउने */
+                margin: 0 !important;
+                min-height: auto !important;
+                /* ११ इन्चको हाइट हटाउने */
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+            }
+
+            /* ४. फुटरको ग्याप कम गर्ने */
+            #disp_footer {
+                margin-top: 20px !important;
+                /* ५० बाट २० मा झारियो */
+                page-break-before: avoid;
+            }
+
+            /* ५. अनावश्यक बटनहरू लुकाउने */
+            .no-print,
+            button,
+            .settings-btn {
                 display: none !important;
             }
 
-            .preview-content {
-                padding-left: 1.25in;
+            /* ६. हेडरको रङ्ग र बोर्डर फिक्स */
+            .office-header {
+                border-bottom: 2px double #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
     </style>
@@ -230,64 +282,73 @@
                 <div class="pt-4 border-t border-slate-700">
                     <label class="flex items-center gap-2 font-bold cursor-pointer text-xs"><input type="checkbox"
                             id="rev_applicable" onchange="toggleRevUI()"> राजश्व/लाभकर लाग्छ ?</label>
-<div id="rev_ui" class="hidden mt-3 space-y-4">
-    <!-- 1. Muchulka Value (Full Width) -->
-    <div class="space-y-1">
-        <label class="text-[10px] text-slate-400">मुचुल्कामा भएको थैली:</label>
-        <input type="text" id="v_muchulka" oninput="saveAndUpdate()" placeholder="मुचुल्कामा भएको थैली"
-            class="w-full p-2 rounded text-black font-bold border-2 border-amber-500">
-    </div>
+                    <div id="rev_ui" class="hidden mt-3 space-y-4">
+                        <!-- 1. Muchulka Value (Full Width) -->
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-slate-400">मुचुल्कामा भएको थैली:</label>
+                            <input type="text" id="v_muchulka" oninput="saveAndUpdate()"
+                                placeholder="मुचुल्कामा भएको थैली"
+                                class="w-full p-2 rounded text-black font-bold border-2 border-amber-500">
+                        </div>
 
-    <!-- 2. Service Fees (Grid - Top) -->
-    <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-700 p-2 rounded">
-        <label class="flex items-center gap-1 border-r border-slate-600">
-            <input type="checkbox" id="svc_perc_mode" onchange="toggleSvcMode('perc')"> सेवा शुल्क (%) 
-            <input type="text" id="svc_perc_val" oninput="saveAndUpdate()" class="w-8 p-1 rounded text-black ml-1">
-        </label>
-        <label class="flex items-center gap-1 pl-1">
-            <input type="checkbox" id="svc_fixed_mode" onchange="toggleSvcMode('fixed')"> सेवा (Fixed) 
-            <input type="text" id="svc_fixed_val" oninput="saveAndUpdate()" class="w-16 p-1 rounded text-black ml-1">
-        </label>
-    </div>
+                        <!-- 2. Service Fees (Grid - Top) -->
+                        <div class="grid grid-cols-2 gap-2 text-[10px] bg-slate-700 p-2 rounded">
+                            <label class="flex items-center gap-1 border-r border-slate-600">
+                                <input type="checkbox" id="svc_perc_mode" onchange="toggleSvcMode('perc')"> सेवा शुल्क
+                                (%)
+                                <input type="text" id="svc_perc_val" oninput="saveAndUpdate()"
+                                    class="w-8 p-1 rounded text-black ml-1">
+                            </label>
+                            <label class="flex items-center gap-1 pl-1">
+                                <input type="checkbox" id="svc_fixed_mode" onchange="toggleSvcMode('fixed')"> सेवा
+                                (Fixed)
+                                <input type="text" id="svc_fixed_val" oninput="saveAndUpdate()"
+                                    class="w-16 p-1 rounded text-black ml-1">
+                            </label>
+                        </div>
 
-    <!-- 3. Profit Tax (Full Width - Bottom) -->
-    <div class="bg-slate-700 p-3 rounded border border-slate-600 space-y-3">
-        <div class="flex items-center justify-between">
-            <label class="flex items-center gap-2 font-bold cursor-pointer text-xs">
-                <input type="checkbox" id="has_profit_tax" onchange="saveAndUpdate()"> पुँजीगत लाभकर लाग्ने ?
-            </label>
-            <div class="flex items-center gap-1 text-xs">
-                <span>दर (%):</span>
-                <input type="text" id="profit_tax_perc" oninput="saveAndUpdate()" 
-                       class="w-12 p-1 rounded text-black font-bold text-center" placeholder="५">
-            </div>
-        </div>
+                        <!-- 3. Profit Tax (Full Width - Bottom) -->
+                        <div class="bg-slate-700 p-3 rounded border border-slate-600 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center gap-2 font-bold cursor-pointer text-xs">
+                                    <input type="checkbox" id="has_profit_tax" onchange="saveAndUpdate()"> पुँजीगत लाभकर
+                                    लाग्ने ?
+                                </label>
+                                <div class="flex items-center gap-1 text-xs">
+                                    <span>दर (%):</span>
+                                    <input type="text" id="profit_tax_perc" oninput="saveAndUpdate()"
+                                        class="w-12 p-1 rounded text-black font-bold text-center" placeholder="५">
+                                </div>
+                            </div>
 
-        <!-- Expense Section (Nested inside Profit Tax block) -->
-        <div id="expense_toggle_ui" class="hidden pt-2 border-t border-slate-600">
-            <label class="flex items-center gap-2 text-[10px] cursor-pointer text-orange-400 font-bold mb-2">
-                <input type="checkbox" id="claim_expense_chk" onchange="toggleExpenseUI()"> खर्च दावी (Cost Deduction) छ ?
-            </label>
-            
-            <div id="expense_detail_ui" class="hidden space-y-2 bg-slate-800 p-2 rounded">
-                <div class="space-y-1">
-                    <label class="text-[9px] text-slate-400">खर्चको आधार (प्रमाण):</label>
-                    <input type="text" id="expense_doc_input" oninput="saveAndUpdate()" 
-                        placeholder="उदा: र.नं.२५ मिति २०८३।०१।३२को लिखत," 
-                        class="w-full p-2 text-[11px] text-black rounded font-medium">
-                </div>
-                
-                <div class="space-y-1">
-                    <label class="text-[9px] text-slate-400">खर्च विवरणहरू:</label>
-                    <div id="expense_items_list" class="space-y-1"></div>
-                    <button onclick="addExpenseItem()" class="w-full mt-1 text-[10px] bg-emerald-600 hover:bg-emerald-700 py-1 rounded text-white transition">
-                        + नयाँ खर्च शीर्षक थप्नुहोस्
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                            <!-- Expense Section (Nested inside Profit Tax block) -->
+                            <div id="expense_toggle_ui" class="hidden pt-2 border-t border-slate-600">
+                                <label
+                                    class="flex items-center gap-2 text-[10px] cursor-pointer text-orange-400 font-bold mb-2">
+                                    <input type="checkbox" id="claim_expense_chk" onchange="toggleExpenseUI()"> खर्च
+                                    दावी (Cost Deduction) छ ?
+                                </label>
+
+                                <div id="expense_detail_ui" class="hidden space-y-2 bg-slate-800 p-2 rounded">
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] text-slate-400">खर्चको आधार (प्रमाण):</label>
+                                        <input type="text" id="expense_doc_input" oninput="saveAndUpdate()"
+                                            placeholder="उदा: र.नं.२५ मिति २०८३।०१।३२को लिखत,"
+                                            class="w-full p-2 text-[11px] text-black rounded font-medium">
+                                    </div>
+
+                                    <div class="space-y-1">
+                                        <label class="text-[9px] text-slate-400">खर्च विवरणहरू:</label>
+                                        <div id="expense_items_list" class="space-y-1"></div>
+                                        <button onclick="addExpenseItem()"
+                                            class="w-full mt-1 text-[10px] bg-emerald-600 hover:bg-emerald-700 py-1 rounded text-white transition">
+                                            + नयाँ खर्च शीर्षक थप्नुहोस्
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </section>
 
             <!-- ५. नयाँ रोक्का -->
@@ -325,17 +386,29 @@
 
         <!-- RIGHT: PREVIEW -->
         <div id="tippani-preview" class="preview-content shadow-sm border border-slate-300">
-            <div class="office-header">
+            <!-- Preview भित्रको हेडर सेक्सन -->
+            <div class="office-header" style="position:relative;">
+                <!-- लेफ्ट: निसाना छाप -->
                 <img style="width:90px"
                     src="data:image/jpeg;base64,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">
-                <div class="header-text-container">
-                    <div>नेपाल सरकार</div>
-                    <div style="font-size:14px">भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय</div>
-                    <div>भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
-                    <div style="font-size:22px">भूमि प्रशासन कार्यालय</div>
-                    <div style="font-size:14px">चौतारा, सिन्धुपाल्चोक</div>
+
+                <!-- सेन्टर: कार्यालय विवरण -->
+                <div class="header-text-container" style="flex-grow: 1; text-align: center;">
+                    <div id="disp_gov">नेपाल सरकार</div>
+                    <div id="disp_ministry" style="font-size:14px">मन्त्रालयको नाम</div>
+                    <div id="disp_dept">विभागको नाम</div>
+                    <div id="disp_office" style="font-size:22px">कार्यालयको नाम</div>
+                    <div id="disp_addr" style="font-size:14px">ठेगाना</div>
+                </div>
+
+                <!-- राइट: फोन र इमेल -->
+                <div
+                    style="position:absolute; right:0; bottom:2px; text-align:right; font-size:10px; color:#f41e1e; line-height:1.2;">
+                    <div id="disp_phone"></div>
+                    <div id="disp_email"></div>
                 </div>
             </div>
+
             <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin-bottom:5px;">टिप्पणी र
                 आदेश</h3>
             <p style="margin: 5px;">श्रीमान्,</p>
@@ -343,9 +416,9 @@
                 <p>
                     <span id="out_app_details">.......</span>ले <span id="out_owners" class="font-bold">.......</span>को
                     नाममा जग्गाधनी श्रेस्ता कायम रहेको
-                    सिन्धुपाल्चोक जिल्ला <span id="out_land_details" class="font-bold text-green-700">.......</span> को
-                    जग्गा
-                    अदालतबाट भएको <span id="out_case_type" class="font-bold">.......</span> मुद्दाको फैसला बमोजिम दा.खा.
+                    ... कायम रहेको <span class="global-dist">सिन्धुपाल्चोक</span> जिल्ला <span id="out_land_details"
+                        class="font-bold text-green-700">.......</span> को जग्गा ... अदालतबाट भएको <span
+                        id="out_case_type" class="font-bold">.......</span> मुद्दाको फैसला बमोजिम दा.खा.
                     गरिदिन
                     <span id="out_court_details" class="font-bold text-blue-800">.......</span> को पत्र,
                     <span id="out_other_docs" class="font-bold">.......</span> संलग्न राखी दाखिला खारेज गरिपाउन द.नं.
@@ -1194,23 +1267,23 @@
             document.getElementById('out_decision').innerText = d;
         }
 
-function exportToWord() {
-    let applicantName = "";
-    if (applicants.length > 0 && applicants[0].name) {
-        applicantName = applicants[0].name.trim().replace(/\s+/g, '_') + "_";
-    }
+        function exportToWord() {
+            let applicantName = "";
+            if (applicants.length > 0 && applicants[0].name) {
+                applicantName = applicants[0].name.trim().replace(/\s+/g, '_') + "_";
+            }
 
-    const logoSrc = document.querySelector('.office-header img').src;
-    const headerTitle = document.querySelector('.header-text-container').innerHTML;
+            const logoSrc = document.querySelector('.office-header img').src;
+            const headerTitle = document.querySelector('.header-text-container').innerHTML;
 
-    // मुख्य सामग्री लिने
-    let mainContentHtml = document.getElementById('main_content').innerHTML;
+            // मुख्य सामग्री लिने
+            let mainContentHtml = document.getElementById('main_content').innerHTML;
 
-    // Word को लागि टेबल बोर्डर फिक्स: 
-    // यहाँ हामी 'table-output' क्लास भएको टेबलमा बोर्डर एट्रिब्युट थप्छौं
-    mainContentHtml = mainContentHtml.replace(/<table class="table-output/g, '<table border="1" cellspacing="0" cellpadding="4" class="table-output" style="border-collapse:collapse; width:100%;"');
+            // Word को लागि टेबल बोर्डर फिक्स: 
+            // यहाँ हामी 'table-output' क्लास भएको टेबलमा बोर्डर एट्रिब्युट थप्छौं
+            mainContentHtml = mainContentHtml.replace(/<table class="table-output/g, '<table border="1" cellspacing="0" cellpadding="4" class="table-output" style="border-collapse:collapse; width:100%;"');
 
-    const wordHeaderLayout = `
+            const wordHeaderLayout = `
         <table style="width:100%; border:none; margin:0; border-bottom: 2pt double black; border-collapse:collapse;">
             <tr>
                 <td style="width:15%; border:none; padding:0; vertical-align:middle; text-align:left;">
@@ -1225,7 +1298,7 @@ function exportToWord() {
         </table>
     `;
 
-    const remainingContent = `
+            const remainingContent = `
         <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin:5pt 0 1pt 0; font-size:16pt;">टिप्पणी र आदेश</h3>
         <p style="margin:0; padding:0;">श्रीमान्,</p>
         <div style="text-align:justify; line-height:1; margin-top:5pt;">
@@ -1233,7 +1306,7 @@ function exportToWord() {
         </div>
     `;
 
-    const header = `
+            const header = `
         <html xmlns:o='urn:schemas-microsoft-com:office:office' 
               xmlns:w='urn:schemas-microsoft-com:office:word' 
               xmlns='http://www.w3.org/TR/REC-html40'>
@@ -1273,15 +1346,46 @@ function exportToWord() {
             </div>
         </body></html>`;
 
-    const blob = new Blob(['\ufeff', header], { type: 'application/msword' });
-    const url = URL.createObjectURL(blob);
-    const fileLink = document.createElement("a");
-    fileLink.href = url;
-    fileLink.download = applicantName + 'Dakhaa_Tippani.doc';
-    document.body.appendChild(fileLink);
-    fileLink.click();
-    document.body.removeChild(fileLink);
-}
+            const blob = new Blob(['\ufeff', header], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const fileLink = document.createElement("a");
+            fileLink.href = url;
+            fileLink.download = applicantName + 'Dakhaa_Tippani.doc';
+            document.body.appendChild(fileLink);
+            fileLink.click();
+            document.body.removeChild(fileLink);
+        }
+
+        function applyGlobalSettings() {
+            const data = JSON.parse(localStorage.getItem('global_office_settings'));
+            if (!data) return;
+
+            // हेडर अपडेट
+            if (document.getElementById('disp_gov')) document.getElementById('disp_gov').innerText = data.gov;
+            if (document.getElementById('disp_ministry')) document.getElementById('disp_ministry').innerText = data.ministry;
+            if (document.getElementById('disp_dept')) document.getElementById('disp_dept').innerText = data.dept;
+            if (document.getElementById('disp_office')) document.getElementById('disp_office').innerText = data.office;
+            if (document.getElementById('disp_addr')) document.getElementById('disp_addr').innerText = data.addr;
+
+            // फोन र इमेल
+            if (document.getElementById('disp_phone')) document.getElementById('disp_phone').innerText = data.phone ? "फोन: " + data.phone : "";
+            if (document.getElementById('disp_email')) document.getElementById('disp_email').innerText = data.email ? "Email: " + data.email : "";
+
+            // फुटर
+            if (document.getElementById('disp_footer')) document.getElementById('disp_footer').innerText = data.footer || "";
+
+            // डिफल्ट जिल्ला अपडेट (व्यहोरा भित्र)
+            const distElements = document.querySelectorAll('.global-dist');
+            distElements.forEach(el => {
+                el.innerText = data.def_dist || "सिन्धुपाल्चोक";
+            });
+        }
+
+        // फाइल खुल्ने बित्तिकै सेटिङ लागू गर्ने
+        document.addEventListener('DOMContentLoaded', () => {
+            applyGlobalSettings();
+            // लोड फ्रम लोकल पहिले नै छ भने त्यसलाई पनि चल्न दिने
+        });
         // Init
         document.addEventListener('DOMContentLoaded', loadFromLocal);
     </script>
