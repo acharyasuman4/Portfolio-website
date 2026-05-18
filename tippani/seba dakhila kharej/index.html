@@ -434,7 +434,7 @@ function generateDecision() {
     let deathPart = (deadName && dDate) ? `${deadName}को मिति ${convertDate(dDate)} मा मृत्यु भएको र ` : '';
     
     // थप विवरण (extra) भएमा मात्र 'साथै' र 'समेतको' आउने, नभए सिधै 'आधारमा'
-    let d = `यसमा ${deathPart}उल्लिखित अन्य प्रमाणहरू ${extra ? 'साथै ' + extra + ' समेतको' : ''} आधारमा `;
+    let d = `यसमा ${deathPart}उल्लिखित अन्य प्रमाणहरूको ${extra ? 'साथै ' + extra + ' समेतको' : ''} आधारमा `;
 
     let regTotal = 0; 
     lands.forEach(l => { regTotal += toEnglish(baseValuations[l.id]); });
@@ -444,7 +444,7 @@ function generateDecision() {
     const svcFee = Math.round(regTotal * toEnglish(svcPercVal) / 100);
     
     // १. सेवा शुल्कको भाग
-    let revText = `रजिष्ट्रेशन थैली रू. ${formatNepaliMoney(regTotal)} (${numberToNepaliWords(regTotal)}) को ${is3Gen ? 'राजिनामा' : 'अंशवण्डा'} सरह ${toNepaliDigits(svcPercVal)}% ले रू. ${formatNepaliMoney(svcFee)} (${numberToNepaliWords(svcFee)}) सेवा शुल्क`;
+    let revText = `रजिष्ट्रेशन थैली रू. ${formatNepaliMoney(regTotal)} (${numberToNepaliWords(regTotal)}) को प्रदेश आर्थिक ऐन बमोजिम ${is3Gen ? 'राजिनामा' : 'अंशवण्डा'} सरह ${toNepaliDigits(svcPercVal)}% ले रू. ${formatNepaliMoney(svcFee)} (${numberToNepaliWords(svcFee)}) सेवा शुल्क`;
     
     // २. लाभकरको भाग (तपाईंले भन्नुभएको ढाँचामा)
     if (is3Gen && document.getElementById('has_profit').checked) {
@@ -458,14 +458,14 @@ function generateDecision() {
         const yrs = document.getElementById('bilamba_years').value; // २ वर्ष वा अन्य
         const bAmt = toEnglish(yrs) * 500;
         if (toEnglish(yrs) > 0) {
-            revText += ` र ${toNepaliDigits(yrs)} वर्षको विलम्व शुल्क रू. ${formatNepaliMoney(bAmt)} (${numberToNepaliWords(bAmt)})`;
+            revText += ` र ${toNepaliDigits(yrs)} वर्षको मुलुकी देवानी संहिता २०७४ को दफा ४२९(४) विलम्व शुल्क रू. ${formatNepaliMoney(bAmt)} (${numberToNepaliWords(bAmt)})`;
         }
     }
 
     const appNames = nepaliJoin(applicants.map(a => a.name));
     const appLabel = applicants.length > 1 ? "निवेदकहरू" : "निवेदक";
 
-    return d + revText + ` असुल भई कि.नं. ${nepaliJoin(lands.map(l => toNepaliDigits(l.kitta)))} ${appLabel} ${appNames}को नाममा दा.खा. हुन आवश्यक निर्णयार्थ पेश । श्रीमानको जो आदेश ।`;
+    return d + revText + ` असुल भई कि.नं. ${nepaliJoin(lands.map(l => toNepaliDigits(l.kitta)))} ${appLabel} ${appNames}को नाममा दा.खा. हुन एवम् तामेली प्रति लिखतमा समेत दा.खा. भई गएको व्यहोरा जनाउन आवश्यक निर्णयार्थ पेश । श्रीमानको जो आदेश ।`;
 }
 
         function renderTable() {
@@ -554,6 +554,11 @@ function generateDecision() {
                 document.getElementById('decision_extra').value = data.decisionExtra || '';
                 renderApplicants(); renderOwners(); renderLandUI();
                 toggleRevenueFields(); toggleBilambaUI(); updateAll();
+
+                                  document.getElementById('dead_owner_select').value = data.deathOwner || '';
+        document.getElementById('death_date').value = data.deathDate || '';
+
+
             } else { addApplicant(); }
         }
 
