@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>संशोधन टिप्पणी - Land Revenue Office</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Mukta', sans-serif; background-color: #cbd5e1; margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+        .main-layout { display: flex; height: 100vh; width: 100vw; }
+        .input-panel { flex: 0 0 420px; background: white; padding: 15px; border-right: 1px solid #94a3b8; overflow-y: auto; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); }
+        .input-group { margin-bottom: 12px; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; }
+        label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 2px; color: #475569; }
+        .input-box { border: 1px solid #94a3b8; padding: 5px; border-radius: 4px; width: 100%; font-size: 13px; font-family: 'Mukta', sans-serif; margin-bottom: 5px; }
+        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn { padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; color: white; font-size: 12px; width: 100%; margin-top: 5px; }
+        .btn-blue { background-color: #2563eb; }
+        .btn-red { background-color: #ef4444; }
+        .btn-green { background-color: #16a34a; }
+        .btn-dark { background-color: #334155; }
+        .preview-container { flex: 1; background: #94a3b8; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; align-items: center; }
+        .preview-page { background: white; width: 210mm; min-height: 297mm; padding: 1.5cm 1.27cm 1.5cm 2.54cm; box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); text-align: justify; line-height: 1.5; font-size: 14pt; color: #000; height: auto !important; }
+        .doc-table { width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 15px; }
+        .doc-table th, .doc-table td { border: 1px solid black; padding: 4px 8px; text-align: left; font-size: 12pt; }
+        .doc-table th { background-color: #f9f9f9; text-align: center; }
+        .item-list { background: #f1f5f9; padding: 3px 6px; border-radius: 4px; font-size: 11px; margin-top: 4px; display: flex; justify-content: space-between; border: 1px solid #cbd5e1; }
+        .del-btn { color: red; cursor: pointer; font-weight: bold; }
+        @media print { .no-print { display: none !important; } .preview-container { display: block !important; padding: 0 !important; } .preview-page { box-shadow: none !important; border: none !important; width: 100% !important; margin: 0 !important; } }
+    </style>
+</head>
+<body>
+
+<div class="main-layout">
+    <div class="input-panel no-print">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h2 style="margin:0; font-size:1.1rem;">संशोधन टिप्पणी</h2>
+            <button onclick="resetAll()" class="btn btn-red" style="width:auto; padding:4px 10px;">Reset</button>
+        </div>
+
+        <div class="input-group">
+            <div class="row-2">
+                <div><label>मि.नं.:</label><input type="text" id="in_mn" class="input-box" oninput="update()"></div>
+                <div><label>मिति:</label><input type="text" id="in_dt" class="input-box date-input" oninput="update()"></div>
+            </div>
+            <div class="row-2">
+                <div><label>द.नं.:</label><input type="text" id="in_rn" class="input-box" oninput="update()"></div>
+                <div><label>द.मिति:</label><input type="text" id="in_rd" class="input-box date-input" oninput="update()"></div>
+            </div>
+        </div>
+
+        <div class="input-group" style="background:#eef2ff;">
+            <label>१. निवेदक विवरण</label>
+            <input type="text" id="app_name" placeholder="नाम थर" class="input-box">
+            <div class="row-2">
+                <select id="app_type" class="input-box">
+                    <option value="son">बाबु/बाजे तर्फ</option>
+                    <option value="wife">पति/ससुरा तर्फ</option>
+                </select>
+                <input type="text" id="app_f" placeholder="बाबु/पतिको नाम" class="input-box">
+            </div>
+            <input type="text" id="app_gf" placeholder="बाजे/ससुराको नाम" class="input-box">
+            <input type="text" id="app_addr" placeholder="स्थायी ठेगाना" class="input-box">
+            <button onclick="addApp()" class="btn btn-blue">+ निवेदक थप्नुहोस्</button>
+            <div id="list_apps"></div>
+        </div>
+
+        <div class="input-group" style="background:#fff1f2;">
+            <label>जग्गाधनीको विवरण (साविक लगत बमोजिम):</label>
+            <input type="text" id="in_landowner" placeholder="जग्गाधनीको नाम" class="input-box" oninput="update()">
+            <div class="row-2">
+                <select id="l_owner_type" class="input-box" onchange="update()">
+                    <option value="son">बाबु/बाजे तर्फ</option>
+                    <option value="wife">पति/ससुरा तर्फ</option>
+                </select>
+                <input type="text" id="in_l_f" placeholder="बाबु/पतिको नाम" class="input-box" oninput="update()">
+            </div>
+            <input type="text" id="in_l_gf" placeholder="बाजे/ससुराको नाम" class="input-box" oninput="update()">
+            <input type="text" id="in_l_addr" placeholder="ठेगाना" class="input-box" oninput="update()">
+        </div>
+
+        <div class="input-group" style="background:#fefce8;">
+            <label>२. संशोधन हुने विवरण:</label>
+            <div style="display:flex; gap:10px; margin-bottom:8px; font-size:11px;">
+                <label><input type="radio" name="c_type" value="owner" checked onclick="toggleCType()"> जग्गाधनीसँग सम्बन्धित</label>
+                <label><input type="radio" name="c_type" value="land" onclick="toggleCType()"> जग्गासँग सम्बन्धित</label>
+                <!-- संशोधन हुने विवरण खण्ड भित्र शिर्षकको तल यो थप्नुहोस् -->
+<div id="land_kitta_selector" style="display:none; margin-top:5px; padding:5px; border:1px solid #ddd; background:#fff;">
+    <label style="font-size:10px; color:rgb(153, 255, 0);">संशोधन हुने कित्ता(हरू) छान्नुहोस्:</label>
+    <div id="kitta_checkbox_list" style="max-height:100px; overflow-y:auto; font-size:11px;">
+        <!-- JS ले यहाँ चेकबक्सहरू भर्छ -->
+    </div>
+</div>
+            </div>
+            <input type="text" id="c_topic" list="topic_list" class="input-box" placeholder="शिर्षक छान्नुहोस्" onchange="autoFillCorrection()">
+            <datalist id="topic_list"></datalist>
+            <div class="row-2">
+                <input type="text" id="c_old" placeholder="साविक विवरण" class="input-box">
+                <input type="text" id="c_new" placeholder="कायम विवरण" class="input-box">
+            </div>
+            <button onclick="addCorrection()" class="btn btn-blue">संशोधन थप्नुहोस्</button>
+            <div id="list_corrections"></div>
+        </div>
+
+        <div class="input-group" style="background:#f0fdf4;">
+            <label>३. जग्गा विवरण:</label>
+            <div class="row-2">
+                <input type="text" id="l_vdc" placeholder="साविक गा.वि.स." class="input-box">
+                <input type="text" id="l_ward" placeholder="वडा" class="input-box">
+            </div>
+            <div class="row-2">
+                <input type="text" id="l_kitta" placeholder="कि.नं." class="input-box">
+                <div style="display:flex; gap:5px;">
+                    <button onclick="addLand('same')" class="btn btn-green" style="flex:1;">Same VDC</button>
+                    <button onclick="addLand('new')" class="btn btn-dark" style="flex:1;">New VDC</button>
+                </div>
+            </div>
+            <div id="area_inputs_container"></div>
+            <div id="list_lands"></div>
+        </div>
+
+        <div class="input-group">
+            <div class="row-2">
+                <input type="text" id="in_loc" placeholder="स्थानीय तह" class="input-box" oninput="update()">
+                <input type="text" id="in_lw" placeholder="वडा नं." class="input-box" oninput="update()">
+            </div>
+            <div class="row-2">
+                <input type="text" id="in_sc" placeholder="सि.च.नं." class="input-box" oninput="update()">
+                <input type="text" id="in_sd" placeholder="सि.मिति" class="input-box date-input" oninput="update()">
+            </div>
+            <textarea id="in_extra" placeholder="थप व्यहोरा (सनाखत पछिको)..." class="input-box" oninput="update()"></textarea>
+        </div>
+        <button onclick="window.print()" class="btn btn-blue" style="width:100%">🖨️ Print</button>
+    </div>
+
+    <div class="preview-container">
+        <div id="preview" class="preview-page"></div>
+    </div>
+</div>
+
+<script>
+    let state = { apps: [], lands: [], corrections: [] };
+    const ownerTopics = ["नामथर", "बाबुको नाम", "बाजेको नाम", "पतिको नाम", "ससुराको नाम", "स्थायी ठेगाना"];
+    const landTopics = ["कित्ता नं.", "साविक गा.वि.स.", "वडा नं.", "क्षेत्रफल"];
+
+    // डिफल्ट सेटिङ्स (जिल्लाका लागि)
+    const settings = { def_dist: "सिन्धुपाल्चोक" };
+
+    document.addEventListener('input', e => {
+        if (e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
+            let start = e.target.selectionStart;
+            let val = e.target.value.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+            if (e.target.classList.contains('date-input')) {
+                val = val.replace(/\./g, "।");
+            }
+            if (e.target.value !== val) {
+                e.target.value = val;
+                e.target.setSelectionRange(start, start);
+            }
+        }
+        update();
+    });
+
+    function toNep(num) { return num.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]); }
+
+    function nepJoin(arr) {
+        if (!arr.length) return "";
+        if (arr.length === 1) return arr[0];
+        const last = arr.pop();
+        return arr.join(', ') + ' र ' + last;
+    }
+
+    function addApp() {
+        const name = document.getElementById('app_name').value;
+        const f = document.getElementById('app_f').value;
+        const gf = document.getElementById('app_gf').value;
+        const addr = document.getElementById('app_addr').value;
+        const type = document.getElementById('app_type').value;
+
+        if (!name) return;
+        state.apps.push({ name, f, gf, addr, type });
+
+        if (state.apps.length === 1) {
+            document.getElementById('in_landowner').value = name;
+            document.getElementById('in_l_f').value = f;
+            document.getElementById('in_l_gf').value = gf;
+            document.getElementById('in_l_addr').value = addr;
+            document.getElementById('l_owner_type').value = type;
+        }
+        document.getElementById('app_name').value = "";
+        document.getElementById('app_f').value = "";
+        document.getElementById('app_gf').value = "";
+        update();
+    }
+
+    function toggleCType() {
+        const type = document.querySelector('input[name="c_type"]:checked').value;
+        const dl = document.getElementById('topic_list');
+        dl.innerHTML = (type === 'owner' ? ownerTopics : landTopics).map(t => `<option value="${t}">`).join('');
+    }
+
+    function autoFillCorrection() {
+        const type = document.querySelector('input[name="c_type"]:checked').value;
+        const topic = document.getElementById('c_topic').value;
+        if (type === 'owner' && state.apps.length > 0) {
+            const app = state.apps[0];
+            if (topic === "नामथर") {
+                document.getElementById('c_old').value = document.getElementById('in_landowner').value;
+                document.getElementById('c_new').value = app.name;
+            } else if (topic.includes("बाबु") || topic.includes("पति")) {
+                document.getElementById('c_old').value = document.getElementById('in_l_f').value;
+                document.getElementById('c_new').value = app.f;
+            } else if (topic.includes("बाजे") || topic.includes("ससुरा")) {
+                document.getElementById('c_old').value = document.getElementById('in_l_gf').value;
+                document.getElementById('c_new').value = app.gf;
+            } else if (topic === "स्थायी ठेगाना") {
+                document.getElementById('c_old').value = document.getElementById('in_l_addr').value;
+                document.getElementById('c_new').value = app.addr;
+            }
+        }
+    }
+
+    function addCorrection() {
+        const topic = document.getElementById('c_topic').value;
+        const oldV = document.getElementById('c_old').value || "ऐ.";
+        const newV = document.getElementById('c_new').value || "ऐ.";
+        if (!topic) return;
+        state.corrections.push({ topic, oldV, newV });
+        document.getElementById('c_topic').value = "";
+        document.getElementById('c_old').value = "";
+        document.getElementById('c_new').value = "";
+        update();
+    }
+
+    function addLand(mode) {
+        const vdcEl = document.getElementById('l_vdc');
+        const wardEl = document.getElementById('l_ward');
+        const kittaEl = document.getElementById('l_kitta');
+        const vdc = vdcEl.value;
+        const ward = wardEl.value;
+        const kitta = kittaEl.value;
+
+        if (!kitta) { alert("कि.नं. अनिवार्य छ।"); kittaEl.focus(); return; }
+
+        let match = state.lands.find(x => x.vdc === vdc && x.ward === ward);
+        if (match) { if (!match.ks.includes(kitta)) match.ks.push(kitta); }
+        else { state.lands.push({ vdc, ward, ks: [kitta], areas: {} }); }
+
+        if (mode === 'new') {
+            vdcEl.value = ""; wardEl.value = ""; kittaEl.value = ""; vdcEl.focus();
+        } else {
+            kittaEl.value = ""; kittaEl.focus();
+        }
+        renderAreaInputs();
+        update();
+    }
+
+    function renderAreaInputs() {
+        let html = `<label style="font-size:10px; color:blue;">क्षेत्रफल भर्नुहोस्:</label>`;
+        state.lands.forEach((l, lIdx) => {
+            l.ks.forEach(k => {
+                html += `<div style="display:flex; gap:5px; margin-bottom:2px;">
+                    <span style="font-size:11px;">${l.vdc}, कि. ${k}:</span>
+                    <input type="text" class="input-box" style="margin:0; height:20px;" placeholder="क्षेत्रफल" 
+                    oninput="state.lands[${lIdx}].areas['${k}']=this.value; update();">
+                </div>`;
+            });
+        });
+        document.getElementById('area_inputs_container').innerHTML = html;
+    }
+
+    function toggleCType() {
+    const type = document.querySelector('input[name="c_type"]:checked').value;
+    const dl = document.getElementById('topic_list');
+    const kittaSelector = document.getElementById('land_kitta_selector');
+    
+    dl.innerHTML = (type === 'owner' ? ownerTopics : landTopics).map(t => `<option value="${t}">`).join('');
+    
+    // जग्गा भएमा कित्ताको लिस्ट देखाउने
+    if (type === 'land') {
+        kittaSelector.style.display = 'block';
+        renderKittaCheckboxes();
+    } else {
+        kittaSelector.style.display = 'none';
+    }
+}
+
+function renderKittaCheckboxes() {
+    let html = "";
+    state.lands.forEach(l => {
+        l.ks.forEach(k => {
+            html += `<label style="display:inline-block; margin-right:10px;">
+                <input type="checkbox" class="c_kitta_check" value="${k}"> ${k}
+            </label>`;
+        });
+    });
+    document.getElementById('kitta_checkbox_list').innerHTML = html || "जग्गा विवरण थप्नुहोस्।";
+}
+
+// संशोधन थप्दा छानिएका कित्ताहरू पनि सेभ गर्ने
+function addCorrection() {
+    const topic = document.getElementById('c_topic').value;
+    const oldV = document.getElementById('c_old').value || "ऐ.";
+    const newV = document.getElementById('c_new').value || "ऐ.";
+    const type = document.querySelector('input[name="c_type"]:checked').value;
+    
+    let selectedKittas = [];
+    if (type === 'land') {
+        document.querySelectorAll('.c_kitta_check:checked').forEach(el => selectedKittas.push(el.value));
+    }
+
+    if (!topic) return;
+
+    state.corrections.push({ 
+        topic, 
+        oldV, 
+        newV, 
+        type, 
+        targetKittas: selectedKittas // छानिएका कित्ताहरू यहाँ सुरक्षित हुन्छन्
+    });
+
+    // Reset fields
+    document.getElementById('c_topic').value = "";
+    document.getElementById('c_old').value = "";
+    document.getElementById('c_new').value = "";
+    update();
+}
+
+function update() {
+    // १. लोकल स्टोरेजबाट सेटिङ तान्ने (कार्यालयको नाम र जिल्लाका लागि)
+    const settings = JSON.parse(localStorage.getItem('global_office_settings')) || {
+        gov: "नेपाल सरकार",
+        ministry: "भूमि व्यवस्था, सहकारी तथा गरिबी निवारण मन्त्रालय",
+        dept: "भूमि व्यवस्थापन तथा अभिलेख विभाग",
+        office: "मालपोत कार्यालय",
+        addr: "चौतारा, सिन्धुपाल्चोक",
+        def_dist: "सिन्धुपाल्चोक"
+    };
+
+    const v = (id) => document.getElementById(id)?.value || ".......";
+    
+    // साइडबारका लिस्टहरू अपडेट गर्ने
+    document.getElementById('list_apps').innerHTML = state.apps.map((x, i) => `<div class="item-list">${x.name}<span class="del-btn" onclick="state.apps.splice(${i},1);update();">×</span></div>`).join('');
+    document.getElementById('list_lands').innerHTML = state.lands.map((x, i) => `<div class="item-list">${x.vdc}-${x.ward}: ${x.ks.join(',')}<span class="del-btn" onclick="state.apps.splice(${i},1);update();">×</span></div>`).join('');
+    document.getElementById('list_corrections').innerHTML = state.corrections.map((x, i) => `<div class="item-list">${x.topic} (${x.newV})<span class="del-btn" onclick="state.corrections.splice(${i},1);update();">×</span></div>`).join('');
+
+    // २. हेडर तयार गर्ने (Nisana Chhap र Settings सहित)
+    const headerHtml = `<table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+        <tr>
+            <td style="width: 20%; text-align: left; vertical-align: top;">
+                    <img src="data:image/jpeg;base64,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">
+            </td>
+            <td style="text-align: center; color: red;">
+                <div style="font-size: 9pt; font-weight: bold;">${settings.gov}</div>
+                <div style="font-size: 10pt; font-weight: bold;">${settings.ministry}</div>
+                <div style="font-size: 12pt; font-weight: bold;">${settings.dept}</div>
+                <div style="font-size: 16pt; font-weight: bold;">${settings.office}</div>
+                <div style="font-size: 11pt; font-weight: bold;">${settings.addr}</div>
+            </td>
+            <td style="width: 20%;"></td>
+        </tr>
+    </table>
+    <div style="text-align:center; font-weight:bold; font-size:16pt; text-decoration:underline; margin:5px 0;">टिप्पणी र आदेश</div>
+    <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:15px;">
+        <span>मि.नं.: ${v('in_mn')}</span><span>मिति: ${v('in_dt')}</span>
+    </div>`;
+
+    // ३. निवेदक तालिका (Namsari Style)
+    const sons = state.apps.filter(x => x.type === 'son');
+    const wives = state.apps.filter(x => x.type === 'wife');
+    let nivedakTableHtml = "";
+    if (state.apps.length > 0) {
+        nivedakTableHtml = `<table class="doc-table"><tbody>`;
+        if (sons.length > 0) {
+            nivedakTableHtml += `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>बाबुको नाम</th><th>बाजेको नाम</th></tr>`;
+            sons.forEach((x, i) => nivedakTableHtml += `<tr><td style="text-align:center">${toNep(i+1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`);
+        }
+        if (wives.length > 0) {
+            nivedakTableHtml += `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>पतिको नाम</th><th>ससुराको नाम</th></tr>`;
+            wives.forEach((x, i) => nivedakTableHtml += `<tr><td style="text-align:center">${toNep(sons.length+i+1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`);
+        }
+        nivedakTableHtml += `</tbody></table>`;
+    }
+
+    // ४. जग्गा विवरण र संशोधन व्याकरण
+    const nivedakWord = state.apps.length > 1 ? "निवेदकहरू" : "निवेदक";
+    
+    // जग्गा विवरण स्ट्रिङ (गा.वि.स.को थपेर)
+    const landDetailsStr = state.lands.map(l => {
+        const kittaStr = l.ks.map(k => {
+            const areaStr = l.areas[k] ? `(${l.areas[k]})` : "";
+            return k + areaStr;
+        });
+        return `साविक <b>${l.vdc}</b> गा.वि.स.को कि.नं. <b>${nepJoin(kittaStr)}</b>`;
+    }).join(' र ');
+
+    // युनिक शिर्षकहरू (दोहोरिने हटाउन)
+    const uniqueTopics = [...new Set(state.corrections.map(c => c.topic))];
+    const topicText = uniqueTopics.length > 0 ? nepJoin(uniqueTopics) : "विवरण";
+
+    // संशोधन हुने कित्ताहरू मात्र पहिचान गर्ने
+    const correctedKittas = state.corrections
+        .filter(c => c.type === 'land')
+        .flatMap(c => c.targetKittas);
+    const uniqueCorrKittas = [...new Set(correctedKittas)];
+    const kittaSentencePart = uniqueCorrKittas.length > 0 ? `कि.नं. <b>${nepJoin(uniqueCorrKittas)}</b> को ` : "";
+
+    // ५. साविक र संशोधन तालिका (Record vs Correction)
+    const findC = (topic) => state.corrections.find(c => c.topic === topic);
+    const landStringForTable = state.lands.map(l => `साविक <b>${l.vdc}</b> को कि.नं. <b>${l.ks.map(k => k + (l.areas[k] ? '('+l.areas[k]+')' : '')).join(', ')}</b>`).join(' र ');
+    
+    let correctionTableHtml = `
+    <table class="doc-table">
+        <thead><tr><th style="width:50%">साविक विवरण</th><th style="width:50%">संशोधन भएको विवरण</th></tr></thead>
+        <tbody>
+            <tr><td>जग्गाधनीको नामः <b>${v('in_landowner')}</b></td><td>${findC('नामथर') ? '<b>'+findC('नामथर').newV+'</b>' : 'ऐ.'}</td></tr>
+            <tr><td>${v('l_owner_type')==='son'?'बाबुको':'पतिको'} नामः <b>${v('in_l_f')}</b></td><td>${(findC('बाबुको नाम') || findC('पतिको नाम')) ? '<b>'+(findC('बाबुको नाम')||findC('पतिको नाम')).newV+'</b>' : 'ऐ.'}</td></tr>
+            <tr><td>${v('l_owner_type')==='son'?'बाजेको':'ससुराको'} नामः <b>${v('in_l_gf')}</b></td><td>${(findC('बाजेको नाम') || findC('ससुराको नाम')) ? '<b>'+(findC('बाजेको नाम')||findC('ससुराको नाम')).newV+'</b>' : 'ऐ.'}</td></tr>
+            <tr><td>स्थायी ठेगानाः <b>${v('in_l_addr')}</b></td><td>${findC('स्थायी ठेगाना') ? '<b>'+findC('स्थायी ठेगाना').newV+'</b>' : 'ऐ.'}</td></tr>
+            <tr><td>जग्गाको विवरणः ${landStringForTable}</td><td>${findC('कित्ता नं.') ? '<b>'+findC('कित्ता नं.').newV+'</b>' : 'ऐ.'}</td></tr>
+        </tbody>
+    </table>`;
+
+    // ६. पूर्ण व्यहोरा जोड्ने
+    const bodyTextHtml = `
+    <p style="text-indent:50px; margin-top:20px;">श्रीमान्,</p>
+    <p style="text-indent:50px;">
+        ${settings.def_dist} जिल्ला ${landDetailsStr} <b>${v('in_landowner')}</b>को नाममा दर्ता रहेकोमा 
+        सोको ${kittaSentencePart}जग्गाधनी दर्ता श्रेस्ता र पुर्जामा <b>${topicText}</b> संशोधन गरिपाउँ भनी 
+        ${nivedakWord}को द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को निवेदन ।
+    </p>
+    <p style="text-indent:50px;">उल्लिखित कित्ता जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धीत फाँटबाट भिडी आएको ।</p>
+    ${correctionTableHtml}
+    <p style="text-indent:50px;">माग भए बमोजिम संशोधन गरिदिनका लागि <b>${v('in_loc')}</b> वडा नं. <b>${v('in_lw')}</b> को च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, नागरिकता र <b>सनाखतको</b> ${v('in_extra') ? 'साथै <b>' + v('in_extra') + '</b> को ' : ''}आधारमा संशोधन हुन निर्णयार्थ पेश ।</p>
+    `;
+
+    // अन्तिममा प्रिभ्यु डिभमा सबै पठाउने
+    document.getElementById('preview').innerHTML = headerHtml + nivedakTableHtml + bodyTextHtml;
+}
+
+    function resetAll() { if(confirm("सबै विवरण मेटाउने?")) { state = {apps:[], lands:[], corrections:[]}; update(); } }
+    window.onload = toggleCType;
+</script>
+</body>
+</html>
