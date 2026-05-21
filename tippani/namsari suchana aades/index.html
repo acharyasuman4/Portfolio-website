@@ -8,66 +8,284 @@
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         /* RESET & BODY */
-        * { box-sizing: border-box; }
-        body { font-family: 'Mukta', sans-serif; background-color: #cbd5e1; margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Mukta', sans-serif;
+            background-color: #cbd5e1;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
 
         /* LAYOUT CONTAINER */
-        .main-layout { display: flex; height: 100vh; width: 100vw; }
+        .main-layout {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
 
         /* LEFT: INPUT PANEL */
-        .input-panel { flex: 0 0 340px; background: white; padding: 15px; border-right: 1px solid #94a3b8; overflow-y: auto; height: 100%; z-index: 10; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); }
+        .input-panel {
+            flex: 0 0 340px;
+            background: white;
+            padding: 15px;
+            border-right: 1px solid #94a3b8;
+            overflow-y: auto;
+            height: 100%;
+            z-index: 10;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
 
         /* RIGHT: PREVIEW AREA */
-        .preview-container { flex: 1; background: #94a3b8; display: flex; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 0; }
-        .zoom-wrapper { transform: scale(0.85); transform-origin: top center; margin-bottom: -150px; }
+        .preview-container {
+            flex: 1;
+            background: #94a3b8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .zoom-wrapper {
+            transform: scale(0.85);
+            transform-origin: top center;
+            margin-bottom: -150px;
+        }
 
         /* PAPER STYLE */
-        .preview-page { background: white; width: 210mm; min-height: 297mm; padding: 2.54cm; box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); text-align: justify; line-height: 1.5; font-size: 14pt; }
+        .preview-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 2.54cm;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            text-align: justify;
+            line-height: 1.5;
+            font-size: 14pt;
+        }
 
         /* INPUT STYLING */
-        .input-group { margin-bottom: 12px; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; }
-        .bg-indigo { background-color: #eef2ff; border-color: #c7d2fe; }
-        .bg-rose { background-color: #fff1f2; border-color: #fecdd3; }
-        .bg-green { background-color: #f0fdf4; border-color: #bbf7d0; }
-        .bg-sky { background-color: #f0f9ff; border-color: #bae6fd; }
+        .input-group {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
 
-        label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 2px; color: #475569; }
-        .input-box { border: 1px solid #94a3b8; padding: 5px; border-radius: 4px; width: 100%; font-size: 13px; font-family: 'Mukta', sans-serif; }
-        .input-box:focus { outline: 2px solid #2563eb; }
+        .bg-indigo {
+            background-color: #eef2ff;
+            border-color: #c7d2fe;
+        }
 
-        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .bg-rose {
+            background-color: #fff1f2;
+            border-color: #fecdd3;
+        }
+
+        .bg-green {
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .bg-sky {
+            background-color: #f0f9ff;
+            border-color: #bae6fd;
+        }
+
+        label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            color: #475569;
+        }
+
+        .input-box {
+            border: 1px solid #94a3b8;
+            padding: 5px;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 13px;
+            font-family: 'Mukta', sans-serif;
+        }
+
+        .input-box:focus {
+            outline: 2px solid #2563eb;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
 
         /* LIST ITEMS */
-        .list-item { background: white; padding: 3px 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 11px; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
-        .del-btn { color: red; font-weight: bold; cursor: pointer; margin-left: 5px; }
+        .list-item {
+            background: white;
+            padding: 3px 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .del-btn {
+            color: red;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 5px;
+        }
 
         /* TABS */
-        .tab-container { position: sticky; top: 0; z-index: 20; background: rgba(255, 255, 255, 0.9); padding: 8px 15px; border-radius: 30px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); backdrop-filter: blur(5px); }
-        .tab-btn { padding: 8px 20px; border-radius: 20px; border: none; background: transparent; font-weight: bold; color: #64748b; cursor: pointer; font-size: 14px; }
-        .tab-active { background-color: #1e40af; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
+        .tab-container {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .tab-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: none;
+            background: transparent;
+            font-weight: bold;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .tab-active {
+            background-color: #1e40af;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
 
         /* BUTTONS */
-        .btn { padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; color: white; font-size: 13px; width: 100%; margin-top: 5px; }
-        .btn:hover { opacity: 0.9; }
-        .btn-blue { background-color: #2563eb; }
-        .btn-dark { background-color: #0f172a; }
-        .btn-add { background-color: #2563eb; color: white; border: none; border-radius: 4px; padding: 0 10px; cursor: pointer; font-weight: bold; }
-        .btn-red { background-color: #ef4444; width: auto; font-size: 11px; padding: 4px 10px; float: right; }
+        .btn {
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-size: 13px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-blue {
+            background-color: #2563eb;
+        }
+
+        .btn-dark {
+            background-color: #0f172a;
+        }
+
+        .btn-add {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-red {
+            background-color: #ef4444;
+            width: auto;
+            font-size: 11px;
+            padding: 4px 10px;
+            float: right;
+        }
 
         /* TABLE */
-        .aadesh-table { width: 100%; border: 1px solid black; border-collapse: collapse; margin-top: 15px; }
-        .aadesh-table td { border: 1px solid black; padding: 10px; vertical-align: top; font-size: 14pt; }
+        .aadesh-table {
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .aadesh-table td {
+            border: 1px solid black;
+            padding: 10px;
+            vertical-align: top;
+            font-size: 14pt;
+        }
 
         /* PRINT MODE */
         @media print {
-            @page { margin: 0.5in 0.5in 0.5in 1.25in; size: A4 portrait; }
-            body { background: white; padding: 0; margin: 0; overflow: visible; height: auto; }
-            .input-panel, .tab-container, button, .no-print { display: none !important; }
-            .main-layout { display: block; height: auto; }
-            .preview-container { display: block; background: white; padding: 0; overflow: visible; }
-            .zoom-wrapper { transform: none; margin: 0; width: 100%; }
-            .preview-page { box-shadow: none; margin: 0; width: 100%; padding: 0; min-height: auto; }
+            @page {
+                margin: 0.5in 0.5in 0.5in 1.25in;
+                size: A4 portrait;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+                overflow: visible;
+                height: auto;
+            }
+
+            .input-panel,
+            .tab-container,
+            button,
+            .no-print {
+                display: none !important;
+            }
+
+            .main-layout {
+                display: block;
+                height: auto;
+            }
+
+            .preview-container {
+                display: block;
+                background: white;
+                padding: 0;
+                overflow: visible;
+            }
+
+            .zoom-wrapper {
+                transform: none;
+                margin: 0;
+                width: 100%;
+            }
+
+            .preview-page {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                padding: 0;
+                min-height: auto;
+            }
         }
     </style>
 </head>
@@ -86,30 +304,36 @@
             <div class="input-group" style="background:#f8fafc;">
                 <!-- HIDDEN PATRA SANKHYA -->
                 <input type="hidden" id="in_p_s" value="०८२।८३">
-                
+
                 <div class="row-2">
-                    <div><label>च.नं.:</label><input type="text" id="in_c_n" oninput="scheduleUpdate()" placeholder="च.नं." class="input-box"></div>
-                    <div><label>मिति:</label><input type="text" id="in_date" oninput="scheduleUpdate()" placeholder="२०८..." class="input-box"></div>
+                    <div><label>च.नं.:</label><input type="text" id="in_c_n" oninput="scheduleUpdate()"
+                            placeholder="च.नं." class="input-box"></div>
+                    <div><label>मिति:</label><input type="text" id="in_date" oninput="scheduleUpdate()"
+                            placeholder="२०८..." class="input-box"></div>
                 </div>
                 <div class="row-2" style="margin-top:8px;">
-                    <div><label>पद:</label><input type="text" id="in_officer" oninput="scheduleUpdate()" value="भूमि प्रशासन अधिकृत" class="input-box"></div>
-                    <div><label>मिसिल:</label><input type="text" id="in_misil" oninput="scheduleUpdate()" placeholder="नं." class="input-box"></div>
+                    <div><label>पद:</label><input type="text" id="in_officer" oninput="scheduleUpdate()"
+                            value="भूमि प्रशासन अधिकृत" class="input-box"></div>
+                    <div><label>मिसिल:</label><input type="text" id="in_misil" oninput="scheduleUpdate()"
+                            placeholder="नं." class="input-box"></div>
                 </div>
             </div>
 
             <!-- APPLICANT SECTION (ORIGINAL STYLE) -->
             <div class="input-group bg-indigo">
                 <div style="font-weight:bold; color:#3730a3; margin-bottom:8px; font-size:12px;">१. निवेदक</div>
-                
+
                 <div style="display:flex; gap:5px; margin-bottom:8px;">
-                    <input type="text" id="in_app_name" placeholder="निवेदकको नाम" class="input-box" style="font-weight:bold; flex:1;">
-                    <select id="in_rel_type" onchange="updatePlaceholders()" class="input-box" style="width:auto; font-size:11px;">
+                    <input type="text" id="in_app_name" placeholder="निवेदकको नाम" class="input-box"
+                        style="font-weight:bold; flex:1;">
+                    <select id="in_rel_type" onchange="updatePlaceholders()" class="input-box"
+                        style="width:auto; font-size:11px;">
                         <option value="son">छोरा/नाति</option>
                         <option value="daughter">छोरी/नातिनी</option>
                         <option value="wife">पत्नी/बुहारी</option>
                     </select>
                 </div>
-                
+
                 <div class="row-2" style="margin-bottom:8px;">
                     <input type="text" id="in_dist" oninput="scheduleUpdate()" value="सिन्धुपाल्चोक" class="input-box">
                     <input type="text" id="in_addr" placeholder="ठेगाना" class="input-box">
@@ -118,20 +342,23 @@
                     <input type="text" id="in_f" placeholder="बाबु" class="input-box">
                     <input type="text" id="in_gf" placeholder="बाजे" class="input-box">
                 </div>
-                 <button onclick="addApplicant()" class="btn-add" style="padding: 5px 10px;">निवेदक थप्नुहोस्+</button>
+                <button onclick="addApplicant()" class="btn-add" style="padding: 5px 10px;">निवेदक थप्नुहोस्+</button>
 
                 <div id="applicant-list-ui" style="margin-top:5px;"></div>
             </div>
 
             <!-- DECEASED SECTION -->
             <div class="input-group bg-rose">
-                <div style="font-weight:bold; color:#9f1239; margin-bottom:8px; font-size:12px;">२. मृतक / ज.ध. (एक वा धेरै)</div>
+                <div style="font-weight:bold; color:#9f1239; margin-bottom:8px; font-size:12px;">२. मृतक / ज.ध. (एक वा
+                    धेरै)</div>
                 <div class="row-3" style="margin-bottom:5px;">
                     <input type="text" id="in_m_rel" placeholder="नाता" class="input-box">
-                    <input type="text" id="in_m_name" placeholder="मृतकको नाम" class="input-box" style="font-weight:bold;">
+                    <input type="text" id="in_m_name" placeholder="मृतकको नाम" class="input-box"
+                        style="font-weight:bold;">
                     <input type="text" id="in_m_date" placeholder="मृत्यु मिति" class="input-box">
                 </div>
-                <button onclick="addDeceased()" class="btn btn-dark" style="background:#be123c; padding:5px;">+ मृतक थप्नुहोस्</button>
+                <button onclick="addDeceased()" class="btn btn-dark" style="background:#be123c; padding:5px;">+ मृतक
+                    थप्नुहोस्</button>
                 <div id="deceased-list-ui" style="margin-top:5px;"></div>
             </div>
 
@@ -144,42 +371,54 @@
                     <input type="text" id="l_kitta" placeholder="कि.नं." class="input-box">
                 </div>
                 <div style="display:flex; gap:8px;">
-                    <button onclick="addLand('same')" class="btn btn-blue" style="padding:5px; font-size:11px;">+ Same VDC</button>
-                    <button onclick="addLand('new')" class="btn btn-dark" style="background:#15803d; padding:5px; font-size:11px;">+ New VDC</button>
+                    <button onclick="addLand('same')" class="btn btn-blue" style="padding:5px; font-size:11px;">+ Same
+                        VDC</button>
+                    <button onclick="addLand('new')" class="btn btn-dark"
+                        style="background:#15803d; padding:5px; font-size:11px;">+ New VDC</button>
                 </div>
                 <div id="land-list-ui" style="margin-top:10px; display:flex; flex-wrap:wrap; gap:5px;"></div>
             </div>
 
             <!-- OTHER DETAILS -->
             <div class="input-group bg-sky">
+                <div>पत्र पठाउने कार्यालय</div>
                 <div class="row-2" style="margin-bottom:8px;">
-                    <input type="text" id="in_t_n" oninput="scheduleUpdate()" value="श्री जिल्ला प्रशासन कार्यालय," class="input-box">
-                    <input type="text" id="in_t_a" oninput="scheduleUpdate()" value="चौतारा, सिन्धुपाल्चोक ।" class="input-box">
+                    <input type="text" id="in_t_n" oninput="scheduleUpdate()" value="श्री जिल्ला प्रशासन कार्यालय,"
+                        class="input-box">
+                    <input type="text" id="in_t_a" oninput="scheduleUpdate()" value="चौतारा, सिन्धुपाल्चोक ।"
+                        class="input-box">
                 </div>
-                <div class="row-3" style="margin-bottom:8px;">
-                    <input type="text" id="in_s_auth" oninput="scheduleUpdate()" placeholder="सिफारिस गर्ने" class="input-box">
+                <div>नामसारीको लागि प्राप्त सिफारिसको विवरण</div>
+                <div class="row-2" style="margin-bottom:8px;">
+                    <input type="text" id="in_local" oninput="scheduleUpdate()" placeholder=" सिफारिस गर्ने स्थानीय तह"
+                        class="input-box">
+
+                    <input type="text" id="in_s_auth" oninput="scheduleUpdate()" placeholder="वडा नं."
+                        class="input-box">
                     <input type="text" id="in_s_ch" oninput="scheduleUpdate()" placeholder="च.नं." class="input-box">
                     <input type="text" id="in_s_date" oninput="scheduleUpdate()" placeholder="मिति" class="input-box">
                 </div>
                 <div class="row-2">
-                    <input type="text" id="in_local" oninput="scheduleUpdate()" placeholder="स्थानीय तह" class="input-box">
-                    <input type="text" id="in_paper" oninput="scheduleUpdate()" value="राष्ट्रिय दैनिक" class="input-box">
+                    <input type="text" id="in_paper" oninput="scheduleUpdate()" value="राष्ट्रिय दैनिक"
+                        class="input-box">
                 </div>
             </div>
 
             <div class="input-group" style="background:#fffbeb; border-color:#fcd34d;">
                 <div class="row-3">
-                    <div><label>उपदफा:</label><input type="text" id="in_upadafa" oninput="scheduleUpdate()" value="१ख" class="input-box"></div>
-                    <div style="grid-column: span 2;"><label>कारण:</label><input type="text" id="in_faraka" oninput="scheduleUpdate()" placeholder="... फरक परेकोले" class="input-box"></div>
+                    <div><label>उपदफा:</label><input type="text" id="in_upadafa" oninput="scheduleUpdate()" value="१ख"
+                            class="input-box"></div>
+                    <div style="grid-column: span 2;"><label>कारण:</label><input type="text" id="in_faraka"
+                            oninput="scheduleUpdate()" placeholder="... फरक परेकोले" class="input-box"></div>
                 </div>
             </div>
-                            <P style="font-size: 10px;"><b>छोरा, छोरी, पति वा पत्नीमा</b> व्यहोरा फरक परेकोमा <b>१ठ</b></P>
+            <P style="font-size: 10px;"><b>छोरा, छोरी, पति वा पत्नीमा</b> व्यहोरा फरक परेकोमा <b>१ठ</b></P>
 
 
             <div style="margin-top:15px; display:grid; gap:8px;">
                 <button onclick="window.print()" class="btn btn-blue">🖨️ सिधै प्रिन्ट (Print)</button>
                 <button onclick="exportAllToWord()" class="btn btn-dark">📄 वर्डमा डाउनलोड (Word)</button>
-                          <br>      <a href="https://fonts.google.com/download?family=Mukta" class="btn"
+                <br> <a href="https://fonts.google.com/download?family=Mukta" class="btn"
                     style="background-color:#475569; text-decoration:none; text-align:center; display:block; margin-top:5px;">
                     📥 फन्ट डाउनलोड (Mukta Font)
                 </a>
@@ -215,12 +454,12 @@
 
         // --- HELPER FUNCTIONS ---
         const toNepali = (num) => { if (!num && num !== 0) return ""; const n = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९']; return num.toString().replace(/[0-9]/g, s => n[s]); };
-        
-        function nepaliJoin(arr) { 
-            if (!arr.length) return ""; 
-            if (arr.length === 1) return arr[0]; 
-            const last = arr.pop(); 
-            return arr.join(', ') + ' र ' + last; 
+
+        function nepaliJoin(arr) {
+            if (!arr.length) return "";
+            if (arr.length === 1) return arr[0];
+            const last = arr.pop();
+            return arr.join(', ') + ' र ' + last;
         }
 
         function scheduleUpdate() { clearTimeout(debounceTimer); debounceTimer = setTimeout(() => { updateAll(); saveToLocal(); }, 300); }
@@ -273,15 +512,15 @@
             const name = document.getElementById('in_m_name').value.trim();
             const rel = document.getElementById('in_m_rel').value.trim();
             const date = document.getElementById('in_m_date').value.trim();
-            
+
             if (!name) return;
             deceasedList.push({ name, rel, date });
-            
+
             document.getElementById('in_m_name').value = "";
             document.getElementById('in_m_rel').value = "";
             document.getElementById('in_m_date').value = "";
             document.getElementById('in_m_name').focus();
-            
+
             renderDeceasedUI(); scheduleUpdate();
         }
 
@@ -299,18 +538,18 @@
             const vdc = document.getElementById('l_vdc').value;
             const ward = document.getElementById('l_ward').value;
             const kitta = toNepali(document.getElementById('l_kitta').value.trim());
-            
+
             if (!kitta) return;
             let loc = lands.find(l => l.vdc === vdc && l.ward === ward);
             if (loc) { loc.kittas.push(kitta); } else { lands.push({ vdc, ward, kittas: [kitta] }); }
-            
+
             document.getElementById('l_kitta').value = "";
-            if (type === 'new') { 
-                document.getElementById('l_vdc').value = ""; 
-                document.getElementById('l_ward').value = ""; 
-                document.getElementById('l_vdc').focus(); 
-            } else { 
-                document.getElementById('l_kitta').focus(); 
+            if (type === 'new') {
+                document.getElementById('l_vdc').value = "";
+                document.getElementById('l_ward').value = "";
+                document.getElementById('l_vdc').focus();
+            } else {
+                document.getElementById('l_kitta').focus();
             }
             renderLandUI(); scheduleUpdate();
         }
@@ -374,7 +613,7 @@
             if (d.applicants.length > 0) {
                 district = d.applicants[0].dist;
                 address = d.applicants[0].addr; // Take first address as primary
-                
+
                 d.applicants.forEach(app => {
                     let key = "";
                     if (app.relType === 'wife') {
@@ -424,21 +663,21 @@
             return { district, address, applicantFullDesc, applicantNamesOnly, deathReason, deceasedNames, ownerGrammar, landGrammar, landText };
         }
 
-function updateAll() {
-    const d = getData();
-    const t = generateTexts(d);
+        function updateAll() {
+            const d = getData();
+            const t = generateTexts(d);
 
-    // 1. Fetch Global Settings
-    const settings = JSON.parse(localStorage.getItem('global_office_settings')) || {
-        gov: "नेपाल सरकार",
-        ministry: "भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय",
-        dept: "भूमि व्यवस्थापन तथा अभिलेख विभाग",
-        office: "भूमि प्रशासन कार्यालय",
-        addr: "चौतारा, सिन्धुपाल्चोक",
-        def_dist: "सिन्धुपाल्चोक"
-    };
+            // 1. Fetch Global Settings
+            const settings = JSON.parse(localStorage.getItem('global_office_settings')) || {
+                gov: "नेपाल सरकार",
+                ministry: "भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय",
+                dept: "भूमि व्यवस्थापन तथा अभिलेख विभाग",
+                office: "भूमि प्रशासन कार्यालय",
+                addr: "चौतारा, सिन्धुपाल्चोक",
+                def_dist: "सिन्धुपाल्चोक"
+            };
 
-    const letterhead = `
+            const letterhead = `
         <table style="width: 100%; border-bottom: 2px double black; margin-bottom: 15px; border-collapse: collapse; border: none;">
             <tr>
                 <td style="width: 15%; text-align: left; vertical-align: top; border: none;">
@@ -456,17 +695,17 @@ function updateAll() {
             </tr>
         </table>`;
 
-    // Updated with settings.def_dist
-    const commonBody = `यसमा ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${t.deathReason} ${t.ownerGrammar} नाममा दर्ता रहेको ${settings.def_dist} जिल्ला ${t.landText} ${t.landGrammar} नामसारी गरिपाउन निवेदन गरेकोमा ${t.ownerGrammar} शेषपछिका हकवाला ${t.applicantNamesOnly}को नाममा नामसारी गरिदिन ${d.sa}को च.नं. ${d.sc} मिति ${d.sd} को सिफारिसबाट लेखि आएको ।${d.frk}`;
+            // Updated with settings.def_dist
+            const commonBody = `यसमा ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${t.deathReason} ${t.ownerGrammar} नाममा दर्ता रहेको ${settings.def_dist} जिल्ला ${t.landText} ${t.landGrammar} नामसारी गरिपाउन निवेदन गरेकोमा ${t.ownerGrammar} शेषपछिका हकवाला ${t.applicantNamesOnly}को नाममा नामसारी गरिदिन ${d.loc} ${d.sa} नं. वडा कार्यालयको च.नं. ${d.sc} मिति ${d.sd} को सिफारिसबाट लेखि आएको ।${d.frk}`;
 
-    const aadeshBody = `${commonBody} भूमि प्रशासन निर्देशिका, २०८१ को दफा १९९ को उपदफा ${d.upadafa} बमोजिम थप प्रमाण बुझ्नुपर्ने देखियो । अतः उल्लिखित कित्ता जग्गाको हकभोग कसले गरेको छ ? निवेदकको माग बमोजिम नामसारी गरिदिँदा कोही कसैको हकभोगमा प्रतिकूल असर पर्छ/पर्दैन? यस अघि कोही कसैले नामसारी सम्बन्धमा यस कार्यालयबाट कार्यवाही चलाएको छ/छैन? लगायतका उल्लिखित सम्पूर्ण व्यहोरा खुलाई हकदावी सम्बन्धमा ३५ दिने सार्वजानिक सूचना मुलुकी देवानी कार्यविधि संहिता, २०७४ को दफा २८२ बमोजिम ${d.papr}मा समेत प्रकाशित गर्नू । सूचनाको म्यादभित्र दावि परे मिसिल सामेल गरि र नपरे म्याद भुक्तान भएपछि सूचना प्रकाशित भएको पत्रिका र सूचना टाँसको जानकारी समेत मिसिल सामेल गरी पेश गर्नू ।`;
+            const aadeshBody = `${commonBody} भूमि प्रशासन निर्देशिका, २०८१ को दफा १९९ को उपदफा ${d.upadafa} बमोजिम थप प्रमाण बुझ्नुपर्ने देखियो । अतः उल्लिखित कित्ता जग्गाको हकभोग कसले गरेको छ ? निवेदकको माग बमोजिम नामसारी गरिदिँदा कोही कसैको हकभोगमा प्रतिकूल असर पर्छ/पर्दैन? यस अघि कोही कसैले नामसारी सम्बन्धमा यस कार्यालयबाट कार्यवाही चलाएको छ/छैन? लगायतका उल्लिखित सम्पूर्ण व्यहोरा खुलाई हकदावी सम्बन्धमा ३५ दिने सार्वजानिक सूचना मुलुकी देवानी कार्यविधि संहिता, २०७४ को दफा २८२ बमोजिम ${d.papr}मा समेत प्रकाशित गर्नू । सूचनाको म्यादभित्र दावि परे मिसिल सामेल गरि र नपरे म्याद भुक्तान भएपछि सूचना प्रकाशित भएको पत्रिका र सूचना टाँसको जानकारी समेत मिसिल सामेल गरी पेश गर्नू ।`;
 
-    const suchanaBody = `${commonBody} मृतक ज.ध.को स्याहार सम्भार काजकिरिया गर्ने कोही व्यक्ति वा अरू कानूनी हकवाला भए यो सूचना प्रकाशित भएको मितिले ३५ दिनभित्र आफूसँग भएको सबुत प्रमाणहरू संलग्न राखी आफैं वा वारेस मार्फत दावी/उजुरी गर्न आउनुहोला/हकदावी गर्नुहोला । म्याद नाघी आएको दावी/उजुरी उपर कुनै कार्यवाही नहुने र नियमानुसार भई जाने व्यहोरा समेत यसै सूचनाद्वारा जानकारी गराइन्छ ।`;
+            const suchanaBody = `${commonBody} मृतक ज.ध.को स्याहार सम्भार काजकिरिया गर्ने कोही व्यक्ति वा अरू कानूनी हकवाला भए यो सूचना प्रकाशित भएको मितिले ३५ दिनभित्र आफूसँग भएको सबुत प्रमाणहरू संलग्न राखी आफैं वा वारेस मार्फत दावी/उजुरी गर्न आउनुहोला/हकदावी गर्नुहोला । म्याद नाघी आएको दावी/उजुरी उपर कुनै कार्यवाही नहुने र नियमानुसार भई जाने व्यहोरा समेत यसै सूचनाद्वारा जानकारी गराइन्छ ।`;
 
-    let bodyHtml = "";
+            let bodyHtml = "";
 
-    if (currentView === 'aadesh') {
-        bodyHtml = `${letterhead}
+            if (currentView === 'aadesh') {
+                bodyHtml = `${letterhead}
         <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin-bottom:15px; margin-top:20px;">${d.off}बाट जारी भएको हकदावी सम्बन्धी आदेश</div>
         <table class="aadesh-table">
             <tr>
@@ -474,43 +713,43 @@ function updateAll() {
                 <td style="font-size: 14pt; text-align: justify;">${aadeshBody}</td>
             </tr>
         </table>`;
-    } else if (currentView === 'suchana') {
-        bodyHtml = `${letterhead}
+            } else if (currentView === 'suchana') {
+                bodyHtml = `${letterhead}
         <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin-bottom:10px; margin-top:20px;">हकदावी सम्बन्धी ३५ दिने सार्वजनिक सूचना</div>
         <div style="text-align:center; font-weight:bold; text-decoration:none; font-size:14pt; margin-bottom:10px; margin-top:20px;">मितिः ${d.dt}</div>
         <div style="font-size: 14pt; text-indent: 50px; text-align: justify;">${suchanaBody}</div>`;
-    } else {
-        bodyHtml = `${letterhead}
+            } else {
+                bodyHtml = `${letterhead}
         <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14pt;"><div>पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</div><div style="padding-top:20px;">मिति: ${d.dt}</div></div>
         <div style="text-align:center; font-weight:bold; margin-bottom:15px; font-size:16pt;">विषय: सूचना टाँस गरी जानकारी पठाइदिने सम्बन्धमा ।</div>
         <div style="font-weight:bold; margin-bottom:10px; font-size:14pt;">${d.tn}<br>${d.ta}</div>
         <p style="text-indent: 50px; font-size: 14pt; margin-bottom: 10px; text-align: justify;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले मृतक ज.ध. ${t.deceasedNames}को नाममा रहेको जग्गा नामसारी गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
         <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14pt; border:none;">
           <tr><td style="width:60%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;"><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br></td><td style="width:40%; vertical-align:top; text-align:right; border:none;"><table align="right" cellpadding="0" cellspacing="0" style="width:220px;"><tr><td style="font-weight:bold; text-align:center;">.........................<br>${d.off}</td></tr></table></td></tr>
-          <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.sa}, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ............${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
+          <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.loc} ${d.sa} नं. वडा कार्यालय, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ............${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
         </table>`;
-    }
-    document.getElementById('dynamic_body').innerHTML = bodyHtml;
-}
+            }
+            document.getElementById('dynamic_body').innerHTML = bodyHtml;
+        }
         // --- WORD EXPORT ---
-async function exportAllToWord() {
-    const d = getData();
-    const t = generateTexts(d);
-    
-    // Fetch Settings
-    const settings = JSON.parse(localStorage.getItem('global_office_settings')) || {
-        gov: "नेपाल सरकार",
-        ministry: "भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय",
-        dept: "भूमि व्यवस्थापन तथा अभिलेख विभाग",
-        office: "भूमि प्रशासन कार्यालय",
-        addr: "चौतारा, सिन्धुपाल्चोक",
-        def_dist: "सिन्धुपाल्चोक"
-    };
+        async function exportAllToWord() {
+            const d = getData();
+            const t = generateTexts(d);
 
-    const commonBody = `यसमा ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${t.deathReason} ${t.ownerGrammar} नाममा दर्ता रहेको ${settings.def_dist} जिल्ला ${t.landText} ${t.landGrammar} नामसारी गरिपाउन निवेदन गरेकोमा ${t.ownerGrammar} शेषपछिका हकवाला ${t.applicantNamesOnly}को नाममा नामसारी गरिदिन ${d.sa}को च.नं. ${d.sc} मिति ${d.sd} को सिफारिसबाट लेखि आएको ।${d.frk}`;
-    
-    // Clean Header with valid Image Tag
-    const headerHTML = `
+            // Fetch Settings
+            const settings = JSON.parse(localStorage.getItem('global_office_settings')) || {
+                gov: "नेपाल सरकार",
+                ministry: "भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय",
+                dept: "भूमि व्यवस्थापन तथा अभिलेख विभाग",
+                office: "भूमि प्रशासन कार्यालय",
+                addr: "चौतारा, सिन्धुपाल्चोक",
+                def_dist: "सिन्धुपाल्चोक"
+            };
+
+            const commonBody = `यसमा ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${t.deathReason} ${t.ownerGrammar} नाममा दर्ता रहेको ${settings.def_dist} जिल्ला ${t.landText} ${t.landGrammar} नामसारी गरिपाउन निवेदन गरेकोमा ${t.ownerGrammar} शेषपछिका हकवाला ${t.applicantNamesOnly}को नाममा नामसारी गरिदिन ${d.loc} ${d.sa} नं. वडा कार्यालयको च.नं. ${d.sc} मिति ${d.sd} को सिफारिसबाट लेखि आएको ।${d.frk}`;
+
+            // Clean Header with valid Image Tag
+            const headerHTML = `
     <table style="width:100%; border:none; border-bottom: 2px double black; margin-bottom: 10px;">
         <tr>
             <td width="15%" style="border:none; vertical-align:top;">
@@ -527,34 +766,34 @@ async function exportAllToWord() {
         </tr>
     </table>`;
 
-    const contentAadesh = `
+            const contentAadesh = `
     <p style="text-align:center; font-weight:bold; text-decoration:underline; font-size:14pt; margin-top:20px;">${d.off}बाट जारी भएको हकदावी सम्बन्धी आदेश</p>
     <table style="width:100%; border-collapse:collapse; border:1px solid black; font-size:14pt;">
         <tr>
             <td style="width:25%; border:1px solid black; padding:10px; vertical-align:top;"><b>निवेदक:</b><br>${t.applicantNamesOnly}<br><br><b>मिति:</b> ${d.dt}<br><b>मि.नं.:</b> ${d.mis}</td>
             <td style="border:1px solid black; padding:10px; text-align:justify;">
-                यसमा ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${t.deathReason} ${t.ownerGrammar} नाममा दर्ता रहेको ${settings.def_dist} जिल्ला ${t.landText} ${t.landGrammar} नामसारी गरिपाउन निवेदन गरेकोमा ${t.ownerGrammar} शेषपछिका हकवाला ${t.applicantNamesOnly}को नाममा नामसारी गरिदिन ${d.sa}को च.नं. ${d.sc} मिति ${d.sd} को सिफारिसबाट लेखि आएको ।${d.frk} भूमि प्रशासन निर्देशिका, २०८१ को दफा १९९ को उपदफा ${d.upadafa} बमोजिम थप प्रमाण बुझ्नुपर्ने देखियो । अतः उल्लिखित कित्ता जग्गाको हकभोग कसले गरेको छ ? निवेदकको माग बमोजिम नामसारी गरिदिँदा कोही कसैको हकभोगमा प्रतिकूल असर पर्छ/पर्दैन? यस अघि कोही कसैले नामसारी सम्बन्धमा यस कार्यालयबाट कार्यवाही चलाएको छ/छैन? लगायतका उल्लिखित सम्पूर्ण व्यहोरा खुलाई हकदावी सम्बन्धमा ३५ दिने सार्वजानिक सूचना मुलुकी देवानी कार्यविधि संहिता, २०७४ को दफा २८२ बमोजिम ${d.papr}मा समेत प्रकाशित गर्नू । सूचनाको म्यादभित्र दावि परे मिसिल सामेल गरि र नपरे म्याद भुक्तान भएपछि सूचना प्रकाशित भएको पत्रिका र सूचना टाँसको जानकारी समेत मिसिल सामेल गरी पेश गर्नू ।
+                यसमा ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${t.deathReason} ${t.ownerGrammar} नाममा दर्ता रहेको ${settings.def_dist} जिल्ला ${t.landText} ${t.landGrammar} नामसारी गरिपाउन निवेदन गरेकोमा ${t.ownerGrammar} शेषपछिका हकवाला ${t.applicantNamesOnly}को नाममा नामसारी गरिदिन ${d.loc} ${d.sa} नं. वडा कार्यालयको च.नं. ${d.sc} मिति ${d.sd} को सिफारिसबाट लेखि आएको ।${d.frk} भूमि प्रशासन निर्देशिका, २०८१ को दफा १९९ को उपदफा ${d.upadafa} बमोजिम थप प्रमाण बुझ्नुपर्ने देखियो । अतः उल्लिखित कित्ता जग्गाको हकभोग कसले गरेको छ ? निवेदकको माग बमोजिम नामसारी गरिदिँदा कोही कसैको हकभोगमा प्रतिकूल असर पर्छ/पर्दैन? यस अघि कोही कसैले नामसारी सम्बन्धमा यस कार्यालयबाट कार्यवाही चलाएको छ/छैन? लगायतका उल्लिखित सम्पूर्ण व्यहोरा खुलाई हकदावी सम्बन्धमा ३५ दिने सार्वजानिक सूचना मुलुकी देवानी कार्यविधि संहिता, २०७४ को दफा २८२ बमोजिम ${d.papr}मा समेत प्रकाशित गर्नू । सूचनाको म्यादभित्र दावि परे मिसिल सामेल गरि र नपरे म्याद भुक्तान भएपछि सूचना प्रकाशित भएको पत्रिका र सूचना टाँसको जानकारी समेत मिसिल सामेल गरी पेश गर्नू ।
             </td>
         </tr>
     </table>`;
 
-    const contentSuchana = `
+            const contentSuchana = `
     <p style="text-align:center; font-weight:bold; font-size:16pt; text-decoration:underline; margin-top:20px;">हकदावी सम्बन्धी ३५ दिने सार्वजनिक सूचना</p>
     <p style="text-align:center; font-weight:bold; font-size:14pt;">मितिः ${d.dt}</p>
     <p style="text-align:justify; font-size:14pt; text-indent:50px;">${commonBody} मृतक ज.ध.को स्याहार सम्भार काजकिरिया गर्ने कोही व्यक्ति वा अरू कानूनी हकवाला भए यो सूचना प्रकाशित भएको मितिले ३५ दिनभित्र आफूसँग भएको सबुत प्रमाणहरू संलग्न राखी आफैं वा वारेस मार्फत दावी/उजुरी गर्न आउनुहोला/हकदावी गर्नुहोला । म्याद नाघी आएको दावी/उजुरी उपर कुनै कार्यवाही नहुने र नियमानुसार भई जाने व्यहोरा समेत यसै सूचनाद्वारा जानकारी गराइन्छ ।</p>`;
 
-    const contentChithi = `
+            const contentChithi = `
     <table style="width:100%; border:none; margin-top:20px; font-size:14pt;">
         <tr><td style="border:none;">पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</td><td style="border:none; text-align:right;">मिति: ${d.dt}</td></tr>
     </table>
     <p style="text-align:center; font-weight:bold; font-size:16pt; margin:15px 0;">विषय: सूचना टाँस गरी जानकारी पठाइदिने सम्बन्धमा ।</p>
     <p style="font-weight:bold; margin-bottom:10px; font-size:14pt;">${d.tn}<br>${d.ta}</p>
     <p style="text-align:justify; text-indent:50px; font-size:14pt;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.district} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले मृतक ज.ध. ${t.deceasedNames}को नाममा रहेको जग्गा नामसारी गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
-    <p><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>२. श्री जिल्ला नापी कार्यालय, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.sa}, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</p>`;
+    <p><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>२. श्री जिल्ला नापी कार्यालय, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. श्री ${d.loc}, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. श्री ${d.loc} ${d.sa} नं. वडा कार्यालय, ${settings.def_dist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ${d.papr}: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</p>`;
 
-    const pageBreak = "<br clear=all style='mso-special-character:line-break; page-break-before:always'>";
-    
-    const fullContent = `
+            const pageBreak = "<br clear=all style='mso-special-character:line-break; page-break-before:always'>";
+
+            const fullContent = `
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
     <head><meta charset='utf-8'><style>
         @page Section1 { size: 8.5in 11in; margin: 1in 0.5in 0.5in 1in; mso-header-margin: 0.5in; mso-header: h1; }
@@ -574,20 +813,20 @@ async function exportAllToWord() {
         </div>
     </body></html>`;
 
-    const blob = new Blob(['\ufeff', fullContent], { type: 'application/msword' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `नामसारी_विवरण.doc`;
-    document.body.appendChild(link); // Required for some browsers
-    link.click();
-    document.body.removeChild(link);
-}
+            const blob = new Blob(['\ufeff', fullContent], { type: 'application/msword' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `नामसारी_विवरण.doc`;
+            document.body.appendChild(link); // Required for some browsers
+            link.click();
+            document.body.removeChild(link);
+        }
 
         // --- LOCAL STORAGE ---
-        function saveToLocal() { 
+        function saveToLocal() {
             // Save inputs
-            const inputs = Array.from(document.querySelectorAll('input, select')).map(i => ({ id: i.id, val: i.value })); 
-            localStorage.setItem('namsari_v4', JSON.stringify({ lands, applicants, deceasedList, inputs })); 
+            const inputs = Array.from(document.querySelectorAll('input, select')).map(i => ({ id: i.id, val: i.value }));
+            localStorage.setItem('namsari_v4', JSON.stringify({ lands, applicants, deceasedList, inputs }));
         }
 
         function loadFromLocal() {
@@ -602,11 +841,11 @@ async function exportAllToWord() {
             } else { updateAll(); }
         }
 
-        function resetData() { 
-            if (confirm("सबै डाटा मेटाउन चाहनुहुन्छ?")) { 
-                localStorage.removeItem('namsari_v4'); 
-                location.reload(); 
-            } 
+        function resetData() {
+            if (confirm("सबै डाटा मेटाउन चाहनुहुन्छ?")) {
+                localStorage.removeItem('namsari_v4');
+                location.reload();
+            }
         }
 
         window.onload = loadFromLocal;
