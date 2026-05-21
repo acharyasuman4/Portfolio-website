@@ -469,6 +469,9 @@ function openSettings() {
     document.getElementById('set_footer').value = data.footer || "";
     document.getElementById('settingsModal').style.display = 'block';
 }
+window.onload = function() {
+    console.log("Settings loaded from: ", window.location.origin);
+};
 
 function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
 

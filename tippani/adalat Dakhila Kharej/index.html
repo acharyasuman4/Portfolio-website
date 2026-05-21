@@ -414,7 +414,7 @@ html, body {
         </div>
 
         <!-- RIGHT: PREVIEW -->
-    <div class="scrollable-column bg-slate-100 py-4">
+    <div class="scrollable-column bg-slate-100">
         <div id="tippani-preview" class="preview-content shadow-xl border border-slate-300 mx-auto">
             <!-- Preview भित्रको हेडर सेक्सन -->
             <div class="office-header" style="position:relative;">
@@ -439,15 +439,15 @@ html, body {
                 </div>
             </div>
 
-            <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin-bottom:5px;">टिप्पणी र
+            <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin-bottom:1px;">टिप्पणी र
                 आदेश</h3>
-            <p style="margin: 5px;">श्रीमान्,</p>
+            <p style="margin: 1px;">श्रीमान्,</p>
             <div id="main_content">
                 <p>
                     <span id="out_app_details">.......</span>ले <span id="out_owners" class="font-bold">.......</span>को
                     नाममा जग्गाधनी श्रेस्ता कायम रहेको
-                    ... कायम रहेको <span class="global-dist">सिन्धुपाल्चोक</span> जिल्ला <span id="out_land_details"
-                        class="font-bold text-green-700">.......</span> को जग्गा ... अदालतबाट भएको <span
+                <span class="global-dist">सिन्धुपाल्चोक</span> जिल्ला <span id="out_land_details"
+                        class="font-bold text-green-700">.......</span> को जग्गा अदालतबाट भएको <span
                         id="out_case_type" class="font-bold">.......</span> मुद्दाको फैसला बमोजिम दा.खा.
                     गरिदिन
                     <span id="out_court_details" class="font-bold text-blue-800">.......</span> को पत्र,
@@ -639,7 +639,7 @@ html, body {
             }
         }
 
-        function resetData() { if (confirm("सबै मेट्न चाहनुहुन्छ?")) { localStorage.clear(); location.reload(); } }
+        function resetData() { if (confirm("सबै मेट्न चाहनुहुन्छ?")) { localStorage.removeItem('court_dakha_v1'); location.reload(); } }
 
         // 2. Applicant / Owner Logic
         function addApplicant() {
@@ -1156,7 +1156,7 @@ html, body {
                     let rev = [];
 
                     if (isSvcPerc) {
-                        const svcAmt = Math.round(maxVal * toEnglish(document.getElementById('svc_perc_val').value) / 100);
+                        const svcAmt = Math.ceil(maxVal * toEnglish(document.getElementById('svc_perc_val').value) / 100);
                         rev.push(`प्रदेश आर्थिक ऐन बमोजिम ${toNepali(document.getElementById('svc_perc_val').value)}% ले रू. ${formatMoneyWithWords(svcAmt)} सेवा शुल्क`);
                     }
                     if (isSvcFixed) {
@@ -1178,13 +1178,13 @@ html, body {
                             });
 
                             const netProfit = maxVal - totalExpAmt;
-                            const taxAmt = Math.round(netProfit * profitPerc / 100);
+                            const taxAmt = Math.ceil(netProfit * profitPerc / 100);
                             const docInfo = document.getElementById('expense_doc_input').value;
                             const expBreakdown = expDetails.length > 1 ? ` (${nepaliJoin(expDetails)})` : "";
 
                             rev.push(`${docInfo} र पुँजीगत लाभको घोषणा फारामको आधारमा रू. ${toNepali(totalExpAmt)}${expBreakdown} खर्च घटाई बाँकी रू. ${formatMoneyWithWords(netProfit)} को ${toNepali(profitPerc)}% ले रू. ${formatMoneyWithWords(taxAmt)} लाभकर`);
                         } else {
-                            const taxAmt = Math.round(maxVal * profitPerc / 100);
+                            const taxAmt = Math.ceil(maxVal * profitPerc / 100);
                             rev.push(`${toNepali(profitPerc)}% ले रू. ${formatMoneyWithWords(taxAmt)} लाभकर`);
                         }
                     }
