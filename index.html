@@ -1,188 +1,229 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ne">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="यो नेपालको गुठी संस्थान र व्यक्तिगत प्रयोगको लागि हो । यो मालपोत कार्यालयहरू विशेष गरी सिन्धुपाल्चोक र अन्य जिल्लाहरूमा उपयुक्त छ जुन सिन्धुपाल्चोकसँग मिल्दोजुल्दो छ।">
-    <meta name="description" content="This is for personal use and for Guthi sansthan of Nepal. This is suitable for Land revenue offices specially Sindhupalchowk and other districts which matched with Sindhupalchowk.">
-    <meta name="keywords" content="Guthi, Suman Acharya, Nepal, Personal Use, official use, Sindhupalchowk">
-    <title>For Guthi + Suman Acharya</title>
+    <title>Suman Acharya Sameer | भूमि प्रशासन पोर्टल</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .header {
-            text-align: center;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .welcome-text {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 100px; /* Increased gap between Welcome Text and Menu Button */
-        }
-
-        .emoji {
-            font-size: 36px;
-        }
-
-        .dropdown-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .dropdown {
-            text-align: center;
-        }
-
-        .dropbtn {
-            padding: 15px;
-            font-size: 18px;
-            background-color: #f9f9f9;
-            border: 2px solid #333; /* Added border for clarity */
-            font-weight: bold; /* Increased font weight for clarity */
-            cursor: pointer;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            min-width: 160px;
-            text-align: center;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 10px;
-            text-decoration: none;
-            color: black;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #ddd;
-        }
-        .header {
-            text-align: center;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .dropdown-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .dropdown {
-            text-align: center;
-        }
-
-        .dropbtn {
-            padding: 15px;
-            font-size: 18px;
-            background-color: #f9f9f9;
-            border: 2px solid #333;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            min-width: 160px;
-            text-align: center;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 10px;
-            text-decoration: none;
-            color: black;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #ddd;
-        }
-
-        #embeddedWebsite {
-            margin-top: 20px;
-        }
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
+        .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .card-box { transition: all 0.3s ease; border: 1px solid #e2e8f0; border-radius: 24px; background: white; }
+        .card-box:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); border-color: #3b82f6; }
+        #readerModal { display: none; }
     </style>
 </head>
+<body class="text-slate-800">
 
-<body>
+    <!-- TOP MINI NAV -->
+    <div class="fixed top-0 right-0 z-[100] p-4">
+        <a href="index.html" class="bg-white/90 backdrop-blur p-2 rounded-full shadow-lg text-blue-600 hover:scale-110 transition flex items-center gap-2 px-4" title="गृहपृष्ठ">
+            <i data-lucide="home" class="w-4"></i> <span class="text-xs font-bold">Home</span>
+        </a>
+    </div>
 
-    <div class="header">
-        <div class="dropdown-container">
-            <div class="dropdown">
-                <button class="dropbtn">Menu</button>
-                <div class="dropdown-content">
-                    <a href="malpot calculator/">मालपोत असुली क्याल्कुलेटर</a>
-                    <a href="kutabali calculator/">कुतबाली असुली क्याल्कुलेटर</a>
-                    <a href="ropani adder/">रोपनी जोड्न</a>
-                    <a href="tippani/index.html">टिप्पणी फर्म्याटहरू</a>
-                    <a href="Registration/">न्युनत्तम मुल्यांकन</a>
-                    <a href="Contact.html">सम्पर्क</a>
-                    <a href="page_1.html">मुक्तक</a>
-                    <a href="page.html">गजल</a>
-                    <a href="https://www.facebook.com/acharyasuman874" target="_blank">Facebook</a>
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- SIDEBAR MENU -->
+        <aside class="w-full md:w-64 bg-slate-900 text-white p-6 flex flex-col md:sticky md:top-0 md:h-screen">
+            <div class="mb-10 border-b border-slate-800 pb-6">
+                <h2 class="text-xl font-bold text-blue-400">Land Administration Tools</h2>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">by: सुमन आचार्य 'समीर' </p>
+            </div>
+            
+            <nav class="space-y-2 flex-1">
+                <a href="#dashboard" class="flex items-center gap-3 p-3 bg-blue-600 rounded-xl text-sm font-medium shadow-lg shadow-blue-900/20"><i data-lucide="layout-dashboard" class="w-4"></i> मुख्य पोर्टल</a>
+                <a href="#laws" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition"><i data-lucide="book-open" class="w-4"></i> ऐन/निर्देशिका</a>
+                <a href="#feedback" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition"><i data-lucide="message-square" class="w-4"></i> सल्लाह सुझाव</a>
+                <a href="https://acharyasuman4.com.np/page.html" target="_blank" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-rose-400 transition italic border-t border-slate-800 mt-4" style="bottom: 5px;"><i data-lucide="feather" class="w-4"></i> सिर्जना पढ्ने? </a>
+            </nav>
+
+            <!-- Social Links -->
+<!-- Social Links -->
+<div class="flex justify-between items-center pt-6 border-t border-slate-800">
+    <a href="https://facebook.com/acharyasuman874" target="_blank" class="text-slate-500 hover:text-blue-500 transition-colors">
+        <i data-lucide="facebook" class="w-5 h-5"></i>
+    </a>
+    <a href="https://youtube.com/@04.sumanac" target="_blank" class="text-slate-500 hover:text-red-500 transition-colors">
+        <i data-lucide="youtube" class="w-5 h-5"></i>
+    </a>
+    <a href="https://tiktok.com/@04suman" target="_blank" class="text-slate-500 hover:text-white transition-colors">
+        <!-- Using 'music' as Lucide's TikTok alternative -->
+        <i data-lucide="music" class="w-5 h-5"></i>
+    </a>
+    <a href="mailto:acharyasuman874@gmail.com" class="text-slate-500 hover:text-blue-300 transition-colors">
+        <i data-lucide="mail" class="w-5 h-5"></i>
+    </a>
+</div>        </aside>
+
+        <!-- MAIN AREA -->
+        <div class="flex-1 overflow-x-hidden">
+            <header class="hero-bg text-white py-20 px-6 text-center">
+                <h1 class="text-3xl md:text-5xl font-bold mb-8 font-mukta">भूमि प्रशासन सहयोगी पोर्टल</h1>
+                
+                <div class="relative max-w-2xl mx-auto">
+                    <div class="flex bg-white rounded-2xl shadow-2xl overflow-hidden">
+                        <span class="flex items-center px-4 text-slate-400"><i data-lucide="search"></i></span>
+                        <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="नामसारी, टिप्पणी,..." class="w-full p-4 text-slate-900 outline-none">
+                    </div>
+                    <div id="searchSuggestions" class="absolute w-full bg-white mt-2 rounded-xl shadow-2xl text-slate-900 text-left z-50 hidden border overflow-hidden">
+                        <!-- JS suggestions -->
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-6 md:p-12 max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                    
+                    <!-- Registration Card -->
+                    <a href="Registration/" class="card-box p-6 group">
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                            <i data-lucide="file-check"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-1">रजिष्ट्रेशन</h3>
+                        <p class="text-xs text-slate-500">न्युनत्तम मुल्याङ्कन हिसाव गर्नुहोस</p>
+                    </a>
+
+                    <!-- Guthi Card (Two links) -->
+                    <div class="card-box p-6">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
+                            <i data-lucide="landmark"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">गुठी तिरो क्याल्कुलेटर</h3>
+                        <div class="space-y-2 text-sm">
+                            <a href="malpot calculator/" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition"><i data-lucide="chevron-right" class="w-3"></i> मालपोत असुली क्याल्कुलेटर</a>
+                            <a href="kutabali calculator/" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition"><i data-lucide="chevron-right" class="w-3"></i> कुतबाली असुली क्याल्कुलेटर</a>
+                        </div>
+                    </div>
+
+                    <!-- Tippani Card (Full clickable) -->
+                    <a href="tippani/" class="card-box p-6 group border-orange-100">
+                        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+                            <i data-lucide="clipboard-edit"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-1">टिप्पणी, सूचना र आदेशहरू तयार गरि प्रिन्ट गर्न सहयोगी टुल</h3>
+                        <!-- <p class="text-xs text-slate-500 italic">नमुना ड्राफ्टहरू हेर्नुहोस्</p> -->
+                    </a>
+
+                    <!-- Ropani Adder -->
+                    <a href="ropani adder/" class="card-box p-6 group border-indigo-100 bg-indigo-50/10">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                            <i data-lucide="plus-circle"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-1">रोपनी एडर</h3>
+                        <p class="text-xs text-slate-500">वर्ग मि. र रोपनी आना पैसा दामको क्षेत्रफल जोड्न तथा कन्भर्ट गर्न सहयोगी टुल</p>
+                    </a>
+                </div>
+
+                <!-- LAWS SECTION with READER -->
+                <div id="laws" class="mb-20">
+                    <h2 class="text-2xl font-bold mb-8 flex items-center gap-3"><i data-lucide="shield-check" class="text-blue-600"></i> ऐन तथा निर्देशिकाहरू</h2>
+                    <div class="bg-white rounded-[2rem] border overflow-hidden shadow-sm">
+                        <div class="grid grid-cols-1 divide-y">
+                            <!-- Law Row -->
+                            <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-4 hover:bg-slate-50 transition">
+                                <div class="font-bold text-slate-700">भूमि प्रशासन निर्देशिका</div>
+                                <div class="flex gap-2">
+                                    <button onclick="openReader('https://dolma.gov.np/uploads/document/1774433920%E0%A4%AD%E0%A5%82%E0%A4%AE%E0%A4%BF%20%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%B6%E0%A4%BE%E0%A4%B8%E0%A4%A8%20%E0%A4%A8%E0%A4%BF%E0%A4%B0%E0%A5%8D%E0%A4%A6%E0%A5%87%E0%A4%B6%E0%A4%BF%E0%A4%95%E0%A4%BE%20%E0%A4%A4%E0%A5%87%E0%A4%B8%E0%A5%8D%E0%A4%B0%E0%A5%8B%20%E0%A4%B8%E0%A4%82%E0%A4%B8%E0%A5%8B%E0%A4%A7%E0%A4%A8%20%E0%A4%B8%E0%A4%B9%E0%A4%BF%E0%A4%A4%20%E0%A5%A8%E0%A5%A6%E0%A5%AE%E0%A5%A7.pdf')" class="px-6 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-blue-700">Read</button>
+                                    <a href="#" class="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition text-slate-500"><i data-lucide="download" class="w-4"></i></a>
+                                </div>
+                            </div>
+                            <!-- Law Row -->
+                            <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-4 hover:bg-slate-50 transition">
+                                <div class="font-bold text-slate-700">मालपोत ऐन, २०३४</div>
+                                <div class="flex gap-2">
+                                    <button onclick="openReader('https://giwmscdnone.gov.np/media/pdf_upload/%E0%A4%AE%E0%A4%BE%E0%A4%B2%E0%A4%AA%E0%A5%8B%E0%A4%A4%20%E0%A4%90%E0%A4%A8%2C%20%E0%A5%A8%E0%A5%A6%E0%A5%A9%E0%A5%AA_25s83hg.pdf')" class="px-6 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-blue-700">Read</button>
+                                    <a href="https://lawcommission.gov.np/np/archives/12555/download-file" class="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition text-slate-500"><i data-lucide="download" class="w-4"></i></a>
+                                </div>
+                            </div>
+                            <!-- Law Row -->
+                            <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-4 hover:bg-slate-50 transition">
+                                <div class="font-bold text-slate-700">मुलुकी देवानी संहिता, २०७४</div>
+                                <div class="flex gap-2">
+                                    <button onclick="openReader('https://giwmscdnone.gov.np/media/pdf_upload/%E0%A4%AE%E0%A5%81%E0%A4%B2%E0%A5%81%E0%A4%95%E0%A5%80-%E0%A4%A6%E0%A5%87%E0%A4%B5%E0%A4%BE%E0%A4%A8%E0%A5%80-%E0%A4%B8%E0%A4%82%E0%A4%B9%E0%A4%BF%E0%A4%A4%E0%A4%BE-%E0%A4%90%E0%A4%A8-%E0%A5%A8%E0%A5%A6%E0%A5%AD%E0%A5%AA_zpq6wk7.pdf')" class="px-6 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-blue-700">Read</button>
+                                    <a href="https://lawcommission.gov.np/np/archives/14777/download-file" class="p-2 bg-slate-100 rounded-xl hover:bg-slate-200 transition text-slate-500"><i data-lucide="download" class="w-4"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FEEDBACK FORM -->
+                <div id="feedback" class="bg-slate-900 rounded-[3rem] p-10 md:p-16 text-white text-center">
+                    <h2 class="text-3xl font-bold mb-4">सल्लाह सुझाव दिनुहोस्</h2>
+                    <p class="text-slate-400 mb-8 max-w-md mx-auto">तपाईंको सुझावको सदैव अपेक्षारत छु।</p>
+                    <form action="https://formspree.io/f/acharyasuman874@gmail.com" method="POST" class="max-w-xl mx-auto space-y-4 text-left">
+                        <input type="text" name="Name" placeholder="तपाईंको नाम" class="w-full p-4 rounded-2xl bg-slate-800 border-none outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <textarea name="Message" rows="4" placeholder="सुझाव यहाँ लेख्नुहोस्..." class="w-full p-4 rounded-2xl bg-slate-800 border-none outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                        <button class="w-full py-4 bg-blue-600 rounded-2xl font-bold shadow-xl shadow-blue-900/50 hover:bg-blue-700 transition">पठाउनुहोस्</button>
+                    </form>
                 </div>
             </div>
-            <div class="welcome-text"></div>
 
-            <div class="emoji">लौ, स्वागत छ है 😍<br>🌟</div>
+            <!-- FOOTER -->
+            <footer class="py-12 border-t mt-12 bg-white text-center">
+                <p class="font-bold text-slate-800">Suman Acharya Sameer</p>
+                <p class="text-[10px] text-slate-400 mt-2 uppercase tracking-widest">Designed by : Suman Acharya Sameer (Using AI)</p>
+            </footer>
         </div>
     </div>
 
-    <!-- Embedded Website Container -->
-    <div id="embeddedWebsite"></div>
+    <!-- INTERNAL READER MODAL -->
+    <div id="readerModal" class="fixed inset-0 z-[200] bg-black/90 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-6xl h-[92vh] rounded-[2rem] overflow-hidden flex flex-col relative shadow-2xl">
+            <div class="flex justify-between items-center bg-slate-100 p-4 border-b">
+                <span class="text-xs font-bold text-slate-500 uppercase">Internal Reading Room</span>
+                <button onclick="closeReader()" class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition"><i data-lucide="x" class="w-5"></i></button>
+            </div>
+            <iframe id="readerFrame" src="" class="w-full h-full border-none"></iframe>
+        </div>
+    </div>
 
-    <!-- JavaScript function to redirect to external websites -->
     <script>
-        function redirectTo(url) {
-            window.open(url, '_blank');
+        // SEARCH DATABASE
+        const pages = [
+            { name: "नामसारी टिप्पणी", link: "https://acharyasuman4.com.np/namsari" },
+            { name: "रजिष्ट्रेशन न्युनत्तम मुल्याङ्कन", link: "https://acharyasuman4.com.np/registration" },
+            { name: "जग्गा दर्ता", link: "https://acharyasuman4.com.np/jagga-darta" },
+            { name: "संशोधन", link: "https://acharyasuman4.com.np/sansodhan" },
+            { name: "मालपोत ऐन", link: "#laws" }
+        ];
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const box = document.getElementById('searchSuggestions');
+            box.innerHTML = '';
+            if(query.length < 1) { box.classList.add('hidden'); return; }
+            
+            const results = pages.filter(p => p.name.includes(query));
+            if(results.length > 0) {
+                box.classList.remove('hidden');
+                results.forEach(r => {
+                    const d = document.createElement('div');
+                    d.className = "p-4 border-b hover:bg-blue-50 cursor-pointer font-bold text-sm";
+                    d.innerHTML = `📄 ${r.name}`;
+                    d.onclick = () => window.location.href = r.link;
+                    box.appendChild(d);
+                });
+            } else { box.classList.add('hidden'); }
         }
-        document.addEventListener('contextmenu', event => event.preventDefault());
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-    e.preventDefault();
-  }
-});
-document.addEventListener('keydown', function(event) {
-    // Check if Ctrl (or Command for Mac) and U keys are pressed
-    if ((event.ctrlKey || event.metaKey) && event.key === 'u') {
-        event.preventDefault();
-        alert('Viewing source is disabled on this page.');
-    }
-});
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js");
-}
+        // READER CONTROL
+        function openReader(url) {
+            document.getElementById('readerFrame').src = url;
+            document.getElementById('readerModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeReader() {
+            document.getElementById('readerModal').style.display = 'none';
+            document.getElementById('readerFrame').src = '';
+            document.body.style.overflow = 'auto';
+        }
 
-
+    document.addEventListener("DOMContentLoaded", function() {
+        lucide.createIcons();
+    });
     </script>
 </body>
-
 </html>
