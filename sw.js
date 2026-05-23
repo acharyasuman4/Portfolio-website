@@ -52,3 +52,81 @@ self.addEventListener("fetch", event => {
       })
   );
 });
+
+const CACHE_NAME = 'malpot-guthicalc-v1';
+
+// Resources to cache immediately when the app is first opened online
+const ASSETS_TO_CACHE = [
+  '/',                          // Home/Index page
+  '/malpot-calculator',         // This calculator page (adjust URL if different)
+  '/ropani adder/',             // The page loaded inside your iframe
+  
+  // External CDN assets
+  'https://cdn.tailwindcss.com',
+  'https://fonts.googleapis.com/css2?family=Mukta:wght=300;400;600;700&display=swap',
+  'https://unpkg.com/lucide@latest'
+];
+
+// 1. Install Event: Prepare cache and store initial assets
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      // Use addAll to cache vital static resources
+      return cache.addAll(ASSETS_TO_CACHE).catch(err => {
+        console.warn('Some static assets failed to precache during install. They will be fetched and cached dynamically.', err);
+      });
+    })
+  );
+  self.skipWaiting();
+});
+
+// 2. Activate Event: Clean up old caches if updated
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
+  self.clients.claim();
+});
+
+// 3. Fetch Event: Intercept network requests
+// Strategy: Network-first falling back to Cache, but caching successful new requests dynamically
+self.addEventListener('fetch', (event) => {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith(
+    fetch(event.request)
+      .then((networkResponse) => {
+        // If the response is valid, clone it and put it in cache
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // If the network fails (offline), try to serve from local cache
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // Fallback if resource is completely missing from cache
+          return new Response('You are offline, and this resource was not cached yet.', {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: new Headers({ 'Content-Type': 'text/html' })
+          });
+        });
+      })
+  );
+});

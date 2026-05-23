@@ -1,0 +1,21 @@
+{
+  "short_name": "Guthi Calc",
+  "name": "गुठी मालपोत असुली क्याल्कुलेटर",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+"start_url": "/malpot-calculator?utm_source=pwa&utm_medium=app",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "display": "standalone",
+  "orientation": "portrait"
+}

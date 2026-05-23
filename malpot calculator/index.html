@@ -1,299 +1,100 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ne">
 <head>
-    <title>मालपोत असुली क्याल्कुलेटर - गुठी</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta
-        name="गुठी संस्थान र मालपोत कार्यालयले (गुठीको कार्यालय नभएको ठाउँमा) लिने गुठी रैतानी नंवरी जग्गाको तिरोको हिसाब निकाल्न यसको डिजाइन गरिएको छ(This is designed to calculate land tax of guthi raitani nambari land which used to taken by guthi sansthan and land revenue office incase there is no guthi office)"
-        content="यसबाट गाउँपालिका र नगरपालिकाको गुठी रैतानी नंबरी जग्गाको गुठि संस्थानले निर्धारण गरेबमोजिमको तिरो (मालपोत असुली) कति आउँछ भनि अनुमानित हिसाब निकाल्न सक्नुहुन्छ ।
-    (You can calculate the land tax of guthi raitani numbari land of rural municipality and municipality of Nepal)">
+    <title>मालपोत असुली क्याल्कुलेटर - गुठी</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="manifest" href="/manifest.json">
+    
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 8px;
-            background-color: #f4f4f4;
-            color: #333;
-            font-size: 25px
-        }
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
+        .sidebar-link:hover { background-color: #1e293b; color: #3b82f6; }
+.calc-input {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #f1f5f9; /* slate-100 */
+    border: 1px solid #cbd5e1; /* slate-300 */
+    border-radius: 0.75rem;    /* rounded-xl */
+    font-weight: 700;
+    font-size: 1.125rem;       /* text-lg */
+    outline: none;
+    transition: all 0.2s;
+}
 
-        body {
-            font-size: 16px;
-        }
-
-        #calculator {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #b9cacd;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            color: #0893ca;
-            text-align: center;
-            background-color: #aedfc1;
-        }
-
-        label,
-        select,
-        input {
-            width: 30%;
-            padding: 10px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            font-size: large;
-        }
-
-        input,
-        select {
-            background-color: #bdc3c6;
-            font-size: 20px;
-            font-weight: bold;
-
-        }
-
-        .fields {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .fields label {
-            width: 24%;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        #result {
-            margin-top: 20px;
-            font-size: 20px;
-            background-color: #78c6a5;
-        }
-
-        p {
-            font-size: 30px;
-        }
-
-        /* Menu styles */
-        #menu {
-            text-align: center;
-            padding: 10px;
-            background-color: #78c6a5;
-            color: rgb(5, 229, 46);
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        /* Footer styles */
-        #footer {
-            margin-top: 20px;
-            color: red;
-            font-size: 12px;
-            text-align: center;
-            font-style: italic;
-        }
-
-        #designer {
-            text-align: center;
-            font-style: italic;
-            color: rgb(8, 162, 228);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            /* Add margin for separation from the result */
-        }
-
-        th,
-        td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-            /* Add borders for better visibility */
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            /* Add margin for separation from the result */
-        }
-
-        th,
-        td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-            /* Add borders for better visibility */
-        }
-
-        .styled-table td {
-            color: darkblue;
-            font-weight: bold;
-            font-size: 30px;
-            font-family: Arial, sans-serif;
-        }
-
-        #calculateButton,
-        #clearButton {
-            font-size: 16px;
-            /* Adjust the font size as needed */
-            padding: 10px 20px;
-            /* Adjust the padding to increase button size */
-            margin-top: 10px;
-            /* Add margin for spacing */
-        }
-
-        /* Optionally, you can add a hover effect to make the buttons more interactive */
-        #calculateButton:hover,
-        #clearButton:hover {
-            background-color: #1885b0;
-            /* Change the background color on hover */
-            color: white;
-            /* Change the text color on hover */
-            cursor: pointer;
-            /* Change cursor to pointer on hover */
-
-        }
-
-        header {
-            background-color: #b5c8d1;
-            padding: 10px;
-            color: rgb(18, 224, 49);
-            text-align: center;
-            position: fixed;
-            width: 5%;
-            z-index: 1000;
-        }
-
-        .menu-btn {
-            font-size: 20px;
-            cursor: pointer;
-            float: left;
-        }
-
-        .slide-menu {
-            display: none;
-            position: fixed;
-            top: 60px;
-            /* Adjust based on your header height */
-            left: 0;
-            height: 100%;
-            width: 250px;
-            background-color: #abcbdd;
-            padding-top: 20px;
-            /* Adjust based on your header padding */
-            box-shadow: 0 0 10px rgba(234, 230, 230, 0.5);
-        }
-
-        .slide-menu ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .slide-menu li {
-            padding: 10px;
-            border-bottom: 1px solid #555;
-        }
-
-        .slide-menu a {
-            text-decoration: none;
-            color: white;
-        }
-
-        #Contact {
-            color: #e66e0c;
-            background-color: rgb(205, 219, 176);
-            text-align: center;
-        }
-
-        @media screen and (max-width: 600px) {
-            body {
-                font-size: 16px;
-            }
-
-            #calculator {
-                max-width: 100%;
-            }
-
-            .fields label,
-            label,
-            select,
-            input {
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .fields {
-                flex-direction: column;
-            }
-        }
-    </style>
+.calc-input:focus {
+    border-color: #3b82f6;     /* blue-500 */
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}    </style>
 </head>
+<body class="text-slate-800">
 
-<body>
-    <header>
-        <div class="menu-btn" onclick="toggleMenu()">☰</div>
-        <nav class="slide-menu">
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/malpot calculator/">मालपोत असुली</a></li>
-                <li><a href="/kutabali calculator/">कुतबाली असुली</a></li>
-                <li><a href="/ropani adder/">रोपनी जोड्न</a></li>
-                <li><a href="/Registration/">न्युनत्तम मूल्याङ्कन</a></li>
-                <li><a href="/Contact.html">सम्पर्क</a></li>
-            </ul>
-        </nav>
-    </header>
+    <!-- TOP NAV (Home Icon) -->
+    <div class="fixed top-0 right-0 z-[100] p-4">
+        <a href="/" class="bg-white/90 backdrop-blur p-2 rounded-full shadow-lg text-blue-600 hover:scale-110 transition flex items-center gap-2 px-4">
+            <i data-lucide="home" class="w-4"></i> <span class="text-xs font-bold uppercase">Home</span>
+        </a>
+    </div>
 
-
-    <div id="calculator">
-        <h4 style="color: #0a0dc2c4; margin-top: 0;">आ.व. <i style="color: #5e0808;">०८२।८३</i> को लागि (<i
-                style="color: #5e0808;">सिन्धुपाल्चोक</i> जिल्लासँग मिल्ने दररेट भएका जिल्लालाई मात्र)</h4>
-        <h2>
-            मालपोत असुली क्याल्कुलेटर
-        </h2>
-        <div id="embeddedWebsite" class="form-container"></div>
-
-        <div style="display: flex; justify-content: space-around;">
-            <div>
-                <label for="ropani">रोपनी:</label>
-                <input type="number" id="ropani" name="ropani" pattern="\d*" maxlength="5" style="width: 80px;">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- SIDEBAR -->
+        <aside class="w-full md:w-64 bg-slate-900 text-white p-6 flex flex-col md:sticky md:top-0 md:h-screen z-50">
+            <div class="mb-8 border-b border-slate-800 pb-4 text-center md:text-left">
+                <h2 class="text-xl font-bold text-blue-400">गुठी क्याल्कुलेटर</h2>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">सुमन आचार्य 'समीर'</p>
             </div>
+            
+            <nav class="space-y-1 flex-1 text-sm">
+                <a href="/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="layout-dashboard" class="w-4"></i> HOME</a>
+                <a href="/malpot-calculator" class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20"><i data-lucide="calculator" class="w-4"></i> मालपोत असुली क्याल्कुलेटर</a>
+                <a href="/kutabali-calculator" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="calculator" class="w-4"></i> कुतबाली असुली क्याल्कुलेटर</a>
+                <a href="/ropani adder" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="plus-circle" class="w-4"></i> रोपनी जोड्न</a>
+                <a href="/Registration" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="file-check" class="w-4"></i> न्युनत्तम मूल्याङ्कन</a>
+                <a href="/tippani/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl border-t border-slate-800 mt-4"><i data-lucide="mail" class="w-4"></i> टिप्पणी</a>
+            </nav>
+        </aside>
 
-            <div>
-                <label for="aana">आना:</label>
-                <input type="number" id="aana" name="aana" pattern="\d*" maxlength="5" style="width: 80px;">
-            </div>
+        <!-- MAIN AREA -->
+        <main class="flex-1 p-4 md:p-8">
+            <header class="mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800 font-mukta text-center md:text-left">मालपोत असुली क्याल्कुलेटर</h1>
+                <p class="text-slate-500 text-sm text-center md:text-left">आ.व. ०८२।८३ (सिन्धुपाल्चोक जिल्ला दररेट अनुसार)</p>
+                <p class="text-slate-500 text-sm text-center md:text-left" style="color: red; font-size: 10;">चालु आ.व.को माघ मसान्तसम्म तिर्नेलाई ५% छुट र जेठ मसान्तपछि बुझाउनेलाई ५% जरिवाना लाग्नेछ ।
+</p>
+                
+            </header>
 
-            <div>
-                <label for="paisa">पैसा:</label>
-                <input type="number" id="paisa" name="paisa" pattern="\d*" maxlength="5" style="width: 80px;">
-            </div>
+            <!-- TWO COLUMN LAYOUT -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- LEFT: CALCULATOR CARD -->
+                <div class="lg:col-span-7 bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase">रोपनी</label>
+                            <input type="number" id="ropani" class="calc-input" oninput="calculateTax()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase">आना</label>
+                            <input type="number" id="aana" class="calc-input" oninput="calculateTax()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase">पैसा</label>
+                            <input type="number" id="paisa" class="calc-input" oninput="calculateTax()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase">दाम</label>
+                            <input type="number" id="daam" class="calc-input" oninput="calculateTax()">
+                        </div>
+                    </div>
 
-            <div>
-                <label for="daam">दाम:</label>
-                <input type="number" id="daam" name="daam" pattern="\d*" maxlength="5" style="width: 80px;">
-            </div>
-        </div>
-        <br>
-
-        <div class="fields">
-            <label for="financialYear">तिरो बुझाएको आर्थिक वर्ष:</label>
-            <select id="financialYear">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase block mb-1">तिरो बुझाएको आर्थिक वर्ष</label>
+                            <select id="financialYear" class="calc-input appearance-none bg-slate-50" onchange="calculateTax()">
                 <option value="81/82">81/82</option>
                 <option value="80/81">80/81</option>
                 <option value="79/80">79/80</option>
@@ -330,62 +131,64 @@
                 <option value="48/49">48/49</option>
                 <option value="47/48">47/48</option>
                 <option value="46/47">46/47</option>
-            </select>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-400 uppercase block mb-1">स्थानीय तह</label>
+                            <select id="localBody" class="calc-input appearance-none bg-slate-50" onchange="calculateTax()">
+                                <option value="gaunpalika">गाउँपालिका</option>
+                                <option value="nagarpalika">नगरपालिका</option>
+                            </select>
+                        </div>
+                    </div>
 
-            <label for="localBody">स्थानीय तह:</label>
-            <select id="localBody">
-                <option value="gaunpalika">गाउँपालिका</option>
-                <option value="nagarpalika">नगरपालिका</option>
-            </select>
-        </div>
+                    <div class="flex gap-4 mb-8">
+                        <button onclick="calculateTax()" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition">हिसाव गर्नुहोस्</button>
+                        <button onclick="clearForm()" class="bg-slate-100 text-slate-600 px-8 py-4 rounded-2xl font-bold hover:bg-slate-200 transition">Clear</button>
+                    </div>
 
-        <div>
-            <button id="calculateButton" onclick="calculateTax()">Calculate</button>
-            <button id="clearButton" onclick="clearForm()">Clear</button>
-        </div>
-        <span style="font-size: 10px;color: #7f15a3bd;">चालु आ.व.को <i><b>माघ मसान्त</b></i>सम्म तिर्नेलाई ५% छुट र
-            <i><b>जेठ मसान्त</b></i>पछि बुझाउनेलाई ५% जरिवाना लाग्नेछ । </span>
+                    <!-- RESULT TABLE -->
+                    <div class="bg-slate-50 rounded-3xl p-6 border border-slate-100 overflow-hidden">
+                        <div class="grid grid-cols-3 gap-4 text-center mb-6">
+                            <div><p class="text-[10px] text-slate-400 uppercase">बक्यौता</p><p id="bakyaota" class="text-xl font-bold text-slate-800">0</p></div>
+                            <div><p class="text-[10px] text-slate-400 uppercase">चालु</p><p id="chalu" class="text-xl font-bold text-slate-800">0</p></div>
+                            <div><p class="text-[10px] text-slate-400 uppercase">जरिवाना</p><p id="jarivana" class="text-xl font-bold text-red-600">0</p></div>
+                        </div>
+                        <div class="bg-blue-600 p-4 rounded-2xl text-center text-white">
+                            <p class="text-xs uppercase opacity-80">जम्मा बुझाउनु पर्ने तिरो</p>
+                            <p id="jamma" class="text-4xl font-black">रु. 0</p>
+                        </div>
+                    </div>
 
-        <div id="result">
-            <table>
-                <tr>
-                    <th>बक्यौता:</th>
-                    <td id="bakyaota"></td>
-                    <th>चालु:</th>
-                    <td id="chalu"></td>
-                    <th>जरिवाना:</th>
-                    <td id="jarivana"></td>
-                <tr>
-                    <table>
-        </div>
+                    <p class="text-[10px] text-slate-400 mt-4 italic text-center">*** यो आधिकारिक वेवसाइट होइन, सहजताको प्रयोनार्थ मात्र ***</p>
+                </div>
 
-        <div id="result">
-            <table>
-                <tr>
-                    <th>जम्मा:</th>
-                    <td id="jamma"></td>
-                </tr>
-            </table>
-        </div>
-
-
-        <div id="footer">
-            *** यो आधिकारिक वेवसाइट होइन, सहजताको प्रयोनार्थ मात्र ***
-        </div>
-
-        <div id="designer">
-            Designed by: Suman Acharya, Land revenue Office, Sindhupalchowk
-        </div>
-        <div id="Contact"><b>सम्पर्कको लागि</b> <a href="mailto:acharyasuman874@gmail.com"><img src="email logo.jpg"
-                    alt="Email logo" style="width: 20px; height: 15px;"></a> </div>
-
-        <script>
-            function toggleMenu() {
-                var menu = document.querySelector('.slide-menu');
-                menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
-            }
+                <!-- RIGHT: ROPANI ADDER (5 Columns - Sticky below Home) -->
+                <div class="lg:col-span-5" style="position:relative; top: -110px;">
+                    <div class="sticky-tool">
+                        <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
+                            <div class="bg-slate-900 text-white p-4 flex justify-between items-center px-6">
+                                <span class="text-xs font-bold uppercase tracking-widest flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4 text-blue-400"></i> Ropani Adder</span>
+                                <span class="text-[10px] bg-blue-600 px-2 py-0.5 rounded text-white italic">ropani adder Tool</span>
+                            </div>
+                            <!-- Added scrolling="no" and fixed height to keep it clean -->
+                            <iframe src="/ropani adder/" class="w-full h-[550px] border-none" id="adderFrame"></iframe>
+                        </div>
+                        <div class="mt-4 p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                            <p class="text-xs text-orange-700 leading-relaxed font-medium">
+                                <i data-lucide="info" class="w-3 h-3 inline mb-1"></i> माथिको Adder बाट क्षेत्रफल निकालेर यता क्याल्कुलेटरमा राख्न सजिलो हुन्छ।
+                            </p>
+                        </div>
+                    </div>
+                </div>
 
 
+            </div>
+        </main>
+    </div>
+
+    <!-- LOGIC PRESERVED FROM ORIGINAL -->
+    <script>
             function clearForm() {
                 document.getElementById('ropani').value = '';
                 document.getElementById('aana').value = '';
@@ -588,8 +391,18 @@
             }
 
 
-        </script>
+            
+        function clearForm() {
+            ['ropani', 'aana', 'paisa', 'daam'].forEach(id => document.getElementById(id).value = '');
+            ['bakyaota', 'chalu', 'jarivana'].forEach(id => document.getElementById(id).innerText = '0');
+            document.getElementById('jamma').innerText = 'रु. 0';
+        }
+
+        lucide.createIcons();
+
+    </script>
+            <script src="/js/tailwind.min.js"></script>
+<script src="/js/lucide.min.js"></script>
 
 </body>
-
 </html>
