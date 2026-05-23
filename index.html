@@ -326,58 +326,6 @@
         if (typeof lucide !== 'undefined') lucide.createIcons();
     });
 
-
-        // SEARCH DATABASE
-        const pages = [
-            { name: "नामसारी टिप्पणी", link: "https://acharyasuman4.com.np/tippani/namsari_tippani/" },
-            { name: "रजिष्ट्रेशन न्युनत्तम मुल्याङ्कन", link: "https://acharyasuman4.com.np/registration/" },
-            { name: "जग्गा दर्ता सिफारिस", link: "https://acharyasuman4.com.np/tippani/jagga darta sifaris/" },
-            { name: "संशोधन टिप्पणी", link: "https://acharyasuman4.com.np/tippani/sansodhan_tippani" },
-            { name: "मालपोत ऐन", link: "#laws" }
-        ];
-
-        function handleSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const box = document.getElementById('searchSuggestions');
-            box.innerHTML = '';
-            if(query.length < 1) { box.classList.add('hidden'); return; }
-            
-            const results = pages.filter(p => p.name.includes(query));
-            if(results.length > 0) {
-                box.classList.remove('hidden');
-                results.forEach(r => {
-                    const d = document.createElement('div');
-                    d.className = "p-4 border-b hover:bg-blue-50 cursor-pointer font-bold text-sm";
-                    d.innerHTML = `📄 ${r.name}`;
-                    d.onclick = () => window.location.href = r.link;
-                    box.appendChild(d);
-                });
-            } else { box.classList.add('hidden'); }
-        }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        // Initialize Lucide Icons
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
-    });
-
-
-        // READER CONTROL
-        function openReader(url) {
-            document.getElementById('readerFrame').src = url;
-            document.getElementById('readerModal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-        function closeReader() {
-            document.getElementById('readerModal').style.display = 'none';
-            document.getElementById('readerFrame').src = '';
-            document.body.style.overflow = 'auto';
-        }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        lucide.createIcons();
-    });
     </script>
 </body>
 </html>
