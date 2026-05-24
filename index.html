@@ -3,11 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suman Acharya Sameer | भूमि प्रशासन पोर्टल</title>
+    <title>भूमि प्रशासन / व्यवस्थापन सहयोगी - प्रविधीमैत्री भूमि प्रशासन</title>
+
+        <!-- २. वर्णन (Description) - गुगल सर्चमा देखिने छोटो बिवरण -->
+    <meta name="description" content="नामसारी, गुठीको तिरो हिसाव, दाखिला खारेज, रजिष्ट्रेशन जस्ता कार्य गर्न भूमि प्रशासन कार्यालय, गुठी संस्थान र पालिकाका कर्मचारीहरूको लागि उपयोगी तिरो, कुतबाली क्याल्कुलेटर र तयारी टिप्पणीहरू।">
+
+    <!-- ३. कीवर्डहरू (Keywords) -->
+    <meta name="keywords" content="acharyasuman, acharyasuman4, मालपोत क्याल्कुलेटर, कुतबाली, न्यूनतम मूल्याङ्कन, भूमि व्यवस्थापन, गुठी संस्थान, टिप्पणी ढाँचा, मालपोत, land revenue calculator nepal, रोपनी जोड्ने टुल, Area adder, tippani template, land administration tools, nepali land laws, nepali land management, nepali land administration, nepali land revenue, nepali land record, nepali land registration, nepali land survey, nepali land measurement, nepali land conversion, nepali land area calculator, nepali land area converter, nepali land area adder, nepali ropani adder, nepali tippani generator, nepali tippani template, nepali malpot calculator, nepali kutabali calculator");>
+
+    <!-- ४. सामाजिक सञ्जालका लागि (Open Graph Tags) - फेसबुकमा लिङ्क सेयर गर्दा राम्रो देखिनका लागि -->
+    <meta property="og:title" content="गुठी, भूमी प्रशासन \ व्यवस्थापन सहायक">
+    <meta property="og:description" content="कर्मचारी र सेवाग्राहीका लागि उपयोगी अनलाइन टुलहरू।">
+    <meta property="og:url" content="https://acharyasuman4.com.np">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+        <link rel="manifest" href="./manifest.json">
+
     <style>
         body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
         .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
@@ -327,5 +341,15 @@
     });
 
     </script>
+        <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker Registered!'))
+                .catch(err => console.log('Service Worker Failed:', err));
+            });
+        }
+    </script>
+
 </body>
 </html>
