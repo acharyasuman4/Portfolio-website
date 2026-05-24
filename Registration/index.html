@@ -1,357 +1,164 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ne">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>न्युनत्तम मुल्याङ्कन - रजिष्ट्रेशन</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --blue: #3498db;
-            --red: #e74c3c;
-            --bg: #f0f2f5;
-            --white: #ffffff;
-            --green: #27ae60;
-        }
-
-        body {
-            font-family: 'Mukta', 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* --- Compact Header --- */
-        header {
-            background: var(--primary);
-            color: var(--white);
-            padding: 8px 15px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            flex-shrink: 0;
-        }
-        .menu-btn { font-size: 20px; cursor: pointer; margin-right: 15px; }
-        .header-title { font-size: 1rem; font-weight: 600; }
-
-        /* Menu Sidebar */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 998; }
-        .overlay.active { display: block; }
-        .slide-menu { position: fixed; top: 0; left: -250px; width: 250px; height: 100%; background: var(--white); transition: left 0.3s; z-index: 999; padding-top: 50px; }
-        .slide-menu.active { left: 0; }
-        .slide-menu ul { list-style: none; padding: 0; }
-        .slide-menu li a { display: block; padding: 10px 20px; color: var(--primary); text-decoration: none; border-bottom: 1px solid #eee; }
-        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 24px; cursor: pointer; }
-
-        /* --- Main Layout --- */
-        main {
-            flex: 1;
-            padding: 5px;
-            display: flex;
-            flex-direction: column;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            overflow-y: auto;
-        }
-
-        /* --- Form Card --- */
-        .card {
-            background: var(--white);
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 5px;
-        }
-
-        /* Compact Inputs */
-        .input-row { display: flex; gap: 8px; margin-bottom: 8px; }
-        .col { flex: 1; }
-        
-        label { display: block; font-size: 0.75rem; font-weight: 600; color: #555; margin-bottom: 2px; }
-        input, select {
-            width: 100%;
-            padding: 6px; 
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.95rem;
-            box-sizing: border-box;
-        }
-        input:focus, select:focus { border-color: var(--blue); outline: none; background: #f8fbff; }
-
-        /* RAPD Grid */
-        .rapd-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; }
-        .rapd-inputs input { text-align: center; }
-
-        /* Unit Toggle (Small) */
-        .toggle-row { display: flex; justify-content: flex-end; margin-bottom: 5px; }
-        .toggle-label { font-size: 0.75rem; margin-right: 5px; color: #666; cursor: pointer; }
-        .toggle-label.active { color: var(--blue); font-weight: bold; text-decoration: underline; }
-
-        /* Buttons */
-        .btn-row { display: flex; gap: 10px; margin-top: 5px; }
-        button {
-            padding: 8px; border: none; border-radius: 4px; font-size: 0.9rem;
-            font-weight: 600; cursor: pointer; flex: 1;
-        }
-        .btn-calc { background: var(--blue); color: white; }
-        .btn-clear { background: var(--red); color: white; flex: 0.4; }
-
-        /* --- History Section (Compact Table) --- */
-        .history-card {
-            background: var(--white);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            min-height: 200px;
-        }
-
-        .history-header {
-            padding: 8px 10px;
-            background: #eef2f5;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .history-content { flex: 1; overflow-y: auto; }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { position: sticky; top: 0; background: #fff; z-index: 10; text-align: left; padding: 5px; border-bottom: 2px solid #eee; font-size: 0.75rem; color: #666; }
-        td { padding: 6px 5px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
-        
-        .val-cell { color: var(--green); font-weight: bold; }
-        .del-btn { color: #aaa; cursor: pointer; font-size: 1.1rem; line-height: 1; }
-        .del-btn:hover { color: var(--red); }
-
-        .hidden { display: none; }
-
-        /* Mobile Optimization */
-        @media(max-width: 400px) {
-            .input-row { gap: 5px; }
-            input, select { font-size: 0.9rem; }
-        }
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
+        .calc-input { width: 100%; padding: 0.6rem; background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 0.75rem; font-weight: 700; outline: none; transition: all 0.2s; }
+        .calc-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1); }
+        .sidebar-link:hover { background-color: #1e293b; color: #3b82f6; }
+        .active-mode { color: #3b82f6; border-bottom: 2px solid #3b82f6; font-weight: bold; }
     </style>
 </head>
-<body>
+<body class="text-slate-800">
 
-    <!-- Overlay & Menu -->
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <header>
-        <div class="menu-btn" onclick="toggleMenu()">☰</div>
-        <div class="header-title">Minimum Valuation (न्युनत्तम मुल्यांकन)</div>
-        <nav class="slide-menu" id="slideMenu">
-            <div class="close-btn" onclick="toggleMenu()">&times;</div>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/malpot calculator/">मालपोत असुली</a></li>
-                <li><a href="/kutabali calculator/">कुतबाली असुली</a></li>
-                <li><a href="/ropani adder/">रोपनी जोड्न</a></li>
-                <li><a href="/Registration/">न्युनत्तम मूल्याङ्कन</a></li>
-                <li><a href="/tippani/">टिप्पणी</a></li>
-                <li><a href="/Contact.html">सम्पर्क</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="fixed top-4 right-4 z-[100]">
+        <a href="/" class="bg-white/90 backdrop-blur p-2 rounded-full shadow-lg text-blue-600 hover:scale-110 transition flex items-center gap-2 px-4 border border-blue-100">
+            <i data-lucide="home" class="w-4 h-4"></i> <span class="text-xs font-bold uppercase">Home</span>
+        </a>
+    </div>
 
-    <main>
-        <!-- Form Section -->
-        <div class="card">
-            <div class="toggle-row">
-                <span id="t-rapd" class="toggle-label active" onclick="setMode('rapd')">ROPANI</span>
-                <span style="font-size:0.75rem; color:#ccc;">|</span>
-                <span id="t-sqm" class="toggle-label" onclick="setMode('sqm')">SQ. METER</span>
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <aside class="w-full md:w-64 bg-slate-900 text-white p-6 flex flex-col md:sticky md:top-0 md:h-screen z-50">
+            <div class="mb-8 border-b border-slate-800 pb-4 text-center">
+                <h2 class="text-xl font-bold text-blue-400 font-mukta">MINIMUM VALUATION Calculator</h2>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">By: सुमन आचार्य 'समीर'</p>
             </div>
+            <nav class="space-y-1 flex-1 text-sm">
+                <a href="/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> मुख्य पोर्टल</a>
+                <a href="/Registration/" class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg"><i data-lucide="file-check" class="w-4 h-4"></i> न्युनत्तम मूल्याङ्कन</a>
+                <a href="/malpot calculator/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="calculator" class="w-4 h-4"></i> मालपोत असुली</a>
+                <a href="/kutabali calculator/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="calculator" class="w-4 h-4"></i> कुतबाली असुली</a>
+                <a href="/ropani adder/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="map" class="w-4 h-4"></i> क्षेत्रफल जोड्न</a>
+                <a href="/tippani/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="clipboard-list" class="w-4 h-4"></i> टिप्पणी</a>
+            </nav>
+        </aside>
+    
 
-            <div class="input-row">
-                <div class="col" style="flex: 0.8;">
-                    <label>वडा नं.</label>
-                    <input type="number" id="wadaNo" placeholder="Wada">
+        <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-7 space-y-6">
+                    <header class="flex justify-between items-end">
+                        <h1 class="text-2xl font-bold text-slate-800">न्युनत्तम मुल्याङ्कन क्याल्कुलेटर</h1>
+                        <div class="flex gap-4 text-xs font-bold">
+                            <button id="t-rapd" onclick="setMode('rapd')" class="pb-1 active-mode">ROPANI</button>
+                            <button id="t-sqm" onclick="setMode('sqm')" class="pb-1 text-slate-400">SQ. METER</button>
+                        </div>
+                    </header>
+
+                    <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-200">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">वडा नं.</label><input type="number" id="wadaNo" class="calc-input"></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">कित्ता नं.</label><input type="number" id="kittaNo" class="calc-input"></div>
+                        </div>
+
+                        <div id="area-rapd" class="grid grid-cols-4 gap-2 mb-4">
+                            <input type="number" id="ropani" class="calc-input text-center" placeholder="रोपनी">
+                            <input type="number" id="aana" class="calc-input text-center" placeholder="आना">
+                            <input type="number" id="paisa" class="calc-input text-center" placeholder="पैसा">
+                            <input type="number" id="daam" class="calc-input text-center" placeholder="दाम">
+                        </div>
+                        <div id="area-sqm" class="hidden mb-4"><input type="number" id="sqmeter" class="calc-input" placeholder="Sq. Meter"></div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">बाटोको प्रकार</label>
+                                <input list="batoList" id="batoType" class="calc-input">
+                                <datalist id="batoList"></datalist>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">वर्गीकरण</label>
+                                <select id="vargikaran" class="calc-input">
+                                    <option value="आवासीय">आवासीय</option>
+                                    <option value="कृषि">कृषि</option>
+                                    <option value="व्यावसायिक">व्यावसायिक</option>
+                                    <option value="औद्योगिक">औद्योगिक</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">न्युनत्तम मुल्य (प्रति रोपनी)</label>
+                            <input list="rateList" id="ratePerRopani" class="calc-input bg-blue-50/30">
+                            <datalist id="rateList"></datalist>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button onclick="calculate()" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition flex items-center justify-center gap-2">
+                                <i data-lucide="calculator" class="w-4 h-4"></i> CALCULATE
+                            </button>
+                            <button onclick="clearHistory()" class="bg-red-50 text-red-600 px-6 py-4 rounded-2xl font-bold">Reset</button>
+                        </div>
+                    </div>
+                                    <div style="color: rgb(99, 12, 213); background-color: bisque;"><a href="/tippani/template.html" target="_blank" rel="noopener noreferrer">कार्यलयको लेटरप्याडमा जानकारी दिन</a></div>
+
                 </div>
-                <div class="col" style="flex: 1.2;">
-                    <label>कित्ता नं.</label>
-                    <input type="number" id="kittaNo" placeholder="Kitta">
+
+                <div class="lg:col-span-5 flex flex-col h-full max-h-[85vh]">
+                    <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 flex flex-col h-full overflow-hidden">
+                        <div class="p-5 border-b bg-slate-50 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-800">History</h3>
+                            <div class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">रु. <span id="grandTotal">0</span></div>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-4 space-y-3" id="history-list"></div>
+                    </div>
                 </div>
             </div>
-
-            <!-- RAPD Inputs -->
-            <div id="area-rapd" class="rapd-inputs" style="margin-bottom: 8px;">
-                <input type="number" id="ropani" placeholder="रो" step="any">
-                <input type="number" id="aana" placeholder="आ" step="any">
-                <input type="number" id="paisa" placeholder="पै" step="any">
-                <input type="number" id="daam" placeholder="दा" step="any">
-            </div>
-
-            <!-- SqM Input -->
-            <div id="area-sqm" class="hidden" style="margin-bottom: 8px;">
-                <input type="number" id="sqmeter" placeholder="Area in Sq. Meter" step="any">
-            </div>
-
-            <div class="input-row">
-                <div class="col">
-                    <label>बाटोको प्रकार</label>
-                    <select id="batoType" onchange="toggleFieldType()">
-                        <option value="गोरेटो बाटो">गोरेटो बाटो</option>
-                        <option value="नभएको">नभएको</option>
-                        <option value="कच्ची मोटर बाटो">कच्ची मोटर बाटो</option>
-                        <option value="पक्कि मोटर बाटो">पक्कि मोटर बाटो</option>
-                        <option value="अन्य">अन्य</option>
-                    </select>
-                </div>
-                <div class="col hidden" id="fieldTypeCol">
-                    <label>जग्गा (बाटो नभए)</label>
-                    <select id="fieldTypeSelect">
-                        <option value="खेत अवल">खेत अवल</option>
-                        <option value="खेत दोयम">खेत दोयम</option>
-                        <option value="खेत सीम">खेत सीम</option>
-                        <option value="खेत चाहार">खेत चाहार</option>
-                        <option value="पाखो अवल">पाखो अवल</option>
-                        <option value="पाखो दोयम">पाखो दोयम</option>
-                        <option value="पाखो सीम">पाखो सीम</option>
-                        <option value="पाखो चाहार">पाखो चाहार</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="input-row">
-                <div class="col">
-                    <label>मूल्य (प्रति रोपनी)</label>
-                    <input type="number" id="ratePerRopani" placeholder="Rate Amount">
-                </div>
-            </div>
-
-            <div class="btn-row">
-                <button class="btn-calc" onclick="calculate()">CALCULATE</button>
-                <button class="btn-clear" onclick="clearHistory()">Reset</button>
-            </div>
-            <div style="margin: 10px;"><a href="template.html" target="_blank" rel="noopener noreferrer" style="color: rgb(0, 238, 255); background-color: #555; margin: 100px auto; padding: 5px;" >मुल्याङ्कन चिठी(कार्यालयको लागि)</a></div>
-        </div>
-
-        <!-- Compact History Section -->
-        <div class="history-card">
-            <div class="history-header">
-                <span>Recent History</span>
-                <span>Total: रु. <span id="grandTotal">0</span></span>
-            </div>
-            <div class="history-content">
-                <table id="history-table">
-                    <!-- Javascript will populate this -->
-                </table>
-            </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <script>
         const SQM_PER_ROPANI = 508.74;
         let currentMode = 'rapd';
         let historyData = JSON.parse(localStorage.getItem('min_val_history')) || [];
-        
-        // Flag to track if we are editing a known Wada/Kitta combination
         let isMatchFound = false;
 
-        function toggleMenu() {
-            document.getElementById("slideMenu").classList.toggle('active');
-            document.getElementById("overlay").classList.toggle('active');
-        }
-
-        function setMode(mode) {
-            currentMode = mode;
-            document.getElementById('t-rapd').className = mode === 'rapd' ? 'toggle-label active' : 'toggle-label';
-            document.getElementById('t-sqm').className = mode === 'sqm' ? 'toggle-label active' : 'toggle-label';
-            
-            if(mode === 'rapd') {
-                document.getElementById('area-rapd').classList.remove('hidden');
-                document.getElementById('area-sqm').classList.add('hidden');
-                setTimeout(()=>document.getElementById('ropani').focus(), 100);
-            } else {
-                document.getElementById('area-rapd').classList.add('hidden');
-                document.getElementById('area-sqm').classList.remove('hidden');
-                setTimeout(()=>document.getElementById('sqmeter').focus(), 100);
-            }
-        }
-
-        function toggleFieldType() {
-            const bato = document.getElementById('batoType').value;
-            const col = document.getElementById('fieldTypeCol');
-            if(bato === 'नभएको') col.classList.remove('hidden');
-            else col.classList.add('hidden');
-        }
-
-        // --- Auto Fill & Match Logic ---
+        // १. इन्डेक्सिङ र अटो-फिल लजिक
         function checkAutoFill() {
             const w = document.getElementById('wadaNo').value;
             const k = document.getElementById('kittaNo').value;
             
-            if(!w || !k) {
-                isMatchFound = false;
-                return;
-            }
+            if(!w || !k) { clearAutoFields(); return; }
 
-            // Look for EXACT match in history
             const match = historyData.find(h => h.wada == w && h.kitta == k);
-            
             if(match) {
-                // Matched! Auto-fill details
                 document.getElementById('ratePerRopani').value = match.rate;
                 document.getElementById('batoType').value = match.bato;
-                toggleFieldType();
-                if(match.field) document.getElementById('fieldTypeSelect').value = match.field;
-                
+                document.getElementById('vargikaran').value = match.vargikaran || 'आवासीय';
+                document.getElementById('ratePerRopani').style.backgroundColor = "#ecfdf5";
                 isMatchFound = true;
             } else {
-                // No match, just user typing normally
+                clearAutoFields();
                 isMatchFound = false;
             }
         }
 
-        document.getElementById('wadaNo').addEventListener('input', checkAutoFill);
-        document.getElementById('kittaNo').addEventListener('input', checkAutoFill);
-
-        // --- Smart Tab Trigger ---
-        // If match found, TAB on the last area field triggers calculate automatically
-        function handleSmartTab(e) {
-            if(e.key === 'Tab' && !e.shiftKey && isMatchFound) {
-                e.preventDefault(); // Prevent focus loss
-                calculate();
-            }
+        function clearAutoFields() {
+            document.getElementById('ratePerRopani').value = '';
+            document.getElementById('batoType').value = '';
+            document.getElementById('ratePerRopani').style.backgroundColor = "";
         }
 
-        document.getElementById('daam').addEventListener('keydown', handleSmartTab);
-        document.getElementById('sqmeter').addEventListener('keydown', handleSmartTab);
-
-        // --- Helper: Nepali Digits ---
-        function toNepali(num) {
-            return Math.floor(num).toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
-        }
-
-        // --- Main Calculation ---
+        // २. हिसाब गर्ने लजिक
         function calculate() {
             const wada = document.getElementById('wadaNo').value;
             const kitta = document.getElementById('kittaNo').value;
-            const rate = parseFloat(document.getElementById('ratePerRopani').value);
+            const rateInput = document.getElementById('ratePerRopani').value;
+            const rate = parseFloat(rateInput);
+            const bato = document.getElementById('batoType').value;
+            const vargikaran = document.getElementById('vargikaran').value;
 
-            if(!wada || !kitta || !rate) {
-                alert("Please fill Wada, Kitta and Rate");
+            if(!wada || !kitta || isNaN(rate)) {
+                alert("वडा, कित्ता र दररेट अनिवार्य छ!");
                 return;
             }
 
-            let areaRopani = 0;
-            let areaDesc = "";
-
+            let areaRopani = 0, areaDesc = "";
             if(currentMode === 'rapd') {
                 const r = parseFloat(document.getElementById('ropani').value) || 0;
                 const a = parseFloat(document.getElementById('aana').value) || 0;
@@ -365,98 +172,116 @@
                 areaDesc = `${sqm}m²`;
             }
 
-            if(areaRopani <= 0) { alert("Invalid Area"); return; }
-
             const valuation = Math.ceil(areaRopani * rate);
-            const bato = document.getElementById('batoType').value;
-            const field = (bato === 'नभएको') ? document.getElementById('fieldTypeSelect').value : null;
-
-            // Add to history (Top of list)
-            historyData.unshift({
-                wada, kitta, areaDesc, rate, bato, field, valuation
-            });
+            historyData.unshift({ wada, kitta, areaDesc, rate, bato, vargikaran, valuation });
             localStorage.setItem('min_val_history', JSON.stringify(historyData));
 
             renderHistory();
+            updateDataLists();
             
-            // --- CLEAR ALL FIELDS & FOCUS WADA ---
-            document.getElementById('wadaNo').value = '';
-            document.getElementById('kittaNo').value = '';
-            document.getElementById('ropani').value = '';
-            document.getElementById('aana').value = '';
-            document.getElementById('paisa').value = '';
-            document.getElementById('daam').value = '';
-            document.getElementById('sqmeter').value = '';
-            document.getElementById('ratePerRopani').value = '';
-            
-            // Reset dropdowns to default
-            document.getElementById('batoType').selectedIndex = 0; 
-            toggleFieldType(); 
-
-            // Reset match flag
-            isMatchFound = false;
-
-            // Focus on Wada No
+            // क्लियर गर्ने र फोकस गर्ने
+            ['wadaNo','kittaNo','ropani','aana','paisa','daam','sqmeter','ratePerRopani','batoType'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
             document.getElementById('wadaNo').focus();
         }
 
+        // ३. डिस्प्ले र यूआई फङ्सनहरू
         function renderHistory() {
-            const table = document.getElementById('history-table');
-            let html = '';
-            let grandTotal = 0;
-
+            const container = document.getElementById('history-list');
+            let html = '', grandTotal = 0;
             historyData.forEach((item, index) => {
                 grandTotal += item.valuation;
                 html += `
-                    <tr>
-                        <td width="20%">
-                            <div><b>${item.wada}-${item.kitta}</b></div>
-                            <div style="font-size:0.7rem; color:#888;">${item.bato}</div>
-                        </td>
-                        <td width="30%">
-                            <div>${item.areaDesc}</div>
-                            <div style="font-size:0.7rem; color:#888;">@${item.rate}</div>
-                        </td>
-                        <td width="40%" class="val-cell">रु. ${toNepali(item.valuation)}</td>
-                        <td width="10%" style="text-align:center;">
-                            <span class="del-btn" onclick="deleteItem(${index})">×</span>
-                        </td>
-                    </tr>
-                `;
+                    <div class="bg-slate-50 p-4 rounded-2xl border relative group transition-all">
+                        <button onclick="deleteItem(${index})" class="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                            <i data-lucide="x-circle" class="w-5 h-5"></i>
+                        </button>
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase">कि.नं. ${item.kitta} (वडा ${item.wada})</p>
+                                <p class="text-sm font-bold text-slate-800">${item.areaDesc} | ${item.bato}</p>
+                            </div>
+                            <p class="text-blue-600 font-bold text-lg">रु. ${toNepali(item.valuation)}</p>
+                        </div>
+                    </div>`;
             });
-            table.innerHTML = html;
+            container.innerHTML = html || '<p class="text-center text-slate-400 mt-10">No records.</p>';
             document.getElementById('grandTotal').innerText = toNepali(grandTotal);
+            lucide.createIcons();
         }
 
-        function deleteItem(index) {
-            historyData.splice(index, 1);
-            localStorage.setItem('min_val_history', JSON.stringify(historyData));
-            renderHistory();
+// १. लिस्ट देखाउने "Smart Trigger"
+function setupListTrigger(inputId) {
+    const input = document.getElementById(inputId);
+    
+    // क्लिक गर्दा वा फोकस हुँदा लिस्ट देखाउने
+    input.addEventListener('focus', function() {
+        this.setAttribute('placeholder', 'टाइप गर्नुहोस् वा छान्नुहोस्...');
+    });
+
+    // स्पेस थिच्दा वा खाली हुँदा पनि लिस्ट देखाउन मद्दत गर्ने सानो ट्रिक
+    input.addEventListener('mousedown', function() {
+        if(this.value === '') this.value = ' '; 
+        setTimeout(() => { if(this.value === ' ') this.value = ''; }, 1);
+    });
+}
+
+// २. रेट र बाटोको लिस्ट अपडेट गर्ने फङ्सन (सुधारिएको)
+function updateDataLists() {
+    const rateList = document.getElementById('rateList');
+    const batoList = document.getElementById('batoList');
+    
+    if(!rateList || !batoList) return;
+
+    // युनिक दररेट र बाटोहरू (History बाट)
+    const uniqueRates = [...new Set(historyData.map(item => item.rate))].sort((a,b) => b-a);
+    const uniqueBato = [...new Set(historyData.map(item => item.bato))];
+
+    // रेट लिस्ट भर्ने
+    rateList.innerHTML = uniqueRates.map(r => `<option value="${r}">`).join('');
+    
+    // बाटो लिस्ट भर्ने (डिफल्ट बाटोहरू सहित)
+    const defaultBato = ['गोरेटो बाटो', 'कच्ची मोटर बाटो', 'पक्कि मोटर बाटो', 'नभएको'];
+    const finalBato = [...new Set([...defaultBato, ...uniqueBato])];
+    batoList.innerHTML = finalBato.map(b => `<option value="${b}">`).join('');
+}
+
+// ३. अफलाइनका लागि Service Worker रजिस्टर गर्ने
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('Offline support active!'))
+            .catch(err => console.log('Offline support failed.'));
+    });
+}
+
+// विन्डो लोड हुँदा सबै सेटअप गर्ने
+window.onload = () => {
+    renderHistory();
+    updateDataLists();
+    setupListTrigger('batoType');
+    setupListTrigger('ratePerRopani');
+    lucide.createIcons();
+};
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('t-rapd').className = mode === 'rapd' ? 'active-mode pb-1 border-b-2 border-blue-600' : 'text-slate-400 pb-1';
+            document.getElementById('t-sqm').className = mode === 'sqm' ? 'active-mode pb-1 border-b-2 border-blue-600' : 'text-slate-400 pb-1';
+            document.getElementById('area-rapd').classList.toggle('hidden', mode !== 'rapd');
+            document.getElementById('area-sqm').classList.toggle('hidden', mode !== 'sqm');
         }
 
-        function clearHistory() {
-            if(confirm("Clear all data?")) {
-                historyData = [];
-                localStorage.removeItem('min_val_history');
-                renderHistory();
-                document.getElementById('wadaNo').value = '';
-                document.getElementById('kittaNo').value = '';
-                document.getElementById('ratePerRopani').value = '';
-            }
-        }
+        function toNepali(num) { return Math.floor(num).toString().replace(/\d/g, d => "०१२३४५६७८९"[d]); }
+        function deleteItem(i) { historyData.splice(i, 1); localStorage.setItem('min_val_history', JSON.stringify(historyData)); renderHistory(); }
+        function clearHistory() { if(confirm("सबै मेटाउने?")) { historyData = []; localStorage.removeItem('min_val_history'); renderHistory(); } }
 
-        // Init
-        renderHistory();
+        // ४. इभेन्ट लिसनर्स
+        document.getElementById('wadaNo').addEventListener('input', checkAutoFill);
+        document.getElementById('kittaNo').addEventListener('input', checkAutoFill);
+        document.addEventListener('keydown', (e) => { if(e.key === 'Enter' && e.target.tagName === 'INPUT') calculate(); });
 
-        // Keyboard Shortcuts (Enter to Calculate from any input)
-        document.addEventListener('keydown', (e) => {
-            if(e.key === 'Enter' && e.target.tagName === 'INPUT') calculate();
-        });
-
-        // PWA
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js");
-        }
+        window.onload = () => { renderHistory(); updateDataLists(); lucide.createIcons(); };
     </script>
 </body>
 </html>
