@@ -1,21 +1,24 @@
 {
-  "short_name": "Guthi Calc",
-  "name": "गुठी मालपोत असुली क्याल्कुलेटर",
+  "name": "भूमी प्रशासन तथा व्यवस्थापन पोर्टल",
+  "short_name": "भूमी प्रशासन",
+  "description": "भूमि प्रशासन र पालिकाका कर्मचारीहरूका लागि उपयोगी मालपोत, कुतबाली तथा न्यूनतम मूल्याङ्कन क्याल्कुलेटर र टिप्पणीहरू",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0056b3",
+  "orientation": "any",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "./icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "sizes": "192x192"
+      "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "./icon-512.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "sizes": "512x512"
+      "purpose": "any maskable"
     }
-  ],
-"start_url": "/malpot-calculator?utm_source=pwa&utm_medium=app",
-  "background_color": "#0f172a",
-  "theme_color": "#2563eb",
-  "display": "standalone",
-  "orientation": "portrait"
+  ]
 }
