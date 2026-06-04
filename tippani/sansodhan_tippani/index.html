@@ -391,6 +391,11 @@
     </label>
     <input type="text" id="in_rev_amt" value="८००" class="input-box" style="width: 80px; margin: 0; height: 25px;" oninput="update()">
 </div>
+<!-- Add this below the Rajaswo div -->
+<div class="input-group" style="background:#f1f5f9;">
+    <label>थप निर्णय (यदि भएमा):</label>
+    <textarea type="text" id="in_extra_decision" placeholder="जग्गाधनी श्रेस्ता र पुर्जामा सिफारिस बमोजिम फोटोटाँस हुन" class="input-box" oninput="update()"></textarea>
+</div>
 
             <div class="row-2">
                 <button onclick="window.print()" class="btn btn-blue">🖨️ Print</button>
@@ -677,6 +682,10 @@ nivedakTableHtml = `<table class="doc-table" style="width: auto; min-width: 50%;
         correctionRows += `<tr><td>ना.प्र.नं./जारी मितिः ${citOld.no} (${citOld.ds}) / ${citOld.dt}</td><td>${newColContent}</td></tr>`;
     }
 
+    const extraDecision = document.getElementById('in_extra_decision').value.trim();
+const extraDecisionText = (extraDecision && extraDecision !== ".......") ? ` र ${extraDecision}` : "";
+
+
 // 3. Land Rows (Grouped for cleanliness, Individual if corrected)
     state.lands.forEach(l => {
         // Check if any kitta in this VDC/Ward has a registered correction
@@ -732,7 +741,7 @@ const rajaswo = revChk
             <p style="text-indent:50px; margin-top:2px;">${settings.def_dist} जिल्ला ${landDetailsStr} <b>${landownerName}</b>को नाममा दर्ता रहेकोमा सो ${landNounGenitive} दर्ता श्रेस्ता र पुर्जामा ${topicText} संशोधन गरिपाउँ भनी ${state.apps.length > 1 ? "निवेदकहरू" : "निवेदक"}को द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को निवेदन ।</p>
             <p style="text-indent:0px;">${currentMothText} जग्गाधनी दर्ता श्रेस्तामा रहेको र संशोधन भई कायम हुनुपर्ने विवरणहरू देहाय बमोजिम रहेको ।</p>
             ${correctionTableHtml} 
-            <p style="text-indent:0px;">माग भए बमोजिम संशोधन गरिदिनका लागि <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. ${v('in_sc')} मिति ${v('in_sd')} को सिफारिस, नागरिकता प्रमाणपत्र र सनाखतको ${extraTextPart} आधारमा ${rajaswo} माग भएबमोजिम <b>${topicText}</b> संशोधन हुन आवश्यक निर्णयार्थ पेश ।</p>
+            <p style="text-indent:0px;">माग भए बमोजिम संशोधन गरिदिनका लागि <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. ${v('in_sc')} मिति ${v('in_sd')} को सिफारिस, नागरिकता प्रमाणपत्र र सनाखतको ${extraTextPart} आधारमा ${rajaswo} माग भएबमोजिम <b>${topicText}</b> संशोधन हुन ${extraDecisionText} आवश्यक निर्णयार्थ पेश ।</p>
         `;
 
             document.getElementById('preview').innerHTML = headerHtml + nivedakTableHtml + bodyTextHtml;

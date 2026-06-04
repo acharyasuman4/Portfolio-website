@@ -378,6 +378,18 @@ html, body {
                             </div>
                         </div>
                     </div>
+                    <div class="mt-2 flex items-center justify-between bg-slate-700 p-2 rounded">
+    <label class="flex items-center gap-2 text-[10px] cursor-pointer text-yellow-400 font-bold">
+        <input type="checkbox" id="late_fee_applicable" onchange="toggleLateFeeUI(); saveAndUpdate();"> विलम्व शुल्क ? 
+        <span class="text-slate-400 font-normal text-[9px]">(दा.खा. हुन लेखि पठाएको २१ दिन भन्दा बढी भएमा)</span>
+    </label>
+    <div class="flex items-center gap-1">
+        <span class="text-[10px] text-white">वर्ष:</span>
+        <input type="text" id="late_fee_years" oninput="saveAndUpdate()" 
+            class="w-10 p-1 rounded text-black text-center font-bold" 
+            disabled placeholder="०">
+    </div>
+</div>
             </section>
 
             <!-- ५. नयाँ रोक्का -->
@@ -577,7 +589,10 @@ html, body {
                 dadate: document.getElementById('in_dadate').value,
                 napi_ch: document.getElementById('napi_ch').value,
                 napi_dt: document.getElementById('napi_dt').value,
-                expense_doc: document.getElementById('expense_doc_input').value
+                expense_doc: document.getElementById('expense_doc_input').value,
+
+                late_fee_applicable: document.getElementById('late_fee_applicable').checked,
+late_fee_years: document.getElementById('late_fee_years').value,
 
             };
             postTransferRokka.enabled = document.getElementById('post_rokka_enable').checked;
@@ -588,6 +603,12 @@ html, body {
             localStorage.setItem('court_dakha_v1', JSON.stringify(dataToSave));
             updateAll();
         }
+
+function toggleLateFeeUI() {
+    const isChecked = document.getElementById('late_fee_applicable').checked;
+    document.getElementById('late_fee_years').disabled = !isChecked;
+    if(!isChecked) document.getElementById('late_fee_years').value = '';
+}
 
         function loadFromLocal() {
             const data = JSON.parse(localStorage.getItem('court_dakha_v1'));
@@ -630,6 +651,10 @@ html, body {
                 document.getElementById('napi_dt').value = data.napi_dt || "";
                 document.getElementById('post_rokka_enable').checked = postTransferRokka.enabled || false;
                 document.getElementById('post_rokka_purpose').value = postTransferRokka.purpose || "";
+
+                document.getElementById('late_fee_applicable').checked = data.late_fee_applicable || false;
+document.getElementById('late_fee_years').value = data.late_fee_years || "";
+toggleLateFeeUI(); // Call this to set the disabled state correctly
 
                 // Trigger UI toggles
                 toggleRevUI();
@@ -1136,6 +1161,16 @@ html, body {
                 const isSvcPerc = document.getElementById('svc_perc_mode').checked;
                 const isSvcFixed = document.getElementById('svc_fixed_mode').checked;
 
+                let lateFeeText = "";
+if (document.getElementById('late_fee_applicable').checked) {
+    const yrs = toEnglish(document.getElementById('late_fee_years').value);
+    const totalLateFee = yrs * 500;
+    if (yrs > 0) {
+        lateFeeText = ` मुलुकी देवानी कार्यविधी संहिताको दफा २३९(३) बमोजिम ${toNepali(yrs)} (${convertToWordsLessThan100(yrs)}) वर्षको रू ${formatMoneyWithWords(totalLateFee)} विलम्व शुल्क,`;
+    }
+}
+
+
                 if (isSvcFixed && !isProfit && !isSvcPerc) {
                     const fixedVal = toEnglish(document.getElementById('svc_fixed_val').value);
                     d += `रू. ${formatMoneyWithWords(fixedVal)} सेवा शुल्क असुल भई `;
@@ -1146,6 +1181,9 @@ html, body {
                     lands.forEach(l => { if (haalKittas[l.id]?.length) { haalKittas[l.id].forEach(h => { if (h.owner === 'निवेदक') regTotal += toEnglish(h.valuation); }); } else { regTotal += toEnglish(baseValuations[l.id]); } });
 
                     const maxVal = Math.max(muchulka, regTotal);
+
+                        d += lateFeeText; 
+
 
                     if (muchulka > 0) {
                         d += ` रजिष्ट्रेशन थैली रू. ${formatMoneyWithWords(regTotal)} र मुचुल्काको थैली रू. ${formatMoneyWithWords(muchulka)} मध्ये ठूलो थैली रू. ${formatMoneyWithWords(maxVal)} को `;

@@ -466,7 +466,7 @@ document.addEventListener('input', e => {
             const allMrtkNames = nepJoin(state.mrtks.map(m => `<b>${m.name}</b>`));
             let hissaText = (document.getElementById('chk_hissa') && document.getElementById('chk_hissa').checked) ? "को " + allMrtkNames + "को हकहिस्सा मात्र" : "";
             // गुठी चेक गरिएको छ भने शब्द थप्ने
-            let guthiText = (document.getElementById('chk_guthi') && document.getElementById('chk_guthi').checked) ? " <b>गुठि भएकोमा गुठी यथावत कायम राखी</b> " : "";
+            let guthiText = (document.getElementById('chk_guthi') && document.getElementById('chk_guthi').checked) ? " <b>गुठी यथावत कायम राखी</b> " : "";
 
             const decDts = state.mrtks.map(m => `<b>${m.rel} ${m.name}</b>को मिति <b>${m.dt}</b>`).join(' र ');
             const landFinal = nepJoin(state.lands.map(l => `साविक <b>${l.vdc}</b> वडा नं. <b>${l.ward}</b> को कि.नं. <b>${nepJoin([...l.ks])}</b>`));
