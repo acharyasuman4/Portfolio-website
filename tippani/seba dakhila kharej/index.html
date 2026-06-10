@@ -21,51 +21,153 @@
         .office-header { display: flex; align-items: center; border-bottom: 2px double #000; padding-bottom: 15px; margin-bottom: 20px; width: 100%; position: relative; }
         .header-text-container { flex-grow: 1; text-align: center; font-weight: bold; color: #ff0000; line-height: 1.2; }
         
+/* १. इनपुट बक्सहरूलाई ठूलो र प्रष्ट बनाउने */
+.scrollable-column input, 
+.scrollable-column select, 
+.scrollable-column textarea {
+    font-size: 1rem !important; /* १६-१८ पिक्सेलको बीचमा - प्रष्ट देखिने */
+    padding: 0.7rem !important; /* भित्र पट्टिको खाली ठाउँ बढाउने */
+    color: #1e293b; /* गाढा रङ */
+    border-color: #94a3b8 !important; /* बोर्डर अलि गाढा */
+}
+
+/* २. लेबल (Labels) र शीर्षकहरूलाई ठूलो बनाउने */
+.scrollable-column label, 
+.scrollable-column h3 {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 5px;
+    display: block;
+    color: #0f172a;
+}
+
+/* ३. प्लेसहोल्डर (Placeholder) को रङ र साइज */
+.scrollable-column input::placeholder {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* ४. सानो ग्रिड इनपुटहरू (R-A-P-D) को लागि */
+#ui_rapd input {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* ५. मोबाइलमा बेस साइज बढाउने */
+@media (max-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+@media print {
+    html, body, .main-grid-container, .scrollable-column {
+        overflow: visible !important;
+        height: auto !important;
+    }
+}
+
         @media print {
-            @page { size: A4; margin: 0.5in 0.4in 0.4in 1.1in !important; }
-            html, body, .main-grid-container, .scrollable-column { height: auto !important; overflow: visible !important; }
-            .no-print { display: none !important; }
-            .preview-content { padding: 0 !important; min-height: auto !important; width: 100% !important; }
-            .office-header { border-bottom: 2px double #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        }
-        @media (min-width: 1024px) { /* lg breakpoint - ल्यापटपको लागि */
+
+            /* १. ब्राउजरको डिफल्ट मार्जिन र साइज कन्ट्रोल */
+            @page {
+                size: A4;
+                margin: 0.5in 0.4in 0.4in 1.1in !important;
+                /* Left 1.1" for punching */
+            }
+
+            /* २. मुख्य कन्टेनरहरूको हाइट फिक्स */
+            html,
+            body {
+                height: auto !important;
+                overflow: visible !important;
+                background: white !important;
+            }
+
+            .main-grid-container {
+                display: block !important;
+                /* Grid हटाउने */
+                height: auto !important;
+            }
+
+            .scrollable-column {
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            /* ३. अनावश्यक स्पेस हटाउने */
+            .preview-content {
+                padding: 0 !important;
+                /* स्क्रिनको ४०-५०px हटाउने */
+                margin: 0 !important;
+                min-height: auto !important;
+                /* ११ इन्चको हाइट हटाउने */
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+            }
+
+            /* ४. फुटरको ग्याप कम गर्ने */
+            #disp_footer {
+                margin-top: 20px !important;
+                /* ५० बाट २० मा झारियो */
+                page-break-before: avoid;
+            }
+
+            /* ५. अनावश्यक बटनहरू लुकाउने */
+            .no-print,
+            button,
+            .settings-btn {
+                display: none !important;
+            }
+
+            /* ६. हेडरको रङ्ग र बोर्डर फिक्स */
+            .office-header {
+                border-bottom: 2px double #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            @media (min-width: 1024px) { /* lg breakpoint - ल्यापटपको लागि */
     .scrollable-column {
         height: 100%;
         overflow-y: auto;
         scrollbar-width: thin;
     }
 }
+        }
+
+
     </style>
 </head>
 
-<body class="p-2 md:p-4 text-sm">
+<body class="p-2 md:p-4 text-base">
 <div class="max-w-[1950px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 main-grid-container">        
         <!-- बायाँ भाग: इन्पुट -->
         <div class="bg-white p-5 rounded-xl shadow-lg border border-teal-200 scrollable-column space-y-5 no-print">
             <div class="flex justify-between items-center border-b pb-2 top-0 bg-white z-10">
                 <h2 class="text-xl font-bold text-teal-800">शे.ब. दाखिला खारेज</h2>
                 <div class="flex gap-2">
-                    <button onclick="resetData()" class="bg-red-500 text-white px-2 py-1 rounded text-xs">Reset</button>
+                    <button onclick="resetData()" class="bg-red-500 text-white px-2 py-1 rounded">Reset</button>
                     <input type="text" id="in_danum" oninput="updateAll()" placeholder="द.नं." class="border p-2 rounded w-20">
                     <input type="text" id="in_dadate" oninput="updateAll()" placeholder="मिति" class="border p-2 rounded w-32">
                 </div>
             </div>
 
             <section class="bg-teal-50 p-3 rounded-lg border border-teal-100">
-                <h3 class="font-bold text-teal-800 mb-2 text-xs">शे.ब. लिखत विवरण</h3>
+                <h3 class="font-bold text-teal-800 mb-2 ">शे.ब. लिखत विवरण</h3>
                 <div class="flex gap-2">
-                    <input type="text" id="in_ranum" oninput="updateAll()" placeholder="र.नं." class="border p-2 rounded w-1/2 font-bold text-xs">
-                    <input type="text" id="in_parit_date" oninput="updateAll()" placeholder="पारित मिति" class="border p-2 rounded w-1/2 font-bold text-xs">
+                    <input type="text" id="in_ranum" oninput="updateAll()" placeholder="र.नं." class="border p-2 rounded w-1/2 font-bold ">
+                    <input type="text" id="in_parit_date" oninput="updateAll()" placeholder="पारित मिति" class="border p-2 rounded w-1/2 font-bold ">
                 </div>
             </section>
 
             <section class="grid grid-cols-2 gap-4">
                 <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
-                    <div class="flex justify-between mb-2 font-bold text-indigo-800 text-xs">निवेदकहरू <button onclick="addApplicant()" class="bg-indigo-600 text-white px-2 rounded">+ थप्नुहोस्</button></div>
+                    <div class="flex justify-between mb-2 font-bold text-indigo-800 ">निवेदकहरू <button onclick="addApplicant()" class="bg-indigo-600 text-white px-2 rounded">+ थप्नुहोस्</button></div>
                     <div id="applicant-list" class="space-y-2"></div>
                 </div>
                 <div class="bg-rose-50 p-3 rounded-lg border border-rose-100">
-                    <div class="flex justify-between mb-2 font-bold text-rose-800 text-xs">जग्गाधनीहरू <button onclick="addOwner()" class="bg-rose-600 text-white px-2 rounded">+ थप्नुहोस्</button></div>
+                    <div class="flex justify-between mb-2 font-bold text-rose-800 ">जग्गाधनीहरू <button onclick="addOwner()" class="bg-rose-600 text-white px-2 rounded">+ थप्नुहोस्</button></div>
                     <div id="owner-list" class="flex flex-wrap gap-2 mb-2"></div>
                     
                     <div class="p-2 bg-white rounded border text-[10px]">
@@ -77,7 +179,7 @@
             </section>
 
             <section class="bg-green-50 p-4 rounded-lg border border-green-200">
-                <h3 class="font-bold text-green-800 mb-2 text-xs">जग्गाको विवरण</h3>
+                <h3 class="font-bold text-green-800 mb-2 ">जग्गाको विवरण</h3>
                 <div class="grid grid-cols-3 gap-2 mb-3">
                     <input type="text" id="l_vdc" placeholder="गा.वि.स." class="border p-1 rounded">
                     <input type="text" id="l_ward" placeholder="वडा" class="border p-1 rounded">
@@ -94,13 +196,13 @@
                     <input type="text" id="l_d" placeholder="दा" class="border p-1 rounded text-center">
                 </div>
                 <div id="ui_sqm" class="hidden mb-3"><input type="text" id="l_sqm" placeholder="क्षेत्रफल" class="w-full border p-1 rounded"></div>
-                <div class="flex gap-2"><button onclick="addLand('same')" class="flex-1 bg-teal-600 text-white py-1 rounded text-xs">+ Same</button><button onclick="addLand('new')" class="flex-1 bg-green-700 text-white py-1 rounded text-xs">+ New</button></div>
+                <div class="flex gap-2"><button onclick="addLand('same')" class="flex-1 bg-teal-600 text-white py-1 rounded ">+ Same</button><button onclick="addLand('new')" class="flex-1 bg-green-700 text-white py-1 rounded ">+ New</button></div>
                 <div id="land-list-ui" class="mt-2 flex flex-wrap gap-1"></div>
             </section>
 
             <!-- रोक्का सेक्सन सधैं देखिने गरि राखियो ताकि भुल्न नपरोस् -->
             <section class="bg-orange-50 p-4 rounded-lg border border-orange-200 space-y-2">
-                <h3 class="font-bold text-orange-800 text-xs">रोक्का व्यवस्थापन</h3>
+                <h3 class="font-bold text-orange-800 ">रोक्का व्यवस्थापन</h3>
                 <div id="rokka-kitta-selector" class="flex flex-wrap gap-1"></div>
                 <div class="bg-white p-2 rounded border space-y-2">
                     <div class="flex gap-4 text-[10px] font-bold">
@@ -121,7 +223,7 @@
 
             <section class="bg-slate-800 text-white p-5 rounded-xl space-y-4">
                 <div id="base-valuation-list" class="space-y-1"></div>
-                <div class="grid grid-cols-1 gap-3 text-xs">
+                <div class="grid grid-cols-1 gap-3 ">
                     <label class="flex items-center gap-2 cursor-pointer bg-slate-700 p-2 rounded">
                         <input type="checkbox" id="is_3_gen" onchange="toggleRevenueFields(); updateAll()"> <span>तिन पुस्ता बाहिर ?</span>
                     </label>
@@ -141,7 +243,7 @@
                         <input type="text" id="bilamba_years" oninput="updateAll()" placeholder="वर्ष" class="hidden w-12 p-1 rounded text-black ml-auto">
                     </label>
                 </div>
-                <textarea id="decision_extra" oninput="updateAll()" placeholder="थप विवरण..." class="w-full border p-1 rounded h-16 text-black text-xs"></textarea>
+                <textarea id="decision_extra" oninput="updateAll()" placeholder="थप विवरण..." class="w-full border p-1 rounded h-16 text-black "></textarea>
             </section>
 
             <div class="grid grid-cols-2 gap-4 sticky bottom-0 bg-white pt-2">

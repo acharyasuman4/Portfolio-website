@@ -8,11 +8,11 @@
 
         <!-- २. वर्णन (Description) - गुगल सर्चमा देखिने छोटो बिवरण -->
     <meta name="description"
-        content="नामसारी, नामसारी टिप्पणी, भूमि प्रशासन, मालपोत, राजिनामा">
+        content="जग्गा नामसारीको टिप्पणी तयार गर्ने टुल ।">
 
     <!-- ३. कीवर्डहरू (Keywords) -->
     <meta name="keywords"
-        content="acharyasuman, acharyasuman4, मालपोत, नामसारी, death transfer, land transfer"
+        content="acharyasuman, acharyasuman4, मालपोत, नामसारी, death transfer, land transfer, जग्गा नामसारी, नामसारी टिप्पणी, जग्गा हस्तान्तरण, जग्गा नामसारी प्रक्रिया, नामसारी टिप्पणी कसारी तयार गर्ने ?, नामसारी टिप्पणीको नमुना, टिप्पणीको नमुना, कार्यलयमा प्रयोग हुने टिप्पणीको नमुना " 
         );>
 
     <!-- ४. सामाजिक सञ्जालका लागि (Open Graph Tags) - फेसबुकमा लिङ्क सेयर गर्दा राम्रो देखिनका लागि -->
@@ -566,8 +566,8 @@ const mohiFinalText = mohiTextParts.length > 0 ? " " + nepJoin(mohiTextParts) + 
 
            
             let bodyHtml = `
-    <p style="text-indent:50px; margin-top:15px;">श्रीमान्,</p>
-    <p style="text-indent:50px;">${settings.def_dist} जिल्ला ${landFinal} जग्गाहरू मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा ${nivedakWordPlain}को ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${isPlural ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakWord} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन ।</p>
+    <p style="text-indent:50px; margin-top:1px;">श्रीमान्,</p>
+    <p style="text-indent:50px;">${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा ${nivedakWordPlain}को ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${isPlural ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakWord} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन ।</p>
     <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसिल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको ${activehakdar} ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel}${hissaText} ${guthiText} ${mohiFinalText} नामसारी हुन आवश्यक निर्णयार्थ पेश ।</p>
     `;
 

@@ -512,7 +512,34 @@
 
         function updateUI() {
             // 1. Calculate Total
-            let totalVal = historyArray.reduce((acc, item) => acc + item.value, 0);
+    let totalVal = historyArray.reduce((acc, item) => acc + item.value, 0);
+    
+    // डिस्प्ले अपडेट
+    document.getElementById('disp-sqm').innerText = totalVal.toFixed(3) + " Sq. Meters";
+    document.getElementById('disp-rapd').innerText = convertSqmToRapd(totalVal);
+
+    // मुख्य क्याल्कुलेटरलाई शुद्ध डाटा पठाउने
+    if (window.parent) {
+        let absSqm = Math.abs(totalVal);
+        let totalDam = Math.round((absSqm / SQM_D) * 100) / 100;
+
+        let r = Math.floor(totalDam / 256);
+        let remA = totalDam % 256;
+        let a = Math.floor(remA / 16);
+        let remP = remA % 16;
+        let p = Math.floor(remP / 4);
+        let d = remP % 4;
+
+        // दाम ४ को चेक
+        if (parseFloat(d.toFixed(2)) >= 4) { d = 0; p++; }
+        if (p >= 4) { p = 0; a++; }
+        if (a >= 16) { a = 0; r++; }
+
+        window.parent.postMessage({
+            source: 'ropani-adder',
+            ropani: r, aana: a, paisa: p, daam: parseFloat(d.toFixed(2))
+        }, "*");
+    }
 
             // 2. Render Totals
             document.getElementById('disp-sqm').innerText = totalVal.toFixed(3) + " Sq. Meters";
@@ -542,24 +569,32 @@
             logContainer.innerHTML = html;
         }
 
-        function convertSqmToRapd(sqm) {
-            let absSqm = Math.abs(sqm);
-            let sign = sqm < 0 ? "- " : "";
+function convertSqmToRapd(sqm) {
+    let absSqm = Math.abs(sqm);
+    let sign = sqm < 0 ? "- " : "";
 
-            let r = Math.floor(absSqm / SQM_R);
-            let rem = absSqm % SQM_R;
+    // दाममा कन्भर्ट गरेर राउण्ड गर्ने (फ्लोटिङ पोइन्ट एरर हटाउन)
+    let totalDam = Math.round((absSqm / SQM_D) * 100) / 100;
 
-            let a = Math.floor(rem / SQM_A);
-            rem = rem % SQM_A;
+    let r = Math.floor(totalDam / (16 * 4 * 4));
+    let remA = totalDam % (16 * 4 * 4);
 
-            let p = Math.floor(rem / SQM_P);
-            rem = rem % SQM_P;
+    let a = Math.floor(remA / (4 * 4));
+    let remP = remA % (4 * 4);
 
-            let d = rem / SQM_D;
+    let p = Math.floor(remP / 4);
+    let d = remP % 4;
 
-            return `${sign}${r}-${a}-${p}-${d.toFixed(2)}`;
-        }
+    // यदि दाम ४ देखियो भने (राउण्डिङ गर्दा) त्यसलाई पैसामा लैजाने
+    if (parseFloat(d.toFixed(2)) >= 4) {
+        d = 0;
+        p++;
+        if (p >= 4) { p = 0; a++; }
+        if (a >= 16) { a = 0; r++; }
+    }
 
+    return `${sign}${r}-${a}-${p}-${d.toFixed(2)}`;
+}
         function clearInputs() {
             document.querySelectorAll('input').forEach(i => i.value = '');
             if (currentMode === 'rapd') {

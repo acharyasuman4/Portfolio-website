@@ -1,11 +1,11 @@
 // १. क्यासको नाम (भविष्यमा अपडेट गर्दा v1 लाई v2 बनाउनुहोस्)
-const CACHE_NAME = 'acharyasuman-portal-v2'; // <--- नयाँ अपडेटका लागि v2 बनाइएको छ
+const CACHE_NAME = 'acharyasuman-portal-v3'; // <--- नयाँ अपडेटका लागि v2 बनाइएको छ
 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './Registration/',
-  './Registration/template.html',
+  './tippani/template.html',
   './malpot%20calculator/',                     // स्पेस भएको हुनाले %20 राखिएको
   './kutabali%20calculator/',                   // स्पेस भएको हुनाले %20 राखिएको
   './tippani/',

@@ -154,6 +154,30 @@ html, body {
     }
 }
         }
+
+        /* इनपुट कोलमका सबै फिल्डहरूलाई ठूलो बनाउने */
+.scrollable-column input, 
+.scrollable-column select, 
+.scrollable-column textarea {
+    font-size: 1rem !important; /* १६ पिक्सेल - आँखालाई सजिलो हुने साइज */
+    padding: 0.6rem !important; /* भित्र पट्टिको खाली ठाउँ */
+    color: #1e293b; /* अलि गाढा रङ */
+}
+
+/* लेबलहरूलाई अलि प्रष्ट बनाउने */
+.scrollable-column label, 
+.scrollable-column h3 {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* सानो ग्रिड इनपुटहरू (रोपनी, आना, द.नं. आदि) लाई पनि सन्तुलित बनाउने */
+.scrollable-column input::placeholder {
+    font-size: 0.85rem;
+    font-weight: 400;
+}
     </style>
 </head>
 
@@ -284,9 +308,9 @@ html, body {
                         class="w-full border p-1 rounded text-xs" placeholder="उदा: दर्ताफारी">
                     <datalist id="case_list">
                         <option value="दर्ताफारी">
-                        <option value="अंशवण्डा">
-                        <option value="अंश दर्ता">
-                        <option value="हकदावी">
+                        <option value="अंशचलन">
+                        <option value="दुषित लिखत बदर">
+                        <option value="चेक अनादर">
                     </datalist>
                 </div>
                 <div class="flex gap-1">
@@ -825,13 +849,13 @@ toggleLateFeeUI(); // Call this to set the disabled state correctly
                     html += `<div class="bg-white p-2 border rounded"><div class="font-bold text-[10px] mb-1">साविक ${toNepali(l.kitta)} को कित्ताकाट भई कायम कित्ताहरू:</div>`;
                     haalKittas[l.id].forEach((h, idx) => {
                         html += `<div class="flex gap-1 mb-1">
-                            <input type="text" placeholder="कि.नं." oninput="uH(${l.id},${idx},'kitta',this.value)" value="${h.kitta}" class="border p-1 w-12 text-xs">
+                            <input type="text" placeholder="कि.नं." oninput="uH(${l.id},${idx},'kitta',this.value)" value="${h.kitta}" class="border p-1 w-24 text-xs">
                             <input type="text" placeholder="क्षेत्रफल (R-A-P-D वा व.मि.)" oninput="uH(${l.id},${idx},'area',this.value)" value="${h.area}" class="border p-1 w-24 text-xs">                            <select onchange="uH(${l.id},${idx},'owner',this.value)" class="border p-1 text-xs">
                                 <option value="निवेदक" ${h.owner === 'निवेदक' ? 'selected' : ''}>निवेदक</option>
                                 <option value="बाँकी" ${h.owner === 'बाँकी' ? 'selected' : ''}>बाँकी</option>
                                 ${nameOptions.map(n => `<option value="${n}" ${h.owner === n ? 'selected' : ''}>${n}</option>`).join('')}
                             </select>
-                            <input type="text" placeholder="थैली" oninput="uH(${l.id},${idx},'valuation',this.value)" value="${h.valuation}" class="border p-1 w-20 text-xs">
+                            <input type="text" placeholder="थैली" oninput="uH(${l.id},${idx},'valuation',this.value)" value="${h.valuation}" class="border p-1 w-24 text-xs">
                             <button onclick="haalKittas[${l.id}].splice(${idx},1); renderKKInputs(); saveAndUpdate();">✕</button>
                         </div>`;
                     });
@@ -1367,7 +1391,7 @@ if (document.getElementById('late_fee_applicable').checked) {
     `;
 
             const remainingContent = `
-        <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin:5pt 0 1pt 0; font-size:16pt;">टिप्पणी र आदेश</h3>
+        <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin:5pt 0 1pt 0; font-size:18pt;">टिप्पणी र आदेश</h3>
         <p style="margin:0; padding:0;">श्रीमान्,</p>
         <div style="text-align:justify; line-height:1; margin-top:5pt;">
             ${mainContentHtml}

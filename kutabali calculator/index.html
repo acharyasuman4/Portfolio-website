@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>कुतबाली असुली क्याल्कुलेटर - गुठी</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="/lucide.min.js"></script>
     <style>
         body {
-            font-family: 'Mukta', sans-serif;
+            font-family: 'Mukta', sans-serif, arial;
             background-color: #f1f5f9;
         }
 
@@ -40,6 +40,14 @@
             position: sticky;
             top: 1.5rem;
         }
+
+        @media (max-width: 768px) {
+    html { font-size: 18px; } /* मोबाइलमा अक्षर प्रष्ट देखिन */
+    .calc-input { padding: 1rem !important; font-size: 1.25rem !important; } /* ठुलो इनपुट */
+    .sticky-tool { position: static !important; } /* मोबाइलमा स्टिकी नबनाउने */
+    #sidebar-menu { transition: transform 0.3s ease; transform: translateX(-100%); }
+    #sidebar-menu.open { transform: translateX(0); }
+}
     </style>
 </head>
 
@@ -54,36 +62,39 @@
     </div>
 
     <div class="min-h-screen flex flex-col md:flex-row">
-        <!-- SIDEBAR -->
-        <aside class="w-full md:w-64 bg-slate-900 text-white p-6 flex flex-col md:sticky md:top-0 md:h-screen z-50">
-            <div class="mb-8 border-b border-slate-800 pb-4 text-center">
-                <h2 class="text-xl font-bold text-blue-400 font-mukta">गुठी क्याल्कुलेटर</h2>
-                <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">By: सुमन आचार्य 'समीर'</p>
-            </div>
-            <nav class="space-y-1 flex-1 text-sm">
-                <a href="/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i
-                        data-lucide="layout-dashboard" class="w-4 h-4"></i> मुख्य पोर्टल</a>
-                <a href="/malpot calculator"
-                    class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i
-                        data-lucide="calculator" class="w-4 h-4"></i> मालपोत असुली</a>
-                <a href="/kutabali calculator"
-                    class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg"><i
-                        data-lucide="calculator" class="w-4 h-4"></i> कुतबाली असुली</a>
-                <a href="/ropani adder" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i
-                        data-lucide="map" class="w-4 h-4"></i> रोपनी जोड्न</a>
-                        <a href="/Registration" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i
-                                data-lucide="file-check" class="w-4 h-4"></i> न्युनत्तम मूल्याङ्कन</a>
-                        <a href="/tippani/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i
-                                data-lucide="file-check" class="w-4 h-4"></i> टिप्पणी</a>
-                    </nav>
-        </aside>
+<!-- MOBILE HEADER -->
+<div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110] shadow-xl">
+    <h2 class="text-lg font-bold text-blue-400 font-mukta">कुतबाली क्याल्कुलेटर</h2>
+    <button onclick="document.getElementById('sidebar-menu').classList.toggle('open')" class="p-2 bg-slate-800 rounded-lg">
+        <i data-lucide="menu"></i>
+    </button>
+</div>
 
+<!-- SIDEBAR -->
+<aside id="sidebar-menu" class="fixed inset-y-0 left-0 z-[120] w-72 bg-slate-900 text-white p-6 flex flex-col md:relative md:translate-x-0 md:w-64 md:h-screen md:sticky md:top-0">
+    <!-- Close button for mobile -->
+    <button onclick="document.getElementById('sidebar-menu').classList.remove('open')" class="md:hidden absolute top-4 right-4 text-slate-400">
+        <i data-lucide="x"></i>
+    </button>
+    
+    <div class="mb-8 border-b border-slate-800 pb-4 text-center">
+        <h2 class="text-xl font-bold text-blue-400 font-mukta">गुठी क्याल्कुलेटर</h2>
+        <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">सुमन आचार्य 'समीर'</p>
+    </div>
+    <nav class="space-y-2 flex-1 text-base md:text-sm">
+        <a href="/" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="home"></i> मुख्य पोर्टल</a>
+        <a href="/malpot calculator" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="calculator"></i> मालपोत असुली</a>
+        <a href="/kutabali calculator" class="flex items-center gap-3 p-4 md:p-3 bg-blue-600 text-white rounded-xl shadow-lg"><i data-lucide="calculator"></i> कुतबाली असुली</a>
+        <a href="/ropani adder" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="map"></i> रोपनी जोड्न</a>
+        <a href="/Registration" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="file-check"></i> न्युनत्तम मूल्याङ्कन</a>
+        <a href="/tippani/" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="file-text"></i> टिप्पणी</a>
+    </nav>
+</aside>
         <!-- MAIN AREA -->
         <main class="flex-1 p-4 md:p-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
-                <!-- LEFT: KUTABALI CALCULATOR -->
-                <div class="lg:col-span-7">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
+    <!-- LEFT: KUTABALI CALCULATOR -->
+    <div class="lg:col-span-7 order-1"> 
                     <header class="mb-8">
                         <h1 class="text-2xl md:text-3xl font-bold text-slate-800">कुतबाली असुली क्याल्कुलेटर</h1>
                         <p class="text-slate-500 text-sm">आ.व. ०८२।८३ (सिन्धुपाल्चोक जिल्लासँग मिल्ने दररेट भएका जिल्लाको लागि)</p>
@@ -187,7 +198,7 @@
                 </div>
 
                 <!-- RIGHT: EMBEDDED LAND ADDER -->
-                <div class="lg:col-span-5">
+    <div class="lg:col-span-5 order-2 mt-4 lg:mt-0">
                     <div class="sticky-tool">
                         <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
                             <div class="bg-slate-900 text-white p-4 flex justify-between items-center px-6">
@@ -269,6 +280,23 @@
         ['ropani', 'aana', 'paisa', 'daam'].forEach(id => document.getElementById(id).addEventListener('input', calculateTax));
         document.getElementById('financialYear').addEventListener('change', calculateTax);
         document.getElementById('land_type').addEventListener('change', calculateTax);
+    </script>
+    <script>
+        // रोपनी एडरबाट आएको डाटा समात्ने र इनपुटमा भर्ने
+window.addEventListener("message", function(event) {
+    if (event.data.source === 'ropani-adder') {
+        // इनपुट फिल्डहरूमा भ्यालु भर्ने
+        document.getElementById('ropani').value = event.data.ropani;
+        document.getElementById('aana').value = event.data.aana;
+        document.getElementById('paisa').value = event.data.paisa;
+        document.getElementById('daam').value = event.data.daam;
+
+        // भ्यालु भरिएपछि आफैँ ट्याक्स क्याल्कुलेट गर्ने
+        if (typeof calculateTax === "function") {
+            calculateTax();
+        }
+    }
+});
     </script>
 </body>
 

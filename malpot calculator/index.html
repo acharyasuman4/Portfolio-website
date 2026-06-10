@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>मालपोत असुली क्याल्कुलेटर - गुठी</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="/lucide.min.js"></script>
     <link rel="manifest" href="/manifest.json">
     
 <style>
@@ -63,7 +63,7 @@
             
             <nav class="space-y-2 flex-1 text-base md:text-sm">
                 <a href="/" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="home" class="w-5 h-5"></i> HOME</a>
-                <a href="/malpot calculator" class="flex items-center gap-3 p-4 md:p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20"><i data-lucide="calculator" class="w-5 h-5"></i> मालपोत असुली</a>
+                <a href="/malpot calculator" class="flex items-center gap-3 p-4 md:p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20"><i data-lucide="calculator" class="w-5 h-5"></i> मालपोत असुली क्याल्कुलेटर</a>
                 <a href="/kutabali calculator" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="calculator" class="w-5 h-5"></i> कुतबाली असुली</a>
                 <a href="/ropani adder" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="plus-circle" class="w-5 h-5"></i> रोपनी जोड्न</a>
                 <a href="/Registration" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="file-check" class="w-5 h-5"></i> न्युनत्तम मूल्याङ्कन</a>
@@ -200,7 +200,7 @@
                         </div>
                         <div class="mt-4 p-4 bg-orange-50 rounded-2xl border border-orange-100">
                             <p class="text-xs text-orange-700 leading-relaxed font-medium">
-                                <i data-lucide="info" class="w-3 h-3 inline mb-1"></i> माथिको Adder बाट रोपनीमा क्षेत्रफल जोड्न सकिन्छ ।
+                                <i data-lucide="info" class="w-3 h-3 inline mb-1"></i> माथिको Adder बाट रोपनी र वर्ग मि. क्षेत्रफल जोड्न सकिन्छ ।
                             </p>
                         </div>
                     </div>
@@ -460,6 +460,25 @@ document.querySelectorAll('input[name="timing"]').forEach(radio => {
 });
 
     </script>
+    <script>
+    // एडरबाट आएको सन्देश सुन्ने (Listen गर्ने)
+window.addEventListener("message", function(event) {
+    // डाटा एडरबाटै आएको हो कि होइन पक्का गर्ने
+    if (event.data.source === 'ropani-adder') {
+        
+        // मुख्य क्याल्कुलेटरका इनपुट फिल्डहरूमा डाटा भर्ने
+        document.getElementById('ropani').value = event.data.ropani;
+        document.getElementById('aana').value = event.data.aana;
+        document.getElementById('paisa').value = event.data.paisa;
+        document.getElementById('daam').value = event.data.daam;
+
+        // डाटा भरिएपछि आफैँ ट्याक्स हिसाव गर्ने फङ्सन चलाउने
+        if (typeof calculateTax === "function") {
+            calculateTax();
+        }
+    }
+});</script>
+
             <script src="/js/tailwind.min.js"></script>
 <script src="/js/lucide.min.js"></script>
 

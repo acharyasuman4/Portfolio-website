@@ -20,10 +20,10 @@
     <meta property="og:description" content="कर्मचारी र सेवाग्राहीका लागि उपयोगी अनलाइन टुलहरू।">
     <meta property="og:url" content="https://acharyasuman4.com.np">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="/lucide.min.js"></script>
     <link rel="manifest" href="./manifest.json">
 
     <style>
@@ -80,43 +80,66 @@
     </div>
 
     <div class="min-h-screen flex flex-col md:flex-row">
-        <!-- SIDEBAR MENU -->
-        <!-- SIDEBAR MENU -->
-<!-- MOBILE HEADER (Only shows on small screens) -->
+<!-- १. मोबाइलको लागि मात्र देखिने हेडर (Laptop मा लुक्छ) -->
 <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110]">
-    <h2 class="text-lg font-bold text-blue-400">Land Admin Tools</h2>
-    <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="p-2">
+    <h2 class="text-lg font-bold text-blue-400">Land Administration Tools</h2>
+    <button onclick="document.getElementById('side-menu').classList.toggle('-translate-x-full')" class="p-2 bg-slate-800 rounded-lg">
         <i data-lucide="menu"></i>
     </button>
 </div>
 
-<!-- SIDEBAR (Now hidden on mobile, fixed on desktop) -->
-<aside id="mobile-menu" class="hidden md:flex w-full md:w-64 bg-slate-900 text-white p-6 flex-col fixed md:sticky top-0 h-screen z-[105]">
-    <!-- Your existing Sidebar Content here -->
-    <div class="mb-10 border-b border-slate-800 pb-6">
-        <h2 class="text-xl font-bold text-blue-400">Land Tools</h2>
-        <p class="text-[10px] text-slate-500">by: सुमन आचार्य</p>
-    </div>
-    <nav class="flex-1 space-y-2">
-        <a href="#dashboard" class="flex items-center gap-3 p-4 bg-blue-600 rounded-xl text-base font-medium"> <i data-lucide="layout-dashboard"></i> मुख्य पोर्टल</a>
-        <a href="#laws" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-xl text-base"> <i data-lucide="book-open"></i> ऐन/निर्देशिका</a>
-        <a href="#feedback" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-xl text-base"> <i data-lucide="message-square"></i> सल्लाह सुझाव</a>
-    </nav>
-</aside>
-        <!-- MAIN AREA -->
+<div class="flex min-h-screen">
+    <!-- २. साइडबार: ल्यापटपमा सधैं देखिने, मोबाइलमा बायाँबाट चिप्लने (Slide-in) -->
+    <aside id="side-menu" class="fixed inset-y-0 left-0 z-[120] w-64 bg-slate-900 text-white p-6 transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:flex md:flex-col md:h-screen md:sticky md:top-0">
+        
+        <!-- मोबाइलमा मेनु बन्द गर्ने बटन -->
+        <button onclick="document.getElementById('side-menu').classList.add('-translate-x-full')" class="md:hidden absolute top-4 right-4 text-slate-400">
+            <i data-lucide="x"></i>
+        </button>
+
+        <div class="mb-10 border-b border-slate-800 pb-6">
+            <h2 class="text-xl font-bold text-blue-400">Land Administration Tools</h2>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">by:सुमन आचार्य 'समीर'</p>
+        </div>
+
+        <nav class="flex-1 space-y-2">
+            <a href="#dashboard" class="flex items-center gap-3 p-3 bg-blue-600 rounded-xl text-sm font-medium shadow-lg">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> मुख्य पोर्टल
+            </a>
+            <a href="#laws" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
+                <i data-lucide="book-open" class="w-4 h-4"></i> ऐन/निर्देशिका
+            </a>
+            <a href="#feedback" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
+                <i data-lucide="message-square" class="w-4 h-4"></i> सल्लाह सुझाव
+            </a>
+            <!-- PWA इन्स्टल बटन -->
+            <button id="pwa-install-btn" style="display: none;" class="w-full mt-4 bg-emerald-600 p-3 rounded-xl text-xs font-bold">
+                इन्स्टल गर्नुहोस्
+            </button>
+        </nav>
+    </aside>
+
+    <!-- ३. मुख्य भाग (Main Content): ल्यापटपमा साइडबारको ठाउँ छोडेर बस्छ -->
+    <div class="flex-1 w-full overflow-x-hidden">
 <header class="hero-bg text-white py-10 md:py-20 px-4 text-center">
     <h1 class="text-4xl md:text-5xl font-bold mb-6 font-mukta leading-tight">भूमि प्रशासन सहयोगी पोर्टल</h1>
-                <div class="relative max-w-2xl mx-auto">
-                    <div class="flex bg-white rounded-2xl shadow-2xl overflow-hidden">
-                        <span class="flex items-center px-4 text-slate-400"><i data-lucide="search"></i></span>
-                        <input type="text" id="searchInput" onkeyup="handleSearch()"
-                            placeholder="नामसारी, टिप्पणी, ऐन खोज्नुहोस्..."
-                            class="w-full p-4 text-slate-900 outline-none">
-                        <div id="searchSuggestions"
-                            class="absolute w-full bg-white mt-2 rounded-xl shadow-2xl text-slate-900 text-left z-50 hidden border overflow-hidden">
-                            <!-- यहाँ सर्च रिजल्ट देखिनेछ -->
-                        </div>
-                    </div>
+<div class="relative max-w-2xl mx-auto mt-8 px-4">
+    <!-- सर्च इनपुट बक्स -->
+    <div class="flex items-center bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+        <span class="pl-4 text-slate-400">
+            <i data-lucide="search" class="w-5 h-5"></i>
+        </span>
+        <input type="text" id="searchInput" onkeyup="handleSearch()"
+            placeholder="नामसारी, संशोधन, रोपनी एडर खोज्नुहोस्..."
+            class="w-full p-4 text-slate-900 outline-none text-lg font-mukta">
+    </div>
+
+    <!-- सर्च सुझाव बक्स (Floating Results) -->
+    <div id="searchSuggestions"
+        class="absolute left-4 right-4 bg-white mt-2 rounded-2xl shadow-2xl text-slate-900 text-left z-[150] hidden border border-slate-100 overflow-hidden max-h-[350px] overflow-y-auto">
+        <!-- नतिजाहरू यहाँ भरिनेछन् -->
+    </div>
+</div>
             </header>
 
 <div class="p-4 md:p-12 max-w-7xl mx-auto">
@@ -414,38 +437,50 @@
         }
 
         // ३. नेपाली सर्च फङ्सन
-        function handleSearch() {
-            const query = document.getElementById('searchInput').value.trim();
-            const box = document.getElementById('searchSuggestions');
-            box.innerHTML = '';
+function handleSearch() {
+    const query = document.getElementById('searchInput').value.trim();
+    const box = document.getElementById('searchSuggestions');
+    box.innerHTML = '';
 
-            if (query.length < 1) {
-                box.classList.add('hidden');
-                return;
-            }
+    if (query.length < 1) {
+        box.classList.add('hidden');
+        return;
+    }
 
-            // युनिकोड नेपाली म्याचिङ (नामसारी, टिप्पणी आदि)
-            const results = searchIndex.filter(p =>
-                p.name.includes(query) ||
-                p.link.toLowerCase().includes(query.toLowerCase())
-            );
+    // इन्डेक्सबाट खोज्ने (नेपाली र अंग्रेजी दुवै)
+    const results = searchIndex.filter(p =>
+        p.name.includes(query) ||
+        p.link.toLowerCase().includes(query.toLowerCase())
+    );
 
-            if (results.length > 0) {
-                box.classList.remove('hidden');
-                results.forEach(r => {
-                    const d = document.createElement('div');
-                    d.className = "p-4 border-b hover:bg-blue-50 cursor-pointer font-bold text-sm text-slate-800 transition flex items-center gap-2";
-                    d.innerHTML = `<i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i> ${r.name}`;
-                    d.onclick = () => window.location.href = r.link;
-                    box.appendChild(d);
-                });
-                // आइकनहरू लोड गर्ने
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-            } else {
-                box.classList.add('hidden');
-            }
-        }
-
+    if (results.length > 0) {
+        box.classList.remove('hidden');
+        results.forEach(r => {
+            const d = document.createElement('div');
+            // 'भद्दा' नदेखिने गरी डिजाइन गरिएको पङ्क्ति
+            d.className = "p-4 border-b border-slate-50 hover:bg-blue-50 cursor-pointer transition-all flex items-center gap-3 group";
+            d.innerHTML = `
+                <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="font-bold text-slate-800 text-sm leading-tight">${r.name}</p>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-tighter">${r.link.split('/').filter(Boolean).pop()}</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:text-blue-600"></i>
+            `;
+            d.onclick = () => window.location.href = r.link;
+            box.appendChild(d);
+        });
+        
+        // आइकनहरू रि-लोड गर्ने
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    } else {
+        // यदि केही भेटिएन भने
+        box.classList.remove('hidden');
+        box.innerHTML = `<div class="p-8 text-center text-slate-400 text-sm italic">माफ गर्नुहोस्, "<b>${query}</b>" सँग सम्बन्धित केही भेटिएन।</div>`;
+    }
+}
         // विन्डो लोड हुने बित्तिकै सुरु गर्ने
         window.onload = loadAutomaticNepaliIndex;
 
