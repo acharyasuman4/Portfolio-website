@@ -9,50 +9,65 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="manifest" href="/manifest.json">
     
-    <style>
-        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
+<style>
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; overflow-x: hidden; }
         .sidebar-link:hover { background-color: #1e293b; color: #3b82f6; }
-.calc-input {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #f1f5f9; /* slate-100 */
-    border: 1px solid #cbd5e1; /* slate-300 */
-    border-radius: 0.75rem;    /* rounded-xl */
-    font-weight: 700;
-    font-size: 1.125rem;       /* text-lg */
-    outline: none;
-    transition: all 0.2s;
-}
+        
+        /* Mobile specific fixes */
+        @media (max-width: 768px) {
+            html { font-size: 18px; } /* Makes all text slightly larger */
+            .calc-input { font-size: 1.25rem !important; padding: 1rem !important; }
+            .sticky-tool { top: 0 !important; }
+            #sidebar { transition: transform 0.3s ease-in-out; }
+            #sidebar.closed { transform: translateX(-100%); }
+        }
 
-.calc-input:focus {
-    border-color: #3b82f6;     /* blue-500 */
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}    </style>
+        .calc-input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .calc-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+    </style>
+
 </head>
 <body class="text-slate-800">
 
     <!-- TOP NAV (Home Icon) -->
-    <div class="fixed top-0 right-0 z-[100] p-4">
-        <a href="/" class="bg-white/90 backdrop-blur p-2 rounded-full shadow-lg text-blue-600 hover:scale-110 transition flex items-center gap-2 px-4">
-            <i data-lucide="home" class="w-4"></i> <span class="text-xs font-bold uppercase">Home</span>
-        </a>
+<!-- MOBILE HEADER -->
+    <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110]">
+        <h2 class="text-lg font-bold text-blue-400">गुठी क्याल्कुलेटर</h2>
+        <button onclick="document.getElementById('sidebar').classList.toggle('closed')" class="p-2 bg-slate-800 rounded-lg">
+            <i data-lucide="menu"></i>
+        </button>
     </div>
 
     <div class="min-h-screen flex flex-col md:flex-row">
         <!-- SIDEBAR -->
-        <aside class="w-full md:w-64 bg-slate-900 text-white p-6 flex flex-col md:sticky md:top-0 md:h-screen z-50">
+        <aside id="sidebar" class="closed fixed inset-y-0 left-0 z-[120] w-72 bg-slate-900 text-white p-6 flex flex-col md:relative md:translate-x-0 md:w-64 md:flex md:h-screen md:sticky md:top-0">
+            <!-- Close button for mobile -->
+            <button onclick="document.getElementById('sidebar').classList.add('closed')" class="md:hidden absolute top-4 right-4 text-slate-400">
+                <i data-lucide="x"></i>
+            </button>
+
             <div class="mb-8 border-b border-slate-800 pb-4 text-center md:text-left">
                 <h2 class="text-xl font-bold text-blue-400">गुठी क्याल्कुलेटर</h2>
                 <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">सुमन आचार्य 'समीर'</p>
             </div>
             
-            <nav class="space-y-1 flex-1 text-sm">
-                <a href="/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="layout-dashboard" class="w-4"></i> HOME</a>
-                <a href="/malpot calculator" class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20"><i data-lucide="calculator" class="w-4"></i> मालपोत असुली क्याल्कुलेटर</a>
-                <a href="/kutabali calculator" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="calculator" class="w-4"></i> कुतबाली असुली क्याल्कुलेटर</a>
-                <a href="/ropani adder" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="plus-circle" class="w-4"></i> रोपनी जोड्न</a>
-                <a href="/Registration" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="file-check" class="w-4"></i> न्युनत्तम मूल्याङ्कन</a>
-                <a href="/tippani/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl border-t border-slate-800 mt-4"><i data-lucide="mail" class="w-4"></i> टिप्पणी</a>
+            <nav class="space-y-2 flex-1 text-base md:text-sm">
+                <a href="/" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="home" class="w-5 h-5"></i> HOME</a>
+                <a href="/malpot calculator" class="flex items-center gap-3 p-4 md:p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20"><i data-lucide="calculator" class="w-5 h-5"></i> मालपोत असुली</a>
+                <a href="/kutabali calculator" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="calculator" class="w-5 h-5"></i> कुतबाली असुली</a>
+                <a href="/ropani adder" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="plus-circle" class="w-5 h-5"></i> रोपनी जोड्न</a>
+                <a href="/Registration" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl"><i data-lucide="file-check" class="w-5 h-5"></i> न्युनत्तम मूल्याङ्कन</a>
+                <a href="/tippani/" class="flex items-center gap-3 p-4 md:p-3 text-slate-400 sidebar-link rounded-xl border-t border-slate-800 mt-4"><i data-lucide="mail" class="w-5 h-5"></i> टिप्पणी</a>
             </nav>
         </aside>
 
@@ -61,8 +76,17 @@
             <header class="mb-8">
                 <h1 class="text-2xl md:text-3xl font-bold text-slate-800 font-mukta text-center md:text-left">मालपोत असुली क्याल्कुलेटर</h1>
                 <p class="text-slate-500 text-sm text-center md:text-left">आ.व. ०८२।८३ (सिन्धुपाल्चोक जिल्ला दररेट अनुसार)</p>
-                <p class="text-slate-500 text-sm text-center md:text-left" style="color: rgb(46, 6, 6); font-size: 10;">चालु आ.व.को माघ मसान्तसम्म तिर्नेलाई ५% छुट र जेठ मसान्तपछि बुझाउनेलाई ५% जरिवाना लाग्नेछ ।
-</p>
+<div class="flex flex-wrap gap-4 my-4 p-3 bg-blue-50 rounded-2xl border border-blue-100 text-sm font-bold">
+    <label class="flex items-center gap-1 cursor-pointer">
+        <input type="radio" name="timing" value="magh" onchange="savePreference(this.value); calculateTax()"> क) माघ मसान्त सम्म
+    </label>
+    <label class="flex items-center gap-1 cursor-pointer">
+        <input type="radio" name="timing" value="normal" onchange="savePreference(this.value); calculateTax()" checked> ख) माघ मसान्त पछि
+    </label>
+    <label class="flex items-center gap-1 cursor-pointer">
+        <input type="radio" name="timing" value="asar" onchange="savePreference(this.value); calculateTax()"> ग) असार संक्रान्ति देखि
+    </label>
+</div>
                 
             </header>
 
@@ -244,6 +268,36 @@
                     chalu *= 5 / 4;
                 }
 
+                // १. जरिवाना क्याल्कुलेसनमा हुने थप परिवर्तन
+let timing = document.querySelector('input[name="timing"]:checked').value;
+let adjustment = 0;
+
+if (timing === 'magh') {
+    // माघ मसान्त सम्म: ५% छुट (जरिवानाबाट घटाउने)
+    adjustment = Math.floor(-0.05 * chalu);
+} else if (timing === 'asar') {
+    // असार संक्रान्ति देखि: ५% थप जरिवाना
+    adjustment = Math.ceil(0.05 * chalu);
+}
+
+jarivana = jarivana + adjustment; 
+
+// २. डाटा सेभ गर्ने (Persistence)
+function savePreference(val) {
+    localStorage.setItem('tax_timing', val);
+}
+
+// ३. विन्डो लोड हुँदा पुरानो सेटिङ फिर्ता ल्याउने
+function loadPreference() {
+    let saved = localStorage.getItem('tax_timing');
+    if (saved) {
+        document.querySelector(`input[name="timing"][value="${saved}"]`).checked = true;
+    }
+}
+
+// पेज लोड हुँदा यो रन गर्नुहोस्
+window.addEventListener('load', loadPreference);
+
                 // Calculate जम्मा without rounding each component
                 let jamma = chalu + bakyaota + jarivana;
 
@@ -399,6 +453,11 @@
         }
 
         lucide.createIcons();
+
+        // 'timing' नाम गरेका सबै रेडियो बटन परिवर्तन हुँदा calculateTax रन हुन्छ
+document.querySelectorAll('input[name="timing"]').forEach(radio => {
+    radio.addEventListener('change', calculateTax);
+});
 
     </script>
             <script src="/js/tailwind.min.js"></script>
