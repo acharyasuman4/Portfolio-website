@@ -449,13 +449,7 @@
                 overlay.classList.add('active');
             }
         }
-        if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('SW registered:', reg.scope))
-      .catch(err => console.error('SW registration failed:', err));
-  });
-}
+
 function openSettings() {
     const data = JSON.parse(localStorage.getItem('global_office_settings')) || {};
     document.getElementById('set_gov').value = data.gov || "नेपाल सरकार";
@@ -490,6 +484,30 @@ function saveSettings() {
     localStorage.setItem('global_office_settings', JSON.stringify(settings));
     alert("विवरण सुरक्षित भयो! अब सबै टिप्पणीहरूमा यो लागू हुनेछ।");
     closeSettings();
+
+}
+
+// यो कोड सबै पेज (Malpot, Kutabali, Tippani आदि) मा राख्नुहोस्
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        // यहाँ './sw.js' को सट्टा '/sw.js' (Root Path) प्रयोग गर्नुहोला 
+        // जसले गर्दा फोल्डर भित्रबाट पनि यसले मेन फाइल भेट्छ
+        navigator.serviceWorker.register('/sw.js')
+            .then(reg => {
+                console.log('Service Worker Registered for this page!');
+                
+                // नयाँ अपडेट चेक गर्ने लजिक
+                reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('नयाँ अपडेट उपलब्ध छ! कृपया पेज रिलोड गर्नुहोस्।');
+                        }
+                    };
+                };
+            })
+            .catch(err => console.log('Service Worker Registration Failed:', err));
+    });
 }
 
     </script>
