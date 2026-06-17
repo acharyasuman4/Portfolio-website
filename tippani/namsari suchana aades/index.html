@@ -52,7 +52,7 @@
         }
 
         .zoom-wrapper {
-            transform: scale(0.85);
+            transform: scale(1);
             transform-origin: top center;
             margin-bottom: -150px;
         }
@@ -100,7 +100,7 @@
 
         label {
             display: block;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: bold;
             margin-bottom: 2px;
             color: #475569;
@@ -111,7 +111,7 @@
             padding: 5px;
             border-radius: 4px;
             width: 100%;
-            font-size: 13px;
+            font-size: 16px;
             font-family: 'Mukta', sans-serif;
         }
 
@@ -296,11 +296,13 @@
 
         <!-- LEFT: INPUTS -->
         <div class="input-panel no-print">
-            <div style="margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid #e2e8f0; overflow:hidden;">
-                <h2 style="margin:0; float:left; font-size:1.2rem; color:#1e293b;">नामसारी विवरण</h2>
-                <button onclick="resetData()" class="btn btn-red">Reset</button>
-            </div>
-
+<div style="margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+    <h2 style="margin:0; font-size:1.1rem; color:#1e293b;">नामसारी विवरण</h2>
+    <div style="display: flex;">
+        <button onclick="location.href='/'" class="btn btn-home" style="color:#166534; margin-right: 20px; " >🏠 Home</button>
+        <button onclick="resetData()" class="btn btn-red">Reset</button>
+    </div>
+</div>
             <div class="input-group" style="background:#f8fafc;">
                 <!-- HIDDEN PATRA SANKHYA -->
                 <input type="hidden" id="in_p_s" value="०८२।८३">

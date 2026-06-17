@@ -14,9 +14,9 @@
         .kitta-card { transition: all 0.2s; cursor: pointer; border: 2px solid #e2e8f0; border-radius: 8px; background: white; text-align: center; padding: 5px; }
         .kitta-card.selected { border-color: #0d9488; background-color: #ccfbf1; border: 3px solid #0d9488; }
         
-        .table-output td, .table-output th { border: 1px solid #000; padding: 4px; text-align: center; font-size: 14px; line-height: 1.2; }
+        .table-output td, .table-output th { border: 1px solid #000; padding: 4px; text-align: center; font-size: 15px; line-height: 1.2; }
         
-        .preview-content { line-height: 1.5; text-align: justify; background: white; padding: 40px 50px; min-height: 11in; position: relative; font-size: 1.1rem; }
+        .preview-content { line-height: 1.5; text-align: justify; background: white; padding: 40px 50px; min-height: 11in; position: relative; font-size: 1.2rem; }
         
         .office-header { display: flex; align-items: center; border-bottom: 2px double #000; padding-bottom: 15px; margin-bottom: 20px; width: 100%; position: relative; }
         .header-text-container { flex-grow: 1; text-align: center; font-weight: bold; color: #ff0000; line-height: 1.2; }
@@ -26,7 +26,7 @@
 .scrollable-column select, 
 .scrollable-column textarea {
     font-size: 1rem !important; /* १६-१८ पिक्सेलको बीचमा - प्रष्ट देखिने */
-    padding: 0.7rem !important; /* भित्र पट्टिको खाली ठाउँ बढाउने */
+    padding: 0.2rem !important; /* भित्र पट्टिको खाली ठाउँ बढाउने */
     color: #1e293b; /* गाढा रङ */
     border-color: #94a3b8 !important; /* बोर्डर अलि गाढा */
 }
@@ -36,7 +36,7 @@
 .scrollable-column h3 {
     font-size: 1rem !important;
     font-weight: 700 !important;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
     display: block;
     color: #0f172a;
 }
@@ -147,6 +147,8 @@
             <div class="flex justify-between items-center border-b pb-2 top-0 bg-white z-10">
                 <h2 class="text-xl font-bold text-teal-800">शे.ब. दाखिला खारेज</h2>
                 <div class="flex gap-2">
+        <button onclick="location.href='/'" class="btn btn-home" style="color:#166534; margin-right: 20px; " >🏠 Home</button>
+
                     <button onclick="resetData()" class="bg-red-500 text-white px-2 py-1 rounded">Reset</button>
                     <input type="text" id="in_danum" oninput="updateAll()" placeholder="द.नं." class="border p-2 rounded w-20">
                     <input type="text" id="in_dadate" oninput="updateAll()" placeholder="मिति" class="border p-2 rounded w-32">
@@ -243,7 +245,7 @@
                         <input type="text" id="bilamba_years" oninput="updateAll()" placeholder="वर्ष" class="hidden w-12 p-1 rounded text-black ml-auto">
                     </label>
                 </div>
-                <textarea id="decision_extra" oninput="updateAll()" placeholder="थप विवरण..." class="w-full border p-1 rounded h-16 text-black "></textarea>
+                <textarea id="decision_extra" oninput="updateAll()" placeholder="लिसंखुपाखर गाउँपालिका १ नं. वडा कार्यालयको च.नं. १२० मिति २०८३।०१।२० को शे.व. दा.खा. गरिदिने र च.नं. १२१ मिति २०८३।०१।२० को घरबाटो सिफारिस" class="w-full border p-1 rounded h-16 text-black "></textarea>
             </section>
 
             <div class="grid grid-cols-2 gap-4 sticky bottom-0 bg-white pt-2">
@@ -270,7 +272,7 @@
                     </div>
                 </div>
 
-                <h3 style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 25px;">टिप्पणी र आदेश</h3>
+                <h4 style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 2px; font-size: 19px;">टिप्पणी र आदेश</h4>
                 <p>श्रीमान्,</p>
                 <div id="main_content">
                     <p><span id="out_applicant_details">.......</span>ले <span id="out_owners" class="font-bold text-red-800">.......</span>को नाममा जग्गाधनी श्रेस्ता कायम रहेको <span class="global-dist">सिन्धुपाल्चोक</span> जिल्ला <span id="out_land_details" class="font-bold text-green-700">.......</span> <span id="out_land_grammar">को जग्गा</span> <span class="font-bold" id="out_likhat_txt">...</span> को पारित शेषपछिको बकसपत्र लिखत बमोजिम दाखिला खारेज गरिपाउन द.नं. <span id="out_danum" class="font-bold">.......</span> मिति <span id="out_dadate" class="font-bold">.......</span> मा निवेदन गर्नुभएको ।</p>
@@ -619,7 +621,7 @@ function generateDecision() {
             mainContent = mainContent.replace(/<table/g, '<table border="1" cellspacing="0" cellpadding="3" style="border-collapse:collapse; width:100%;"');
 
             const wordDoc = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'><style>@page Section1 { size: A4; margin: 1in 0.5in 1in 1.25in; } body { font-family:'Mukta', sans-serif; font-size:12pt; } table td, table th { border: 1px solid black; text-align:center; }</style></head>
+                <head><meta charset='utf-8'><style>@page Section1 { size: A4; margin: 1in 0.5in 1in 1.25in; } body { font-family:'Mukta', sans-serif; font-size:14pt; } table td, table th { border: 1px solid black; text-align:center; }</style></head>
                 <body><div class="Section1">${headerHTML}<h3 style="text-align:center; text-decoration:underline;">टिप्पणी र आदेश</h3><p>श्रीमान्,</p>${mainContent}</div></body></html>`;
             
             const blob = new Blob(['\ufeff', wordDoc], { type: 'application/msword' });

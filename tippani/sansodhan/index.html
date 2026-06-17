@@ -15,7 +15,7 @@
         .input-panel { flex: 0 0 350px; background: white; padding: 15px; border-right: 1px solid #94a3b8; overflow-y: auto; height: 100%; z-index: 10; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); }
         .preview-container { flex: 1; background: #94a3b8; display: flex; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 0; }
         .zoom-wrapper { transform: scale(0.85); transform-origin: top center; margin-bottom: -150px; }
-        .preview-page { background: white; width: 210mm; min-height: 297mm; padding: 2.54cm; box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); text-align: justify; line-height: 1.5; font-size: 14pt; }
+        .preview-page { background: white; width: 210mm; min-height: 297mm; padding: 2.54cm; box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); text-align: justify; line-height: 1.5; font-size: 16pt; }
 
         .input-group { margin-bottom: 12px; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; }
         .bg-indigo { background-color: #eef2ff; border-color: #c7d2fe; }
@@ -23,8 +23,8 @@
         .bg-green { background-color: #f0fdf4; border-color: #bbf7d0; }
         .bg-sky { background-color: #f0f9ff; border-color: #bae6fd; }
 
-        label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 2px; color: #475569; }
-        .input-box { border: 1px solid #94a3b8; padding: 5px; border-radius: 4px; width: 100%; font-size: 13px; font-family: 'Mukta', sans-serif; }
+        label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 2px; color: #475569; }
+        .input-box { border: 1px solid #94a3b8; padding: 5px; border-radius: 4px; width: 100%; font-size: 15px; font-family: 'Mukta', sans-serif; }
         textarea.input-box { resize: vertical; min-height: 60px; }
         .input-box:focus { outline: 2px solid #2563eb; }
 
@@ -46,7 +46,7 @@
         .btn-red { background-color: #ef4444; width: auto; font-size: 11px; padding: 4px 10px; float: right; }
 
         .aadesh-table { width: 100%; border: 1px solid black; border-collapse: collapse; margin-top: 15px; }
-        .aadesh-table td { border: 1px solid black; padding: 10px; vertical-align: top; font-size: 14pt; }
+        .aadesh-table td { border: 1px solid black; padding: 10px; vertical-align: top; font-size: 16pt; }
 
         @media print {
             @page { margin: 0.5in 0.5in 0.5in 1.25in; size: A4 portrait; }
@@ -68,7 +68,11 @@
         <div class="input-panel no-print">
             <div style="margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid #e2e8f0; overflow:hidden;">
                 <h2 style="margin:0; float:left; font-size:1.2rem; color:#c2410c;">संसोधन विवरण</h2>
+                    <div style="display: flex;">
+        <button onclick="location.href='/'" class="btn btn-home" style="color:#166534; margin-right: 15px; " >🏠 Home</button>
+
                 <button onclick="resetData()" class="btn btn-red">Reset</button>
+                    </div>
             </div>
 
             <div class="input-group" style="background:#f8fafc;">
@@ -431,30 +435,30 @@ const letterhead = `
                 if (currentView === 'aadesh') {
                     bodyHtml = `
                     ${letterhead}
-                    <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin-bottom:15px; margin-top:20px;">${d.off}बाट जारी भएको हकदावी सम्बन्धी आदेश</div>
+                    <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:18pt; margin-bottom:5px; margin-top:5px;">${d.off}बाट जारी भएको हकदावी सम्बन्धी आदेश</div>
                     <table class="aadesh-table">
                         <tr>
-                            <td style="width: 25%; font-size: 14pt;"><b>${t.applicantLabel}:</b><br>${t.applicantNamesOnly}<br><br><b>मिति:</b> ${d.dt}<br><b>मि.नं.:</b> ${d.mis}</td>
-                            <td style="font-size: 14pt; text-align: justify;">${aadeshBody}</td>
+                            <td style="width: 25%; font-size: 16pt;"><b>${t.applicantLabel}:</b><br>${t.applicantNamesOnly}<br><b>मिति:</b> ${d.dt}<br><b>मि.नं.:</b> ${d.mis}</td>
+                            <td style="font-size: 16pt; text-align: justify;">${aadeshBody}</td>
                         </tr>
                     </table>`;
                 } else if (currentView === 'suchana') {
                     bodyHtml = `
                     ${letterhead}
-                    <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin-bottom:5px; margin-top:20px;">हकदावी सम्बन्धी ३५ दिने सार्वजनिक सूचना</div>
-                    <div style="text-align:center; font-weight:bold; font-size:14pt; margin-bottom:15px;">मिति: ${d.dt}</div>
-                    <div style="font-size: 14pt; text-indent: 50px;">${suchanaBody}</div>`;
+                    <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:18pt; margin-bottom:5px; margin-top:20px;">हकदावी सम्बन्धी ३५ दिने सार्वजनिक सूचना</div>
+                    <div style="text-align:center; font-weight:bold; font-size:16pt; margin-bottom:15px;">मिति: ${d.dt}</div>
+                    <div style="font-size: 16pt; text-indent: 50px;">${suchanaBody}</div>`;
                 } else {
                     const wardAddress = `श्री ${d.local} ${d.ward} नं. वडा कार्यालय, ${t.globalDist}`;
                     const localAddress = `श्री ${d.local}, ${t.globalDist}`;
 
                     bodyHtml = `
                     ${letterhead}
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14pt;"><div>पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</div><div style="padding-top:20px;">मिति: ${d.dt}</div></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:16pt;"><div>पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</div><div style="padding-top:20px;">मिति: ${d.dt}</div></div>
                     <div style="text-align:center; font-weight:bold; margin-bottom:15px; font-size:16pt;">विषय: सूचना टाँस गरी जानकारी पठाइदिने सम्बन्धमा ।</div>
-                    <div style="font-weight:bold; margin-bottom:10px; font-size:14pt;">${d.tn}<br>${d.ta}</div>
-                    <p style="text-indent: 50px; font-size: 14pt; margin-bottom: 10px; text-align: justify;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संसोधन गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
-                    <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14pt; border:none;">
+                    <div style="font-weight:bold; margin-bottom:10px; font-size:16pt;">${d.tn}<br>${d.ta}</div>
+                    <p style="text-indent: 50px; font-size: 16pt; margin-bottom: 10px; text-align: justify;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संसोधन गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
+                    <table width="100%" cellpadding="0" cellspacing="0" style="font-size:16pt; border:none;">
                     <tr><td style="width:65%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;"><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, ${t.globalDist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br></td><td style="width:35%; vertical-align:top; text-align:right; border:none;"><table align="right" cellpadding="0" cellspacing="0" style="width:220px;"><tr><td style="font-weight:bold; text-align:center;">.........................<br>${d.off}</td></tr></table></td></tr>
                     <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, ${t.globalDist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. ${wardAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. ${localAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ............ राष्ट्रिय दैनिक पत्रिका: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
                     </table>`;

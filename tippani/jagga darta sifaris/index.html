@@ -66,8 +66,11 @@
 
 <div class="main-container">
     <div class="form-pane">
-        <h2 class="form-header">जग्गा दर्ता सिफारिस फारम</h2>
-        
+            <div style="display: flex;">
+                
+                <h2 class="form-header">जग्गा दर्ता सिफारिस फारम</h2>
+                <button onclick="location.href='/'" class="btn btn-home" style="color:#166534; margin-left: 20px; " >🏠 Home</button>
+            </div>
         <div style="background:#e3f2fd; padding:10px; border-radius:5px; margin-bottom:15px; border:1px solid #b3e5fc;">
             <label>निवेदन प्रकार:</label>
             <input type="radio" name="req_type" value="दर्ता" checked onchange="updatePreview()"> छुट जग्गा दर्ता
@@ -83,6 +86,7 @@
             <label>विषय:</label>
             <select id="subject_opt" onchange="checkSubject(); updatePreview()">
                 <option value="छुट जग्गा दर्ता गरी ज.ध. प्रमाणपुर्जा पाउँ ।">छुट जग्गा दर्ता गरी ज.ध. प्रमाणपुर्जा पाउँ ।</option>
+                <option value="छुट जग्गा दर्ता नामसारी गरी ज.ध. प्रमाणपुर्जा पाउँ ।">छुट जग्गा दर्ता नामसारी गरी ज.ध. प्रमाणपुर्जा पाउँ ।</option>
                 <option value="custom">अन्य लेख्नुहोस्</option>
             </select>
             <input type="text" id="subject_custom" class="hidden" style="margin-top:5px;" placeholder="विषय लेख्नुहोस्" oninput="updatePreview()">
