@@ -115,7 +115,7 @@
             flex: 1;
             background: #94a3b8;
             overflow-y: auto;
-            padding: 20px 0;
+            padding: 10px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -143,7 +143,7 @@
         .doc-table th,
         .doc-table td {
             border: 1px solid black;
-            padding: 4px;
+            padding: 2px;
             text-align: center;
             font-size: 11pt;
         }
@@ -571,7 +571,7 @@ const mohiFinalText = mohiTextParts.length > 0 ? " " + nepJoin(mohiTextParts) + 
             let bodyHtml = `
     <p style="text-indent:50px; margin-top:1px;">श्रीमान्,</p>
     <p style="text-indent:50px;">${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा ${nivedakWordPlain}को ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${isPlural ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakWord} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन ।</p>
-    <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसिल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको ${activehakdar} ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel}${hissaText} ${guthiText} ${mohiFinalText} नामसारी हुन आवश्यक निर्णयार्थ पेश ।</p>
+    <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसिल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको ${activehakdar} ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन आवश्यक निर्णयार्थ पेश ।</p>
     `;
 
             // 5. UPDATE PREVIEW

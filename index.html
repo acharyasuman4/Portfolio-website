@@ -64,6 +64,9 @@
         font-size: 16px !important; /* Prevents iOS zoom on focus */
     }
 }
+    [v-cloak] { display: none; }
+    body { visibility: hidden; } /* पेज लोड नहुन्जेल लुकाउने */
+
 
     </style>
 </head>
@@ -89,35 +92,55 @@
 </div>
 
 <div class="flex min-h-screen">
-    <!-- २. साइडबार: ल्यापटपमा सधैं देखिने, मोबाइलमा बायाँबाट चिप्लने (Slide-in) -->
-    <aside id="side-menu" class="fixed inset-y-0 left-0 z-[120] w-64 bg-slate-900 text-white p-6 transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:flex md:flex-col md:h-screen md:sticky md:top-0">
-        
-        <!-- मोबाइलमा मेनु बन्द गर्ने बटन -->
+<!-- २. साइडबार: मोबाइल र ल्यापटप दुबैका लागि सुधारिएको -->
+<aside id="side-menu" class="fixed inset-y-0 left-0 z-[120] w-64 bg-slate-900 text-white flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-screen md:sticky md:top-0 border-r border-slate-800">
+    
+    <!-- Header Section -->
+    <div class="p-6">
         <button onclick="document.getElementById('side-menu').classList.add('-translate-x-full')" class="md:hidden absolute top-4 right-4 text-slate-400">
-            <i data-lucide="x"></i>
+            <i class="fas fa-times"></i>
         </button>
 
-        <div class="mb-10 border-b border-slate-800 pb-6">
-            <h2 class="text-xl font-bold text-blue-400">Land Administration Tools</h2>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">by:सुमन आचार्य 'समीर'</p>
+        <div class="mb-8 border-b border-slate-800 pb-6">
+            <h2 class="text-xl font-bold text-blue-400">Land Administration</h2>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">by: सुमन आचार्य 'समीर'</p>
         </div>
 
-        <nav class="flex-1 space-y-2">
+        <!-- Main Navigation -->
+        <nav class="space-y-2">
             <a href="#dashboard" class="flex items-center gap-3 p-3 bg-blue-600 rounded-xl text-sm font-medium shadow-lg">
-                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> मुख्य पोर्टल
+                <i class="fas fa-th-large w-4"></i> मुख्य पोर्टल
             </a>
             <a href="#laws" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
-                <i data-lucide="book-open" class="w-4 h-4"></i> ऐन/निर्देशिका
+                <i class="fas fa-book-open w-4"></i> ऐन/निर्देशिका
             </a>
             <a href="#feedback" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
-                <i data-lucide="message-square" class="w-4 h-4"></i> सल्लाह सुझाव
+                <i class="fas fa-comment-alt w-4"></i> सल्लाह सुझाव
             </a>
-            <!-- PWA इन्स्टल बटन -->
-            <button id="pwa-install-btn" style="display: none;" class="w-full mt-4 bg-emerald-600 p-3 rounded-xl text-xs font-bold">
-                इन्स्टल गर्नुहोस्
+
+            <!-- Install Button: Now styled to be more visible -->
+            <button id="pwa-install-btn" style="display: none;" class="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 p-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all border border-emerald-500/50 shadow-lg shadow-emerald-900/20">
+                <i class="fas fa-download"></i> एप इन्स्टल गर्नुहोस्
             </button>
         </nav>
-    </aside>
+    </div>
+
+    <!-- Social Media Section: This stays at the bottom -->
+    <div class="mt-auto p-6 bg-slate-950/50 border-t border-slate-800">
+        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-4 text-center">सम्पर्कको लागि</p>
+        <div class="flex justify-between items-center px-2">
+            <a href="https://facebook.com/acharyasuman874" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-blue-500 hover:bg-blue-600 hover:text-white transition-all shadow-lg">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://youtube.com/@04.sumanac" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-red-500 hover:bg-red-600 hover:text-white transition-all shadow-lg">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a href="mailto:acharyasuman874@gmail.com" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-orange-400 hover:bg-orange-500 hover:text-white transition-all shadow-lg">
+                <i class="fas fa-envelope"></i>
+            </a>
+        </div>
+    </div>
+</aside>
 
     <!-- ३. मुख्य भाग (Main Content): ल्यापटपमा साइडबारको ठाउँ छोडेर बस्छ -->
     <div class="flex-1 w-full overflow-x-hidden">
@@ -398,43 +421,64 @@
         });
 
 
-        let searchIndex = [];
+        // let searchIndex = [];
 
         // १. वेबसाइट खुल्ने बित्तिकै ब्याकग्राउन्डमा साइटम्यापबाट डाटा इन्डेक्स गर्ने
-        async function loadAutomaticNepaliIndex() {
-            try {
-                console.log("साइटम्याप लोड हुँदैछ...");
-                const response = await fetch('/sitemap.xml');
-                const data = await response.text();
-                const xml = new DOMParser().parseFromString(data, "application/xml");
-                const urls = Array.from(xml.querySelectorAll("loc")).map(el => el.textContent);
+        // async function loadAutomaticNepaliIndex() {
+        //     try {
+        //         console.log("साइटम्याप लोड हुँदैछ...");
+        //         const response = await fetch('/sitemap.xml');
+        //         const data = await response.text();
+        //         const xml = new DOMParser().parseFromString(data, "application/xml");
+        //         const urls = Array.from(xml.querySelectorAll("loc")).map(el => el.textContent);
 
-                // २. हरेक पेजको नेपाली टाइटल तान्ने
-                for (let url of urls) {
-                    try {
-                        // पेजको नामबाटै नेपालीमा बुझिने गरी नाम निकाल्ने (URL fallback)
-                        let folderName = url.split('/').filter(Boolean).pop() || "Home";
-                        folderName = folderName.replace(/-/g, ' ');
+        //         // २. हरेक पेजको नेपाली टाइटल तान्ने
+        //         for (let url of urls) {
+        //             try {
+        //                 // पेजको नामबाटै नेपालीमा बुझिने गरी नाम निकाल्ने (URL fallback)
+        //                 let folderName = url.split('/').filter(Boolean).pop() || "Home";
+        //                 folderName = folderName.replace(/-/g, ' ');
 
-                        // ब्याकग्राउन्डमा पेजको टाइटल तान्ने प्रयास गर्ने
-                        const pageRes = await fetch(url);
-                        const pageHtml = await pageRes.text();
-                        const doc = new DOMParser().parseFromString(pageHtml, "text/html");
-                        const pageTitle = doc.querySelector("title") ? doc.querySelector("title").innerText : folderName;
+        //                 // ब्याकग्राउन्डमा पेजको टाइटल तान्ने प्रयास गर्ने
+        //                 const pageRes = await fetch(url);
+        //                 const pageHtml = await pageRes.text();
+        //                 const doc = new DOMParser().parseFromString(pageHtml, "text/html");
+        //                 const pageTitle = doc.querySelector("title") ? doc.querySelector("title").innerText : folderName;
 
-                        searchIndex.push({
-                            name: pageTitle, // यो नेपाली टाइटल हो
-                            link: url
-                        });
-                    } catch (e) {
-                        console.log("इन्डेक्सिङमा समस्या:", url);
-                    }
-                }
-                console.log("सर्च इन्डेक्स तयार भयो!");
-            } catch (e) {
-                console.error("सर्च इन्डेक्स लोड हुन सकेन।");
-            }
-        }
+        //                 searchIndex.push({
+        //                     name: pageTitle, // यो नेपाली टाइटल हो
+        //                     link: url
+        //                 });
+        //             } catch (e) {
+        //                 console.log("इन्डेक्सिङमा समस्या:", url);
+        //             }
+        //         }
+        //         console.log("सर्च इन्डेक्स तयार भयो!");
+        //     } catch (e) {
+        //         console.error("सर्च इन्डेक्स लोड हुन सकेन।");
+        //     }
+        // }
+
+        // पुरानो loadAutomaticNepaliIndex हटाउनुहोस् र यो राख्नुहोस्
+const searchIndex = [
+    { name: "मालपोत असुली क्याल्कुलेटर", link: "/malpot calculator/" },
+    { name: "कुतबाली असुली क्याल्कुलेटर", link: "/kutabali calculator/" },
+    { name: "रोपनी एडर / कन्भर्टर टुल", link: "/ropani adder/" },
+    { name: "न्युनत्तम मूल्याङ्कन", link: "/Registration/" },
+    { name: "नामसारी टिप्पणी", link: "/tippani/namsari_tippani/" },
+    { name: "नामसारी सूचना, आदेश र पत्र", link: "/tippani/namsari suchana aades/" },
+    { name: "अदालतको दाखिला खारेज टिप्पणी", link: "/tippani/adalat Dakhila Kharej/" },
+    { name: "शेषपछिको बकसपत्र दाखिला खारेज टिप्पणी", link: "/tippani/seba dakhila kharej/" },
+    { name: "जग्गादर्ता सिफारिस फाराम", link: "/tippani/jagga darta sifaris/" },
+    { name: "संशोधन टिप्पणी", link: "/tippani/sansodhan_tippani/" },
+    { name: "संशोधन सुचना, आदेश र पत्र", link: "/tippani/sansodhan/" },
+    // अरु पेजहरू यहाँ थप्दै जानुहोस्
+];
+
+// विन्डो लोड हुँदा केही पनि डाउनलोड नगर्ने
+window.onload = () => {
+    console.log("Portal Ready Offline!");
+};
 
         // ३. नेपाली सर्च फङ्सन
 function handleSearch() {
@@ -503,13 +547,27 @@ function handleSearch() {
 
     </script>
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker Registered!'))
-                    .catch(err => console.log('Service Worker Failed:', err));
-            });
-        }
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => {
+                // Check for updates automatically
+                reg.onupdatefound = () => {
+                    const installingWorker = reg.installing;
+                    installingWorker.onstatechange = () => {
+                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            console.log('नयाँ अपडेट उपलब्ध छ! कृपया पेज रिलोड गर्नुहोस्।');
+                            // Optional: alert("नयाँ अपडेट उपलब्ध छ! कृपया पेज रिलोड गर्नुहोस्।");
+                        }
+                    };
+                };
+            })
+            .catch(err => console.log('Service Worker Failed:', err));
+    });
+}
+         document.addEventListener("DOMContentLoaded", function() {
+        document.body.style.visibility = "visible"; // लोड भएपछि देखाउने
+    });
     </script>
 
 </body>
