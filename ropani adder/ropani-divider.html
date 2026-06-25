@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Area Divider - क्षेत्रफल भाग लगाउने</title>
+        <script src="../tailwind.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="/lucide.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root { --p: #2c3e50; --s: #3498db; --a: #e74c3c; --g: #27ae60; --bg: #f4f7f6; }
+        body { font-family: 'Mukta', sans-serif; margin: 0; background: var(--bg); color: #333; }
+        
+        header { background: var(--p); color: white; padding: 12px; text-align: center; font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* मुख्य लेआउट: डेस्कटपमा दुई कोलम */
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .calc-column { flex: 1.5; min-width: 320px; }
+        .history-column { flex: 1; min-width: 320px; position: sticky; top: 20px; max-height: 90vh; overflow-y: auto; }
+
+        @media (max-width: 850px) {
+            .main-container { flex-direction: column; }
+            .history-column { position: static; max-height: none; }
+        }
+
+        /* कार्ड स्टाइल */
+        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .total-box { background: #e8f6f3; padding: 15px; text-align: center; border-radius: 10px; border-left: 5px solid var(--g); margin-bottom: 20px; }
+        
+        /* इनपुट र बटनहरू */
+        .input-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        input { width: 100%; padding: 12px 5px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 1.1rem; transition: 0.3s; }
+        input:focus { border-color: var(--s); outline: none; background: #fffdf0; box-shadow: 0 0 5px rgba(52, 152, 219, 0.2); }
+
+        .btn { border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; color: white; transition: 0.2s; }
+        .btn-add { background: var(--s); width: 100%; font-size: 1rem; }
+        .btn-calc { background: var(--g); width: 100%; margin-top: 15px; font-size: 1.1rem; }
+        .btn-clear { background: var(--a); }
+
+        /* मोड छनोट बटन स्टाइल */
+        .mode-selection { display: flex; gap: 8px; margin: 15px 0; }
+        .mode-btn { flex: 1; padding: 10px; background: #eee; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: 0.3s; }
+        .mode-btn.active { background: var(--p); color: white; border-color: var(--p); }
+
+        /* शेयर लिस्ट स्टाइल */
+        .share-item { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid #eee; }
+        
+        .result-area { background: #fffde7; padding: 15px; border-radius: 10px; border: 2px solid #fff176; margin-top: 20px; }
+        .history-item { background: white; border: 1px solid #eee; padding: 12px; border-radius: 8px; margin-bottom: 12px; font-size: 0.95rem; border-left: 4px solid var(--s); }
+        .kitta-badge { background: #eef2f7; color: var(--p); padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.85rem; }
+
+        /* टोकल स्विच */
+        .switch-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; background: #f1f1f1; padding: 8px 15px; border-radius: 8px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--g); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .hidden { display: none; }
+        footer { text-align: center; padding: 20px; color: #777; font-size: 0.85rem; }
+
+        /* मोबाइलमा मेनु सुरुमा लुकाउन (Translate Left) */
+    @media (max-width: 767px) {
+        #sidebar-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* जब 'open' क्लास थपिन्छ, मेनु देखिन्छ */
+        #sidebar-menu.open {
+            transform: translateX(0);
+        }
+    }
+    </style>
+</head>
+<body class="bg-slate-100 font-mukta">
+
+    <!-- १. मोबाइलको लागि टाउको (Mobile Header) - यो मोबाइलमा मात्र देखिन्छ -->
+    <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110]">
+        <h2 class="text-lg font-bold text-blue-400">क्षेत्रफल बाँडफाँड</h2>
+        <button onclick="document.getElementById('sidebar-menu').classList.toggle('open')" class="p-2 bg-slate-800 rounded-lg">
+            <i data-lucide="menu"></i>
+        </button>
+    </div>
+
+    <!-- २. साइडबार मेनु (यहाँ अघि दिएको मेनु स्निपेट राख्नुहोस्) -->
+    <div class="flex min-h-screen">
+<!-- SIDEBAR MENU FOR AREA DIVIDER -->
+<aside id="sidebar-menu" class="fixed inset-y-0 left-0 z-[120] w-72 bg-slate-900 text-white p-6 flex flex-col md:relative md:translate-x-0 md:w-64 md:h-screen md:sticky md:top-0 transition-transform duration-300">
+    
+    <!-- Close button for mobile -->
+    <button onclick="document.getElementById('sidebar-menu').classList.remove('open')" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i data-lucide="x"></i>
+    </button>
+    
+    <!-- App Title & Credit -->
+    <div class="mb-8 border-b border-slate-800 pb-4 text-center">
+        <h2 class="text-xl font-bold text-blue-400 font-mukta">Land Divider</h2>
+        <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">सुमन आचार्य 'समीर'</p>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="space-y-1 flex-1 text-base md:text-sm overflow-y-auto">
+        <a href="/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+            <i data-lucide="home" class="w-5 h-5"></i> मुख्य पोर्टल
+        </a>
+        <a href="/malpot calculator" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+            <i data-lucide="calculator" class="w-5 h-5"></i> मालपोत असुली
+        </a>
+        <a href="/kutabali calculator" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+            <i data-lucide="calculator" class="w-5 h-5"></i> कुतबाली असुली
+        </a>
+        <a href="/ropani adder" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+            <i data-lucide="map" class="w-5 h-5"></i> रोपनी जोड्न
+        </a>
+        <!-- Active Link: Area Divider -->
+        <a href="/ropani adder/ropani-divider.html" class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20">
+            <i data-lucide="layout-grid" class="w-5 h-5"></i> क्षेत्रफल बाँडफाँड
+        </a>
+        <a href="/Registration" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+            <i data-lucide="file-check" class="w-5 h-5"></i> न्युनत्तम मूल्याङ्कन
+        </a>
+        <a href="/tippani/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+            <i data-lucide="file-text" class="w-5 h-5"></i> टिप्पणी फर्म्याट
+        </a>
+    </nav>
+
+    <!-- Social Media Footer Buttons -->
+    <div class="mt-auto pt-6 border-t border-slate-800">
+        <div class="flex justify-between items-center px-2">
+            <!-- Facebook -->
+            <a href="https://facebook.com/acharyasuman874" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="Facebook">
+                <i data-lucide="facebook" class="w-5 h-5"></i>
+            </a>
+            <!-- YouTube -->
+            <a href="https://youtube.com/@04.sumanac" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-red-600 hover:text-white transition-all shadow-sm" title="YouTube">
+                <i data-lucide="youtube" class="w-5 h-5"></i>
+            </a>
+            <!-- Email -->
+            <a href="mailto:acharyasuman874@gmail.com" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-emerald-600 hover:text-white transition-all shadow-sm" title="Email Us">
+                <i data-lucide="mail" class="w-5 h-5"></i>
+            </a>
+        </div>
+        <p class="text-[9px] text-center text-slate-600 mt-4 uppercase tracking-tighter">Designed by: Suman Acharya Sameer</p>
+    </div>
+</aside>
+
+<div class="main-container">
+    
+    <!-- कोलम १: क्याल्कुलेटर -->
+    <div class="calc-column">
+        <div class="card">
+            <div class="total-box">
+                <div style="font-size: 0.9rem; color: #16a085;">बाँड्नुपर्ने जम्मा क्षेत्रफल:</div>
+                <div id="main-total-rapd" style="font-size: 1.8rem; font-weight: 700;">0-0-0-0</div>
+                <div id="main-total-sqm" style="font-size: 1rem; color: #666;">0.00 Sq.m</div>
+            </div>
+
+            <!-- इन्पुट मोड स्विच -->
+            <div class="mode-selection">
+                <button class="mode-btn active" id="btn-in-rapd" onclick="switchInput('rapd')">रोपनी-आना-पैसा-दाम</button>
+                <button class="mode-btn" id="btn-in-sqm" onclick="switchInput('sqm')">वर्ग मिटर (Sqm)</button>
+            </div>
+
+            <div id="input-rapd">
+                <div class="input-row">
+                    <div><label style="font-size: 0.8rem;">रोपनी</label><input type="number" id="in-r"></div>
+                    <div><label style="font-size: 0.8rem;">आना</label><input type="number" id="in-a"></div>
+                    <div><label style="font-size: 0.8rem;">पैसा</label><input type="number" id="in-p"></div>
+                    <div><label style="font-size: 0.8rem;">दाम</label><input type="number" id="in-d" onkeydown="handleTab(event, 'rapd')"></div>
+                </div>
+            </div>
+            <div id="input-sqm" class="hidden">
+                <label style="font-size: 0.8rem;">जम्मा वर्ग मिटर</label>
+                <input type="number" id="in-sqm-val" placeholder="0.00" onkeydown="handleTab(event, 'sqm')">
+            </div>
+            <button class="btn btn-add" onclick="addArea()">क्षेत्रफल थप्नुहोस् (Enter/Tab)</button>
+        </div>
+
+        <div class="card">
+            <div style="font-weight: 700; margin-bottom: 10px;">बाँडफाँडको मोड रोज्नुहोस्:</div>
+            <div class="mode-selection">
+                <button class="mode-btn" id="btn-mode-approx" onclick="setDivMode('approx')">करिब बराबर</button>
+                <button class="mode-btn" id="btn-mode-equal" onclick="setDivMode('equal')">बराबर भाग</button>
+                <button class="mode-btn active" id="btn-mode-share" onclick="setDivMode('share')">अंश/भाग</button>
+            </div>
+
+            <!-- Panels -->
+            <div id="panel-share">
+                <div id="share-list">
+                    <div class="share-item">
+                        <input type="number" class="sh-num" style="flex:1" placeholder="पाउने भाग">
+                        <span style="font-weight:bold; font-size:1.2rem;">/</span>
+                        <input type="number" class="sh-den" style="flex:1" placeholder="कुल खण्ड" id="base-den" oninput="syncDenom(this.value)">
+                        <button class="btn" style="background:#f39c12; padding: 10px 15px;" onclick="addShareRow()">+</button>
+                    </div>
+                </div>
+                <button class="btn btn-calc" onclick="calculate('share')">हिसाब गर्नुहोस्</button>
+            </div>
+
+            <div id="panel-equal" class="hidden">
+                <label>कति बराबर भाग लगाउने?</label>
+                <input type="number" id="eq-parts" placeholder="उदा: ५">
+                <button class="btn btn-calc" onclick="calculate('equal')">हिसाब गर्नुहोस्</button>
+            </div>
+
+            <div id="panel-approx" class="hidden">
+                <label>कति जनालाई करिब बराबर (पूर्ण संख्या) बाँड्ने?</label>
+                <input type="number" id="ap-parts" placeholder="उदा: ३">
+                <button class="btn btn-calc" onclick="calculate('approx')">हिसाब गर्नुहोस्</button>
+            </div>
+
+            <!-- Results -->
+            <div id="result-box" class="result-area hidden">
+                <div id="result-html"></div>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button class="btn" style="flex:2; background:var(--p);" onclick="clearAndSave()">क्लियर गरि हिस्ट्रीमा राख्नुहोस्</button>
+                    <button class="btn btn-clear" style="flex:1;" onclick="resetAll()">सबै रिसेट</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- कोलम २: हिस्ट्री -->
+    <div class="history-column">
+        <div class="card">
+            <div class="switch-row">
+                <span style="font-weight: 700;">हिस्ट्री (History)</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:0.8rem;">कित्ता नं.</span>
+                    <label class="switch">
+                        <input type="checkbox" id="kitta-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div id="history-content">
+                <!-- History Items Load Here -->
+            </div>
+            <button class="btn btn-clear" style="width:100%; margin-top:15px; padding: 8px; font-size: 0.8rem;" onclick="clearHistory()">हिस्ट्री खाली गर्नुहोस्</button>
+        </div>
+    </div>
+
+</div>
+    </div>
+
+<script>
+    const SQM_R = 508.74, SQM_A = SQM_R/16, SQM_P = SQM_A/4, SQM_D = SQM_P/4;
+    let totalSqm = 0;
+    let currentInputMode = 'rapd';
+    let currentDivMode = 'share';
+    let historyData = JSON.parse(localStorage.getItem('landHistory') || '[]');
+
+    window.onload = renderHistory;
+
+    // अटो एड र ट्याब बटन ह्यान्डलर
+    function handleTab(e, type) {
+        if (e.key === 'Tab' || e.key === 'Enter') {
+            e.preventDefault();
+            addArea();
+        }
+    }
+
+    function switchInput(mode) {
+        currentInputMode = mode;
+        document.getElementById('input-rapd').classList.toggle('hidden', mode !== 'rapd');
+        document.getElementById('input-sqm').classList.toggle('hidden', mode !== 'sqm');
+        document.getElementById('btn-in-rapd').classList.toggle('active', mode === 'rapd');
+        document.getElementById('btn-in-sqm').classList.toggle('active', mode === 'sqm');
+    }
+
+    function setDivMode(mode) {
+        currentDivMode = mode;
+        ['panel-share', 'panel-equal', 'panel-approx'].forEach(p => document.getElementById(p).classList.add('hidden'));
+        ['btn-mode-share', 'btn-mode-equal', 'btn-mode-approx'].forEach(b => document.getElementById(b).classList.remove('active'));
+        
+        document.getElementById('panel-' + mode).classList.remove('hidden');
+        document.getElementById('btn-mode-' + mode).classList.add('active');
+        document.getElementById('result-box').classList.add('hidden');
+    }
+
+    function addArea() {
+        let sqm = 0;
+        if (currentInputMode === 'rapd') {
+            const r = parseFloat(document.getElementById('in-r').value) || 0;
+            const a = parseFloat(document.getElementById('in-a').value) || 0;
+            const p = parseFloat(document.getElementById('in-p').value) || 0;
+            const d = parseFloat(document.getElementById('in-d').value) || 0;
+            sqm = (r * SQM_R) + (a * SQM_A) + (p * SQM_P) + (d * SQM_D);
+        } else {
+            sqm = parseFloat(document.getElementById('in-sqm-val').value) || 0;
+        }
+
+        if (sqm > 0) {
+            totalSqm += sqm;
+            updateMainDisplay();
+            clearInputs();
+        }
+    }
+
+    function updateMainDisplay() {
+        document.getElementById('main-total-rapd').innerText = sqmToRapd(totalSqm);
+        document.getElementById('main-total-sqm').innerText = totalSqm.toFixed(3) + " Sq.m";
+    }
+
+    function clearInputs() {
+        ['in-r', 'in-a', 'in-p', 'in-d', 'in-sqm-val'].forEach(id => document.getElementById(id).value = '');
+        if (currentInputMode === 'rapd') document.getElementById('in-r').focus();
+        else document.getElementById('in-sqm-val').focus();
+    }
+
+    function addShareRow() {
+        const den = document.getElementById('base-den').value;
+        const div = document.createElement('div');
+        div.className = 'share-item';
+        div.innerHTML = `<input type="number" class="sh-num" style="flex:1" placeholder="पाउने भाग"> <span>/</span> 
+                        <input type="number" class="sh-den" style="flex:1" value="${den}">
+                        <button class="btn btn-clear" style="padding:5px 12px;" onclick="this.parentElement.remove()">✕</button>`;
+        document.getElementById('share-list').appendChild(div);
+    }
+
+    function syncDenom(val) {
+        document.querySelectorAll('.sh-den').forEach(el => el.value = val);
+    }
+
+    function calculate(mode) {
+        if (totalSqm <= 0) return alert("पहिले क्षेत्रफल थप्नुहोस् !");
+        let html = `<div style="padding-bottom:10px; border-bottom:1px solid #ddd; margin-bottom:10px;">
+                    <small>जम्मा क्षेत्रफल:</small> <br><b>${sqmToRapd(totalSqm)}</b> (${totalSqm.toFixed(2)} m²)</div>`;
+        let usedSqm = 0;
+
+        if (mode === 'share') {
+            const nums = document.querySelectorAll('.sh-num');
+            const dens = document.querySelectorAll('.sh-den');
+            nums.forEach((n, i) => {
+                let sNum = parseFloat(n.value) || 0;
+                let sDen = parseFloat(dens[i].value) || 1;
+                if (sNum > 0) {
+                    let sSqm = (sNum / sDen) * totalSqm;
+                    usedSqm += sSqm;
+                    html += `<div style="margin:8px 0; font-size:1rem;">• भाग ${sNum}/${sDen}: <b>${sqmToRapd(sSqm)}</b> <br><small style="color:#777;">(${sSqm.toFixed(3)} m²)</small></div>`;
+                }
+            });
+            let remain = totalSqm - usedSqm;
+            if (remain > 0.001) html += `<div style="color:var(--a); margin-top:8px; border-top:1px solid #eee; padding-top:5px;">• बाँकी खण्ड: <b>${sqmToRapd(remain)}</b> <br><small>(${remain.toFixed(3)} m²)</small></div>`;
+        } 
+        else if (mode === 'equal') {
+            let p = parseInt(document.getElementById('eq-parts').value) || 1;
+            let eqSqm = totalSqm / p;
+            html += `<div style="margin:8px 0;">• प्रत्येक ${p} भागको बराबर: <br><b>${sqmToRapd(eqSqm)}</b> <br><small>(${eqSqm.toFixed(3)} m²)</small></div>`;
+        } 
+        else if (mode === 'approx') {
+            let p = parseInt(document.getElementById('ap-parts').value) || 1;
+            let totalD = Math.round(totalSqm / SQM_D);
+            let base = Math.floor(totalD / p);
+            let extra = totalD % p;
+            html += `<div style="font-size:0.85rem; color:#666;">जम्मा ${totalD} दामलाई ${p} जनामा बाँड्दा:</div>`;
+            if (extra > 0) html += `<div style="margin:8px 0;">- ${extra} जनाले: <b>${daamToRapd(base+1)}</b> <br><small>(${((base+1)*SQM_D).toFixed(2)} m²)</small></div>`;
+            html += `<div style="margin:8px 0;">- ${p-extra} जनाले: <b>${daamToRapd(base)}</b> <br><small>(${(base*SQM_D).toFixed(2)} m²)</small></div>`;
+        }
+
+        document.getElementById('result-html').innerHTML = html;
+        document.getElementById('result-box').classList.remove('hidden');
+    }
+
+    function clearAndSave() {
+        let kitta = "";
+        if (document.getElementById('kitta-toggle').checked) {
+            kitta = prompt("कित्ता नं. हाल्नुहोस्:") || "-";
+        }
+        
+        const resultHtml = document.getElementById('result-html').innerHTML;
+        const entry = {
+            id: Date.now(),
+            kitta: kitta,
+            data: resultHtml,
+            time: new Date().toLocaleString('ne-NP')
+        };
+
+        historyData.unshift(entry);
+        if (historyData.length > 20) historyData.pop();
+        localStorage.setItem('landHistory', JSON.stringify(historyData));
+
+        resetInternal();
+        renderHistory();
+    }
+
+    function resetInternal() {
+        totalSqm = 0;
+        updateMainDisplay();
+        document.getElementById('result-box').classList.add('hidden');
+        document.getElementById('share-list').innerHTML = `
+            <div class="share-item">
+                <input type="number" class="sh-num" style="flex:1" placeholder="पाउने भाग">
+                <span>/</span>
+                <input type="number" class="sh-den" style="flex:1" placeholder="कुल खण्ड" id="base-den" oninput="syncDenom(this.value)">
+                <button class="btn" style="background:#f39c12; padding: 10px 15px;" onclick="addShareRow()">+</button>
+            </div>`;
+    }
+
+    function resetAll() {
+        if(confirm("के तपाईं सबै विवरण रिसेट गर्न चाहनुहुन्छ?")) {
+            resetInternal();
+        }
+    }
+
+    function renderHistory() {
+        const container = document.getElementById('history-content');
+        if (historyData.length === 0) {
+            container.innerHTML = "<center style='color:#ccc; padding:30px;'>हिस्ट्री खाली छ ।</center>";
+            return;
+        }
+        container.innerHTML = historyData.map(item => `
+            <div class="history-item">
+                <div style="font-size:0.75rem; color:#999; margin-bottom:5px; display:flex; justify-content:space-between;">
+                    <span>${item.time}</span>
+                    <span style="color:red; cursor:pointer;" onclick="deleteHistoryItem(${item.id})">मेटाउनुहोस्</span>
+                </div>
+                ${item.kitta ? `<span class="kitta-badge">कित्ता नं: ${item.kitta}</span>` : ''}
+                <div style="margin-top:10px; line-height:1.4;">${item.data}</div>
+            </div>
+        `).join('');
+    }
+
+    function deleteHistoryItem(id) {
+        historyData = historyData.filter(item => item.id !== id);
+        localStorage.setItem('landHistory', JSON.stringify(historyData));
+        renderHistory();
+    }
+
+    function clearHistory() {
+        if (confirm("के तपाईं पुरै हिस्ट्री मेटाउन चाहनुहुन्छ?")) {
+            historyData = [];
+            localStorage.removeItem('landHistory');
+            renderHistory();
+        }
+    }
+
+    function sqmToRapd(sqm) {
+        if (sqm <= 0) return "0-0-0-0";
+        let totalD = Math.round((sqm / SQM_D) * 100) / 100;
+        let r = Math.floor(totalD / 256);
+        let remA = totalD % 256;
+        let a = Math.floor(remA / 16);
+        let remP = remA % 16;
+        let p = Math.floor(remP / 4);
+        let d = (remP % 4).toFixed(2);
+        if (parseFloat(d) >= 4) { d = 0; p++; }
+        if (p >= 4) { p = 0; a++; }
+        if (a >= 16) { a = 0; r++; }
+        return `${r}-${a}-${p}-${parseFloat(d)}`;
+    }
+
+    function daamToRapd(totalD) {
+        let r = Math.floor(totalD / 256);
+        let remA = totalD % 256;
+        let a = Math.floor(remA / 16);
+        let remP = remA % 16;
+        let p = Math.floor(remP / 4);
+        let d = totalD % 4;
+        return `${r}-${a}-${p}-${d}`;
+    }
+</script>
+  <script>  lucide.createIcons();</script>
+  <script>
+    // १. आइकनहरू सुचारु गर्ने (Lucide Icons)
+    lucide.createIcons();
+
+    // २. मोबाइल मेनु टगल गर्ने फङ्सन
+    const sidebar = document.getElementById('sidebar-menu');
+
+    function toggleMenu() {
+        sidebar.classList.toggle('open');
+    }
+
+    // ३. मेनु बाहिर क्लिक गर्दा मेनु आफै बन्द हुने बनाउन (ऐच्छिक)
+    document.addEventListener('click', (e) => {
+        const menuBtn = document.querySelector('.md\\:hidden button'); // मोबाइल मेनु बटन
+        if (!sidebar.contains(e.target) && !menuBtn.contains(e.target) && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+        }
+    });
+</script>
+</body>
+</html>
