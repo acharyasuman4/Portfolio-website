@@ -7,7 +7,9 @@
         <script src="../tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="/lucide.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.tailwindcss.com"></script>
+
 
     <style>
         :root { --p: #2c3e50; --s: #3498db; --a: #e74c3c; --g: #27ae60; --bg: #f4f7f6; }
@@ -120,14 +122,14 @@
             <i data-lucide="calculator" class="w-5 h-5"></i> मालपोत असुली
         </a>
         <a href="/kutabali calculator" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
-            <i data-lucide="laptop-minimal-check" class="w-5 h-5"></i> कुतबाली असुली
+            <i data-lucide="equal" class="w-5 h-5"></i> कुतबाली असुली
         </a>
         <a href="/ropani adder" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
-            <i data-lucide="map" class="w-5 h-5"></i> रोपनी जोड्न
+            <i data-lucide="circle-plus" class="w-5 h-5"></i> रोपनी जोड्न
         </a>
         <!-- Active Link: Area Divider -->
         <a href="/ropani divider/index.html" class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20">
-            <i data-lucide="layout-grid" class="w-5 h-5"></i> क्षेत्रफल बाँडफाँड
+            <i data-lucide="circle-divide" class="w-5 h-5"></i> क्षेत्रफल बाँडफाँड
         </a>
         <a href="/Registration" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="file-check" class="w-5 h-5"></i> न्युनत्तम मूल्याङ्कन
@@ -142,11 +144,11 @@
         <div class="flex justify-between items-center px-2">
             <!-- Facebook -->
             <a href="https://facebook.com/acharyasuman874" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="Facebook">
-                <i data-lucide="facebook" class="w-5 h-5"></i>
+               <i class="fab fa-facebook-f"></i>
             </a>
             <!-- YouTube -->
             <a href="https://youtube.com/@04.sumanac" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-red-600 hover:text-white transition-all shadow-sm" title="YouTube">
-                <i data-lucide="youtube" class="w-5 h-5"></i>
+                <i class="fab fa-youtube"></i>
             </a>
             <!-- Email -->
             <a href="mailto:acharyasuman874@gmail.com" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-emerald-600 hover:text-white transition-all shadow-sm" title="Email Us">
@@ -197,8 +199,20 @@
                 <button class="mode-btn" id="btn-mode-share" onclick="setDivMode('share')">अंश/भाग</button>
             </div>
 
+            <div id="panel-approx">
+                <label>कति जनालाई करिब बराबर (पूर्ण संख्या) बाँड्ने?</label>
+                <input type="number" id="ap-parts" placeholder="उदा: ३">
+                <button class="btn btn-calc" onclick="calculate('approx')">हिसाब गर्नुहोस्</button>
+          </div>
+        
+        
+          <div id="panel-equal" class="hidden">
+                <label>कति बराबर भाग लगाउने?</label>
+                <input type="number" id="eq-parts" placeholder="उदा: ५">
+                <button class="btn btn-calc" onclick="calculate('equal')">हिसाब गर्नुहोस्</button>
+            </div>
             <!-- Panels -->
-            <div id="panel-share">
+            <div id="panel-share" class="hidden">
                 <div id="share-list">
                     <div class="share-item">
                         <input type="number" class="sh-num" style="flex:1" placeholder="पाउने भाग">
@@ -210,17 +224,7 @@
                 <button class="btn btn-calc" onclick="calculate('share')">हिसाब गर्नुहोस्</button>
             </div>
 
-            <div id="panel-equal" class="hidden">
-                <label>कति बराबर भाग लगाउने?</label>
-                <input type="number" id="eq-parts" placeholder="उदा: ५">
-                <button class="btn btn-calc" onclick="calculate('equal')">हिसाब गर्नुहोस्</button>
-            </div>
 
-            <div id="panel-approx" class="hidden">
-                <label>कति जनालाई करिब बराबर (पूर्ण संख्या) बाँड्ने?</label>
-                <input type="number" id="ap-parts" placeholder="उदा: ३">
-                <button class="btn btn-calc" onclick="calculate('approx')">हिसाब गर्नुहोस्</button>
-            </div>
 
             <!-- Results -->
             <div id="result-box" class="result-area hidden">
@@ -361,15 +365,64 @@
             let eqSqm = totalSqm / p;
             html += `<div style="margin:8px 0;">• प्रत्येक ${p} भागको बराबर: <br><b>${sqmToRapd(eqSqm)}</b> <br><small>(${eqSqm.toFixed(3)} m²)</small></div>`;
         } 
-        else if (mode === 'approx') {
-            let p = parseInt(document.getElementById('ap-parts').value) || 1;
-            let totalD = Math.round(totalSqm / SQM_D);
-            let base = Math.floor(totalD / p);
-            let extra = totalD % p;
-            html += `<div style="font-size:0.85rem; color:#666;">जम्मा ${totalD} दामलाई ${p} जनामा बाँड्दा:</div>`;
-            if (extra > 0) html += `<div style="margin:8px 0;">- ${extra} जनाले: <b>${daamToRapd(base+1)}</b> <br><small>(${((base+1)*SQM_D).toFixed(2)} m²)</small></div>`;
-            html += `<div style="margin:8px 0;">- ${p-extra} जनाले: <b>${daamToRapd(base)}</b> <br><small>(${(base*SQM_D).toFixed(2)} m²)</small></div>`;
+
+
+else if (mode === 'approx') {
+    let p = parseInt(document.getElementById('ap-parts').value) || 1;
+    if (p < 1) return;
+
+    // १. जम्मा क्षेत्रफल र दाम गणना
+    let totalD = totalSqm / SQM_D; 
+    let floorTotalD = Math.floor(totalD);
+    let decimalPart = totalD - floorTotalD;
+
+    let base = Math.floor(floorTotalD / p);
+    let extra = floorTotalD % p;
+
+    // २. प्रत्येक व्यक्तिको भाग एउटा एरे (Array) मा जम्मा गर्ने
+    let shares = [];
+    for (let i = 0; i < p; i++) {
+        let val = base;
+        if (i < extra) {
+            val += 1; // बाँकी रहेको पूर्ण संख्या (दाम) वितरण
         }
+        if (i === p - 1) {
+            val += decimalPart; // अन्तिम व्यक्तिलाई दशमलव अंश दिने
+        }
+        shares.push(val.toFixed(2)); // दशमलवको समस्या नहोस् भनेर string मा राख्ने
+    }
+
+    // ३. समान भाग पाउनेहरूलाई ग्रुप गर्ने (उदा: {"5.00": 2, "5.50": 1})
+    let counts = {};
+    shares.forEach(s => {
+        counts[s] = (counts[s] || 0) + 1;
+    });
+
+    // ४. नतिजा प्रदर्शन गर्ने
+    html += `<div style="font-size:0.85rem; color:#666; margin-bottom:10px;">
+                जम्मा <b>${totalD.toFixed(2)}</b> दामलाई ${p} भागमा बाँड्दा:
+             </div>`;
+
+    // ग्रुप अनुसार लुप चलाउने
+    for (let val in counts) {
+        let numPeople = counts[val];
+        let daamVal = parseFloat(val);
+        
+        html += `<div style="margin:8px 0; border-bottom:1px dashed #ddd; padding-bottom:5px;">
+                    <span class="kitta-badge" style="background:${numPeople > 1 ? 'var(--p)' : 'var(--g)'}; color:white;">
+                        ${numPeople} जनाले:
+                    </span> 
+                    <br><b>${daamToRapd(daamVal)}</b> 
+                    <br><small style="color:#777;">(${(daamVal * SQM_D).toFixed(3)} m²)</small>
+                 </div>`;
+    }
+
+    if (decimalPart > 0) {
+        html += `<p style="font-size:0.7rem; color:red; margin-top:10px;">
+                    * जम्मा क्षेत्रफल मिलान गर्न अन्तिम व्यक्तिको भागमा दशमलव अंश जोडिएको छ।
+                 </p>`;
+    }
+}
 
         document.getElementById('result-html').innerHTML = html;
         document.getElementById('result-box').classList.remove('hidden');
@@ -463,15 +516,21 @@
         return `${r}-${a}-${p}-${parseFloat(d)}`;
     }
 
-    function daamToRapd(totalD) {
-        let r = Math.floor(totalD / 256);
-        let remA = totalD % 256;
-        let a = Math.floor(remA / 16);
-        let remP = remA % 16;
-        let p = Math.floor(remP / 4);
-        let d = totalD % 4;
-        return `${r}-${a}-${p}-${d}`;
-    }
+function daamToRapd(totalD) {
+    let r = Math.floor(totalD / 256);
+    let remA = totalD % 256;
+    let a = Math.floor(remA / 16);
+    let remP = remA % 16;
+    let p = Math.floor(remP / 4);
+    let d = (remP % 4).toFixed(2); // दामलाई २ स्थानसम्म दशमलवमा राख्ने
+
+    // यदि राउन्डिङ गर्दा ४ पुग्यो भने मिलाउने
+    if (parseFloat(d) >= 4) { d = 0; p++; }
+    if (p >= 4) { p = 0; a++; }
+    if (a >= 16) { a = 0; r++; }
+
+    return `${r}-${a}-${p}-${parseFloat(d)}`;
+}
 </script>
   <script>  lucide.createIcons();</script>
   <script>
