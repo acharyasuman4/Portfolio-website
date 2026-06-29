@@ -15,6 +15,17 @@
         .calc-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1); }
         .sidebar-link:hover { background-color: #1e293b; color: #3b82f6; }
         .active-mode { color: #3b82f6; border-bottom: 2px solid #3b82f6; font-weight: bold; }
+
+        @media (max-width: 768px) {
+    #sidebar-menu { 
+        transform: translateX(-100%); 
+        position: fixed; 
+        transition: transform 0.3s ease-in-out;
+    }
+    #sidebar-menu.open { 
+        transform: translateX(0); 
+    }
+}
     </style>
 </head>
 <body class="text-slate-800">
@@ -25,42 +36,51 @@
         </a>
     </div>
 
+    <!-- MOBILE HEADER -->
+<div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110] shadow-lg">
+    <h2 class="text-lg font-bold text-blue-400">न्युनत्तम मूल्याङ्कन</h2>
+    <button onclick="toggleMenu()" class="p-2 bg-slate-800 rounded-lg active:scale-95 transition-all">
+        <i data-lucide="menu"></i>
+    </button>
+</div>
+
     <div class="min-h-screen flex flex-col md:flex-row">
-<aside id="sidebar-menu" class="fixed inset-y-0 left-0 z-[120] w-72 bg-slate-900 text-white p-6 flex flex-col md:relative md:translate-x-0 md:w-64 md:h-screen md:sticky md:top-0 transition-transform duration-300">
+
+<!-- SIDEBAR MENU -->
+<aside id="sidebar-menu" class="fixed inset-y-0 left-0 z-[120] w-72 bg-slate-900 text-white p-6 flex flex-col md:relative md:translate-x-0 md:w-64 md:h-screen md:sticky md:top-0 transition-transform duration-300 shadow-2xl md:shadow-none">
     
     <!-- Close button for mobile -->
-    <button onclick="document.getElementById('sidebar-menu').classList.remove('open')" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-white">
+    <button onclick="toggleMenu()" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-white p-2">
         <i data-lucide="x"></i>
     </button>
     
     <!-- App Title & Credit -->
     <div class="mb-8 border-b border-slate-800 pb-4 text-center">
-        <h2 class="text-xl font-bold text-blue-400 font-mukta">Minimum valuation</h2>
+        <h2 class="text-xl font-bold text-blue-400 font-mukta">Minimum Valuation</h2>
         <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">सुमन आचार्य 'समीर'</p>
     </div>
 
     <!-- Navigation Links -->
     <nav class="space-y-1 flex-1 text-base md:text-sm overflow-y-auto">
-        <a href="/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="home" class="w-5 h-5"></i> मुख्य पोर्टल
         </a>
-        <a href="/malpot calculator" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/malpot calculator" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="calculator" class="w-5 h-5"></i> मालपोत असुली
         </a>
-        <a href="/kutabali calculator" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/kutabali calculator" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="equal" class="w-5 h-5"></i> कुतबाली असुली
         </a>
-        <a href="/ropani adder" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/ropani adder" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="circle-plus" class="w-5 h-5"></i> रोपनी जोड्न
         </a>
-        <!-- Active Link: Area Divider -->
-        <a href="/ropani divider/index.html" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/ropani divider/index.html" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="circle-divide" class="w-5 h-5"></i> क्षेत्रफल बाँडफाँड
         </a>
-        <a href="/Registration" class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20">
+        <a href="/Registration" onclick="toggleMenu()" class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20">
             <i data-lucide="file-check" class="w-5 h-5"></i> न्युनत्तम मूल्याङ्कन
         </a>
-        <a href="/tippani/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/tippani/" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="file-text" class="w-5 h-5"></i> टिप्पणी फर्म्याट
         </a>
     </nav>
@@ -68,23 +88,19 @@
     <!-- Social Media Footer Buttons -->
     <div class="mt-auto pt-6 border-t border-slate-800">
         <div class="flex justify-between items-center px-2">
-            <!-- Facebook -->
-            <a href="https://facebook.com/acharyasuman874" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="Facebook">
+            <a href="https://facebook.com/acharyasuman874" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-blue-600 hover:text-white transition-all">
                <i class="fab fa-facebook-f"></i>
             </a>
-            <!-- YouTube -->
-            <a href="https://youtube.com/@04.sumanac" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-red-600 hover:text-white transition-all shadow-sm" title="YouTube">
+            <a href="https://youtube.com/@04.sumanac" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-red-600 hover:text-white transition-all">
                 <i class="fab fa-youtube"></i>
             </a>
-            <!-- Email -->
-            <a href="mailto:acharyasuman874@gmail.com" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-emerald-600 hover:text-white transition-all shadow-sm" title="Email Us">
+            <a href="mailto:acharyasuman874@gmail.com" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-emerald-600 hover:text-white transition-all">
                 <i data-lucide="mail" class="w-5 h-5"></i>
             </a>
         </div>
         <p class="text-[9px] text-center text-slate-600 mt-4 uppercase tracking-tighter">Designed by: Suman Acharya Sameer</p>
     </div>
-</aside>
-    
+</aside>    
 
         <main class="flex-1 p-4 md:p-8 overflow-y-auto">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -343,6 +359,14 @@ window.onload = () => {
         document.addEventListener('keydown', (e) => { if(e.key === 'Enter' && e.target.tagName === 'INPUT') calculate(); });
 
         window.onload = () => { renderHistory(); updateDataLists(); lucide.createIcons(); };
+
+        function toggleMenu() {
+    // मोबाइल स्क्रीनमा मात्र मेनु टगल गर्ने
+    if (window.innerWidth <= 768) {
+        const sidebar = document.getElementById('sidebar-menu');
+        sidebar.classList.toggle('open');
+    }
+}
     </script>
 </body>
 </html>
