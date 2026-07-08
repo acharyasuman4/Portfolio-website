@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजस्व डाटा इन्ट्री टुल - Advanced 2.0</title>
+    <style>
+        :root { --primary: #1a73e8; --secondary: #34a853; --dark: #202124; --labha: #fff3e0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f1f3f4; margin: 0; padding: 20px; }
+        .container { max-width: 1300px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        .header-actions { display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; background: #e8f0fe; padding: 20px; border-radius: 10px; align-items: center; }
+        h2 { color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+        th, td { border: 1px solid #dadce0; padding: 12px; text-align: left; font-size: 14px; }
+        th { background: #f8f9fa; color: var(--dark); position: sticky; top: 0; }
+
+        .cell-data { cursor: pointer; color: #1a73e8; text-decoration: underline; font-size: 12px; display: block; min-height: 25px; }
+        .cell-data:hover { color: #d93025; background: #f8f9fa; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); overflow-y: auto; }
+        .modal-content { background: white; margin: 2% auto; padding: 30px; width: 95%; max-width: 1100px; border-radius: 15px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .close { position: absolute; right: 25px; top: 20px; font-size: 32px; cursor: pointer; color: #666; }
+
+        .range-table input { width: 75px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+        .range-table th { font-size: 12px; text-align: center; }
+        .labha-col { background: var(--labha); }
+
+        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; font-size: 14px; }
+        .btn-blue { background: var(--primary); color: white; }
+        .btn-green { background: var(--secondary); color: white; }
+        .btn-red { background: #d93025; color: white; }
+        .btn-ghost { background: #fff; border: 1px solid #dadce0; color: #3c4043; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .sticky-footer { position: sticky; bottom: -30px; background: white; padding: 15px 0; border-top: 1px solid #eee; margin-top: 20px; text-align: right; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>राजस्व डाटा इन्ट्री टुल (Advanced 2.0)</h2>
+    
+    <div class="header-actions">
+        <div style="flex:1">
+            <label style="font-weight:bold">प्रदेश छान्नुहोस्:</label>
+            <select id="currentProvince" onchange="renderMainTable()" style="padding:8px; border-radius:5px; width:200px">
+                <option>कोशी प्रदेश</option><option>मधेश प्रदेश</option><option>बागमती प्रदेश</option>
+                <option>गण्डकी प्रदेश</option><option>लुम्बिनी प्रदेश</option><option>कर्णाली प्रदेश</option><option>सुदूरपश्चिम प्रदेश</option>
+            </select>
+        </div>
+        <button class="btn btn-blue" onclick="addNewTitle()">+ नयाँ कारोबार शिर्षक थप्नुहोस्</button>
+        <button class="btn btn-green" onclick="downloadJSON()">JSON डाउनलोड</button>
+        <input type="file" id="uploadJson" style="display:none" onchange="uploadJSON(event)">
+        <button class="btn btn-ghost" onclick="document.getElementById('uploadJson').click()">JSON अपलोड</button>
+        <button class="btn btn-red" onclick="resetAll()">Reset All</button>
+    </div>
+
+    <table id="mainTable">
+        <thead>
+            <tr>
+                <th width="15%">कारोबार शिर्षक</th>
+                <th>रजिष्ट्रेशन दस्तुर</th>
+                <th>लाभकर (पुरानो/नयाँ)</th>
+                <th>सेवा शुल्क</th>
+                <th>विलम्व शुल्क</th>
+                <th>रोक्का दस्तुर</th>
+                <th width="8%">Action</th>
+            </tr>
+        </thead>
+        <tbody id="mainTbody"></tbody>
+    </table>
+</div>
+
+<!-- Matrix Modal -->
+<div id="matrixModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3 id="modalHeading" style="margin-top:0"></h3>
+        <p id="modalSubHeading" style="color: #5f6368; font-weight: 500;"></p>
+        
+        <div style="overflow-x:auto">
+            <table class="range-table">
+                <thead id="matrixThead"></thead>
+                <tbody id="matrixTbody"></tbody>
+            </table>
+        </div>
+        
+        <div class="sticky-footer">
+            <button class="btn btn-blue" style="float:left" onclick="addRangeRow()">+ नयाँ थैली रेञ्ज थप्नुहोस्</button>
+            <button class="btn btn-ghost" onclick="closeModal()" style="margin-right:10px">रद्द गर्नुहोस्</button>
+            <button class="btn btn-green" onclick="saveMatrix()">डाटा सेभ गर्नुहोस्</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // १. प्रारम्भिक डाटा स्ट्रक्चर
+    let db = JSON.parse(localStorage.getItem('land_revenue_v2')) || {
+        titles: [], // सबै प्रदेशका लागि साझा शिर्षकहरू
+        rates: {}   // rates[province][title][column] = [array]
+    };
+
+    const columns = ['registration', 'labhakar', 'sewa', 'bilamba', 'rokka'];
+    let currentEditRef = { prov: '', title: '', col: '' };
+
+    // २. प्रदेश अनुसार स्थानीय तह परिभाषित गर्ने
+    function getLocalLevels(province) {
+        if (province === 'बागमती प्रदेश') {
+            return [
+                { id: 'metro_in', name: 'महानगर (उपत्यका भित्र)' },
+                { id: 'mun_in', name: 'नगरपालिका (उपत्यका भित्र)' },
+                { id: 'metro_out', name: 'महानगर (उपत्यका बाहिर)' },
+                { id: 'submetro', name: 'उप-महानगर' },
+                { id: 'mun_out', name: 'नगरपालिका (उपत्यका बाहिर)' },
+                { id: 'rural', name: 'गाउँपालिका' }
+            ];
+        }
+        return [
+            { id: 'metro', name: 'महानगरपालिका' },
+            { id: 'submetro', name: 'उप-महानगरपालिका' },
+            { id: 'mun', name: 'नगरपालिका' },
+            { id: 'rural', name: 'गाउँपालिका' }
+        ];
+    }
+
+    // ३. मुख्य टेबल रेन्डर गर्ने
+    function renderMainTable() {
+        const province = document.getElementById('currentProvince').value;
+        const tbody = document.getElementById('mainTbody');
+        tbody.innerHTML = '';
+
+        if (!db.rates[province]) db.rates[province] = {};
+
+        db.titles.forEach((title, index) => {
+            let row = `<tr><td><strong>${title}</strong></td>`;
+            columns.forEach(col => {
+                const hasData = db.rates[province][title] && db.rates[province][title][col] && db.rates[province][title][col].length > 0;
+                let displayVal = hasData ? "डाटा भरिएको छ (View/Edit)" : "० (सेट गर्नुहोस्)";
+                row += `<td><span class="cell-data" onclick="openMatrix('${province}', '${title}', '${col}')">${displayVal}</span></td>`;
+            });
+            row += `<td><button class="btn btn-red" style="padding:5px 10px" onclick="deleteTitle(${index})">हटाउनुहोस्</button></td></tr>`;
+            tbody.innerHTML += row;
+        });
+        localStorage.setItem('land_revenue_v2', JSON.stringify(db));
+    }
+
+    // ४. नयाँ शिर्षक थप्ने (साझा)
+    function addNewTitle() {
+        const title = prompt("नयाँ कारोबार शिर्षक लेख्नुहोस् (उदा: हक हस्तान्तरण):");
+        if (title && !db.titles.includes(title)) {
+            db.titles.push(title);
+            renderMainTable();
+        } else if(title) {
+            alert("यो शिर्षक पहिल्यै छ।");
+        }
+    }
+
+    // ५. म्याट्रिक्स खोल्ने (Modal Logic)
+    function openMatrix(prov, title, col) {
+        currentEditRef = { prov, title, col };
+        const levels = getLocalLevels(prov);
+        
+        document.getElementById('modalHeading').innerText = `राजस्व विवरण: ${col.toUpperCase()}`;
+        document.getElementById('modalSubHeading').innerText = `कारोबार: ${title} | प्रदेश: ${prov}`;
+
+        // Header Render
+        let thead = `<tr><th colspan="2">थैली अङ्क रेञ्ज (रु.)</th>`;
+        levels.forEach(lvl => {
+            thead += col === 'labhakar' ? `<th colspan="2" class="labha-col">${lvl.name}</th>` : `<th>${lvl.name}</th>`;
+        });
+        thead += `<th>Action</th></tr><tr><th>देखि</th><th>सम्म</th>`;
+        levels.forEach(lvl => {
+            if (col === 'labhakar') {
+                thead += `<th class="labha-col">पुरानो (>५)</th><th class="labha-col">नयाँ (<५)</th>`;
+            } else {
+                thead += `<th>दर/अङ्क</th>`;
+            }
+        });
+        thead += `<th></th></tr>`;
+        document.getElementById('matrixThead').innerHTML = thead;
+
+        // Body Render
+        const matrixData = (db.rates[prov][title] && db.rates[prov][title][col]) ? db.rates[prov][title][col] : [];
+        const tbody = document.getElementById('matrixTbody');
+        tbody.innerHTML = '';
+        
+        if (matrixData.length > 0) {
+            matrixData.forEach(data => addRangeRow(data));
+        } else {
+            addRangeRow();
+        }
+
+        document.getElementById('matrixModal').style.display = "block";
+    }
+
+    // ६. थैली रेञ्ज थप्ने र अटो-फिल लजिक
+    function addRangeRow(data = null) {
+        const province = currentEditRef.prov;
+        const col = currentEditRef.col;
+        const levels = getLocalLevels(province);
+        const tbody = document.getElementById('matrixTbody');
+        const rows = tbody.getElementsByTagName('tr');
+        
+        let lastTo = 0;
+        if (rows.length > 0) {
+            let lastToInput = rows[rows.length - 1].querySelector('.range-to').value;
+            lastTo = lastToInput ? parseInt(lastToInput) + 1 : 0;
+        }
+
+        const tr = document.createElement('tr');
+        let cells = `
+            <td><input type="number" class="range-from" value="${data ? data.from : lastTo}" readonly></td>
+            <td><input type="number" class="range-to" value="${data ? data.to : ''}" placeholder="माथि" oninput="autoUpdateNext(this)"></td>
+        `;
+
+        levels.forEach((lvl, idx) => {
+            if (col === 'labhakar') {
+                cells += `
+                    <td><input type="text" class="r-${lvl.id}-old" value="${data ? data[lvl.id+'_old'] : '0'}" ${idx === 0 ? 'oninput="propagate(this, \'old\')"' : ''}></td>
+                    <td><input type="text" class="r-${lvl.id}-new" value="${data ? data[lvl.id+'_new'] : '0'}" ${idx === 0 ? 'oninput="propagate(this, \'new\')"' : ''}></td>
+                `;
+            } else {
+                cells += `
+                    <td><input type="text" class="r-${lvl.id}" value="${data ? data[lvl.id] : '0'}" ${idx === 0 ? 'oninput="propagate(this, \'normal\')"' : ''}></td>
+                `;
+            }
+        });
+
+        cells += `<td><button class="btn btn-red" style="padding:4px 8px" onclick="this.parentElement.parentElement.remove()">X</button></td>`;
+        tr.innerHTML = cells;
+        tbody.appendChild(tr);
+    }
+
+    // ७. अटो-फिल (महानगरमा भर्दा अरूमा जाने) र अटो-रेञ्ज
+    function propagate(el, type) {
+        const row = el.parentElement.parentElement;
+        if (type === 'normal') {
+            row.querySelectorAll('input[class^="r-"]').forEach(i => i.value = el.value);
+        } else if (type === 'old') {
+            row.querySelectorAll('input[class$="-old"]').forEach(i => i.value = el.value);
+        } else if (type === 'new') {
+            row.querySelectorAll('input[class$="-new"]').forEach(i => i.value = el.value);
+        }
+    }
+
+    function autoUpdateNext(el) {
+        const row = el.parentElement.parentElement;
+        if (row.nextElementSibling && el.value) {
+            row.nextElementSibling.querySelector('.range-from').value = parseInt(el.value) + 1;
+        }
+    }
+
+    // ८. डाटा सेभ गर्ने
+    function saveMatrix() {
+        const { prov, title, col } = currentEditRef;
+        const levels = getLocalLevels(prov);
+        const rows = document.getElementById('matrixTbody').getElementsByTagName('tr');
+        let matrixArray = [];
+
+        for (let row of rows) {
+            let rowData = {
+                from: row.querySelector('.range-from').value,
+                to: row.querySelector('.range-to').value
+            };
+            levels.forEach(lvl => {
+                if (col === 'labhakar') {
+                    rowData[lvl.id + '_old'] = row.querySelector(`.r-${lvl.id}-old`).value;
+                    rowData[lvl.id + '_new'] = row.querySelector(`.r-${lvl.id}-new`).value;
+                } else {
+                    rowData[lvl.id] = row.querySelector(`.r-${lvl.id}`).value;
+                }
+            });
+            matrixArray.push(rowData);
+        }
+
+        if (!db.rates[prov][title]) db.rates[prov][title] = {};
+        db.rates[prov][title][col] = matrixArray;
+        
+        localStorage.setItem('land_revenue_v2', JSON.stringify(db));
+        closeModal();
+        renderMainTable();
+    }
+
+    function closeModal() { document.getElementById('matrixModal').style.display = "none"; }
+
+    // ९. JSON र Reset सुविधाहरू
+    function downloadJSON() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute("href", dataStr);
+        dlAnchor.setAttribute("download", "land_revenue_master_data.json");
+        dlAnchor.click();
+    }
+
+    function uploadJSON(event) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                db = JSON.parse(e.target.result);
+                renderMainTable();
+                alert("डाटा सफलतापूर्वक अपलोड भयो!");
+            } catch(err) { alert("गलत JSON फाइल!"); }
+        };
+        reader.readAsText(event.target.files[0]);
+    }
+
+    function deleteTitle(index) {
+        if (confirm("के तपाईँ यो शिर्षक सबै प्रदेशबाट हटाउन चाहनुहुन्छ?")) {
+            const title = db.titles[index];
+            db.titles.splice(index, 1);
+            // प्रदेशहरूबाट पनि यो शिर्षकको डाटा सफा गर्ने
+            Object.keys(db.rates).forEach(p => delete db.rates[p][title]);
+            renderMainTable();
+        }
+    }
+
+    function resetAll() {
+        if (confirm("सबै डाटा मेटिनेछ! के तपाईँ पक्का हुनुहुन्छ?")) {
+            localStorage.removeItem('land_revenue_v2');
+            location.reload();
+        }
+    }
+
+    // सुरुमा लोड गर्ने
+    renderMainTable();
+</script>
+
+</body>
+</html>

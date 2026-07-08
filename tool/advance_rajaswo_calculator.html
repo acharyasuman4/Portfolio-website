@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>प्रगत राजश्व क्याल्कुलेटर</title>
+    <style>
+        :root { --primary: #1a73e8; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .autocomplete-items { border: 1px solid #ddd; background: #fff; position: absolute; z-index: 99; width: 90%; max-height: 150px; overflow-y: auto; }
+        .autocomplete-items div { padding: 10px; cursor: pointer; }
+        .autocomplete-items div:hover { background-color: #e9e9e9; }
+        .result-area { background: #e7f3ff; padding: 15px; border-radius: 10px; margin-top: 20px; }
+        .row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #d1e3f8; }
+        .total-row { font-weight: bold; font-size: 1.2em; color: #d32f2f; border: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 style="text-align:center; color: var(--primary);">प्रगत राजश्व क्याल्कुलेटर</h2>
+    
+    <div class="input-group">
+        <label>प्रदेश</label>
+        <select id="province" onchange="saveSelection()">
+            <option>कोशी प्रदेश</option><option>मधेश प्रदेश</option><option>बागमती प्रदेश</option>
+            <option>गण्डकी प्रदेश</option><option>लुम्बिनी प्रदेश</option><option>कर्णाली प्रदेश</option><option>सुदूरपश्चिम प्रदेश</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>स्थानीय तह</label>
+        <select id="localLevel" onchange="saveSelection()">
+            <option value="metro">महानगरपालिका</option>
+            <option value="submetro">उप-महानगरपालिका</option>
+            <option value="mun">नगरपालिका</option>
+            <option value="rural">गाउँपालिका</option>
+        </select>
+    </div>
+
+    <div class="input-group" style="position:relative;">
+        <label>कारोबार शिर्षक</label>
+        <input type="text" id="karobarInput" placeholder="टाइप गर्नुहोस्..." oninput="showSuggestions(this.value)">
+        <div id="suggestions" class="autocomplete-items"></div>
+    </div>
+
+    <div class="input-group">
+        <label>थैली अङ्क (रु.)</label>
+        <input type="number" id="thaili" oninput="calculate()">
+    </div>
+
+    <div id="results" class="result-area">
+        <div class="row"><span>जम्मा राजश्व:</span><span id="resTotal">०</span></div>
+        <div class="row"><span>छुट रकम:</span><span id="resChhut">०</span></div>
+        <div class="row total-row"><span>बुझाउनुपर्ने:</span><span id="resPayable">०</span></div>
+    </div>
+</div>
+
+<script>
+    let revenueData = [];
+
+    // १. Load Data & Cache
+    window.onload = async () => {
+        // Caching selections
+        document.getElementById('province').value = localStorage.getItem('last_prov') || 'बागमती प्रदेश';
+        document.getElementById('localLevel').value = localStorage.getItem('last_local') || 'mun';
+
+        try {
+            const res = await fetch('land_revenue_data.json');
+            revenueData = await res.json();
+        } catch (e) {
+            console.log("Offline or No JSON found.");
+        }
+    };
+
+    function saveSelection() {
+        localStorage.setItem('last_prov', document.getElementById('province').value);
+        localStorage.setItem('last_local', document.getElementById('localLevel').value);
+        calculate();
+    }
+
+    // २. Autocomplete Logic
+    function showSuggestions(val) {
+        const container = document.getElementById('suggestions');
+        container.innerHTML = '';
+        if(!val) return;
+        
+        const filtered = revenueData.filter(x => x.title.includes(val));
+        filtered.forEach(item => {
+            let div = document.createElement('div');
+            div.innerHTML = item.title;
+            div.onclick = () => {
+                document.getElementById('karobarInput').value = item.title;
+                container.innerHTML = '';
+                calculate();
+            };
+            container.appendChild(div);
+        });
+    }
+
+    // ३. Calculation Logic
+    function calculate() {
+        const title = document.getElementById('karobarInput').value;
+        const thaili = parseFloat(document.getElementById('thaili').value) || 0;
+        const data = revenueData.find(x => x.title === title);
+
+        if(!data) return;
+
+        // Example calculation (Registration Fee only for demo)
+        let rate = data.rates.registration.val; 
+        let totalRevenue = Math.ceil(thaili * (rate/100));
+        
+        document.getElementById('resTotal').innerText = totalRevenue;
+        document.getElementById('resPayable').innerText = totalRevenue;
+    }
+
+    if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+</script>
+</body>
+</html>
