@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजश्व क्याल्कुलेटर (भूमि)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .calculator-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .row .form-group {
+            flex: 1;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #444;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        .checkbox-group {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            border: 1px dashed #bbb;
+        }
+        .discount-section {
+            display: none;
+            background: #fff4e5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 5px solid #ffa000;
+        }
+        .result-box {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #b3d7ff;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+        .info-text {
+            font-size: 12px;
+            color: #d32f2f;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-card">
+    <h2>राजश्व क्याल्कुलेटर (भूमि)</h2>
+
+    <div class="form-group">
+        <label>थैली अङ्क (रु.)</label>
+        <input type="number" id="thailiAnka" placeholder="थैली अङ्क" oninput="calculate()">
+    </div>
+
+    <div class="form-group">
+        <label>राजश्व दर (%)</label>
+        <input type="number" id="rajashwaDar" placeholder="उदा: ४" oninput="calculate()">
+    </div>
+
+    <div class="checkbox-group" onclick="document.getElementById('hasDiscount').click();">
+        <input type="checkbox" id="hasDiscount" onchange="toggleDiscount()" onclick="event.stopPropagation();">
+        <label style="margin-bottom: 0; cursor: pointer;">छुट दिने हो?</label>
+    </div>
+
+    <div id="discountSection" class="discount-section">
+        <div class="row">
+            <div class="form-group">
+                <label>छुट पाउने सङ्ख्या</label>
+                <input type="number" id="numBeneficiaries" value="1" min="1" oninput="updateTotalPeople(); calculate();">
+            </div>
+            <div class="form-group">
+                <label>जम्मा सङ्ख्या</label>
+                <input type="number" id="totalPeople" value="1" min="1" oninput="manualTotalChange(); calculate();">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>छुट प्रतिशत (%)</label>
+            <input type="number" id="chhutPercent" placeholder="उदा: ५०" oninput="calculate()">
+        </div>
+    </div>
+
+    <div class="result-box">
+        <div class="result-item" style="color: #0d47a1;">
+            <span>जम्मा राजश्व:</span>
+            <span>रु. <span id="finalRajashwa">०</span></span>
+        </div>
+        <div id="chhutResultRow" class="result-item" style="color: #e65100; display: none; font-size: 16px;">
+            <span>छुट रकम (-):</span>
+            <span>रु. <span id="chhutAmount">०</span></span>
+        </div>
+        <div class="result-item" style="color: #072b01; font-size: 16px;">
+            <span>बुझाउनुपर्ने राजस्व (-):</span>
+            <span>रु. <span id="payableAmount">०</span></span>
+        </div>
+    </div>
+
+    <div class="footer">
+        © acharyasuman4.com.np
+    </div>
+</div>
+
+
+<script>
+        let isTotalManual = false;
+
+    function toggleDiscount() {
+        const section = document.getElementById('discountSection');
+        const isChecked = document.getElementById('hasDiscount').checked;
+        section.style.display = isChecked ? 'block' : 'none';
+        document.getElementById('chhutResultRow').style.display = isChecked ? 'flex' : 'none';
+        calculate();
+    }
+
+    function updateTotalPeople() {
+        const numBeneficiaries = document.getElementById('numBeneficiaries').value;
+        // यदि प्रयोगकर्ताले जम्मा सङ्ख्या हातले चलाएको छैन भने, यसलाई आफै अपडेट गर्ने
+        if (!isTotalManual) {
+            document.getElementById('totalPeople').value = numBeneficiaries;
+        }
+    }
+
+    function manualTotalChange() {
+        isTotalManual = true; // प्रयोगकर्ताले आफै टाइप गर्यो
+    }
+
+    // UPDATED CALCULATE FUNCTION FOR THE SIMPLE CALC
+    function calculate() {
+        const thailiAnka = parseFloat(document.getElementById('thailiAnka').value) || 0;
+        const rajashwaDar = parseFloat(document.getElementById('rajashwaDar').value) || 0;
+        
+        // १. जम्मा राजश्व (Before Discount)
+        let totalRajashwa = Math.ceil(thailiAnka * (rajashwaDar / 100));
+
+        const hasDiscount = document.getElementById('hasDiscount').checked;
+        let discountAmount = 0;
+        let payableRajashwa = totalRajashwa;
+
+        if (hasDiscount) {
+            const n = parseFloat(document.getElementById('numBeneficiaries').value) || 1;
+            const t = parseFloat(document.getElementById('totalPeople').value) || 1;
+            const p = parseFloat(document.getElementById('chhutPercent').value) || 0;
+
+            let effectiveDiscountPercent = (n / t) * p;
+            discountAmount = Math.floor(totalRajashwa * (effectiveDiscountPercent / 100));
+            payableRajashwa = totalRajashwa - discountAmount;
+        }
+
+        document.getElementById('finalRajashwa').innerText = totalRajashwa.toLocaleString('ne-NP'); // जम्मा राजश्व
+        document.getElementById('chhutAmount').innerText = discountAmount.toLocaleString('ne-NP'); // छुट रकम
+        
+        // Add a new span in your HTML with ID 'payableAmount' for "बुझाउनुपर्ने राजश्व"
+        if(document.getElementById('payableAmount')) {
+            document.getElementById('payableAmount').innerText = payableRajashwa.toLocaleString('ne-NP');
+        }
+    }
+
+    function openAdvance() {
+        window.location.href = 'advance-calculator.html'; // Path to the new page
+    }
+</script>
+</body>
+</html>
