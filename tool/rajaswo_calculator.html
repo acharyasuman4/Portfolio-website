@@ -1,219 +1,219 @@
 <!DOCTYPE html>
 <html lang="ne">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>राजश्व क्याल्कुलेटर (भूमि)</title>
+    <title>राजश्व क्याल्कुलेटर (साधारण) - acharyasuman4.com.np</title>
+
+    <script src="/tailwind.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="/lucide.min.js"></script>
+
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            padding: 20px;
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
+        .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
         }
-        .calculator-card {
-            background: #fff;
-            padding: 30px;
+        .custom-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
             border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-            width: 100%;
-            max-width: 500px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+            transition: all 0.2s;
         }
-        h2 {
-            text-align: center;
-            color: #1a73e8;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .row .form-group {
-            flex: 1;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #444;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
-        .checkbox-group {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            border: 1px dashed #bbb;
-        }
-        .discount-section {
-            display: none;
-            background: #fff4e5;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 5px solid #ffa000;
-        }
-        .result-box {
-            background-color: #e7f3ff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border: 1px solid #b3d7ff;
-        }
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 13px;
-            color: #666;
-        }
-        .info-text {
-            font-size: 12px;
-            color: #d32f2f;
-            margin-top: 4px;
+        .custom-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
     </style>
 </head>
-<body>
 
-<div class="calculator-card">
-    <h2>राजश्व क्याल्कुलेटर (भूमि)</h2>
+<body class="text-slate-800">
 
-    <div class="form-group">
-        <label>थैली अङ्क (रु.)</label>
-        <input type="number" id="thailiAnka" placeholder="थैली अङ्क" oninput="calculate()">
+    <!-- TOP MINI NAV - Z-index adjusted to stay below menu in mobile -->
+    <div class="fixed top-0 right-0 z-[90] md:z-[150] p-4">
+        <a href="../index.html"
+            class="bg-white/90 backdrop-blur p-2 rounded-full shadow-lg text-blue-600 hover:scale-110 transition flex items-center gap-2 px-4">
+            <i data-lucide="home" class="w-4"></i> <span class="text-xs font-bold">Home</span>
+        </a>
     </div>
 
-    <div class="form-group">
-        <label>राजश्व दर (%)</label>
-        <input type="number" id="rajashwaDar" placeholder="उदा: ४" oninput="calculate()">
-    </div>
+    <div class="min-h-screen flex flex-col md:flex-row">
+        
+        <!-- मोबाइल हेडर -->
+        <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110]">
+            <h2 class="text-lg font-bold text-blue-400">Calculator Menu</h2>
+            <button onclick="document.getElementById('side-menu').classList.toggle('-translate-x-full')" class="p-2 bg-slate-800 rounded-lg">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
 
-    <div class="checkbox-group" onclick="document.getElementById('hasDiscount').click();">
-        <input type="checkbox" id="hasDiscount" onchange="toggleDiscount()" onclick="event.stopPropagation();">
-        <label style="margin-bottom: 0; cursor: pointer;">छुट दिने हो?</label>
-    </div>
-
-    <div id="discountSection" class="discount-section">
-        <div class="row">
-            <div class="form-group">
-                <label>छुट पाउने सङ्ख्या</label>
-                <input type="number" id="numBeneficiaries" value="1" min="1" oninput="updateTotalPeople(); calculate();">
+        <!-- साइडबार मेनु -->
+        <aside id="side-menu" class="fixed inset-y-0 left-0 z-[120] w-64 bg-slate-900 text-white flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-screen md:sticky md:top-0 border-r border-slate-800">
+            <div class="p-6">
+                <div class="mb-8 border-b border-slate-800 pb-6">
+                    <h2 class="text-xl font-bold text-blue-400">Admin Tools</h2>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">सुमन आचार्य 'समीर'</p>
+                </div>
+                <nav class="space-y-2">
+                    <a href="../" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
+                        <i class="fas fa-th-large w-4"></i> मुख्य पोर्टल
+                    </a>
+                    <a href="index.html" class="flex items-center gap-3 p-3 bg-blue-600 rounded-xl text-sm font-medium shadow-lg">
+                        <i class="fas fa-calculator w-4"></i> साधारण क्याल्कुलेटर
+                    </a>
+                    <!-- Advance Calc Link in Menu -->
+                    <a href="advance-calculator.html" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-yellow-500 transition">
+                        <i class="fas fa-bolt w-4"></i> एडभान्सड राजस्व क्याल्कुलेटर (Adv)
+                    </a>
+                    <a href="/malpot-calculator" class="flex hover:bg-slate-800 items-center gap-3 p-3 text-slate-400 rounded-xl text-sm transition">
+                        <i data-lucide="calculator" class="w-4"></i> मालपोत असुली
+                    </a>
+                </nav>
             </div>
-            <div class="form-group">
-                <label>जम्मा सङ्ख्या</label>
-                <input type="number" id="totalPeople" value="1" min="1" oninput="manualTotalChange(); calculate();">
+
+            <!-- सोसल मिडिया -->
+            <div class="mt-auto p-6 bg-slate-950/50 border-t border-slate-800">
+                <div class="flex justify-between items-center px-2">
+                    <a href="https://facebook.com/acharyasuman874" target="_blank" class="text-slate-400 hover:text-blue-500 transition"><i class="fab fa-facebook-f text-lg"></i></a>
+                    <a href="https://youtube.com/@04.sumanac" target="_blank" class="text-slate-400 hover:text-red-500 transition"><i class="fab fa-youtube text-lg"></i></a>
+                    <a href="mailto:acharyasuman874@gmail.com" class="text-slate-400 hover:text-orange-400 transition"><i class="fas fa-envelope text-lg"></i></a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- मुख्य क्याल्कुलेटर सामग्री -->
+        <div class="flex-1 w-full overflow-x-hidden">
+            <header class="hero-bg text-white py-12 px-4 text-center">
+                <h1 class="text-3xl md:text-4xl font-bold mb-2 font-mukta">राजश्व क्याल्कुलेटर (साधारण)</h1>
+                <p class="text-slate-400">थैली र दरको आधारमा तत्काल राजश्व गणना गर्नुहोस्</p>
+            </header>
+
+            <div class="p-4 md:p-12 max-w-2xl mx-auto -mt-10">
+                <div class="calc-card p-6 md:p-10">
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-2">थैली अङ्क (रु.)</label>
+                            <input type="number" id="thailiAnka" placeholder="उदा: ५,००,०००" oninput="calculate()" 
+                                class="custom-input text-lg font-semibold text-blue-700">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-2">राजश्व दर (%)</label>
+                            <input type="number" id="rajashwaDar" placeholder="उदा: ४" oninput="calculate()" 
+                                class="custom-input">
+                        </div>
+
+                        <!-- छुट दिने Section -->
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="checkbox" id="hasDiscount" onchange="toggleDiscount()" class="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 group-hover:text-blue-600 transition">छुट दिने हो?</span>
+                            </label>
+
+                            <div id="discountSection" class="hidden mt-6 space-y-4 pt-4 border-t border-slate-200">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">छुट पाउने सं.</label>
+                                        <input type="number" id="numBeneficiaries" value="1" min="1" oninput="updateTotalPeople(); calculate();" class="custom-input bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">जम्मा सं.</label>
+                                        <input type="number" id="totalPeople" value="1" min="1" oninput="manualTotalChange(); calculate();" class="custom-input bg-white">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">छुट प्रतिशत (%)</label>
+                                    <input type="number" id="chhutPercent" placeholder="उदा: ५०" oninput="calculate()" class="custom-input bg-white">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- नतिजा कार्ड -->
+                        <div class="bg-slate-900 text-white rounded-3xl p-6 md:p-8 shadow-2xl space-y-4">
+                            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                                <span class="text-slate-400 text-sm">जम्मा राजश्व</span>
+                                <span class="font-bold">रु. <span id="finalRajashwa">०</span></span>
+                            </div>
+                            <div id="chhutResultRow" class="hidden justify-between items-center border-b border-slate-800 pb-3 text-orange-400">
+                                <span class="text-sm">छुट रकम (-)</span>
+                                <span class="font-bold">रु. <span id="chhutAmount">०</span></span>
+                            </div>
+                            <div class="flex justify-between items-center pt-2">
+                                <span class="text-blue-400 font-bold">बुझाउनुपर्ने राजश्व</span>
+                                <span class="text-2xl font-bold">रु. <span id="payableAmount">०</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Advance Calculator Link Button -->
+                        <div class="mt-6">
+                            <a href="advance-calculator.html" class="flex items-center justify-center gap-2 w-full py-4 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-2xl font-bold hover:bg-emerald-100 transition">
+                                <i class="fas fa-expand-arrows-alt"></i> एड्भान्स्ड राजश्व क्याल्कुलेटर प्रयोग गर्न यहाँ क्लिक गर्नुहोस्
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 text-center">
+                        <button onclick="location.reload()" class="text-sm text-slate-400 hover:text-blue-600 transition">
+                            <i class="fas fa-undo-alt mr-1"></i> रिसेट गर्नुहोस्
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <label>छुट प्रतिशत (%)</label>
-            <input type="number" id="chhutPercent" placeholder="उदा: ५०" oninput="calculate()">
-        </div>
     </div>
 
-    <div class="result-box">
-        <div class="result-item" style="color: #0d47a1;">
-            <span>जम्मा राजश्व:</span>
-            <span>रु. <span id="finalRajashwa">०</span></span>
-        </div>
-        <div id="chhutResultRow" class="result-item" style="color: #e65100; display: none; font-size: 16px;">
-            <span>छुट रकम (-):</span>
-            <span>रु. <span id="chhutAmount">०</span></span>
-        </div>
-        <div class="result-item" style="color: #072b01; font-size: 16px;">
-            <span>बुझाउनुपर्ने राजस्व (-):</span>
-            <span>रु. <span id="payableAmount">०</span></span>
-        </div>
-    </div>
-
-    <div class="footer">
-        © acharyasuman4.com.np
-    </div>
-</div>
-
-
-<script>
+    <script>
         let isTotalManual = false;
 
-    function toggleDiscount() {
-        const section = document.getElementById('discountSection');
-        const isChecked = document.getElementById('hasDiscount').checked;
-        section.style.display = isChecked ? 'block' : 'none';
-        document.getElementById('chhutResultRow').style.display = isChecked ? 'flex' : 'none';
-        calculate();
-    }
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
 
-    function updateTotalPeople() {
-        const numBeneficiaries = document.getElementById('numBeneficiaries').value;
-        // यदि प्रयोगकर्ताले जम्मा सङ्ख्या हातले चलाएको छैन भने, यसलाई आफै अपडेट गर्ने
-        if (!isTotalManual) {
-            document.getElementById('totalPeople').value = numBeneficiaries;
-        }
-    }
-
-    function manualTotalChange() {
-        isTotalManual = true; // प्रयोगकर्ताले आफै टाइप गर्यो
-    }
-
-    // UPDATED CALCULATE FUNCTION FOR THE SIMPLE CALC
-    function calculate() {
-        const thailiAnka = parseFloat(document.getElementById('thailiAnka').value) || 0;
-        const rajashwaDar = parseFloat(document.getElementById('rajashwaDar').value) || 0;
-        
-        // १. जम्मा राजश्व (Before Discount)
-        let totalRajashwa = Math.ceil(thailiAnka * (rajashwaDar / 100));
-
-        const hasDiscount = document.getElementById('hasDiscount').checked;
-        let discountAmount = 0;
-        let payableRajashwa = totalRajashwa;
-
-        if (hasDiscount) {
-            const n = parseFloat(document.getElementById('numBeneficiaries').value) || 1;
-            const t = parseFloat(document.getElementById('totalPeople').value) || 1;
-            const p = parseFloat(document.getElementById('chhutPercent').value) || 0;
-
-            let effectiveDiscountPercent = (n / t) * p;
-            discountAmount = Math.floor(totalRajashwa * (effectiveDiscountPercent / 100));
-            payableRajashwa = totalRajashwa - discountAmount;
+        function toggleDiscount() {
+            const section = document.getElementById('discountSection');
+            const isChecked = document.getElementById('hasDiscount').checked;
+            section.classList.toggle('hidden', !isChecked);
+            document.getElementById('chhutResultRow').classList.toggle('hidden', !isChecked);
+            calculate();
         }
 
-        document.getElementById('finalRajashwa').innerText = totalRajashwa.toLocaleString('ne-NP'); // जम्मा राजश्व
-        document.getElementById('chhutAmount').innerText = discountAmount.toLocaleString('ne-NP'); // छुट रकम
-        
-        // Add a new span in your HTML with ID 'payableAmount' for "बुझाउनुपर्ने राजश्व"
-        if(document.getElementById('payableAmount')) {
+        function updateTotalPeople() {
+            const numBeneficiaries = document.getElementById('numBeneficiaries').value;
+            if (!isTotalManual) {
+                document.getElementById('totalPeople').value = numBeneficiaries;
+            }
+        }
+
+        function manualTotalChange() { isTotalManual = true; }
+
+        function calculate() {
+            const thailiAnka = parseFloat(document.getElementById('thailiAnka').value) || 0;
+            const rajashwaDar = parseFloat(document.getElementById('rajashwaDar').value) || 0;
+            let totalRajashwa = Math.ceil(thailiAnka * (rajashwaDar / 100));
+            const hasDiscount = document.getElementById('hasDiscount').checked;
+            let discountAmount = 0;
+            let payableRajashwa = totalRajashwa;
+            if (hasDiscount) {
+                const n = parseFloat(document.getElementById('numBeneficiaries').value) || 1;
+                const t = parseFloat(document.getElementById('totalPeople').value) || 1;
+                const p = parseFloat(document.getElementById('chhutPercent').value) || 0;
+                let effectiveDiscountPercent = (n / t) * p;
+                discountAmount = Math.floor(totalRajashwa * (effectiveDiscountPercent / 100));
+                payableRajashwa = totalRajashwa - discountAmount;
+            }
+            document.getElementById('finalRajashwa').innerText = totalRajashwa.toLocaleString('ne-NP');
+            document.getElementById('chhutAmount').innerText = discountAmount.toLocaleString('ne-NP');
             document.getElementById('payableAmount').innerText = payableRajashwa.toLocaleString('ne-NP');
         }
-    }
-
-    function openAdvance() {
-        window.location.href = 'advance-calculator.html'; // Path to the new page
-    }
-</script>
+    </script>
 </body>
 </html>

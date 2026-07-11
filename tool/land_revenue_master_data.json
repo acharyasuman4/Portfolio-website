@@ -1,0 +1,112 @@
+{
+    "titles": [
+        "राजिनामा",
+        "नामसारी",
+        "दृष्टिबन्धकी रोक्का (वित्तीय संस्था र व्यक्ति विच)"
+    ],
+    "rates": {
+        "कोशी प्रदेश": {},
+        "बागमती प्रदेश": {
+            "राजिनामा": {
+                "labhakar": [
+                    {
+                        "from": "0",
+                        "to": "1000000",
+                        "metro_in_old": "0",
+                        "metro_in_new": "0",
+                        "mun_in_old": "0",
+                        "mun_in_new": "0",
+                        "metro_out_old": "0",
+                        "metro_out_new": "0",
+                        "submetro_old": "0",
+                        "submetro_new": "0",
+                        "mun_out_old": "0",
+                        "mun_out_new": "0",
+                        "rural_old": "0",
+                        "rural_new": "0"
+                    },
+                    {
+                        "from": "1000001",
+                        "to": "",
+                        "metro_in_old": "7.5%",
+                        "metro_in_new": "10%",
+                        "mun_in_old": "7.5%",
+                        "mun_in_new": "10%",
+                        "metro_out_old": "7.5%",
+                        "metro_out_new": "10%",
+                        "submetro_old": "7.5%",
+                        "submetro_new": "10%",
+                        "mun_out_old": "7.5%",
+                        "mun_out_new": "10%",
+                        "rural_old": "7.5%",
+                        "rural_new": "10%"
+                    }
+                ],
+                "registration": [
+                    {
+                        "from": "0",
+                        "to": "",
+                        "metro_in": "5.3%",
+                        "mun_in": "4.8%",
+                        "metro_out": "5.15%",
+                        "submetro": "4.65%",
+                        "mun_out": "4.5%",
+                        "rural": "3%"
+                    }
+                ]
+            },
+            "नामसारी": {
+                "sewa": [
+                    {
+                        "from": "0",
+                        "to": "",
+                        "metro_in": "2500",
+                        "mun_in": "2500",
+                        "metro_out": "2500",
+                        "submetro": "2500",
+                        "mun_out": "2500",
+                        "rural": "2500"
+                    }
+                ],
+                "bilamba": [
+                    {
+                        "from": "0",
+                        "to": "",
+                        "metro_in": "100",
+                        "mun_in": "100",
+                        "metro_out": "100",
+                        "submetro": "100",
+                        "mun_out": "100",
+                        "rural": "100"
+                    }
+                ]
+            },
+            "दृष्टिबन्धकी रोक्का (वित्तीय संस्था र व्यक्ति विच)": {
+                "sewa": [
+                    {
+                        "from": "0",
+                        "to": "500000",
+                        "metro_in": "1000",
+                        "mun_in": "1000",
+                        "metro_out": "1000",
+                        "submetro": "1000",
+                        "mun_out": "1000",
+                        "rural": "1000"
+                    },
+                    {
+                        "from": "500001",
+                        "to": "1000000",
+                        "metro_in": "1500",
+                        "mun_in": "1500",
+                        "metro_out": "1500",
+                        "submetro": "1500",
+                        "mun_out": "1500",
+                        "rural": "1500"
+                    }
+                ]
+            }
+        },
+        "मधेश प्रदेश": {},
+        "सुदूरपश्चिम प्रदेश": {}
+    }
+}

@@ -1,126 +1,383 @@
 <!DOCTYPE html>
 <html lang="ne">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>प्रगत राजश्व क्याल्कुलेटर</title>
+    <title>राजश्व क्याल्कुलेटर advance - भूमि प्रशासन</title>
+
+    <script src="/tailwind.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="/lucide.min.js"></script>
+
     <style>
-        :root { --primary: #1a73e8; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-        select, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .autocomplete-items { border: 1px solid #ddd; background: #fff; position: absolute; z-index: 99; width: 90%; max-height: 150px; overflow-y: auto; }
-        .autocomplete-items div { padding: 10px; cursor: pointer; }
-        .autocomplete-items div:hover { background-color: #e9e9e9; }
-        .result-area { background: #e7f3ff; padding: 15px; border-radius: 10px; margin-top: 20px; }
-        .row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #d1e3f8; }
-        .total-row { font-weight: bold; font-size: 1.2em; color: #d32f2f; border: none; margin-top: 10px; }
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
+        .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .calc-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .custom-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .custom-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .dropdown-item:hover { background-color: #f8fafc; color: #2563eb; }
+        .hide { display: none !important; }
     </style>
 </head>
-<body>
 
-<div class="card">
-    <h2 style="text-align:center; color: var(--primary);">प्रगत राजश्व क्याल्कुलेटर</h2>
-    
-    <div class="input-group">
-        <label>प्रदेश</label>
-        <select id="province" onchange="saveSelection()">
-            <option>कोशी प्रदेश</option><option>मधेश प्रदेश</option><option>बागमती प्रदेश</option>
-            <option>गण्डकी प्रदेश</option><option>लुम्बिनी प्रदेश</option><option>कर्णाली प्रदेश</option><option>सुदूरपश्चिम प्रदेश</option>
-        </select>
+<body class="text-slate-800">
+
+    <!-- TOP MINI NAV -->
+    <div class="fixed top-0 right-0 z-[100] p-4">
+        <a href="../index.html" class="bg-white/90 backdrop-blur p-2 rounded-full shadow-lg text-blue-600 hover:scale-110 transition flex items-center gap-2 px-4">
+            <i data-lucide="home" class="w-4"></i> <span class="text-xs font-bold">Home</span>
+        </a>
     </div>
 
-    <div class="input-group">
-        <label>स्थानीय तह</label>
-        <select id="localLevel" onchange="saveSelection()">
-            <option value="metro">महानगरपालिका</option>
-            <option value="submetro">उप-महानगरपालिका</option>
-            <option value="mun">नगरपालिका</option>
-            <option value="rural">गाउँपालिका</option>
-        </select>
+    <div class="min-h-screen flex flex-col md:flex-row">
+        
+        <!-- मोबाइल हेडर -->
+        <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110]">
+            <h2 class="text-lg font-bold text-blue-400">Advance Calculator</h2>
+            <button onclick="document.getElementById('side-menu').classList.toggle('-translate-x-full')" class="p-2 bg-slate-800 rounded-lg">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+
+        <!-- साइडबार -->
+        <aside id="side-menu" class="fixed inset-y-0 left-0 z-[120] w-64 bg-slate-900 text-white flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-screen md:sticky md:top-0 border-r border-slate-800">
+            <div class="p-6">
+                <div class="mb-8 border-b border-slate-800 pb-6">
+                    <h2 class="text-xl font-bold text-blue-400">Land Administration Tools</h2>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">सुमन आचार्य 'समीर'</p>
+                </div>
+                <nav class="space-y-2">
+                    <a href="../" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
+                        <i class="fas fa-th-large w-4"></i> मुख्य पोर्टल
+                    </a>
+                    <a href="index.html" class="flex items-center gap-3 p-3 bg-blue-600 rounded-xl text-sm font-medium shadow-lg">
+                        <i class="fas fa-calculator w-4"></i> राजस्व क्याल्कुलेटर
+                    </a>
+                    <a href="#" class="flex hover:bg-slate-800 items-center gap-3 p-3 text-slate-400 rounded-xl text-sm transition">
+                        <i data-lucide="circle-plus" class="w-4"></i> रोपनी जोड्न
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- मुख्य सामग्री -->
+        <div class="flex-1 w-full overflow-x-hidden">
+            <header class="hero-bg text-white py-8 md:py-12 px-4 text-center">
+                <h1 class="text-2xl md:text-4xl font-bold mb-2">राजश्व क्याल्कुलेटर (Advance)</h1>
+                <p class="text-slate-400 text-sm max-w-xl mx-auto">भूमि प्रशासन कार्यालयः रजिष्ट्रेशन दस्तुर, लाभकर, सेवा शुल्क लगायत राजश्व गणना</p>
+            </header>
+
+            <div class="p-4 md:p-8 max-w-3xl mx-auto -mt-10">
+                <div class="calc-card p-6 md:p-8">
+                    
+                    <!-- प्रदेश र स्थानीय तह -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">प्रदेश छान्नुहोस्</label>
+                            <select id="province" onchange="updateLocalLevels();" class="custom-input bg-slate-50 font-semibold"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">स्थानीय तह</label>
+                            <select id="localLevel" onchange="saveSelection(); calculate();" class="custom-input bg-slate-50 font-semibold"></select>
+                        </div>
+                    </div>
+
+                    <!-- कारोबार शिर्षक -->
+                    <div class="relative mb-6">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">कारोबार शिर्षक</label>
+                        <div class="relative">
+                            <input type="text" id="karobarInput" placeholder="शिर्षक खोज्नुहोस् वा छान्नुहोस्..." 
+                                onfocus="showDropdown()" oninput="filterTitles(this.value)" 
+                                class="custom-input pr-10" autocomplete="off">
+                            <i data-lucide="chevron-down" class="absolute right-3 top-3 w-5 text-slate-400 pointer-events-none"></i>
+                        </div>
+                        <div id="dropdownList" class="absolute left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto hidden"></div>
+                    </div>
+
+                    <!-- थैली अङ्क र लाभकर अप्सन -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div id="thailiWrapper">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">थैली अङ्क (रु.)</label>
+                            <input type="number" id="thaili" placeholder="कुल थैली रकम" oninput="calculate()" class="custom-input text-lg font-bold text-blue-600">
+                        </div>
+                        <div id="labhakarBox" class="hide">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">पुर्जा/स्वामित्व अवधि</label>
+                            <select id="ownershipPeriod" onchange="calculate()" class="custom-input bg-orange-50 border-orange-200 font-bold">
+                                <option value="old">५ वर्ष भन्दा पुरानो (>५)</option>
+                                <option value="new">५ वर्ष भन्दा कम (<५)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- छुट सेक्शन -->
+                    <div id="discountWrapper" class="hide mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                        <label class="flex items-center gap-3 cursor-pointer mb-4">
+                            <input type="checkbox" id="hasDiscount" onchange="toggleDiscountUI()" class="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                            <span class="text-sm font-bold text-slate-700">रजिष्ट्रेशन दस्तुरमा छुट दिने हो?</span>
+                        </label>
+                        
+                        <div id="discountInputs" class="hide grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">छुट पाउनेको सङ्ख्या</label>
+                                <input type="number" id="numBen" value="1" oninput="calculate()" class="custom-input">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">जम्मा खरिदकर्ताको सङ्ख्या</label>
+                                <input type="number" id="totalP" value="1" oninput="calculate()" class="custom-input">
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">छुट %</label>
+                                <input type="number" id="discPercent" placeholder="उदा: ५०" oninput="calculate()" class="custom-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- नतिजा कार्ड -->
+                    <div id="resultCard" class="hide bg-slate-900 text-white rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10">
+                            <i data-lucide="banknote" class="w-24 h-24"></i>
+                        </div>
+                        
+                        <h4 class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-6 border-b border-slate-800 pb-2">राजस्व विवरण</h4>
+                        
+                        <div class="space-y-4 mb-8">
+                            <div id="rowReg" class="flex justify-between items-end border-b border-slate-800 pb-2">
+                                <span class="text-slate-400 text-sm">रजिष्ट्रेशन दस्तुर</span>
+                                <span id="resReg" class="font-bold">०</span>
+                            </div>
+                            <div id="rowLabha" class="flex justify-between items-end border-b border-slate-800 pb-2">
+                                <span class="text-slate-400 text-sm">लाभकर</span>
+                                <span id="resLabha" class="font-bold">०</span>
+                            </div>
+                            <div id="rowSewa" class="flex justify-between items-end border-b border-slate-800 pb-2">
+                                <span class="text-slate-400 text-sm">सेवा शुल्क</span>
+                                <span id="resSewa" class="font-bold">०</span>
+                            </div>
+                            <div id="rowBilamba" class="flex justify-between items-end border-b border-slate-800 pb-2">
+                                <span class="text-slate-400 text-sm">विलम्व शुल्क</span>
+                                <span id="resBilamba" class="font-bold">०</span>
+                            </div>
+                            <div id="rowRokka" class="flex justify-between items-end border-b border-slate-800 pb-2">
+                                <span class="text-slate-400 text-sm">रोक्का दस्तुर</span>
+                                <span id="resRokka" class="font-bold">०</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center bg-blue-600 -mx-8 -mb-8 p-6 md:p-8">
+                            <div>
+                                <span class="block text-blue-200 text-[10px] uppercase font-bold tracking-tighter">कुल बुझाउनुपर्ने</span>
+                                <span id="resTotal" class="text-2xl md:text-3xl font-bold">रु. ०</span>
+                            </div>
+                            <button onclick="resetForm()" class="bg-white/20 hover:bg-white/30 p-3 rounded-2xl transition shadow-inner">
+                                <i data-lucide="refresh-ccw" class="w-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="text-[10px] text-slate-400 mt-6 text-center leading-relaxed">
+                        <i class="fas fa-info-circle mr-1"></i> यो अनुमानित विवरण हो । आधिकारिक जानकारीको लागि सम्बन्धित भूमि प्रशासन कार्यालयमा सम्पर्क गर्नुहोस्।
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="input-group" style="position:relative;">
-        <label>कारोबार शिर्षक</label>
-        <input type="text" id="karobarInput" placeholder="टाइप गर्नुहोस्..." oninput="showSuggestions(this.value)">
-        <div id="suggestions" class="autocomplete-items"></div>
-    </div>
+    <script>
+        let masterData = { titles: [], rates: {} };
 
-    <div class="input-group">
-        <label>थैली अङ्क (रु.)</label>
-        <input type="number" id="thaili" oninput="calculate()">
-    </div>
+        // १. डाटा लोड र इनिट
+        async function loadData() {
+            try {
+                // यहाँ तपाइँको JSON फाइलको सही पाथ दिनुहोस्
+                const res = await fetch('land_revenue_master_data.json');
+                masterData = await res.json();
+                
+                const provSelect = document.getElementById('province');
+                Object.keys(masterData.rates).forEach(p => {
+                    provSelect.innerHTML += `<option value="${p}">${p}</option>`;
+                });
 
-    <div id="results" class="result-area">
-        <div class="row"><span>जम्मा राजश्व:</span><span id="resTotal">०</span></div>
-        <div class="row"><span>छुट रकम:</span><span id="resChhut">०</span></div>
-        <div class="row total-row"><span>बुझाउनुपर्ने:</span><span id="resPayable">०</span></div>
-    </div>
-</div>
-
-<script>
-    let revenueData = [];
-
-    // १. Load Data & Cache
-    window.onload = async () => {
-        // Caching selections
-        document.getElementById('province').value = localStorage.getItem('last_prov') || 'बागमती प्रदेश';
-        document.getElementById('localLevel').value = localStorage.getItem('last_local') || 'mun';
-
-        try {
-            const res = await fetch('land_revenue_data.json');
-            revenueData = await res.json();
-        } catch (e) {
-            console.log("Offline or No JSON found.");
+                provSelect.value = localStorage.getItem('last_prov') || Object.keys(masterData.rates)[0];
+                updateLocalLevels(true);
+                renderDropdownList(masterData.titles);
+            } catch (e) { console.error("JSON Error", e); }
         }
-    };
 
-    function saveSelection() {
-        localStorage.setItem('last_prov', document.getElementById('province').value);
-        localStorage.setItem('last_local', document.getElementById('localLevel').value);
-        calculate();
-    }
+        // २. स्थानीय तह र थैली भिजिबिलिटी
+        function updateLocalLevels(isInitial = false) {
+            const prov = document.getElementById('province').value;
+            const localSelect = document.getElementById('localLevel');
+            localSelect.innerHTML = '';
+            
+            let levels = (prov === 'बागमती प्रदेश') ? 
+                [{id:'metro_in', n:'महानगर (उपत्यका भित्र)'},{id:'mun_in', n:'नगर (उपत्यका भित्र)'},{id:'metro_out', n:'महानगर (उपत्यका बाहिर)'},{id:'submetro', n:'उप-महानगर'},{id:'mun_out', n:'नगर (उपत्यका बाहिर)'},{id:'rural', n:'गाउँपालिका'}] :
+                [{id:'metro', n:'महानगरपालिका'},{id:'submetro', n:'उप-महानगरपालिका'},{id:'mun', n:'नगरपालिका'},{id:'rural', n:'गाउँपालिका'}];
+            
+            levels.forEach(l => localSelect.innerHTML += `<option value="${l.id}">${l.n}</option>`);
+            
+            if (isInitial) {
+                localSelect.value = localStorage.getItem('last_local') || levels[0].id;
+            }
+            saveSelection();
+            updateThailiVisibility();
+            calculate();
+        }
 
-    // २. Autocomplete Logic
-    function showSuggestions(val) {
-        const container = document.getElementById('suggestions');
-        container.innerHTML = '';
-        if(!val) return;
-        
-        const filtered = revenueData.filter(x => x.title.includes(val));
-        filtered.forEach(item => {
-            let div = document.createElement('div');
-            div.innerHTML = item.title;
-            div.onclick = () => {
-                document.getElementById('karobarInput').value = item.title;
-                container.innerHTML = '';
-                calculate();
-            };
-            container.appendChild(div);
+        function saveSelection() {
+            localStorage.setItem('last_prov', document.getElementById('province').value);
+            localStorage.setItem('last_local', document.getElementById('localLevel').value);
+        }
+
+        function updateThailiVisibility() {
+            const prov = document.getElementById('province').value;
+            const title = document.getElementById('karobarInput').value;
+            const local = document.getElementById('localLevel').value;
+
+            if (!masterData.rates[prov] || !masterData.rates[prov][title]) return;
+
+            const rates = masterData.rates[prov][title];
+            let showThaili = false;
+
+            ['registration', 'labhakar', 'sewa'].forEach(col => {
+                const ranges = rates[col] || [];
+                if (ranges.length > 1) showThaili = true;
+                else if (ranges.length === 1) {
+                    const r = ranges[0];
+                    const keys = (col === 'labhakar') ? [local + '_old', local + '_new'] : [local];
+                    keys.forEach(k => {
+                        let val = parseFloat(r[k]) || 0;
+                        if (val > 0 && val < 25) showThaili = true;
+                    });
+                }
+            });
+
+            document.getElementById('thailiWrapper').className = showThaili ? '' : 'hide';
+            if (!showThaili) document.getElementById('thaili').value = '';
+
+            const hasLabha = rates['labhakar'] && rates['labhakar'].length > 0;
+            document.getElementById('labhakarBox').className = hasLabha ? '' : 'hide';
+            document.getElementById('discountWrapper').className = ''; 
+        }
+
+        // ३. अटो-कम्प्लिट लजिक
+        function renderDropdownList(list) {
+            const container = document.getElementById('dropdownList');
+            container.innerHTML = '';
+            list.forEach(t => {
+                const div = document.createElement('div');
+                div.className = 'dropdown-item p-3 cursor-pointer text-sm border-b border-slate-50 last:border-0';
+                div.innerText = t;
+                div.onclick = () => selectTitle(t);
+                container.appendChild(div);
+            });
+        }
+
+        function showDropdown() { document.getElementById('dropdownList').classList.remove('hidden'); }
+        function filterTitles(val) { renderDropdownList(masterData.titles.filter(t => t.includes(val))); }
+
+        function selectTitle(t) {
+            document.getElementById('karobarInput').value = t;
+            document.getElementById('dropdownList').classList.add('hidden');
+            updateThailiVisibility();
+            calculate();
+        }
+
+        function toggleDiscountUI() {
+            document.getElementById('discountInputs').className = document.getElementById('hasDiscount').checked ? 'grid grid-cols-2 md:grid-cols-3 gap-4 mt-4' : 'hide';
+            calculate();
+        }
+
+        // ४. क्याल्कुलेसन लजिक
+        function calculate() {
+            const prov = document.getElementById('province').value;
+            const local = document.getElementById('localLevel').value;
+            const title = document.getElementById('karobarInput').value;
+            const thaili = parseFloat(document.getElementById('thaili').value) || 0;
+            
+            if (!masterData.rates[prov] || !masterData.rates[prov][title]) {
+                document.getElementById('resultCard').classList.add('hide');
+                return;
+            }
+
+            document.getElementById('resultCard').classList.remove('hide');
+            let fees = { registration: 0, labhakar: 0, sewa: 0, bilamba: 0, rokka: 0 };
+            const rateData = masterData.rates[prov][title];
+            const colMap = { 'registration': 'Reg', 'labhakar': 'Labha', 'sewa': 'Sewa', 'bilamba': 'Bilamba', 'rokka': 'Rokka' };
+
+            let hasAny = false;
+
+            Object.keys(fees).forEach(col => {
+                const ranges = rateData[col] || [];
+                const match = ranges.find(r => {
+                    let f = parseFloat(r.from) || 0;
+                    let t = (r.to !== "" && r.to !== undefined) ? parseFloat(r.to) : Infinity;
+                    return thaili >= f && thaili <= t;
+                });
+
+                if (match) {
+                    let k = (col === 'labhakar') ? local + '_' + document.getElementById('ownershipPeriod').value : local;
+                    let v = parseFloat(match[k]) || 0;
+                    fees[col] = (v < 25 && v > 0) ? Math.ceil(thaili * (v / 100)) : Math.ceil(v);
+                    if (fees[col] > 0) hasAny = true;
+                }
+
+                const row = document.getElementById('row' + colMap[col]);
+                const res = document.getElementById('res' + colMap[col]);
+                
+                if (row && res) {
+                    if (fees[col] === 0) row.classList.add('hide');
+                    else {
+                        row.classList.remove('hide');
+                        if (col === 'registration' && document.getElementById('hasDiscount').checked) {
+                            let n = parseFloat(document.getElementById('numBen').value) || 1, t = parseFloat(document.getElementById('totalP').value) || 1, p = parseFloat(document.getElementById('discPercent').value) || 0;
+                            let dA = Math.floor(fees.registration * ((n/t)*p/100));
+                            res.innerHTML = `<span class="text-[10px] text-slate-500">(${fees.registration.toLocaleString()} - ${dA.toLocaleString()})</span> ${ (fees.registration - dA).toLocaleString() }`;
+                        } else res.innerText = fees[col].toLocaleString('ne-NP');
+                    }
+                }
+            });
+
+            let total = Object.values(fees).reduce((a, b) => a + b, 0);
+            if (document.getElementById('hasDiscount').checked && fees.registration > 0) {
+                let n = parseFloat(document.getElementById('numBen').value) || 1, t = parseFloat(document.getElementById('totalP').value) || 1, p = parseFloat(document.getElementById('discPercent').value) || 0;
+                total -= Math.floor(fees.registration * ((n/t)*p/100));
+            }
+            document.getElementById('resTotal').innerText = "रु. " + total.toLocaleString('ne-NP');
+        }
+
+        function resetForm() {
+            document.getElementById('karobarInput').value = '';
+            document.getElementById('thaili').value = '';
+            document.getElementById('hasDiscount').checked = false;
+            toggleDiscountUI();
+            calculate();
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.relative')) document.getElementById('dropdownList').classList.add('hidden');
         });
-    }
 
-    // ३. Calculation Logic
-    function calculate() {
-        const title = document.getElementById('karobarInput').value;
-        const thaili = parseFloat(document.getElementById('thaili').value) || 0;
-        const data = revenueData.find(x => x.title === title);
-
-        if(!data) return;
-
-        // Example calculation (Registration Fee only for demo)
-        let rate = data.rates.registration.val; 
-        let totalRevenue = Math.ceil(thaili * (rate/100));
-        
-        document.getElementById('resTotal').innerText = totalRevenue;
-        document.getElementById('resPayable').innerText = totalRevenue;
-    }
-
-    if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js');
-}
-</script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            loadData();
+        });
+    </script>
 </body>
 </html>
