@@ -34,6 +34,18 @@
         }
         .dropdown-item:hover { background-color: #f8fafc; color: #2563eb; }
         .hide { display: none !important; }
+/* Compact Design */
+.calc-card { padding: 1.25rem !important; margin-top: -1.5rem !important; }
+/* यसको अर्थ माथि र तल १.५ रेम प्याडिङ दिनुहोस् भन्ने हुन्छ */
+.hero-bg { 
+    padding-top: 1.5rem !important; 
+    padding-bottom: 1.5rem !important; 
+}
+.custom-input { padding: 0.5rem 0.75rem !important; border-radius: 8px !important; }
+.grid-gap-compact { gap: 1rem !important; }
+.mb-6 { margin-bottom: 0.75rem !important; }
+#resultCard { padding: 1.25rem !important; }
+        
     </style>
 </head>
 
@@ -125,30 +137,54 @@
                             </select>
                         </div>
                     </div>
+                    <!-- विलम्व शुल्क सम्बन्धी थप विवरण (कन्डिसनल)
+<div id="vilambaYearWrapper" class="hide mb-4 p-3 bg-red-50 border border-red-100 rounded-xl">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+        <label id="vilambaLabel" class="text-xs font-bold text-red-700 leading-tight"></label>
+        <div id="yearInputPart" class="hide flex items-center gap-2">
+            <span class="text-xs font-bold text-slate-500 uppercase">वर्ष:</span>
+            <input type="number" id="vilambaYear" value="0" min="0" oninput="calculate()" 
+                class="w-20 p-1 border rounded-lg text-center font-bold border-red-300">
+        </div>
+    </div>
+</div> -->
 
                     <!-- छुट सेक्शन -->
-                    <div id="discountWrapper" class="hide mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                        <label class="flex items-center gap-3 cursor-pointer mb-4">
-                            <input type="checkbox" id="hasDiscount" onchange="toggleDiscountUI()" class="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                            <span class="text-sm font-bold text-slate-700">रजिष्ट्रेशन दस्तुरमा छुट दिने हो?</span>
-                        </label>
-                        
-                        <div id="discountInputs" class="hide grid grid-cols-2 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">छुट पाउनेको सङ्ख्या</label>
-                                <input type="number" id="numBen" value="1" oninput="calculate()" class="custom-input">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">जम्मा खरिदकर्ताको सङ्ख्या</label>
-                                <input type="number" id="totalP" value="1" oninput="calculate()" class="custom-input">
-                            </div>
-                            <div class="col-span-2 md:col-span-1">
-                                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">छुट %</label>
-                                <input type="number" id="discPercent" placeholder="उदा: ५०" oninput="calculate()" class="custom-input">
-                            </div>
-                        </div>
-                    </div>
+<!-- छुट सेक्शन परिमार्जित -->
+<div id="discountWrapper" class="hide mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+    <label class="flex items-center gap-3 cursor-pointer mb-4">
+        <input type="checkbox" id="hasDiscount" onchange="toggleDiscountUI()" class="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+        <span class="text-sm font-bold text-slate-700">रजिष्ट्रेशन दस्तुरमा छुट दिने हो?</span>
+    </label>
+    
+    <div id="discountInputs" class="hide space-y-4">
+        <!-- थपिएका छुटहरूको लिस्ट -->
+        <div id="addedExemptionsList" class="space-y-2"></div>
 
+        <!-- छुट थप्ने फर्म -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-2 p-3 bg-white rounded-xl border border-dashed border-slate-300">
+            <div class="md:col-span-6">
+                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">छुट प्रकार छान्नुहोस्</label>
+                <select id="exTypeSelector" class="custom-input text-sm"></select>
+            </div>
+            <div class="md:col-span-4">
+                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">छुट पाउने संख्या</label>
+                <input type="number" id="exCountInput" value="1" min="1" class="custom-input text-sm">
+            </div>
+            <div class="md:col-span-2 flex items-end">
+                <button onclick="addExemptionRow()" class="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700">
+                    <i data-lucide="plus" class="w-4 h-4 mx-auto"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- जम्मा खरिदकर्ता (अटो-अपडेट हुने) -->
+        <div class="pt-2 border-t border-slate-200">
+            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">जम्मा खरिदकर्ता संख्या</label>
+            <input type="number" id="totalBuyers" value="1" oninput="calculate()" class="custom-input bg-blue-50 font-bold">
+        </div>
+    </div>
+</div>
                     <!-- नतिजा कार्ड -->
                     <div id="resultCard" class="hide bg-slate-900 text-white rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
                         <div class="absolute top-0 right-0 p-4 opacity-10">
@@ -170,10 +206,13 @@
                                 <span class="text-slate-400 text-sm">सेवा शुल्क</span>
                                 <span id="resSewa" class="font-bold">०</span>
                             </div>
-                            <div id="rowBilamba" class="flex justify-between items-end border-b border-slate-800 pb-2">
-                                <span class="text-slate-400 text-sm">विलम्व शुल्क</span>
-                                <span id="resBilamba" class="font-bold">०</span>
-                            </div>
+<!-- यसलाई साविकको rowBilamba सँग बदल्नुहोस् -->
+<div id="rowBilamba" class="flex justify-between items-end border-b border-slate-800 pb-2">
+    <span class="text-slate-400 text-sm">
+        विलम्व शुल्क <span id="vilambaNote" class="text-[10px] text-red-400 block md:inline"></span>
+    </span>
+    <span id="resBilamba" class="font-bold">०</span>
+</div>
                             <div id="rowRokka" class="flex justify-between items-end border-b border-slate-800 pb-2">
                                 <span class="text-slate-400 text-sm">रोक्का दस्तुर</span>
                                 <span id="resRokka" class="font-bold">०</span>
@@ -192,7 +231,8 @@
                     </div>
 
                     <p class="text-[10px] text-slate-400 mt-6 text-center leading-relaxed">
-                        <i class="fas fa-info-circle mr-1"></i> यो अनुमानित विवरण हो । आधिकारिक जानकारीको लागि सम्बन्धित भूमि प्रशासन कार्यालयमा सम्पर्क गर्नुहोस्।
+                        <i class="fas fa-info-circle mr-1"></i> यो अनुमानित विवरण हो । आधिकारिक जानकारीको लागि सम्बन्धित भूमि प्रशासन कार्यालयमा सम्पर्क गर्नुहोस्। 
+                        लाभकरमा खर्च दावी गर्न पाइन्छ जसको क्याल्कुलेटर तयार हुँदैछ । 
                     </p>
                 </div>
             </div>
@@ -274,7 +314,98 @@
             const hasLabha = rates['labhakar'] && rates['labhakar'].length > 0;
             document.getElementById('labhakarBox').className = hasLabha ? '' : 'hide';
             document.getElementById('discountWrapper').className = ''; 
+
+
         }
+
+        function handleVilambaUI() {
+    const title = document.getElementById('karobarInput').value;
+    const wrapper = document.getElementById('vilambaYearWrapper');
+    const label = document.getElementById('vilambaLabel');
+    const yearPart = document.getElementById('yearInputPart');
+    
+    // शिर्षक अनुसार चेक गर्ने
+    const config = vilambaConfig[title];
+    
+    if (config) {
+        wrapper.classList.remove('hide');
+        label.innerText = config.text;
+        if (config.showYear) {
+            yearPart.classList.remove('hide');
+        } else {
+            yearPart.classList.add('hide');
+            document.getElementById('vilambaYear').value = 1; // वर्ष नभए १ ले गुणा गर्ने
+        }
+    } else {
+        wrapper.classList.add('hide');
+        document.getElementById('vilambaYear').value = 0;
+    }
+}
+
+
+        let addedExemptions = []; // थपिएका छुटहरू स्टोर गर्न
+
+// १. छुटको ड्रपडाउन भर्ने (छानिएको कारोबारमा लागु हुने मात्र)
+function updateExemptionDropdown() {
+    const title = document.getElementById('karobarInput').value;
+    const selector = document.getElementById('exTypeSelector');
+    selector.innerHTML = '<option value="">छुट छान्नुहोस्...</option>';
+    
+    if (!masterData.exemptions) return;
+
+    masterData.exemptions.forEach(ex => {
+        // यदि यो छुट यो कारोबार शिर्षकमा लागु हुन्छ भने मात्र देखाउने
+        if (ex.titles.includes(title)) {
+            selector.innerHTML += `<option value="${ex.id}">${ex.name}</option>`;
+        }
+    });
+}
+
+// २. लिस्टमा नयाँ छुट थप्ने
+function addExemptionRow() {
+    const exId = document.getElementById('exTypeSelector').value;
+    const count = parseInt(document.getElementById('exCountInput').value) || 0;
+    
+    if (!exId || count < 1) return alert("छुट प्रकार र संख्या मिलाउनुहोस्");
+
+    const exData = masterData.exemptions.find(e => e.id == exId);
+    addedExemptions.push({ ...exData, beneficiaryCount: count });
+    
+    renderExemptionRows();
+    autoUpdateTotalBuyers();
+    calculate();
+}
+
+// ३. लिस्ट रेन्डर गर्ने
+function renderExemptionRows() {
+    const container = document.getElementById('addedExemptionsList');
+    container.innerHTML = '';
+    
+    addedExemptions.forEach((ex, index) => {
+        container.innerHTML += `
+            <div class="flex justify-between items-center bg-blue-50 p-2 px-4 rounded-lg border border-blue-100">
+                <span class="text-sm font-medium">${ex.name} (${ex.beneficiaryCount} जना)</span>
+                <button onclick="removeExemptionRow(${index})" class="text-red-500 hover:bg-red-50 p-1 rounded">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        `;
+    });
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function removeExemptionRow(index) {
+    addedExemptions.splice(index, 1);
+    renderExemptionRows();
+    autoUpdateTotalBuyers();
+    calculate();
+}
+
+// ४. खरिदकर्ता संख्या अटो-अपडेट गर्ने
+function autoUpdateTotalBuyers() {
+    const totalExCount = addedExemptions.reduce((sum, ex) => sum + ex.beneficiaryCount, 0);
+    document.getElementById('totalBuyers').value = totalExCount || 1;
+}
 
         // ३. अटो-कम्प्लिट लजिक
         function renderDropdownList(list) {
@@ -295,73 +426,136 @@
         function selectTitle(t) {
             document.getElementById('karobarInput').value = t;
             document.getElementById('dropdownList').classList.add('hidden');
+             addedExemptions = []; 
+    renderExemptionRows();
             updateThailiVisibility();
             calculate();
+            handleVilambaUI();
         }
 
-        function toggleDiscountUI() {
-            document.getElementById('discountInputs').className = document.getElementById('hasDiscount').checked ? 'grid grid-cols-2 md:grid-cols-3 gap-4 mt-4' : 'hide';
-            calculate();
-        }
+function toggleDiscountUI() {
+    const isChecked = document.getElementById('hasDiscount').checked;
+    document.getElementById('discountInputs').className = isChecked ? 'space-y-4 mt-4' : 'hide';
+    if(isChecked) updateExemptionDropdown();
+    calculate();        };
+
+    const vilambaConfig = {
+    "नामसारी": { text: "(मृत्यु भएको ३५ दिन कटेपछि लाग्ने)", showYear: false },
+    "शेषपछिको वकसपत्र दाखिला खारेज": { text: "(मृत्यु भएको ६ महिना कटेपछि प्रति वर्ष):", showYear: true },
+    "अदालतको दाखिला खारेज": { text: "(चिठीको २१ दिन नाघेपछि प्रति वर्ष):", showYear: true }
+};
 
         // ४. क्याल्कुलेसन लजिक
-        function calculate() {
-            const prov = document.getElementById('province').value;
-            const local = document.getElementById('localLevel').value;
-            const title = document.getElementById('karobarInput').value;
-            const thaili = parseFloat(document.getElementById('thaili').value) || 0;
+function calculate() {
+    const prov = document.getElementById('province').value;
+    const local = document.getElementById('localLevel').value;
+    const title = document.getElementById('karobarInput').value;
+    const thaili = parseFloat(document.getElementById('thaili').value) || 0;
+
+    if (!masterData.rates[prov] || !masterData.rates[prov][title]) {
+        document.getElementById('resultCard').classList.add('hide');
+        return;
+    }
+
+    // १. छुट गणना गर्ने आन्तरिक फसन
+    function calculateExemptionAmount(regFee) {
+        if (!document.getElementById('hasDiscount').checked || regFee <= 0) return 0;
+        const totalBuyers = parseFloat(document.getElementById('totalBuyers').value) || 1;
+        let totalDiscountAmount = 0;
+
+        addedExemptions.forEach(ex => {
+            if (ex.rates[prov] && ex.rates[prov][local]) {
+                let percent = parseFloat(ex.rates[prov][local]) || 0;
+                let shareAmount = regFee * (ex.beneficiaryCount / totalBuyers);
+                totalDiscountAmount += Math.floor(shareAmount * (percent / 100));
+            }
+        });
+        return totalDiscountAmount;
+    }
+
+    document.getElementById('resultCard').classList.remove('hide');
+    let fees = { registration: 0, labhakar: 0, sewa: 0, bilamba: 0, rokka: 0 };
+    const rateData = masterData.rates[prov][title];
+    const colMap = { 'registration': 'Reg', 'labhakar': 'Labha', 'sewa': 'Sewa', 'bilamba': 'Bilamba', 'rokka': 'Rokka' };
+
+    // २. सबै शुल्कहरूको आधारभूत गणना
+Object.keys(fees).forEach(col => {
+    const ranges = rateData[col] || [];
+    const match = ranges.find(r => {
+        let f = parseFloat(r.from) || 0;
+        let t = (r.to !== "" && r.to !== undefined) ? parseFloat(r.to) : Infinity;
+        return thaili >= f && thaili <= t;
+    });
+
+    if (match) {
+        let k = (col === 'labhakar') ? local + '_' + document.getElementById('ownershipPeriod').value : local;
+        let v = parseFloat(match[k]) || 0;
+        
+        // १. आधारभूत शुल्क निकाल्ने (Base Fee)
+        let baseFee = (v < 25 && v > 0) ? Math.ceil(thaili * (v / 100)) : Math.ceil(v);
+
+        // २. विलम्व शुल्कको विशेष कन्डिसन (यहाँ थपिएको छ)
+        if (col === 'bilamba') {
+            const yearInput = document.getElementById('vilambaYear');
+            // यदि वर्ष भर्ने कोठा खाली छैन र ० भन्दा माथि छ भने गुणा गर्ने, नत्र १ मान्ने
+            const year = (yearInput && parseFloat(yearInput.value) > 0) ? parseFloat(yearInput.value) : 1;
             
-            if (!masterData.rates[prov] || !masterData.rates[prov][title]) {
-                document.getElementById('resultCard').classList.add('hide');
-                return;
-            }
-
-            document.getElementById('resultCard').classList.remove('hide');
-            let fees = { registration: 0, labhakar: 0, sewa: 0, bilamba: 0, rokka: 0 };
-            const rateData = masterData.rates[prov][title];
-            const colMap = { 'registration': 'Reg', 'labhakar': 'Labha', 'sewa': 'Sewa', 'bilamba': 'Bilamba', 'rokka': 'Rokka' };
-
-            let hasAny = false;
-
-            Object.keys(fees).forEach(col => {
-                const ranges = rateData[col] || [];
-                const match = ranges.find(r => {
-                    let f = parseFloat(r.from) || 0;
-                    let t = (r.to !== "" && r.to !== undefined) ? parseFloat(r.to) : Infinity;
-                    return thaili >= f && thaili <= t;
-                });
-
-                if (match) {
-                    let k = (col === 'labhakar') ? local + '_' + document.getElementById('ownershipPeriod').value : local;
-                    let v = parseFloat(match[k]) || 0;
-                    fees[col] = (v < 25 && v > 0) ? Math.ceil(thaili * (v / 100)) : Math.ceil(v);
-                    if (fees[col] > 0) hasAny = true;
-                }
-
-                const row = document.getElementById('row' + colMap[col]);
-                const res = document.getElementById('res' + colMap[col]);
-                
-                if (row && res) {
-                    if (fees[col] === 0) row.classList.add('hide');
-                    else {
-                        row.classList.remove('hide');
-                        if (col === 'registration' && document.getElementById('hasDiscount').checked) {
-                            let n = parseFloat(document.getElementById('numBen').value) || 1, t = parseFloat(document.getElementById('totalP').value) || 1, p = parseFloat(document.getElementById('discPercent').value) || 0;
-                            let dA = Math.floor(fees.registration * ((n/t)*p/100));
-                            res.innerHTML = `<span class="text-[10px] text-slate-500">(${fees.registration.toLocaleString()} - ${dA.toLocaleString()})</span> ${ (fees.registration - dA).toLocaleString() }`;
-                        } else res.innerText = fees[col].toLocaleString('ne-NP');
-                    }
-                }
-            });
-
-            let total = Object.values(fees).reduce((a, b) => a + b, 0);
-            if (document.getElementById('hasDiscount').checked && fees.registration > 0) {
-                let n = parseFloat(document.getElementById('numBen').value) || 1, t = parseFloat(document.getElementById('totalP').value) || 1, p = parseFloat(document.getElementById('discPercent').value) || 0;
-                total -= Math.floor(fees.registration * ((n/t)*p/100));
-            }
-            document.getElementById('resTotal').innerText = "रु. " + total.toLocaleString('ne-NP');
+            // जस्तै: ५०० (दर) * २ (वर्ष) = १०००
+            fees[col] = baseFee * year;
+        } else {
+            // अन्य दस्तुरहरू साविक बमोजिम
+            fees[col] = baseFee;
         }
+    }
+});
 
+    
+// ३. छुट घटाउने र डिस्प्ले अपडेट गर्ने
+    let discountAmount = calculateExemptionAmount(fees.registration);
+    let total = Object.values(fees).reduce((a, b) => a + b, 0) - discountAmount;
+
+    Object.keys(fees).forEach(col => {
+        const row = document.getElementById('row' + colMap[col]);
+        const res = document.getElementById('res' + colMap[col]);
+            const noteSpan = document.getElementById('vilambaNote'); // नोटको लागि
+
+        
+        // शुल्क कति छ भनेर निश्चित गर्ने (रजिष्ट्रेशनको हकमा छुट घटाएर)
+    let finalVal = fees[col];
+    if (col === 'registration') finalVal = fees.registration - discountAmount;
+
+    if (finalVal <= 0) {
+        row.classList.add('hide');
+    } else {
+        row.classList.remove('hide');
+        
+        // विलम्व शुल्कको लागि विशेष नोट र वर्षको हिसाब देखाउने
+        if (col === 'bilamba') {
+            const config = vilambaConfig[title];
+            if (config) {
+                noteSpan.innerText = config.text; // यहाँ नामसारीको ३५ दिन वाला मेसेज बस्छ
+            } else {
+                noteSpan.innerText = "";
+            }
+            res.innerText = fees[col].toLocaleString('ne-NP');
+        } 
+        else if (col === 'registration') {
+                if (discountAmount > 0) {
+                    // छुट सहितको विवरण देखाउने
+                    res.innerHTML = `<span class="text-[10px] text-slate-400">(${fees.registration.toLocaleString()} - ${discountAmount.toLocaleString()})</span> ${finalVal.toLocaleString()}`;
+                } else {
+                    res.innerText = finalVal.toLocaleString('ne-NP');
+                }
+            } else {
+                // अन्य शुल्कहरू (Sewa, Labhakar, etc.) देखाउने
+                res.innerText = fees[col].toLocaleString('ne-NP');
+            }
+        }
+    });
+
+    // कुल जम्मा अपडेट गर्ने
+    document.getElementById('resTotal').innerText = "रु. " + total.toLocaleString('ne-NP');
+}
         function resetForm() {
             document.getElementById('karobarInput').value = '';
             document.getElementById('thaili').value = '';

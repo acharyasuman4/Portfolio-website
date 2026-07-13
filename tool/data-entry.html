@@ -36,6 +36,13 @@
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
         .sticky-footer { position: sticky; bottom: -30px; background: white; padding: 15px 0; border-top: 1px solid #eee; margin-top: 20px; text-align: right; }
+    
+    /* Exemption Specific Styles */
+.selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
+.checkbox-list { max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: white; border-radius: 4px; }
+.checkbox-item { display: block; margin-bottom: 5px; font-size: 13px; }
+.exemption-list-table { width: 100%; margin-top: 20px; border-top: 2px solid var(--primary); }
+.tag { background: #e2e3e5; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin: 2px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -56,6 +63,7 @@
         <input type="file" id="uploadJson" style="display:none" onchange="uploadJSON(event)">
         <button class="btn btn-ghost" onclick="document.getElementById('uploadJson').click()">JSON अपलोड</button>
         <button class="btn btn-red" onclick="resetAll()">Reset All</button>
+        <button class="btn btn-blue" style="background:#673ab7" onclick="openExemptionManager()">छुट व्यवस्थापन</button>
     </div>
 
     <table id="mainTable">
@@ -95,7 +103,55 @@
         </div>
     </div>
 </div>
+<!-- Exemption Management Modal -->
+<div id="exemptionModal" class="modal">
+    <div class="modal-content" style="max-width: 900px;">
+        <span class="close" onclick="closeExemptionModal()">&times;</span>
+        <h3>छुट (Exemption) दर व्यवस्थापन</h3>
+        
+        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fffde7;">
+            <div style="margin-bottom:15px">
+                <label><strong>१. छुटको नाम/प्रकार:</strong></label><br>
+                <input type="text" id="exName" placeholder="उदा: महिलाको नाममा दर्ता" style="width:100%; padding:8px; margin-top:5px">
+            </div>
 
+            <div class="selection-grid">
+                <div>
+                    <label><strong>२. कारोबार शिर्षक छान्नुहोस् (Multiple):</strong></label>
+                    <div id="titleChecklist" class="checkbox-list"></div>
+                </div>
+                <div>
+                    <label><strong>३. राजस्व महल छान्नुहोस् (Multiple):</strong></label>
+                    <div id="colChecklist" class="checkbox-list"></div>
+                </div>
+            </div>
+
+            <label><strong>४. स्थानीय तह अनुसार छुट प्रतिशत (%) - <span id="expProvinceName"></span>:</strong></label>
+            <table class="range-table" style="margin-top:10px">
+                <thead id="expMatrixThead"></thead>
+                <tbody id="expMatrixTbody"></tbody>
+            </table>
+
+            <div style="margin-top:15px; text-align: right;">
+                <button class="btn btn-green" onclick="saveExemption()">छुट थप्नुहोस् / सेभ गर्नुहोस्</button>
+            </div>
+        </div>
+
+        <div id="exemptionListArea">
+            <table class="exemption-list-table">
+                <thead>
+                    <tr>
+                        <th>छुटको नाम</th>
+                        <th>लागु हुने शिर्षक / महल</th>
+                        <th>दर (%)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="exemptionListTbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
 <script>
     // १. प्रारम्भिक डाटा स्ट्रक्चर
     let db = JSON.parse(localStorage.getItem('land_revenue_v2')) || {
@@ -146,6 +202,123 @@
         });
         localStorage.setItem('land_revenue_v2', JSON.stringify(db));
     }
+
+    // १. डाटा स्ट्रक्चरमा 'exemptions' थप्ने सुनिश्चितता
+if (!db.exemptions) db.exemptions = [];
+
+// २. छुट व्यवस्थापन मोडेल खोल्ने
+function openExemptionManager() {
+    const prov = document.getElementById('currentProvince').value;
+    document.getElementById('expProvinceName').innerText = prov;
+    
+    // कारोबार शिर्षक लिस्ट (Checkboxes)
+    let titleHtml = '';
+    db.titles.forEach(t => {
+        titleHtml += `<label class="checkbox-item"><input type="checkbox" name="exTitles" value="${t}"> ${t}</label>`;
+    });
+    document.getElementById('titleChecklist').innerHTML = titleHtml || 'पहिले कारोबार शिर्षक थप्नुहोस्';
+
+    // महल लिस्ट (Checkboxes)
+    let colHtml = '';
+    columns.forEach(c => {
+        colHtml += `<label class="checkbox-item"><input type="checkbox" name="exCols" value="${c}"> ${c}</label>`;
+    });
+    document.getElementById('colChecklist').innerHTML = colHtml;
+
+    // म्याट्रिक्स हेडर र रो
+    const levels = getLocalLevels(prov);
+    let thead = `<tr>`;
+    let tbody = `<tr>`;
+    levels.forEach((lvl, idx) => {
+        thead += `<th>${lvl.name}</th>`;
+        tbody += `<td><input type="number" class="exp-rate" data-lvlid="${lvl.id}" value="0" ${idx===0 ? 'oninput="propagateExRate(this)"' : ''}></td>`;
+    });
+    thead += `</tr>`; tbody += `</tr>`;
+    document.getElementById('expMatrixThead').innerHTML = thead;
+    document.getElementById('expMatrixTbody').innerHTML = tbody;
+
+    renderExemptionList();
+    document.getElementById('exemptionModal').style.display = "block";
+}
+
+// ३. पहिलो कोठामा भर्दा सबैमा अटो-फिल हुने
+function propagateExRate(el) {
+    document.querySelectorAll('.exp-rate').forEach(input => input.value = el.value);
+}
+
+// ४. छुट सेभ गर्ने
+function saveExemption() {
+    const name = document.getElementById('exName').value;
+    const prov = document.getElementById('currentProvince').value;
+    const selectedTitles = Array.from(document.querySelectorAll('input[name="exTitles"]:checked')).map(cb => cb.value);
+    const selectedCols = Array.from(document.querySelectorAll('input[name="exCols"]:checked')).map(cb => cb.value);
+
+    if (!name || selectedTitles.length === 0 || selectedCols.length === 0) {
+        alert("कृपया नाम, शिर्षक र महल सबै भर्नुहोस्।");
+        return;
+    }
+
+    let rates = {};
+    document.querySelectorAll('.exp-rate').forEach(input => {
+        rates[input.dataset.lvlid] = input.value;
+    });
+
+    const newEx = {
+        id: Date.now(),
+        name: name,
+        titles: selectedTitles,
+        columns: selectedCols,
+        rates: { [prov]: rates }
+    };
+
+    // यदि यो प्रदेशको डाटा मात्र अपडेट गर्ने हो भने पुरानो खोज्ने logic यहाँ थप्न सकिन्छ
+    db.exemptions.push(newEx);
+    localStorage.setItem('land_revenue_v2', JSON.stringify(db));
+    
+    // Form Reset
+    document.getElementById('exName').value = '';
+    openExemptionManager(); // Refresh
+}
+
+// ५. छुटको लिस्ट देखाउने
+function renderExemptionList() {
+    const prov = document.getElementById('currentProvince').value;
+    const tbody = document.getElementById('exemptionListTbody');
+    tbody.innerHTML = '';
+
+    db.exemptions.forEach((ex, index) => {
+        const titles = ex.titles.map(t => `<span class="tag">${t}</span>`).join('');
+        const cols = ex.columns.map(c => `<span class="tag">${c}</span>`).join('');
+        
+        let rateDisplay = '';
+        if(ex.rates[prov]) {
+            rateDisplay = Object.values(ex.rates[prov]).join('%, ') + '%';
+        } else {
+            rateDisplay = 'यो प्रदेशमा सेट गरिएको छैन';
+        }
+
+        tbody.innerHTML += `
+            <tr>
+                <td><strong>${ex.name}</strong></td>
+                <td>शिर्षक: ${titles}<br>महल: ${cols}</td>
+                <td>${rateDisplay}</td>
+                <td><button class="btn btn-red" onclick="deleteExemption(${index})">X</button></td>
+            </tr>
+        `;
+    });
+}
+
+function deleteExemption(index) {
+    if(confirm("के यो छुट हटाउन चाहनुहुन्छ?")) {
+        db.exemptions.splice(index, 1);
+        localStorage.setItem('land_revenue_v2', JSON.stringify(db));
+        renderExemptionList();
+    }
+}
+
+function closeExemptionModal() { 
+    document.getElementById('exemptionModal').style.display = "none"; 
+}
 
     // ४. नयाँ शिर्षक थप्ने (साझा)
     function addNewTitle() {
