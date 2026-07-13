@@ -406,15 +406,22 @@
                 </div>
             </div>
 
-            <div class="input-group" style="background:#fffbeb; border-color:#fcd34d;">
-                <div class="row-3">
-                    <div><label>उपदफा:</label><input type="text" id="in_upadafa" oninput="scheduleUpdate()" value="१ख"
-                            class="input-box"></div>
-                    <div style="grid-column: span 2;"><label>कारण:</label><input type="text" id="in_faraka"
-                            oninput="scheduleUpdate()" placeholder="... फरक परेकोले" class="input-box"></div>
-                </div>
-            </div>
-            <P style="font-size: 10px;"><b>छोरा, छोरी, पति वा पत्नीमा</b> व्यहोरा फरक परेकोमा <b>१ठ</b></P>
+<div class="input-group style="background:#fffbeb; border-color:#fcd34d;">
+    <div style="margin-bottom: 10px;">
+        <label>उपदफा:</label>
+        <input type="text" id="in_upadafa" oninput="scheduleUpdate()" value="१ख" class="input-box" style="width: 100px;">
+           <div style="font-size: 12px; color: #3730a3;"><b>छोरा, छोरी, पति वा पत्नीमा</b> व्यहोरा फरक परेकोमा <b>१ठ</b></div>
+
+    </div>
+    <div>
+        <label>सुचना प्रकाशन गर्नु पर्ने थप विवरण:</label>
+        <textarea id="in_faraka" 
+                  oninput="scheduleUpdate()" 
+                  placeholder="जग्गाधनी पुर्जामा नाम.....र मृत्युदर्तामा.....भई फरक परेकोले" 
+                  class="input-box" 
+                  style="height: 100px; resize: vertical; font-family: 'Mukta', sans-serif;"></textarea>
+    </div>
+</div>
 
 
             <div style="margin-top:15px; display:grid; gap:8px;">
