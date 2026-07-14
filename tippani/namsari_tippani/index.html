@@ -437,17 +437,127 @@ document.addEventListener('input', e => {
             return localArr.join(', ') + ' र ' + last;
         }
 
-        function renderHaqUI() {
-            const container = document.getElementById('haq_inputs');
-            if (!document.getElementById('chk_haq').checked) { container.innerHTML = ""; return; }
-            container.innerHTML = state.apps.map((a, i) => `
-            <div style="border-bottom:1px solid #ddd; padding:5px 0;">
-                <label><input type="checkbox" onchange="state.apps[${i}].renounce=this.checked; update(); renderHaqUI();" ${a.renounce ? 'checked' : ''}> ${a.name}</label>
-                ${a.renounce ? `<div class="row-2"><input type="text" value="${a.r_reg}" placeholder="द.नं." class="input-box" oninput="state.apps[${i}].r_reg=this.value; update();"><input type="text" value="${a.r_dt}" placeholder="मिति" class="input-box" oninput="state.apps[${i}].r_dt=this.value; update();"></div>` : ''}
-            </div>
-        `).join('');
-        }
+        // १. अङ्क र डट तत्काल कन्भर्ट गर्ने फङ्सन
+function nepalify(el) {
+    let start = el.selectionStart;
+    let end = el.selectionEnd;
+    let value = el.value;
+    
+    // अङ्क बदल्ने
+    value = value.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    // डटलाई । मा बदल्ने
+    value = value.replace(/\./g, "।");
+    
+    el.value = value;
+    el.setSelectionRange(start, end);
+}
 
+// १. हक छाड्ने समूह थप्ने फङ्सन
+function addHaqGroup() {
+    const reg = document.getElementById('haq_reg_input').value;
+    const dt = document.getElementById('haq_dt_input').value;
+    const extraNames = document.getElementById('haq_extra_names').value.trim();
+    
+    // छानिएका निवेदकहरू
+    let selectedApps = [];
+    document.querySelectorAll('.haq-app-chk:checked').forEach(chk => {
+        const index = chk.getAttribute('data-index');
+        selectedApps.push(state.apps[index].name);
+        state.apps[index].renounce = true; // निवेदकलाई हक छाड्नेमा मार्क गर्ने
+    });
+
+    // बाहिरबाट टाइप गरिएका नामहरू
+    let otherNames = extraNames ? extraNames.split(',').map(n => n.trim()) : [];
+    let allNamesInGroup = [...selectedApps, ...otherNames];
+
+    if (allNamesInGroup.length === 0 || !reg || !dt) {
+        alert("नाम, दर्ता नं. र मिति अनिवार्य छ ।");
+        return;
+    }
+
+    if (!state.haq_groups) state.haq_groups = [];
+    
+    state.haq_groups.push({
+        reg: reg,
+        dt: dt,
+        names: allNamesInGroup
+    });
+
+    // इनपुटहरू सफा गर्ने
+    document.getElementById('haq_extra_names').value = "";
+    document.getElementById('haq_reg_input').value = "";
+    document.getElementById('haq_dt_input').value = "";
+    
+    renderHaqUI();
+    update();
+}
+
+// २. हक छाड्ने UI रिन्डर गर्ने
+function renderHaqUI() {
+    const container = document.getElementById('haq_inputs');
+    if (!document.getElementById('chk_haq').checked) { 
+        container.innerHTML = ""; 
+        state.haq_groups = []; 
+        state.apps.forEach(a => a.renounce = false);
+        return; 
+    }
+
+    let html = `
+    <div style="background:#fff7ed; padding:10px; border:1px solid #fdba74; border-radius:5px; margin-top:5px;">
+        <label><b>हक छाड्ने निवेदक छान्नुहोस्:</b></label>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; background:white; padding:5px; border:1px solid #ddd;">
+            ${state.apps.map((a, i) => `
+                <label style="font-weight:normal; font-size:12px;">
+                    <input type="checkbox" class="haq-app-chk" data-index="${i}" ${a.renounce ? 'disabled' : ''}> ${a.name}
+                </label>
+            `).join('')}
+        </div>
+        
+        <label><b>निवेदक बाहेकका अन्य नाम (कमाले छुट्याउनुहोस्):</b></label>
+        <input type="text" id="haq_extra_names" placeholder="उदा: राम बहादुर, श्याम कुमार" class="input-box">
+        
+        <div class="row-2">
+            <div><label>द.नं.:</label><input type="text" id="haq_reg_input" class="input-box" oninput="nepalify(this)"></div>
+            <div><label>मिति:</label><input type="text" id="haq_dt_input" class="input-box" oninput="nepalify(this)"></div>
+        </div>
+        
+        <button onclick="addHaqGroup()" class="btn btn-dark" style="background:#c2410c;">+ विवरण थप्नुहोस्</button>
+        
+        <div id="haq_summary_list" style="margin-top:10px;"></div>
+    </div>`;
+
+    container.innerHTML = html;
+    renderHaqSummary();
+}
+
+// ३. थपिएका हक छाड्नेहरूको लिस्ट देखाउने
+function renderHaqSummary() {
+    const listDiv = document.getElementById('haq_summary_list');
+    if (!state.haq_groups || state.haq_groups.length === 0) {
+        listDiv.innerHTML = "";
+        return;
+    }
+
+    listDiv.innerHTML = state.haq_groups.map((g, i) => `
+        <div class="item-list" style="background:#ffedd5; border-color:#fed7aa;">
+            <div style="font-size:11px;">
+                <b>${nepJoin(g.names)}</b> (द.नं. ${g.reg}, मिति: ${g.dt})
+            </div>
+            <span class="del-btn" onclick="removeHaqGroup(${i})">×</span>
+        </div>
+    `).join('');
+}
+
+function removeHaqGroup(index) {
+    const group = state.haq_groups[index];
+    // निवेदकहरूको renounce status फिर्ता गर्ने
+    state.apps.forEach(a => {
+        if (group.names.includes(a.name)) a.renounce = false;
+    });
+    state.haq_groups.splice(index, 1);
+    renderHaqUI();
+    update();
+}
         function update() {
             const v = (id) => document.getElementById(id)?.value || ".......";
 
@@ -537,20 +647,17 @@ document.addEventListener('input', e => {
     </table>`;
 
             // 4. GENERATE BODY TEXT
-            let haqText = "";
-            if (document.getElementById('chk_haq').checked && renouncers.length) {
-                const groups = {};
-                renouncers.forEach(r => {
-                    const key = `${r.r_reg}-${r.r_dt}`;
-                    if (!groups[key]) groups[key] = { reg: r.r_reg, dt: r.r_dt, names: [] };
-                    groups[key].names.push(r.name);
-                });
-                let haqSegments = Object.values(groups).map(g => `हकदार <b>${nepJoin(g.names)}</b>ले द.नं. <b>${g.reg}</b> मिति <b>${g.dt}</b> को निवेदनबाट नामसारी गर्न मञ्जुरी दिएको`);
-                haqText = nepJoin(haqSegments);
-            }
+let haqText = "";
+if (document.getElementById('chk_haq').checked && state.haq_groups && state.haq_groups.length > 0) {
+    let haqSegments = state.haq_groups.map(g => 
+        `हकदार <b>${nepJoin(g.names)}</b>ले द.नं. <b>${g.reg}</b> मिति <b>${g.dt}</b> को`
+    );
+    
+    haqText = nepJoin(haqSegments) + " निवेदनबाट नामसारी गर्न दिएको मञ्जुरी";
+}
 
             const extraIn = document.getElementById('in_extra').value.trim();
-            let finalGrammar = `निवेदकको नागरिकता प्रमाणपत्र र ${nivedakKa} सनाखत` + (extraIn ? ` साथै ${extraIn}` : "") + (haqText ? ` र ${haqText}` : "");
+            let finalGrammar = `निवेदकको नागरिकता प्रमाणपत्र र ${nivedakKa} सनाखत` + (extraIn ? ` साथै ${extraIn}` : "") + (haqText ? ` तथा ${haqText}` : "");
 
            let mohiTextParts = [];
 if (document.getElementById('chk_mohi') && document.getElementById('chk_mohi').checked) {
@@ -571,7 +678,7 @@ const mohiFinalText = mohiTextParts.length > 0 ? " " + nepJoin(mohiTextParts) + 
             let bodyHtml = `
     <p style="text-indent:50px; margin-top:1px;">श्रीमान्,</p>
     <p style="text-indent:50px;">${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा ${nivedakWordPlain}को ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${isPlural ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakWord} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन ।</p>
-    <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसिल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको ${activehakdar} ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन आवश्यक निर्णयार्थ पेश ।</p>
+    <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसिल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको हकदार ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन आवश्यक निर्णयार्थ पेश ।</p>
     `;
 
             // 5. UPDATE PREVIEW
