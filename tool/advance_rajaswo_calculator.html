@@ -77,13 +77,19 @@
                 </div>
                 <nav class="space-y-2">
                     <a href="../" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
-                        <i class="fas fa-th-large w-4"></i> मुख्य पोर्टल
+                        <i class="fas fa-th-large w-4"></i> मुख्य पोर्टल (Home page)
                     </a>
                     <a href="index.html" class="flex items-center gap-3 p-3 bg-blue-600 rounded-xl text-sm font-medium shadow-lg">
                         <i class="fas fa-calculator w-4"></i> राजस्व क्याल्कुलेटर
                     </a>
                     <a href="#" class="flex hover:bg-slate-800 items-center gap-3 p-3 text-slate-400 rounded-xl text-sm transition">
                         <i data-lucide="circle-plus" class="w-4"></i> रोपनी जोड्न
+                    </a>
+                    <a href="/tool/rajaswo_calculator.html" class="flex hover:bg-slate-800 items-center gap-3 p-3 text-slate-400 rounded-xl text-sm transition">
+                        <i data-lucide="sigma" class="w-4"></i> साधारण क्याल्कुलेटर
+                    </a>
+                    <a href="/ropani divider/" class="flex hover:bg-slate-800 items-center gap-3 p-3 text-slate-400 rounded-xl text-sm transition">
+                        <i data-lucide="circle-divide" class="w-4"></i> रोपनी बाँडफाँड (अंशवण्डा / भाग लगाउन)
                     </a>
                 </nav>
             </div>
@@ -133,11 +139,11 @@
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">पुर्जा/स्वामित्व अवधि</label>
                             <select id="ownershipPeriod" onchange="calculate()" class="custom-input bg-orange-50 border-orange-200 font-bold">
                                 <option value="old">५ वर्ष भन्दा पुरानो (>५)</option>
-                                <option value="new">५ वर्ष भन्दा कम (<५)</option>
+                                <option value="new">५ वर्ष भन्दा कम </option>
                             </select>
                         </div>
                     </div>
-                    <!-- विलम्व शुल्क सम्बन्धी थप विवरण (कन्डिसनल)
+                    <!-- विलम्व शुल्क सम्बन्धी थप विवरण (कन्डिसनल) -->
 <div id="vilambaYearWrapper" class="hide mb-4 p-3 bg-red-50 border border-red-100 rounded-xl">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
         <label id="vilambaLabel" class="text-xs font-bold text-red-700 leading-tight"></label>
@@ -147,7 +153,7 @@
                 class="w-20 p-1 border rounded-lg text-center font-bold border-red-300">
         </div>
     </div>
-</div> -->
+</div>
 
                     <!-- छुट सेक्शन -->
 <!-- छुट सेक्शन परिमार्जित -->
@@ -209,7 +215,8 @@
 <!-- यसलाई साविकको rowBilamba सँग बदल्नुहोस् -->
 <div id="rowBilamba" class="flex justify-between items-end border-b border-slate-800 pb-2">
     <span class="text-slate-400 text-sm">
-        विलम्व शुल्क <span id="vilambaNote" class="text-[10px] text-red-400 block md:inline"></span>
+        विलम्व शुल्क 
+        <span id="vilambaNote" class="text-[10px] text-red-400 block md:inline"></span>
     </span>
     <span id="resBilamba" class="font-bold">०</span>
 </div>
@@ -285,60 +292,76 @@
             localStorage.setItem('last_local', document.getElementById('localLevel').value);
         }
 
-        function updateThailiVisibility() {
-            const prov = document.getElementById('province').value;
-            const title = document.getElementById('karobarInput').value;
-            const local = document.getElementById('localLevel').value;
-
-            if (!masterData.rates[prov] || !masterData.rates[prov][title]) return;
-
-            const rates = masterData.rates[prov][title];
-            let showThaili = false;
-
-            ['registration', 'labhakar', 'sewa'].forEach(col => {
-                const ranges = rates[col] || [];
-                if (ranges.length > 1) showThaili = true;
-                else if (ranges.length === 1) {
-                    const r = ranges[0];
-                    const keys = (col === 'labhakar') ? [local + '_old', local + '_new'] : [local];
-                    keys.forEach(k => {
-                        let val = parseFloat(r[k]) || 0;
-                        if (val > 0 && val < 25) showThaili = true;
-                    });
-                }
-            });
-
-            document.getElementById('thailiWrapper').className = showThaili ? '' : 'hide';
-            if (!showThaili) document.getElementById('thaili').value = '';
-
-            const hasLabha = rates['labhakar'] && rates['labhakar'].length > 0;
-            document.getElementById('labhakarBox').className = hasLabha ? '' : 'hide';
-            document.getElementById('discountWrapper').className = ''; 
-
-
-        }
-
-        function handleVilambaUI() {
+function updateThailiVisibility() {
+    const prov = document.getElementById('province').value;
     const title = document.getElementById('karobarInput').value;
+    const local = document.getElementById('localLevel').value;
+
+    if (!masterData.rates[prov] || !masterData.rates[prov][title]) return;
+
+    const rates = masterData.rates[prov][title];
+    let showThaili = false;
+
+    // सबै ५ वटा महलहरू चेक गर्ने
+    const allCols = ['registration', 'labhakar', 'sewa', 'bilamba', 'rokka'];
+
+    allCols.forEach(col => {
+        const ranges = rates[col] || [];
+        // १. यदि १ भन्दा बढी रेञ्ज छ भने थैली चाहिन्छ
+        if (ranges.length > 1) {
+            showThaili = true;
+        } 
+        // २. यदि १ वटा मात्र रेञ्ज छ तर त्यो प्रतिशत (%) मा छ (भ्यालु २५ भन्दा कम छ) भने थैली चाहिन्छ
+        else if (ranges.length === 1) {
+            const r = ranges[0];
+            const keysToCheck = (col === 'labhakar') ? [local + '_old', local + '_new'] : [local];
+            keysToCheck.forEach(k => {
+                let val = parseFloat(r[k]) || 0;
+                if (val > 0 && val < 25) showThaili = true;
+            });
+        }
+    });
+
+    // थैलीको इनपुट बक्स देखाउने वा लुकाउने
+    const wrapper = document.getElementById('thailiWrapper');
+    if (showThaili) {
+        wrapper.classList.remove('hide');
+    } else {
+        wrapper.classList.add('hide');
+        document.getElementById('thaili').value = ''; // लुकेको बेला भ्यालु सफा गर्ने
+    }
+
+    // लाभकर अप्सन र छुट सेक्सनको भिजिबिलिटी
+    const hasLabha = rates['labhakar'] && rates['labhakar'].length > 0;
+    document.getElementById('labhakarBox').className = hasLabha ? '' : 'hide';
+    document.getElementById('discountWrapper').classList.remove('hide'); 
+}
+
+function handleVilambaUI() {
+    const title = document.getElementById('karobarInput').value;
+    
+    // यो नयाँ तरिका: सुरुको शब्द मिलेमा नियम लागु गर्ने
+    const configKey = Object.keys(vilambaConfig).find(key => title.startsWith(key));
+    const config = vilambaConfig[configKey];
+
     const wrapper = document.getElementById('vilambaYearWrapper');
     const label = document.getElementById('vilambaLabel');
     const yearPart = document.getElementById('yearInputPart');
-    
-    // शिर्षक अनुसार चेक गर्ने
-    const config = vilambaConfig[title];
+    const yearInput = document.getElementById('vilambaYear');
     
     if (config) {
         wrapper.classList.remove('hide');
         label.innerText = config.text;
         if (config.showYear) {
             yearPart.classList.remove('hide');
+            if(yearInput.value == "0") yearInput.value = "1";
         } else {
             yearPart.classList.add('hide');
-            document.getElementById('vilambaYear').value = 1; // वर्ष नभए १ ले गुणा गर्ने
+            yearInput.value = "1"; 
         }
     } else {
         wrapper.classList.add('hide');
-        document.getElementById('vilambaYear').value = 0;
+        yearInput.value = "0";
     }
 }
 
@@ -370,6 +393,10 @@ function addExemptionRow() {
 
     const exData = masterData.exemptions.find(e => e.id == exId);
     addedExemptions.push({ ...exData, beneficiaryCount: count });
+
+        document.getElementById('exTypeSelector').value = "";
+    document.getElementById('exCountInput').value = "1";
+
     
     renderExemptionRows();
     autoUpdateTotalBuyers();
@@ -427,6 +454,8 @@ function autoUpdateTotalBuyers() {
             document.getElementById('karobarInput').value = t;
             document.getElementById('dropdownList').classList.add('hidden');
              addedExemptions = []; 
+
+             handleVilambaUI(t) 
     renderExemptionRows();
             updateThailiVisibility();
             calculate();
@@ -439,10 +468,10 @@ function toggleDiscountUI() {
     if(isChecked) updateExemptionDropdown();
     calculate();        };
 
-    const vilambaConfig = {
-    "नामसारी": { text: "(मृत्यु भएको ३५ दिन कटेपछि लाग्ने)", showYear: false },
-    "शेषपछिको वकसपत्र दाखिला खारेज": { text: "(मृत्यु भएको ६ महिना कटेपछि प्रति वर्ष):", showYear: true },
-    "अदालतको दाखिला खारेज": { text: "(चिठीको २१ दिन नाघेपछि प्रति वर्ष):", showYear: true }
+const vilambaConfig = {
+    "नामसारी": { text: "(मृत्यु भएको ३५ दिन कटेपछि विलम्व शुल्क लाग्ने)", showYear: false },
+    "शेषपछिको बकसपत्र बमोजिम": { text: "(जग्गधनी मृत्यु भएको ६ महिना कटेको वर्ष ?):", showYear: true },
+    "अदालत वा न्यायिक निकाय": { text: "(चिठीको २१ दिन नाघेपछि भएको वर्ष ?):", showYear: true }
 };
 
         // ४. क्याल्कुलेसन लजिक
@@ -495,14 +524,22 @@ Object.keys(fees).forEach(col => {
         let baseFee = (v < 25 && v > 0) ? Math.ceil(thaili * (v / 100)) : Math.ceil(v);
 
         // २. विलम्व शुल्कको विशेष कन्डिसन (यहाँ थपिएको छ)
+// २. विलम्व शुल्कको विशेष कन्डिसन (परिमार्जित)
         if (col === 'bilamba') {
             const yearInput = document.getElementById('vilambaYear');
-            // यदि वर्ष भर्ने कोठा खाली छैन र ० भन्दा माथि छ भने गुणा गर्ने, नत्र १ मान्ने
-            const year = (yearInput && parseFloat(yearInput.value) > 0) ? parseFloat(yearInput.value) : 1;
+            const configKey = Object.keys(vilambaConfig).find(k => title.startsWith(k));
+            const config = vilambaConfig[configKey];
+
+            let multiplier = 1; // डिफल्टमा १ मान्ने (नामसारी जस्ता शिर्षकका लागि)
+
+            if (config && config.showYear) {
+                // यदि 'वर्ष' भर्ने बक्स देखिने शिर्षक हो भने, युजरले जे लेख्यो त्यही लिने (० भए ० नै लिने)
+                multiplier = parseFloat(yearInput.value);
+                if (isNaN(multiplier)) multiplier = 0; 
+            }
             
-            // जस्तै: ५०० (दर) * २ (वर्ष) = १०००
-            fees[col] = baseFee * year;
-        } else {
+            fees[col] = baseFee * multiplier;
+        }        else {
             // अन्य दस्तुरहरू साविक बमोजिम
             fees[col] = baseFee;
         }
@@ -518,6 +555,8 @@ Object.keys(fees).forEach(col => {
         const row = document.getElementById('row' + colMap[col]);
         const res = document.getElementById('res' + colMap[col]);
             const noteSpan = document.getElementById('vilambaNote'); // नोटको लागि
+
+            
 
         
         // शुल्क कति छ भनेर निश्चित गर्ने (रजिष्ट्रेशनको हकमा छुट घटाएर)

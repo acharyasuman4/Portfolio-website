@@ -3,75 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>राजस्व डाटा इन्ट्री टुल - Advanced 2.0</title>
+    <title>राजस्व डाटा इन्ट्री टुल - Advanced 2.1</title>
     <style>
-        :root { --primary: #1a73e8; --secondary: #34a853; --dark: #202124; --labha: #fff3e0; }
+        :root { --primary: #1a73e8; --secondary: #34a853; --dark: #202124; --labha: #fff3e0; --link: #673ab7; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f1f3f4; margin: 0; padding: 20px; }
-        .container { max-width: 1300px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        .header-actions { display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; background: #e8f0fe; padding: 20px; border-radius: 10px; align-items: center; }
+        .header-actions { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; background: #e8f0fe; padding: 20px; border-radius: 10px; align-items: center; }
         h2 { color: var(--primary); margin: 0 0 10px 0; font-size: 24px; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
-        th, td { border: 1px solid #dadce0; padding: 12px; text-align: left; font-size: 14px; }
+        th, td { border: 1px solid #dadce0; padding: 10px; text-align: left; font-size: 13px; }
         th { background: #f8f9fa; color: var(--dark); position: sticky; top: 0; }
 
-        .cell-data { cursor: pointer; color: #1a73e8; text-decoration: underline; font-size: 12px; display: block; min-height: 25px; }
-        .cell-data:hover { color: #d93025; background: #f8f9fa; }
-
-        /* Modal */
+        .cell-data { cursor: pointer; color: #1a73e8; text-decoration: underline; font-size: 11px; display: block; min-height: 25px; }
+        .cell-link { color: var(--link); font-weight: bold; font-style: italic; }
+        
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); overflow-y: auto; }
-        .modal-content { background: white; margin: 2% auto; padding: 30px; width: 95%; max-width: 1100px; border-radius: 15px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .modal-content { background: white; margin: 2% auto; padding: 25px; width: 95%; max-width: 1100px; border-radius: 15px; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
         .close { position: absolute; right: 25px; top: 20px; font-size: 32px; cursor: pointer; color: #666; }
 
-        .range-table input { width: 75px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
-        .range-table th { font-size: 12px; text-align: center; }
-        .labha-col { background: var(--labha); }
-
-        .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; font-size: 14px; }
+        .btn { padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; font-size: 13px; }
         .btn-blue { background: var(--primary); color: white; }
         .btn-green { background: var(--secondary); color: white; }
+        .btn-purple { background: var(--link); color: white; }
         .btn-red { background: #d93025; color: white; }
         .btn-ghost { background: #fff; border: 1px solid #dadce0; color: #3c4043; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        .sticky-footer { position: sticky; bottom: -30px; background: white; padding: 15px 0; border-top: 1px solid #eee; margin-top: 20px; text-align: right; }
-    
-    /* Exemption Specific Styles */
-.selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
-.checkbox-list { max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: white; border-radius: 4px; }
-.checkbox-item { display: block; margin-bottom: 5px; font-size: 13px; }
-.exemption-list-table { width: 100%; margin-top: 20px; border-top: 2px solid var(--primary); }
-.tag { background: #e2e3e5; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin: 2px; display: inline-block; }
+        
+        .search-box { padding: 8px; border: 1px solid #ccc; border-radius: 5px; width: 250px; }
+        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; background: #f1f3f4; padding: 15px; border-radius: 8px; }
+        .checkbox-list { max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 8px; background: white; }
+        .tag { background: #e2e3e5; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin: 2px; display: inline-block; }
+        .range-table input { width: 70px; padding: 4px; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>राजस्व डाटा इन्ट्री टुल (Advanced 2.0)</h2>
+    <h2>राजस्व डाटा इन्ट्री टुल (Advanced 2.1)</h2>
     
     <div class="header-actions">
-        <div style="flex:1">
-            <label style="font-weight:bold">प्रदेश छान्नुहोस्:</label>
-            <select id="currentProvince" onchange="renderMainTable()" style="padding:8px; border-radius:5px; width:200px">
+        <div>
+            <select id="currentProvince" onchange="renderMainTable()" style="padding:8px; border-radius:5px;">
                 <option>कोशी प्रदेश</option><option>मधेश प्रदेश</option><option>बागमती प्रदेश</option>
                 <option>गण्डकी प्रदेश</option><option>लुम्बिनी प्रदेश</option><option>कर्णाली प्रदेश</option><option>सुदूरपश्चिम प्रदेश</option>
             </select>
         </div>
-        <button class="btn btn-blue" onclick="addNewTitle()">+ नयाँ कारोबार शिर्षक थप्नुहोस्</button>
+        <input type="text" id="mainSearch" class="search-box" placeholder="कारोबार शिर्षक खोज्नुहोस्..." oninput="renderMainTable()">
+        
+        <button class="btn btn-blue" onclick="addNewTitle()">+ नयाँ शिर्षक</button>
+        <button class="btn btn-purple" onclick="openBulkUpdate()">बल्क अपडेट</button>
+        <button class="btn btn-purple" style="background:#009688" onclick="openRelationManager()">अन्तरसम्बन्ध</button>
+        <button class="btn btn-blue" style="background:#673ab7" onclick="openExemptionManager()">छुट व्यवस्थापन</button>
         <button class="btn btn-green" onclick="downloadJSON()">JSON डाउनलोड</button>
-        <input type="file" id="uploadJson" style="display:none" onchange="uploadJSON(event)">
         <button class="btn btn-ghost" onclick="document.getElementById('uploadJson').click()">JSON अपलोड</button>
         <button class="btn btn-red" onclick="resetAll()">Reset All</button>
-        <button class="btn btn-blue" style="background:#673ab7" onclick="openExemptionManager()">छुट व्यवस्थापन</button>
+        <input type="file" id="uploadJson" style="display:none" onchange="uploadJSON(event)">
     </div>
 
     <table id="mainTable">
         <thead>
             <tr>
-                <th width="15%">कारोबार शिर्षक</th>
-                <th>रजिष्ट्रेशन दस्तुर</th>
-                <th>लाभकर (पुरानो/नयाँ)</th>
+                <th width="20%">कारोबार शिर्षक</th>
+                <th>रजिष्ट्रेशन</th>
+                <th>लाभकर</th>
                 <th>सेवा शुल्क</th>
                 <th>विलम्व शुल्क</th>
                 <th>रोक्का दस्तुर</th>
@@ -82,12 +77,12 @@
     </table>
 </div>
 
-<!-- Matrix Modal -->
+<!-- Modal Matrix (Standard & Bulk) -->
 <div id="matrixModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-        <h3 id="modalHeading" style="margin-top:0"></h3>
-        <p id="modalSubHeading" style="color: #5f6368; font-weight: 500;"></p>
+        <h3 id="modalHeading"></h3>
+        <div id="bulkTargetDisplay" style="margin-bottom:10px;"></div>
         
         <div style="overflow-x:auto">
             <table class="range-table">
@@ -95,411 +90,476 @@
                 <tbody id="matrixTbody"></tbody>
             </table>
         </div>
-        
-        <div class="sticky-footer">
-            <button class="btn btn-blue" style="float:left" onclick="addRangeRow()">+ नयाँ थैली रेञ्ज थप्नुहोस्</button>
-            <button class="btn btn-ghost" onclick="closeModal()" style="margin-right:10px">रद्द गर्नुहोस्</button>
-            <button class="btn btn-green" onclick="saveMatrix()">डाटा सेभ गर्नुहोस्</button>
+        <div style="margin-top:20px; text-align:right;">
+            <button class="btn btn-blue" style="float:left" onclick="addRangeRow()">+ नयाँ रेञ्ज थप्नुहोस्</button>
+            <button class="btn btn-ghost" onclick="closeModal()">रद्द</button>
+            <button id="saveBtn" class="btn btn-green">डाटा सेभ गर्नुहोस्</button>
         </div>
     </div>
 </div>
-<!-- Exemption Management Modal -->
+
+<!-- Bulk Selection Modal -->
+<div id="bulkModal" class="modal">
+    <div class="modal-content" style="max-width:800px">
+        <span class="close" onclick="closeBulkModal()">&times;</span>
+        <h3>बल्क राजस्व अपडेट</h3>
+        <div class="selection-grid">
+            <div>
+                <label><strong>१. कारोबार शिर्षकहरू छान्नुहोस्:</strong></label>
+                <div id="bulkTitleList" class="checkbox-list"></div>
+            </div>
+            <div>
+                <label><strong>२. राजस्व महलहरू छान्नुहोस्:</strong></label>
+                <div id="bulkColList" class="checkbox-list"></div>
+            </div>
+        </div>
+        <button class="btn btn-blue" onclick="proceedToBulkMatrix()">अर्को चरण (सेट दर)</button>
+    </div>
+</div>
+
+<!-- Relation Manager Modal -->
+<div id="relationModal" class="modal">
+    <div class="modal-content" style="max-width:800px">
+        <span class="close" onclick="closeRelationModal()">&times;</span>
+        <h3>कारोबार बीच अन्तरसम्बन्ध व्यवस्थापन</h3>
+        <div style="background:#e0f2f1; padding:15px; border-radius:8px; margin-bottom:20px">
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; align-items:end">
+                <div>
+                    <label>लक्ष्य (Target) कारोबार:</label>
+                    <select id="relTargetTitle" class="search-box" style="width:100%"></select>
+                </div>
+                <div>
+                    <label>लक्ष्य महल:</label>
+                    <select id="relTargetCol" class="search-box" style="width:100%"></select>
+                </div>
+                <div></div>
+                <div>
+                    <label>स्रोत (Source) कारोबार:</label>
+                    <select id="relSourceTitle" class="search-box" style="width:100%"></select>
+                </div>
+                <div>
+                    <label>स्रोत महल:</label>
+                    <select id="relSourceCol" class="search-box" style="width:100%"></select>
+                </div>
+                <button class="btn btn-green" onclick="saveRelation()">सम्बन्ध कायम गर्नुहोस्</button>
+            </div>
+        </div>
+        <table width="100%">
+            <thead><tr><th>लक्ष्य (शिर्षक > महल)</th><th>सम्बन्धित स्रोत (शिर्षक > महल)</th><th>Action</th></tr></thead>
+            <tbody id="relationListTbody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Exemption Modal (Same as before) -->
 <div id="exemptionModal" class="modal">
     <div class="modal-content" style="max-width: 900px;">
         <span class="close" onclick="closeExemptionModal()">&times;</span>
-        <h3>छुट (Exemption) दर व्यवस्थापन</h3>
-        
-        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fffde7;">
-            <div style="margin-bottom:15px">
-                <label><strong>१. छुटको नाम/प्रकार:</strong></label><br>
-                <input type="text" id="exName" placeholder="उदा: महिलाको नाममा दर्ता" style="width:100%; padding:8px; margin-top:5px">
+        <h3>छुट (Exemption) व्यवस्थापन</h3>
+        <div id="exFormArea" class="selection-grid" style="grid-template-columns:1fr">
+            <input type="text" id="exName" placeholder="छुटको नाम" class="search-box" style="width:97%">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px">
+                <div id="exTitleChecklist" class="checkbox-list"></div>
+                <div id="exColChecklist" class="checkbox-list"></div>
             </div>
-
-            <div class="selection-grid">
-                <div>
-                    <label><strong>२. कारोबार शिर्षक छान्नुहोस् (Multiple):</strong></label>
-                    <div id="titleChecklist" class="checkbox-list"></div>
-                </div>
-                <div>
-                    <label><strong>३. राजस्व महल छान्नुहोस् (Multiple):</strong></label>
-                    <div id="colChecklist" class="checkbox-list"></div>
-                </div>
-            </div>
-
-            <label><strong>४. स्थानीय तह अनुसार छुट प्रतिशत (%) - <span id="expProvinceName"></span>:</strong></label>
-            <table class="range-table" style="margin-top:10px">
-                <thead id="expMatrixThead"></thead>
-                <tbody id="expMatrixTbody"></tbody>
-            </table>
-
-            <div style="margin-top:15px; text-align: right;">
-                <button class="btn btn-green" onclick="saveExemption()">छुट थप्नुहोस् / सेभ गर्नुहोस्</button>
-            </div>
+            <table class="range-table"><thead id="expMatrixThead"></thead><tbody id="expMatrixTbody"></tbody></table>
+            <button class="btn btn-green" onclick="saveExemption()">छुट सेभ गर्नुहोस्</button>
         </div>
-
-        <div id="exemptionListArea">
-            <table class="exemption-list-table">
-                <thead>
-                    <tr>
-                        <th>छुटको नाम</th>
-                        <th>लागु हुने शिर्षक / महल</th>
-                        <th>दर (%)</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="exemptionListTbody"></tbody>
-            </table>
-        </div>
+        <table class="exemption-list-table" width="100%">
+            <thead><tr><th>छुट नाम</th><th>शिर्षक/महल</th><th>Action</th></tr></thead>
+            <tbody id="exemptionListTbody"></tbody>
+        </table>
     </div>
 </div>
+
 <script>
-    // १. प्रारम्भिक डाटा स्ट्रक्चर
     let db = JSON.parse(localStorage.getItem('land_revenue_v2')) || {
-        titles: [], // सबै प्रदेशका लागि साझा शिर्षकहरू
-        rates: {}   // rates[province][title][column] = [array]
+        titles: [],
+        rates: {},
+        exemptions: [],
+        relations: {} // relations[prov][title][col] = {sTitle, sCol}
     };
 
     const columns = ['registration', 'labhakar', 'sewa', 'bilamba', 'rokka'];
     let currentEditRef = { prov: '', title: '', col: '' };
 
-    // २. प्रदेश अनुसार स्थानीय तह परिभाषित गर्ने
     function getLocalLevels(province) {
         if (province === 'बागमती प्रदेश') {
             return [
-                { id: 'metro_in', name: 'महानगर (उपत्यका भित्र)' },
-                { id: 'mun_in', name: 'नगरपालिका (उपत्यका भित्र)' },
-                { id: 'metro_out', name: 'महानगर (उपत्यका बाहिर)' },
-                { id: 'submetro', name: 'उप-महानगर' },
-                { id: 'mun_out', name: 'नगरपालिका (उपत्यका बाहिर)' },
-                { id: 'rural', name: 'गाउँपालिका' }
+                { id: 'metro_in', name: 'महानगरपालिका (उपत्यका भित्र)' }, { id: 'mun_in', name: 'नगरपालिका (उपत्यका भित्र)' },
+                { id: 'metro_out', name: 'महानगरपालिका (उपत्यका बाहिर)' }, { id: 'submetro', name: 'उप-महानगरपालिका' },
+                { id: 'mun_out', name: 'नगरपालिका (उपत्यका बाहिर)' }, { id: 'rural', name: 'गाउँपालिका' }
             ];
         }
         return [
-            { id: 'metro', name: 'महानगरपालिका' },
-            { id: 'submetro', name: 'उप-महानगरपालिका' },
-            { id: 'mun', name: 'नगरपालिका' },
-            { id: 'rural', name: 'गाउँपालिका' }
+            { id: 'metro', name: 'महानगरपालिका' }, { id: 'submetro', name: 'उप-महानगरपालिका' },
+            { id: 'mun', name: 'नगरपालिका' }, { id: 'rural', name: 'गाउँपालिका' }
         ];
     }
 
-    // ३. मुख्य टेबल रेन्डर गर्ने
+    // १. मुख्य टेबल (सर्च सहित)
     function renderMainTable() {
         const province = document.getElementById('currentProvince').value;
+            localStorage.setItem('last_selected_province', province);
+
+        const searchTerm = document.getElementById('mainSearch').value.toLowerCase();
         const tbody = document.getElementById('mainTbody');
         tbody.innerHTML = '';
 
         if (!db.rates[province]) db.rates[province] = {};
+        if (!db.relations) db.relations = {};
+        if (!db.relations[province]) db.relations[province] = {};
 
         db.titles.forEach((title, index) => {
-            let row = `<tr><td><strong>${title}</strong></td>`;
-            columns.forEach(col => {
-                const hasData = db.rates[province][title] && db.rates[province][title][col] && db.rates[province][title][col].length > 0;
-                let displayVal = hasData ? "डाटा भरिएको छ (View/Edit)" : "० (सेट गर्नुहोस्)";
-                row += `<td><span class="cell-data" onclick="openMatrix('${province}', '${title}', '${col}')">${displayVal}</span></td>`;
-            });
-            row += `<td><button class="btn btn-red" style="padding:5px 10px" onclick="deleteTitle(${index})">हटाउनुहोस्</button></td></tr>`;
-            tbody.innerHTML += row;
+            if (title.toLowerCase().includes(searchTerm)) {
+                let row = `<tr><td><strong>${title}</strong></td>`;
+                columns.forEach(col => {
+                    const relation = db.relations[province][title] && db.relations[province][title][col];
+                    if (relation) {
+                        row += `<td><span class="cell-data cell-link" onclick="openRelationManager()">🔗 ${relation.sTitle.substring(0,10)}.. (${relation.sCol})</span></td>`;
+                    } else {
+                        const hasData = db.rates[province][title] && db.rates[province][title][col] && db.rates[province][title][col].length > 0;
+                        let displayVal = hasData ? "डाटा भरिएको छ" : "० (सेट)";
+                        row += `<td><span class="cell-data" onclick="openMatrix('${province}', '${title}', '${col}')">${displayVal}</span></td>`;
+                    }
+                });
+                row += `<td><button class="btn btn-red" style="padding:2px 5px" onclick="deleteTitle(${index})">X</button></td></tr>`;
+                tbody.innerHTML += row;
+            }
         });
         localStorage.setItem('land_revenue_v2', JSON.stringify(db));
+
+        
     }
 
-    // १. डाटा स्ट्रक्चरमा 'exemptions' थप्ने सुनिश्चितता
-if (!db.exemptions) db.exemptions = [];
+    // २. बल्क अपडेट लजिक
+    function openBulkUpdate() {
+        const titleList = document.getElementById('bulkTitleList');
+        titleList.innerHTML = db.titles.map(t => `<label style="display:block"><input type="checkbox" class="bulk-t-cb" value="${t}"> ${t}</label>`).join('');
+        
+        const colList = document.getElementById('bulkColList');
+        colList.innerHTML = columns.map(c => `<label style="display:block"><input type="checkbox" class="bulk-c-cb" value="${c}"> ${c}</label>`).join('');
+        
+        document.getElementById('bulkModal').style.display = 'block';
+    }
 
-// २. छुट व्यवस्थापन मोडेल खोल्ने
-function openExemptionManager() {
+    function proceedToBulkMatrix() {
+        const selectedTitles = Array.from(document.querySelectorAll('.bulk-t-cb:checked')).map(cb => cb.value);
+        const selectedCols = Array.from(document.querySelectorAll('.bulk-c-cb:checked')).map(cb => cb.value);
+
+        if (selectedTitles.length === 0 || selectedCols.length === 0) return alert("शिर्षक र महल छान्नुहोस्");
+
+        const prov = document.getElementById('currentProvince').value;
+        currentEditRef = { prov, titles: selectedTitles, cols: selectedCols, isBulk: true };
+
+        document.getElementById('modalHeading').innerText = "बल्क दर अपडेट";
+        document.getElementById('bulkTargetDisplay').innerHTML = `<strong>शिर्षकहरू:</strong> ${selectedTitles.join(', ')} <br> <strong>महलहरू:</strong> ${selectedCols.join(', ')}`;
+        
+        setupMatrixUI(prov, selectedCols[0]); // Use first col for UI template
+        document.getElementById('saveBtn').onclick = saveBulkMatrix;
+        document.getElementById('bulkModal').style.display = 'none';
+        document.getElementById('matrixModal').style.display = 'block';
+    }
+
+    function saveBulkMatrix() {
+        const data = getMatrixDataFromUI();
+        currentEditRef.titles.forEach(t => {
+            if (!db.rates[currentEditRef.prov][t]) db.rates[currentEditRef.prov][t] = {};
+            currentEditRef.cols.forEach(c => {
+                db.rates[currentEditRef.prov][t][c] = JSON.parse(JSON.stringify(data));
+                // बल्क अपडेट गर्दा पुराना सम्बन्धहरू (Relations) हटाउने
+                if(db.relations[currentEditRef.prov][t]) delete db.relations[currentEditRef.prov][t][c];
+            });
+        });
+        saveAndClose();
+    }
+
+    // ३. अन्तरसम्बन्ध (Relation) लजिक
+    function openRelationManager() {
+        const prov = document.getElementById('currentProvince').value;
+        const tSel = document.getElementById('relTargetTitle');
+        const sSel = document.getElementById('relSourceTitle');
+        const options = db.titles.map(t => `<option value="${t}">${t}</option>`).join('');
+        tSel.innerHTML = sSel.innerHTML = options;
+
+        const cOptions = columns.map(c => `<option value="${c}">${c}</option>`).join('');
+        document.getElementById('relTargetCol').innerHTML = document.getElementById('relSourceCol').innerHTML = cOptions;
+
+        renderRelationList();
+        document.getElementById('relationModal').style.display = 'block';
+    }
+
+function saveRelation() {
     const prov = document.getElementById('currentProvince').value;
-    document.getElementById('expProvinceName').innerText = prov;
-    
-    // कारोबार शिर्षक लिस्ट (Checkboxes)
-    let titleHtml = '';
-    db.titles.forEach(t => {
-        titleHtml += `<label class="checkbox-item"><input type="checkbox" name="exTitles" value="${t}"> ${t}</label>`;
-    });
-    document.getElementById('titleChecklist').innerHTML = titleHtml || 'पहिले कारोबार शिर्षक थप्नुहोस्';
+    const tTitle = document.getElementById('relTargetTitle').value;
+    const tCol = document.getElementById('relTargetCol').value;
+    const sTitle = document.getElementById('relSourceTitle').value;
+    const sCol = document.getElementById('relSourceCol').value;
 
-    // महल लिस्ट (Checkboxes)
-    let colHtml = '';
-    columns.forEach(c => {
-        colHtml += `<label class="checkbox-item"><input type="checkbox" name="exCols" value="${c}"> ${c}</label>`;
-    });
-    document.getElementById('colChecklist').innerHTML = colHtml;
-
-    // म्याट्रिक्स हेडर र रो
-    const levels = getLocalLevels(prov);
-    let thead = `<tr>`;
-    let tbody = `<tr>`;
-    levels.forEach((lvl, idx) => {
-        thead += `<th>${lvl.name}</th>`;
-        tbody += `<td><input type="number" class="exp-rate" data-lvlid="${lvl.id}" value="0" ${idx===0 ? 'oninput="propagateExRate(this)"' : ''}></td>`;
-    });
-    thead += `</tr>`; tbody += `</tr>`;
-    document.getElementById('expMatrixThead').innerHTML = thead;
-    document.getElementById('expMatrixTbody').innerHTML = tbody;
-
-    renderExemptionList();
-    document.getElementById('exemptionModal').style.display = "block";
-}
-
-// ३. पहिलो कोठामा भर्दा सबैमा अटो-फिल हुने
-function propagateExRate(el) {
-    document.querySelectorAll('.exp-rate').forEach(input => input.value = el.value);
-}
-
-// ४. छुट सेभ गर्ने
-function saveExemption() {
-    const name = document.getElementById('exName').value;
-    const prov = document.getElementById('currentProvince').value;
-    const selectedTitles = Array.from(document.querySelectorAll('input[name="exTitles"]:checked')).map(cb => cb.value);
-    const selectedCols = Array.from(document.querySelectorAll('input[name="exCols"]:checked')).map(cb => cb.value);
-
-    if (!name || selectedTitles.length === 0 || selectedCols.length === 0) {
-        alert("कृपया नाम, शिर्षक र महल सबै भर्नुहोस्।");
+    if (tTitle === sTitle && tCol === sCol) {
+        alert("स्रोत र लक्ष्य एउटै हुन सक्दैन!");
         return;
     }
 
-    let rates = {};
-    document.querySelectorAll('.exp-rate').forEach(input => {
-        rates[input.dataset.lvlid] = input.value;
-    });
-
-    const newEx = {
-        id: Date.now(),
-        name: name,
-        titles: selectedTitles,
-        columns: selectedCols,
-        rates: { [prov]: rates }
-    };
-
-    // यदि यो प्रदेशको डाटा मात्र अपडेट गर्ने हो भने पुरानो खोज्ने logic यहाँ थप्न सकिन्छ
-    db.exemptions.push(newEx);
-    localStorage.setItem('land_revenue_v2', JSON.stringify(db));
+    if (!db.relations[prov]) db.relations[prov] = {};
+    if (!db.relations[prov][tTitle]) db.relations[prov][tTitle] = {};
     
-    // Form Reset
-    document.getElementById('exName').value = '';
-    openExemptionManager(); // Refresh
+    // सम्बन्ध दर्ता गर्ने
+    db.relations[prov][tTitle][tCol] = { sTitle, sCol };
+    
+    // तत्कालै डाटा सिङ्क गरिहाल्ने
+    syncRelationData(prov, tTitle, tCol, sTitle, sCol);
+
+    renderRelationList();
+    renderMainTable();
+    alert("सम्बन्ध कायम भयो र डाटा सिङ्क भयो। अब क्याल्कुलेटरले यो डाटा चिन्नेछ।");
 }
 
-// ५. छुटको लिस्ट देखाउने
-function renderExemptionList() {
-    const prov = document.getElementById('currentProvince').value;
-    const tbody = document.getElementById('exemptionListTbody');
-    tbody.innerHTML = '';
 
-    db.exemptions.forEach((ex, index) => {
-        const titles = ex.titles.map(t => `<span class="tag">${t}</span>`).join('');
-        const cols = ex.columns.map(c => `<span class="tag">${c}</span>`).join('');
+// नयाँ फसन: सम्बन्धित डाटाहरु सिङ्क गर्ने
+function syncRelationData(prov, tTitle, tCol, sTitle, sCol) {
+    // यदि स्रोत (Source) मा डाटा छ भने मात्र कपी गर्ने
+    if (db.rates[prov][sTitle] && db.rates[prov][sTitle][sCol]) {
+        if (!db.rates[prov][tTitle]) db.rates[prov][tTitle] = {};
         
-        let rateDisplay = '';
-        if(ex.rates[prov]) {
-            rateDisplay = Object.values(ex.rates[prov]).join('%, ') + '%';
-        } else {
-            rateDisplay = 'यो प्रदेशमा सेट गरिएको छैन';
-        }
-
-        tbody.innerHTML += `
-            <tr>
-                <td><strong>${ex.name}</strong></td>
-                <td>शिर्षक: ${titles}<br>महल: ${cols}</td>
-                <td>${rateDisplay}</td>
-                <td><button class="btn btn-red" onclick="deleteExemption(${index})">X</button></td>
-            </tr>
-        `;
-    });
-}
-
-function deleteExemption(index) {
-    if(confirm("के यो छुट हटाउन चाहनुहुन्छ?")) {
-        db.exemptions.splice(index, 1);
-        localStorage.setItem('land_revenue_v2', JSON.stringify(db));
-        renderExemptionList();
+        // Deep Copy: यसले स्रोतको डाटाको हुबहु नक्कल लक्ष्यमा राख्छ
+        db.rates[prov][tTitle][tCol] = JSON.parse(JSON.stringify(db.rates[prov][sTitle][sCol]));
     }
 }
 
-function closeExemptionModal() { 
-    document.getElementById('exemptionModal').style.display = "none"; 
-}
 
-    // ४. नयाँ शिर्षक थप्ने (साझा)
-    function addNewTitle() {
-        const title = prompt("नयाँ कारोबार शिर्षक लेख्नुहोस् (उदा: हक हस्तान्तरण):");
-        if (title && !db.titles.includes(title)) {
-            db.titles.push(title);
-            renderMainTable();
-        } else if(title) {
-            alert("यो शिर्षक पहिल्यै छ।");
-        }
-    }
-
-    // ५. म्याट्रिक्स खोल्ने (Modal Logic)
-    function openMatrix(prov, title, col) {
-        currentEditRef = { prov, title, col };
-        const levels = getLocalLevels(prov);
+    function renderRelationList() {
+        const prov = document.getElementById('currentProvince').value;
+        const tbody = document.getElementById('relationListTbody');
+        tbody.innerHTML = '';
+        const rels = db.relations[prov] || {};
         
-        document.getElementById('modalHeading').innerText = `राजस्व विवरण: ${col.toUpperCase()}`;
-        document.getElementById('modalSubHeading').innerText = `कारोबार: ${title} | प्रदेश: ${prov}`;
-
-        // Header Render
-        let thead = `<tr><th colspan="2">थैली अङ्क रेञ्ज (रु.)</th>`;
-        levels.forEach(lvl => {
-            thead += col === 'labhakar' ? `<th colspan="2" class="labha-col">${lvl.name}</th>` : `<th>${lvl.name}</th>`;
-        });
-        thead += `<th>Action</th></tr><tr><th>देखि</th><th>सम्म</th>`;
-        levels.forEach(lvl => {
-            if (col === 'labhakar') {
-                thead += `<th class="labha-col">पुरानो (>५)</th><th class="labha-col">नयाँ (<५)</th>`;
-            } else {
-                thead += `<th>दर/अङ्क</th>`;
+        for (let tTitle in rels) {
+            for (let tCol in rels[tTitle]) {
+                const r = rels[tTitle][tCol];
+                tbody.innerHTML += `<tr>
+                    <td>${tTitle} > ${tCol}</td>
+                    <td>🔗 ${r.sTitle} > ${r.sCol}</td>
+                    <td><button class="btn btn-red" onclick="deleteRelation('${tTitle}', '${tCol}')">X</button></td>
+                </tr>`;
             }
+        }
+    }
+
+    function deleteRelation(title, col) {
+        const prov = document.getElementById('currentProvince').value;
+        delete db.relations[prov][title][col];
+        renderRelationList();
+        renderMainTable();
+    }
+
+    // सहायक फसनहरू (Matrix Handling)
+    function openMatrix(prov, title, col) {
+        currentEditRef = { prov, title, col, isBulk: false };
+        document.getElementById('modalHeading').innerText = `${title} - ${col}`;
+        document.getElementById('bulkTargetDisplay').innerHTML = "";
+        setupMatrixUI(prov, col);
+        
+        const data = (db.rates[prov][title] && db.rates[prov][title][col]) ? db.rates[prov][title][col] : [];
+        const tbody = document.getElementById('matrixTbody');
+        tbody.innerHTML = '';
+        if (data.length > 0) data.forEach(d => addRangeRow(d)); else addRangeRow();
+
+        document.getElementById('saveBtn').onclick = saveSingleMatrix;
+        document.getElementById('matrixModal').style.display = 'block';
+    }
+
+    function setupMatrixUI(prov, col) {
+        const levels = getLocalLevels(prov);
+        let thead = `<tr><th colspan="2">थैली रेञ्ज</th>`;
+        levels.forEach(lvl => thead += col === 'labhakar' ? `<th colspan="2">${lvl.name}</th>` : `<th>${lvl.name}</th>`);
+        thead += `<th>X</th></tr><tr><th>देखि</th><th>सम्म</th>`;
+        levels.forEach(lvl => {
+            if (col === 'labhakar') thead += `<th>पुरानो</th><th>नयाँ</th>`;
+            else thead += `<th>दर</th>`;
         });
         thead += `<th></th></tr>`;
         document.getElementById('matrixThead').innerHTML = thead;
-
-        // Body Render
-        const matrixData = (db.rates[prov][title] && db.rates[prov][title][col]) ? db.rates[prov][title][col] : [];
-        const tbody = document.getElementById('matrixTbody');
-        tbody.innerHTML = '';
-        
-        if (matrixData.length > 0) {
-            matrixData.forEach(data => addRangeRow(data));
-        } else {
-            addRangeRow();
-        }
-
-        document.getElementById('matrixModal').style.display = "block";
     }
 
-    // ६. थैली रेञ्ज थप्ने र अटो-फिल लजिक
     function addRangeRow(data = null) {
-        const province = currentEditRef.prov;
-        const col = currentEditRef.col;
-        const levels = getLocalLevels(province);
+        const { prov, col } = currentEditRef;
+        const levels = getLocalLevels(prov);
         const tbody = document.getElementById('matrixTbody');
-        const rows = tbody.getElementsByTagName('tr');
-        
-        let lastTo = 0;
-        if (rows.length > 0) {
-            let lastToInput = rows[rows.length - 1].querySelector('.range-to').value;
-            lastTo = lastToInput ? parseInt(lastToInput) + 1 : 0;
-        }
+        const lastTo = tbody.rows.length > 0 ? parseInt(tbody.rows[tbody.rows.length-1].querySelector('.range-to').value) + 1 : 0;
 
         const tr = document.createElement('tr');
-        let cells = `
-            <td><input type="number" class="range-from" value="${data ? data.from : lastTo}" readonly></td>
-            <td><input type="number" class="range-to" value="${data ? data.to : ''}" placeholder="माथि" oninput="autoUpdateNext(this)"></td>
-        `;
+        let cells = `<td><input type="number" class="range-from" value="${data ? data.from : lastTo}" readonly></td>
+                     <td><input type="number" class="range-to" value="${data ? data.to : ''}" oninput="autoUpdateNext(this)"></td>`;
 
         levels.forEach((lvl, idx) => {
-            if (col === 'labhakar') {
-                cells += `
-                    <td><input type="text" class="r-${lvl.id}-old" value="${data ? data[lvl.id+'_old'] : '0'}" ${idx === 0 ? 'oninput="propagate(this, \'old\')"' : ''}></td>
-                    <td><input type="text" class="r-${lvl.id}-new" value="${data ? data[lvl.id+'_new'] : '0'}" ${idx === 0 ? 'oninput="propagate(this, \'new\')"' : ''}></td>
-                `;
+            if (col === 'labhakar' || currentEditRef.cols?.includes('labhakar')) {
+                cells += `<td><input type="text" class="r-${lvl.id}-old" value="${data ? data[lvl.id+'_old'] : '0'}" ${idx===0?'oninput="propagate(this,\'old\')"':''}></td>
+                          <td><input type="text" class="r-${lvl.id}-new" value="${data ? data[lvl.id+'_new'] : '0'}" ${idx===0?'oninput="propagate(this,\'new\')"':''}></td>`;
             } else {
-                cells += `
-                    <td><input type="text" class="r-${lvl.id}" value="${data ? data[lvl.id] : '0'}" ${idx === 0 ? 'oninput="propagate(this, \'normal\')"' : ''}></td>
-                `;
+                cells += `<td><input type="text" class="r-${lvl.id}" value="${data ? data[lvl.id] : '0'}" ${idx===0?'oninput="propagate(this,\'normal\')"':''}></td>`;
             }
         });
-
-        cells += `<td><button class="btn btn-red" style="padding:4px 8px" onclick="this.parentElement.parentElement.remove()">X</button></td>`;
+        cells += `<td><button onclick="this.parentElement.parentElement.remove()">X</button></td>`;
         tr.innerHTML = cells;
         tbody.appendChild(tr);
     }
 
-    // ७. अटो-फिल (महानगरमा भर्दा अरूमा जाने) र अटो-रेञ्ज
-    function propagate(el, type) {
-        const row = el.parentElement.parentElement;
-        if (type === 'normal') {
-            row.querySelectorAll('input[class^="r-"]').forEach(i => i.value = el.value);
-        } else if (type === 'old') {
-            row.querySelectorAll('input[class$="-old"]').forEach(i => i.value = el.value);
-        } else if (type === 'new') {
-            row.querySelectorAll('input[class$="-new"]').forEach(i => i.value = el.value);
-        }
-    }
-
-    function autoUpdateNext(el) {
-        const row = el.parentElement.parentElement;
-        if (row.nextElementSibling && el.value) {
-            row.nextElementSibling.querySelector('.range-from').value = parseInt(el.value) + 1;
-        }
-    }
-
-    // ८. डाटा सेभ गर्ने
-    function saveMatrix() {
-        const { prov, title, col } = currentEditRef;
-        const levels = getLocalLevels(prov);
-        const rows = document.getElementById('matrixTbody').getElementsByTagName('tr');
-        let matrixArray = [];
-
-        for (let row of rows) {
-            let rowData = {
-                from: row.querySelector('.range-from').value,
-                to: row.querySelector('.range-to').value
-            };
+    function getMatrixDataFromUI() {
+        const rows = document.getElementById('matrixTbody').rows;
+        const levels = getLocalLevels(currentEditRef.prov);
+        const col = currentEditRef.isBulk ? currentEditRef.cols[0] : currentEditRef.col;
+        return Array.from(rows).map(row => {
+            let rd = { from: row.querySelector('.range-from').value, to: row.querySelector('.range-to').value };
             levels.forEach(lvl => {
                 if (col === 'labhakar') {
-                    rowData[lvl.id + '_old'] = row.querySelector(`.r-${lvl.id}-old`).value;
-                    rowData[lvl.id + '_new'] = row.querySelector(`.r-${lvl.id}-new`).value;
-                } else {
-                    rowData[lvl.id] = row.querySelector(`.r-${lvl.id}`).value;
-                }
+                    rd[lvl.id+'_old'] = row.querySelector(`.r-${lvl.id}-old`).value;
+                    rd[lvl.id+'_new'] = row.querySelector(`.r-${lvl.id}-new`).value;
+                } else { rd[lvl.id] = row.querySelector(`.r-${lvl.id}`).value; }
             });
-            matrixArray.push(rowData);
-        }
+            return rd;
+        });
+    }
 
+    function saveSingleMatrix() {
+        const { prov, title, col } = currentEditRef;
         if (!db.rates[prov][title]) db.rates[prov][title] = {};
-        db.rates[prov][title][col] = matrixArray;
+        db.rates[prov][title][col] = getMatrixDataFromUI();
+        saveAndClose();
+    }
+
+// साविकको saveAndClose फसनलाई यसरी अपडेट गर्नुहोस्
+function saveAndClose() {
+    const prov = document.getElementById('currentProvince').value;
+    
+    // स्टेप १: अहिले जे सेभ गरियो त्यसलाई सेभ गर्ने (Single/Bulk Matrix पहिल्यै सेभ भइसकेको हुन्छ)
+    
+    // स्टेप २: अब पुरै प्रदेशको सम्बन्धहरू स्क्यान गर्ने र सबैलाई ताजा (Refresh) बनाउने
+    // यसले गर्दा 'A' फेर्दा 'A' सँग जोडिएका 'B', 'C' सबै आफै अपडेट हुन्छन्
+    const rels = db.relations[prov] || {};
+    for (let targetTitle in rels) {
+        for (let targetCol in rels[targetTitle]) {
+            const r = rels[targetTitle][targetCol];
+            syncRelationData(prov, targetTitle, targetCol, r.sTitle, r.sCol);
+        }
+    }
+
+    localStorage.setItem('land_revenue_v2', JSON.stringify(db));
+    closeModal();
+    renderMainTable();
+}
+
+function closeModal() { document.getElementById('matrixModal').style.display = 'none'; }
+    function closeBulkModal() { document.getElementById('bulkModal').style.display = 'none'; }
+    function closeRelationModal() { document.getElementById('relationModal').style.display = 'none'; }
+
+    // साविकका फसनहरू (छुट, अपलोड, डाउनलोड)
+    function addNewTitle() {
+        const t = prompt("शिर्षक लेख्नुहोस्:");
+        if (t && !db.titles.includes(t)) { db.titles.push(t); renderMainTable(); }
+    }
+
+function downloadJSON() {
+    // सबै प्रदेशका सबै सम्बन्धहरूलाई सिङ्क गर्ने ताकि क्याल्कुलेटरमा कुनै पनि '०' नआओस्
+    for (let prov in db.rates) {
+        const rels = db.relations[prov] || {};
+        for (let tT in rels) {
+            for (let tC in rels[tT]) {
+                const r = rels[tT][tC];
+                syncRelationData(prov, tT, tC, r.sTitle, r.sCol);
+            }
+        }
+    }
+    
+    const blob = new Blob([JSON.stringify(db)], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "land_revenue_master_data.json";
+    a.click();
+}
+
+    function uploadJSON(e) {
+        const reader = new FileReader();
+        reader.onload = (ev) => { db = JSON.parse(ev.target.result); renderMainTable(); };
+        reader.readAsText(e.target.files[0]);
+    }
+
+    function resetAll() { if(confirm("के तपाइँ सबै डाटा मेटाउन चाहनुहुन्छ?")) { localStorage.clear(); location.reload(); } }
+
+function deleteTitle(i) {
+    if(confirm("के तपाइँ यो शिर्षक मेटाउन चाहनुहुन्छ? यसले यससँग जोडिएका सम्बन्धहरू पनि मेटाउनेछ।")) {
+        const t = db.titles[i];
+        db.titles.splice(i, 1);
         
-        localStorage.setItem('land_revenue_v2', JSON.stringify(db));
-        closeModal();
+        // रेट र सम्बन्धहरू सफा गर्ने
+        for(let p in db.rates) {
+            if(db.rates[p][t]) delete db.rates[p][t];
+            if(db.relations[p] && db.relations[p][t]) delete db.relations[p][t];
+        }
         renderMainTable();
     }
+}
 
-    function closeModal() { document.getElementById('matrixModal').style.display = "none"; }
-
-    // ९. JSON र Reset सुविधाहरू
-    function downloadJSON() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-        const dlAnchor = document.createElement('a');
-        dlAnchor.setAttribute("href", dataStr);
-        dlAnchor.setAttribute("download", "land_revenue_master_data.json");
-        dlAnchor.click();
+    // Exemption Functions (simplified)
+    function openExemptionManager() {
+        const prov = document.getElementById('currentProvince').value;
+        document.getElementById('exTitleChecklist').innerHTML = db.titles.map(t => `<label><input type="checkbox" class="ex-t-cb" value="${t}"> ${t}</label><br>`).join('');
+        document.getElementById('exColChecklist').innerHTML = columns.map(c => `<label><input type="checkbox" class="ex-c-cb" value="${c}"> ${c}</label><br>`).join('');
+        
+        const levels = getLocalLevels(prov);
+        document.getElementById('expMatrixThead').innerHTML = `<tr>${levels.map(l=>`<th>${l.name}</th>`).join('')}</tr>`;
+        document.getElementById('expMatrixTbody').innerHTML = `<tr>${levels.map((l,idx)=>`<td><input type="number" class="ex-r" data-id="${l.id}" value="0" ${idx===0?'oninput="this.closest(\'tr\').querySelectorAll(\'input\').forEach(i=>i.value=this.value)"':''}></td>`).join('')}</tr>`;
+        
+        renderExemptionList();
+        document.getElementById('exemptionModal').style.display = 'block';
     }
 
-    function uploadJSON(event) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                db = JSON.parse(e.target.result);
-                renderMainTable();
-                alert("डाटा सफलतापूर्वक अपलोड भयो!");
-            } catch(err) { alert("गलत JSON फाइल!"); }
-        };
-        reader.readAsText(event.target.files[0]);
+    function saveExemption() {
+        const name = document.getElementById('exName').value;
+        const titles = Array.from(document.querySelectorAll('.ex-t-cb:checked')).map(cb=>cb.value);
+        const cols = Array.from(document.querySelectorAll('.ex-c-cb:checked')).map(cb=>cb.value);
+        const prov = document.getElementById('currentProvince').value;
+        let rates = {};
+        document.querySelectorAll('.ex-r').forEach(i => rates[i.dataset.id] = i.value);
+
+        db.exemptions.push({ id: Date.now(), name, titles, columns: cols, rates: {[prov]: rates} });
+        localStorage.setItem('land_revenue_v2', JSON.stringify(db));
+        renderExemptionList();
     }
 
-    function deleteTitle(index) {
-        if (confirm("के तपाईँ यो शिर्षक सबै प्रदेशबाट हटाउन चाहनुहुन्छ?")) {
-            const title = db.titles[index];
-            db.titles.splice(index, 1);
-            // प्रदेशहरूबाट पनि यो शिर्षकको डाटा सफा गर्ने
-            Object.keys(db.rates).forEach(p => delete db.rates[p][title]);
-            renderMainTable();
-        }
+    function renderExemptionList() {
+        document.getElementById('exemptionListTbody').innerHTML = db.exemptions.map((ex, i) => `<tr>
+            <td>${ex.name}</td>
+            <td>${ex.titles.map(t=>`<span class="tag">${t}</span>`).join('')}<br>${ex.columns.map(c=>`<span class="tag">${c}</span>`).join('')}</td>
+            <td><button class="btn btn-red" onclick="db.exemptions.splice(${i},1); renderExemptionList()">X</button></td>
+        </tr>`).join('');
     }
 
-    function resetAll() {
-        if (confirm("सबै डाटा मेटिनेछ! के तपाईँ पक्का हुनुहुन्छ?")) {
-            localStorage.removeItem('land_revenue_v2');
-            location.reload();
-        }
+    function closeExemptionModal() { document.getElementById('exemptionModal').style.display = 'none'; }
+    
+    function propagate(el, type) {
+        const row = el.closest('tr');
+        if (type === 'normal') row.querySelectorAll('input[class^="r-"]').forEach(i => i.value = el.value);
+        else if (type === 'old') row.querySelectorAll('input[class$="-old"]').forEach(i => i.value = el.value);
+        else if (type === 'new') row.querySelectorAll('input[class$="-new"]').forEach(i => i.value = el.value);
+    }
+    
+    function autoUpdateNext(el) {
+        const row = el.closest('tr');
+        if (row.nextElementSibling && el.value) row.nextElementSibling.querySelector('.range-from').value = parseInt(el.value) + 1;
     }
 
-    // सुरुमा लोड गर्ने
-    renderMainTable();
+    // फाइलको अन्त्यमा यो राख्नुहोस्
+function init() {
+    const savedProvince = localStorage.getItem('last_selected_province');
+    if (savedProvince) {
+        document.getElementById('currentProvince').value = savedProvince;
+    }
+    renderMainTable(); // अब यसले सेभ भएको प्रदेश अनुसार टेबल देखाउँछ
+}
+
+init(); // पेज लोड हुने बित्तिकै यो चल्छ
 </script>
-
 </body>
 </html>
