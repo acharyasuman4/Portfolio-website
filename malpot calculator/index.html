@@ -15,27 +15,22 @@
         body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; overflow-x: hidden; }
         .sidebar-link:hover { background-color: #1e293b; color: #3b82f6; }
         
-        /* Mobile specific fixes */
-        @media (max-width: 768px) {
-            html { font-size: 18px; } /* Makes all text slightly larger */
-            .calc-input { font-size: 1.25rem !important; padding: 1rem !important; }
-            .sticky-tool { top: 0 !important; }
-            #sidebar { transition: transform 0.3s ease-in-out; }
-            #sidebar.closed { transform: translateX(-100%); }
-        }
-
-        .calc-input {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.75rem;
-            font-weight: 700;
-            font-size: 1.125rem;
-            outline: none;
-            transition: all 0.2s;
-        }
-        .calc-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+@media (max-width: 768px) {
+    html { font-size: 18px; }
+    .calc-input { font-size: 1.25rem !important; padding: 1rem !important; }
+    
+    /* मेनुलाई सुरुमा बायाँतिर लुकाउने */
+    #sidebar-menu { 
+        transform: translateX(-100%); 
+        transition: transform 0.3s ease-in-out;
+        position: fixed; /* मोबाइलमा सधैं फिक्स्ड हुनुपर्छ */
+    }
+    
+    /* 'open' क्लास थपिँदा मेनु देखिने */
+    #sidebar-menu.open { 
+        transform: translateX(0); 
+    }
+}
     </style>
 
 </head>
@@ -43,50 +38,50 @@
 
     <!-- TOP NAV (Home Icon) -->
 <!-- MOBILE HEADER -->
-    <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110]">
-        <h2 class="text-lg font-bold text-blue-400">गुठी क्याल्कुलेटर</h2>
-        <button onclick="document.getElementById('sidebar').classList.toggle('closed')" class="p-2 bg-slate-800 rounded-lg">
-            <i data-lucide="menu"></i>
-        </button>
-    </div>
+<div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110] shadow-lg">
+    <h2 class="text-lg font-bold text-blue-400">गुठी क्याल्कुलेटर</h2>
+    <button onclick="toggleMenu()" class="p-2 bg-slate-800 rounded-lg active:scale-95 transition-transform">
+        <i data-lucide="menu"></i>
+    </button>
+</div>
 
     <div class="min-h-screen flex flex-col md:flex-row">
         <!-- SIDEBAR -->
-<aside id="sidebar-menu" class="fixed inset-y-0 left-0 z-[120] w-72 bg-slate-900 text-white p-6 flex flex-col md:relative md:translate-x-0 md:w-64 md:h-screen md:sticky md:top-0 transition-transform duration-300">
+<!-- SIDEBAR MENU -->
+<aside id="sidebar-menu" class="fixed inset-y-0 left-0 z-[120] w-72 bg-slate-900 text-white p-6 flex flex-col md:relative md:translate-x-0 md:w-64 md:h-screen md:sticky md:top-0 transition-transform duration-300 shadow-2xl md:shadow-none">
     
     <!-- Close button for mobile -->
-    <button onclick="document.getElementById('sidebar-menu').classList.remove('open')" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-white">
+    <button onclick="toggleMenu()" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-white p-2">
         <i data-lucide="x"></i>
     </button>
     
     <!-- App Title & Credit -->
     <div class="mb-8 border-b border-slate-800 pb-4 text-center">
-        <h2 class="text-xl font-bold text-blue-400 font-mukta">मालपोत असुली क्याल्कुलेटर</h2>
+        <h2 class="text-xl font-bold text-blue-400 font-mukta">मालपोत असुली</h2>
         <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">सुमन आचार्य 'समीर'</p>
     </div>
 
-    <!-- Navigation Links -->
+    <!-- Navigation Links (लिंक थिचेपछि मेनु बन्द हुन्छ) -->
     <nav class="space-y-1 flex-1 text-base md:text-sm overflow-y-auto">
-        <a href="/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="home" class="w-5 h-5"></i> मुख्य पोर्टल
         </a>
-        <a href="/malpot calculator" class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20">
+        <a href="/malpot calculator" onclick="toggleMenu()" class="flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-900/20">
             <i data-lucide="calculator" class="w-5 h-5"></i> मालपोत असुली
         </a>
-        <a href="/kutabali calculator" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/kutabali calculator" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="equal" class="w-5 h-5"></i> कुतबाली असुली
         </a>
-        <a href="/ropani adder" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/ropani adder" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="circle-plus" class="w-5 h-5"></i> रोपनी जोड्न
         </a>
-        <!-- Active Link: Area Divider -->
-        <a href="/ropani divider/index.html" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/ropani divider/index.html" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="circle-divide" class="w-5 h-5"></i> क्षेत्रफल बाँडफाँड
         </a>
-        <a href="/Registration" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/Registration" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="file-check" class="w-5 h-5"></i> न्युनत्तम मूल्याङ्कन
         </a>
-        <a href="/tippani/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+        <a href="/tippani/" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="file-text" class="w-5 h-5"></i> टिप्पणी फर्म्याट
         </a>
     </nav>
@@ -94,16 +89,13 @@
     <!-- Social Media Footer Buttons -->
     <div class="mt-auto pt-6 border-t border-slate-800">
         <div class="flex justify-between items-center px-2">
-            <!-- Facebook -->
-            <a href="https://facebook.com/acharyasuman874" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-blue-600 hover:text-white transition-all shadow-sm" title="Facebook">
+            <a href="https://facebook.com/acharyasuman874" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-blue-600 hover:text-white transition-all">
                <i class="fab fa-facebook-f"></i>
             </a>
-            <!-- YouTube -->
-            <a href="https://youtube.com/@04.sumanac" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-red-600 hover:text-white transition-all shadow-sm" title="YouTube">
+            <a href="https://youtube.com/@04.sumanac" target="_blank" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-red-600 hover:text-white transition-all">
                 <i class="fab fa-youtube"></i>
             </a>
-            <!-- Email -->
-            <a href="mailto:acharyasuman874@gmail.com" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-emerald-600 hover:text-white transition-all shadow-sm" title="Email Us">
+            <a href="mailto:acharyasuman874@gmail.com" class="p-2.5 bg-slate-800 rounded-lg text-slate-400 hover:bg-emerald-600 hover:text-white transition-all">
                 <i data-lucide="mail" class="w-5 h-5"></i>
             </a>
         </div>
@@ -114,8 +106,14 @@
         <!-- MAIN AREA -->
         <main class="flex-1 p-4 md:p-8">
             <header class="mb-8">
-                <h1 class="text-2xl md:text-3xl font-bold text-slate-800 font-mukta text-center md:text-left">मालपोत असुली क्याल्कुलेटर</h1>
-                <p class="text-slate-500 text-sm text-center md:text-left">आ.व. ०८२।८३ (सिन्धुपाल्चोक जिल्ला दररेट अनुसार)</p>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800 font-mukta text-center md:text-left" style="text-align: center;">मालपोत असुली क्याल्कुलेटर</h1>
+<!-- क्षेत्र छान्ने ड्रपडाउन -->
+<div class="mb-4"> 
+    <label class="text-xs font-bold text-slate-400 uppercase block mb-1" style="font-size: 18; color: rgb(108, 69, 10); display: flex;">क्षेत्र/जिल्ला छान्नुहोस् <span style="color: rgb(2, 52, 2); font-size: 16px; display: inline-block; margin: 2px auto; text-align: center;"><b>आ.व. ०८३।८४ को लागि</b></span></label>
+    <select id="regionSelect" class="calc-input appearance-none bg-slate-50 w-full" onchange="updateLocalBodyOptions(); calculateTax(); onRegionChange()">
+        <!-- यो डाटा JSON बाट भरिनेछ -->
+    </select>
+</div>
 <div class="flex flex-wrap gap-4 my-4 p-3 bg-blue-50 rounded-2xl border border-blue-100 text-sm font-bold">
     <label class="flex items-center gap-1 cursor-pointer">
         <input type="radio" name="timing" value="magh" onchange="savePreference(this.value); calculateTax()"> क) माघ मसान्त सम्म
@@ -127,6 +125,8 @@
         <input type="radio" name="timing" value="asar" onchange="savePreference(this.value); calculateTax()" checked> ग) असार संक्रान्ति देखि
     </label>
 </div>
+
+<div><a href="data-entry.html">डाटा इन्ट्री गर्नुहोस्</a></div>
                 
             </header>
 
@@ -266,198 +266,147 @@
                 document.getElementById('jamma').innerText = '';
             }
 
-            function calculateTax() {
-                // Get values from the form
-                const financialYear = document.getElementById('financialYear').value;
-                const ropni = parseFloat(document.getElementById('ropani').value) || 0;
-                const aana = parseFloat(document.getElementById('aana').value) || 0;
-                const paisa = parseFloat(document.getElementById('paisa').value) || 0;
-                const daam = parseFloat(document.getElementById('daam').value) || 0;
-                const localBody = document.getElementById('localBody').value;
-                // Validation
-                if (ropni < 0 || aana < 0 || paisa < 0 || daam < 0) {
-                    alert('Values cannot be negative. Please enter positive values.');
-                    document.getElementById('bakyaota').innerText = '';
-                    document.getElementById('chalu').innerText = '';
-                    document.getElementById('jarivana').innerText = '';
-                    document.getElementById('jamma').innerText = '';
-                    return; // Stop further calculation
-                }
+let appConfig = null;
 
-                if (aana >= 16 || paisa >= 4 || daam >= 4) {
-                    alert('आना १६ भन्दा कम, पैसा ४ भन्दा कम, दाम ४ भन्दा कम हुनुपर्छ ।');
-                    document.getElementById('bakyaota').innerText = '';
-                    document.getElementById('chalu').innerText = '';
-                    document.getElementById('jarivana').innerText = '';
-                    document.getElementById('jamma').innerText = '';
-                    return; // Stop further calculation
-                }
-
-                // Calculate बक्यौता
-                let bakyaota = calculateBakyaota(financialYear, ropni, aana, paisa, daam);
-
-
-                // Calculate चालु
-                let chalu = 40 * (ropni + aana / 16 + paisa / 64 + daam / 256);
-
-                // Calculate जरिवाना
-                let jarivana = calculateJarivana(financialYear, bakyaota);
-
-                // Double the result for नगरपालिका
-                if (localBody === 'nagarpalika') {
-                    chalu *= 5 / 4;
-                }
-
-                // १. जरिवाना क्याल्कुलेसनमा हुने थप परिवर्तन
-let timing = document.querySelector('input[name="timing"]:checked').value;
-let adjustment = 0;
-
-if (timing === 'magh') {
-    // माघ मसान्त सम्म: ५% छुट (जरिवानाबाट घटाउने)
-    adjustment = Math.floor(-0.05 * chalu);
-} else if (timing === 'asar') {
-    // असार संक्रान्ति देखि: ५% थप जरिवाना
-    adjustment = Math.ceil(0.05 * chalu);
-}
-
-jarivana = jarivana + adjustment; 
-
-// २. डाटा सेभ गर्ने (Persistence)
-function savePreference(val) {
-    localStorage.setItem('tax_timing', val);
-}
-
-// ३. विन्डो लोड हुँदा पुरानो सेटिङ फिर्ता ल्याउने
-function loadPreference() {
-    let saved = localStorage.getItem('tax_timing');
-    if (saved) {
-        document.querySelector(`input[name="timing"][value="${saved}"]`).checked = true;
+// १. JSON लोड गर्ने र सुरु गर्ने
+async function loadConfig() {
+    try {
+        const response = await fetch('config.json'); 
+        appConfig = await response.json();
+        initUI();
+    } catch (e) {
+        console.error("डाटा लोड हुन सकेन:", e);
     }
 }
 
-// पेज लोड हुँदा यो रन गर्नुहोस्
-window.addEventListener('load', loadPreference);
+// २. UI सेटअप र पुरानो 'क्षेत्र' फिर्ता ल्याउने
+function initUI() {
+    if (!appConfig) return;
 
-                // Calculate जम्मा without rounding each component
-                let jamma = chalu + bakyaota + jarivana;
+    // क्षेत्र भर्ने
+    const rSelect = document.getElementById('regionSelect');
+    rSelect.innerHTML = appConfig.regions.map(r => `<option value="${r}">${r}</option>`).join('');
+    
+    const savedRegion = localStorage.getItem('user_selected_region');
+    if (savedRegion) rSelect.value = savedRegion;
 
-                // Display the results
-                document.getElementById('bakyaota').innerText = Math.round(bakyaota).toFixed(0);
-                document.getElementById('chalu').innerText = Math.round(chalu).toFixed(0);
-                document.getElementById('jarivana').innerText = Math.round(jarivana).toFixed(0);
+    // आर्थिक वर्ष भर्ने (देखाउँदा मात्र Reverse गर्ने ताकि नयाँ वर्ष टपमा आओस्)
+    const ySelect = document.getElementById('financialYear');
+    const displayFYs = [...appConfig.allFYs].reverse(); // नयाँ वर्ष माथि देखाउन
+    ySelect.innerHTML = displayFYs.map(y => `<option value="${y}">${y}</option>`).join('');
 
-                // Calculate rounded jamma as the sum of individually rounded components
-                let roundedJamma = Math.round(bakyaota) + Math.round(chalu) + Math.round(jarivana);
+    // चालु आर्थिक वर्षलाई अटो-सेलेक्ट गर्ने
+    const activeIndex = appConfig.allFYs.indexOf(appConfig.activeFY);
+    const defaultFY = activeIndex > 0 ? appConfig.allFYs[activeIndex - 1] : appConfig.activeFY;
+    ySelect.value = defaultFY;
 
-                document.getElementById('jamma').innerText = roundedJamma.toFixed(0);
-            }
+    autoSelectTiming();
+    updateLocalBodyOptions();
+}
 
-            function calculateBakyaota(financialYear, ropni, aana, paisa, daam) {
-                const localBody = document.getElementById('localBody').value;
-                const area = ropni + aana / 16 + paisa / 64 + daam / 256;
+// ३. क्षेत्र परिवर्तन हुँदा सेभ गर्ने
+function onRegionChange() {
+    const region = document.getElementById('regionSelect').value;
+    localStorage.setItem('user_selected_region', region); // कम्प्युटर बन्द गरे पनि बस्छ
+    updateLocalBodyOptions();
+}
 
-                // Ordered years (descending: newest to oldest)
-                const yearOrder = [
-                    '82/83', '81/82', '80/81', '79/80', '78/79', '77/78', '76/77', '75/76', '74/75',
-                    '73/74', '72/73', '71/72', '70/71', '69/70', '68/69', '67/68', '66/67', '65/66',
-                    '64/65', '63/64', '62/63', '61/62', '60/61', '59/60', '58/59', '57/58', '56/57',
-                    '55/56', '54/55', '53/54', '52/53', '51/52', '50/51', '49/50', '48/49', '47/48',
-                    '46/47'
-                ];
+function updateLocalBodyOptions() {
+    const region = document.getElementById('regionSelect').value;
+    const lbSelect = document.getElementById('localBody');
+    const availableBTs = appConfig.regionBTs[region] || [];
 
-                const ratesGaunpalika = {
-                    '81/82': 40, '80/81': 40, '79/80': 25, '78/79': 15, '77/78': 15,
-                    '76/77': 15, '75/76': 15, '74/75': 15, '73/74': 15, '72/73': 15,
-                    '71/72': 15, '70/71': 15, '69/70': 10.6, '68/69': 10.6, '67/68': 10.6,
-                    '66/67': 10.6, '65/66': 10.6, '64/65': 10.6, '63/64': 10.6, '62/63': 10.6,
-                    '61/62': 5.5, '60/61': 5.5, '59/60': 5.5, '58/59': 5.5, '57/58': 5.5,
-                    '56/57': 5.5, '55/56': 5.5, '54/55': 5.5, '53/54': 5.5, '52/53': 5.5,
-                    '51/52': 5.5, '50/51': 5.5, '49/50': 3.3, '48/49': 3.3, '47/48': 3.3,
-                    '46/47': 3.3
-                };
+    lbSelect.innerHTML = availableBTs.map(bt => `<option value="${bt}">${bt}</option>`).join('');
+    calculateTax();
+}
 
-                const ratesNagarpalika = {
-                    '81/82': 50, '80/81': 50, '79/80': 25, '78/79': 15, '77/78': 15,
-                    '76/77': 15, '75/76': 15, '74/75': 15, '73/74': 15, '72/73': 15,
-                    '71/72': 15, '70/71': 15, '69/70': 10.6, '68/69': 10.6, '67/68': 10.6,
-                    '66/67': 10.6, '65/66': 10.6, '64/65': 10.6, '63/64': 10.6, '62/63': 10.6,
-                    '61/62': 5.5, '60/61': 5.5, '59/60': 5.5, '58/59': 5.5, '57/58': 5.5,
-                    '56/57': 5.5, '55/56': 5.5, '54/55': 5.5, '53/54': 5.5, '52/53': 5.5,
-                    '51/52': 5.5, '50/51': 5.5, '49/50': 3.3, '48/49': 3.3, '47/48': 3.3,
-                    '46/47': 3.3
-                };
+// ४. दररेट र जरिवाना % खोज्ने (Linking Logic)
+function getRateData(region, fy, bt) {
+    let targetRegion = region;
+    const sLink = appConfig.specificLinks.find(l => l.tR === region && l.tB === bt);
+    if (sLink) {
+        return {
+            rate: (appConfig.data[sLink.sR] && appConfig.data[sLink.sR][fy] && appConfig.data[sLink.sR][fy][sLink.sB]) || 0,
+            penaltyPercent: (appConfig.data[sLink.sR] && appConfig.data[sLink.sR][fy] && appConfig.data[sLink.sR][fy].penalty) || 0
+        };
+    } 
+    if (appConfig.bulkLinks[region]) targetRegion = appConfig.bulkLinks[region];
 
-                const rates = localBody === 'gaunpalika' ? ratesGaunpalika : ratesNagarpalika;
+    const fyData = (appConfig.data[targetRegion] && appConfig.data[targetRegion][fy]) || {};
+    return {
+        rate: fyData[bt] || 0,
+        penaltyPercent: fyData.penalty || 0
+    };
+}
 
-                const selectedIndex = yearOrder.indexOf(financialYear);
-                if (selectedIndex === -1) return 0;
+// ५. मुख्य क्याल्कुलेसन (Corrected Fine Logic)
+function calculateTax() {
+    if (!appConfig) return;
 
-                // Sum rates of newer years (index less than selectedIndex)
-                let totalRate = 0;
-                for (let i = 0; i < selectedIndex; i++) {
-                    const year = yearOrder[i];
-                    if (rates[year]) {
-                        totalRate += rates[year];
-                    }
-                }
+    const region = document.getElementById('regionSelect').value;
+    const fySelected = document.getElementById('financialYear').value;
+    const bodyType = document.getElementById('localBody').value;
+    
+    const ropani = parseFloat(document.getElementById('ropani').value) || 0;
+    const aana = parseFloat(document.getElementById('aana').value) || 0;
+    const paisa = parseFloat(document.getElementById('paisa').value) || 0;
+    const daam = parseFloat(document.getElementById('daam').value) || 0;
+    const area = ropani + (aana / 16) + (paisa / 64) + (daam / 256);
 
-                return totalRate * area;
-            }
+    // १. चालु तिरो (Active FY को रेट)
+    const activeFYData = getRateData(region, appConfig.activeFY, bodyType);
+    const chaluTiro = area * activeFYData.rate;
 
+    // २. बक्यौता हिसाव (छानिएको वर्ष भन्दा पछिको र चालु वर्ष भन्दा अघिको)
+    let totalBakyaota = 0;
+    const startIndex = appConfig.allFYs.indexOf(fySelected);
+    const activeIndex = appConfig.allFYs.indexOf(appConfig.activeFY);
 
+    // यदि ४६, ४७, ..., ८०, ८१, ८२ (चालु) छ भने:
+    // ८० छानेमा ८१ को मात्र बक्यौता जोड्नुपर्छ।
+    for (let i = startIndex + 1; i < activeIndex; i++) {
+        const year = appConfig.allFYs[i];
+        const yearData = getRateData(region, year, bodyType);
+        totalBakyaota += (area * yearData.rate);
+    }
 
-            function calculateJarivana(financialYear, bakyaota) {
-                switch (financialYear) {
-                    case '81/82':
-                        return 0;
-                    case '80/81':
-                        return 0.2 * bakyaota;
-                    case '79/80':
-                        return 0.3 * bakyaota;
-                    case '78/79':
-                        return 0.4 * bakyaota;
-                    case '77/78':
-                        return 0.5 * bakyaota;
-                    case '76/77':
-                        return 0.6 * bakyaota;
-                    case '75/76':
-                        return 0.7 * bakyaota;
-                    case '74/75':
-                        return 0.8 * bakyaota;
-                    case '73/74':
-                        return 0.9 * bakyaota;
-                    case '72/73':
-                    case '71/72':
-                    case '70/71':
-                    case '69/70':
-                    case '68/69':
-                    case '67/68':
-                    case '66/67':
-                    case '65/66':
-                    case '64/65':
-                    case '63/64':
-                    case '62/63':
-                    case '61/62':
-                    case '60/61':
-                    case '59/60':
-                    case '58/59':
-                    case '57/58':
-                    case '56/57':
-                    case '55/56':
-                    case '54/55':
-                    case '53/54':
-                    case '52/53':
-                    case '51/52':
-                    case '50/51':
-                    case '49/50':
-                    case '48/49':
-                    case '47/48':
-                    case '46/47':
-                        return bakyaota;
-                    default:
-                        return 0;
-                }
-            }
+    // ३. जरिवाना हिसाव
+    const selectedFYData = getRateData(region, fySelected, bodyType);
+    const baseFinePercent = selectedFYData.penaltyPercent || 0;
+    
+    // बक्यौतामा लाग्ने जरिवाना (Roundup)
+    let baseJarivana = Math.ceil(totalBakyaota * (baseFinePercent / 100));
+
+    // समय अनुसारको ५% थपघट (चालु तिरोमा मात्र लाग्ने)
+    let timing = document.querySelector('input[name="timing"]:checked').value;
+    let timingAdjustment = 0;
+    if (timing === 'magh') {
+        timingAdjustment = Math.floor(-(chaluTiro * 0.05));
+    } else if (timing === 'asar') {
+        timingAdjustment = Math.ceil(chaluTiro * 0.05);
+    }
+
+    const finalJarivana = baseJarivana + timingAdjustment;
+
+    // रिजल्ट अपडेट गर्ने
+    document.getElementById('bakyaota').innerText = Math.round(totalBakyaota);
+    document.getElementById('chalu').innerText = Math.round(chaluTiro);
+    document.getElementById('jarivana').innerText = finalJarivana;
+    document.getElementById('jamma').innerText = "रु. " + Math.round(totalBakyaota + chaluTiro + finalJarivana);
+}
+
+function autoSelectTiming() {
+    if (!appConfig.dates.magh_end) return;
+    const today = new Date().toISOString().split('T')[0];
+    let val = "normal";
+    if (today <= appConfig.dates.magh_end) val = "magh";
+    else if (today >= appConfig.dates.asar_start) val = "asar";
+
+    const radio = document.querySelector(`input[name="timing"][value="${val}"]`);
+    if (radio) radio.checked = true;
+}
+
+window.addEventListener('load', loadConfig);
 
             // Add event listeners to trigger the calculation when any input changes
             document.getElementById('ropani').addEventListener('input', calculateTax);
@@ -535,7 +484,17 @@ window.addEventListener("message", function(event) {
             calculateTax();
         }
     }
-});</script>
+});
+
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebar-menu');
+    // यदि विन्डोको चौडाई ७६८ भन्दा कम छ भने मात्र टगल गर्ने
+    if (window.innerWidth <= 768) {
+        sidebar.classList.toggle('open');
+    }
+}
+</script>
+
 
             <script src="../tailwind.min.js"></script>
 <script src="../lucide.min.js"></script>

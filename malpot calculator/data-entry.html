@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <title>Guthi Admin Pro - Data Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .active-tab { border-bottom: 4px solid #2563eb; color: #2563eb; background: #eff6ff; font-weight: bold; }
+        input[type="number"] { width: 85px; text-align: center; font-size: 0.85rem; border-radius: 6px; border: 1px solid #cbd5e1; padding: 4px; }
+        .sticky-col { position: sticky; left: 0; background: #f8fafc; z-index: 10; border-right: 2px solid #e2e8f0; }
+        .linked-cell { background-color: #f0fdf4 !important; color: #166534; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-[98%] mx-auto py-6">
+        <!-- HEADER -->
+        <div class="bg-slate-900 text-white p-5 rounded-t-2xl flex justify-between items-center shadow-lg">
+            <div>
+                <h1 class="text-2xl font-bold">Guthi Admin Portal</h1>
+                <p class="text-slate-400 text-xs">डाटा इन्ट्री गर्दा ब्राउजरमै सेभ हुन्छ (Auto-Save Enabled)</p>
+            </div>
+            <div class="flex gap-2">
+                <input type="file" id="importJson" class="hidden" onchange="importData(event)">
+                <button onclick="document.getElementById('importJson').click()" class="bg-slate-700 px-4 py-2 rounded-lg hover:bg-slate-600 text-sm">JSON अपलोड</button>
+                <button onclick="exportData()" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-500 text-sm font-bold">JSON डाउनलोड</button>
+                <button onclick="clearLocalStorage()" class="bg-red-600 px-4 py-2 rounded-lg text-sm">सबै रिसेट</button>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="flex bg-white border-b shadow-sm">
+            <button onclick="showTab('setup')" id="tab-setup" class="flex-1 py-4 hover:bg-gray-50 active-tab">१. मुख्य सेटअप (FY, Dates, Types)</button>
+            <button onclick="showTab('linking')" id="tab-linking" class="flex-1 py-4 hover:bg-gray-50">२. क्षेत्र र लिङ्किङ (Grouping)</button>
+            <button onclick="showTab('rates')" id="tab-rates" class="flex-1 py-4 hover:bg-gray-50">३. दररेट इन्ट्री</button>
+        </div>
+
+        <!-- TAB 1: SETUP -->
+        <div id="setup" class="tab-content active bg-white p-6 rounded-b-2xl shadow">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Date & FY Settings -->
+                <div class="p-5 bg-blue-50 rounded-xl border border-blue-100 space-y-4">
+                    <h3 class="font-bold text-blue-800 border-b border-blue-200 pb-2">आर्थिक वर्ष र समय सीमा</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div><label class="block text-xs font-bold mb-1">चालु आ.व.</label><input type="text" id="activeFY" class="w-full p-2 border rounded" onchange="updateConfig()"></div>
+                        <div><label class="block text-xs font-bold mb-1">माघ मसान्त (AD)</label><input type="date" id="magh_end" class="w-full p-2 border rounded" onchange="updateConfig()"></div>
+                        <div><label class="block text-xs font-bold mb-1">असार १ (AD)</label><input type="date" id="asar_start" class="w-full p-2 border rounded" onchange="updateConfig()"></div>
+                    </div>
+                    <div class="flex items-end gap-2 mt-4 p-4 bg-white rounded-lg">
+                        <div class="flex-1"><label class="text-xs font-bold">आ.व. रेन्ज (देखि - सम्म):</label>
+                            <div class="flex gap-2"><input type="number" id="fyStart" placeholder="46" class="flex-1"><input type="number" id="fyEnd" placeholder="83" class="flex-1"></div>
+                        </div>
+                        <button onclick="generateFYRange()" class="bg-blue-600 text-white px-4 py-2 rounded font-bold">Generate Years</button>
+                    </div>
+                </div>
+
+                <!-- Body Types -->
+                <div class="p-5 bg-emerald-50 rounded-xl border border-emerald-100">
+                    <h3 class="font-bold text-emerald-800 border-b border-emerald-200 pb-2 mb-4">स्थानीय तहका प्रकारहरू</h3>
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="newBT" class="flex-1 p-2 border rounded" placeholder="उदा: महानगर">
+                        <button onclick="addBT()" class="bg-emerald-600 text-white px-4 py-2 rounded font-bold">+</button>
+                    </div>
+                    <div id="btList" class="flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: LINKING -->
+        <div id="linking" class="tab-content bg-white p-6 rounded-b-2xl shadow">
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold">क्षेत्रहरू र स्थानीय तह छनोट</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="newRegion" class="p-2 border rounded w-64" placeholder="नयाँ क्षेत्रको नाम">
+                        <button onclick="addRegion()" class="bg-slate-800 text-white px-4 py-2 rounded font-bold">+ क्षेत्र थप्नुहोस्</button>
+                    </div>
+                </div>
+                <div id="regionConfigList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div class="border-t pt-6">
+                <h3 class="text-lg font-bold mb-4">दररेट लिङ्किङ (Bulk / Specific)</h3>
+                <div class="flex gap-2 mb-4">
+                    <button onclick="openBulkLinkModal()" class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold">Bulk Link (क्षेत्र-क्षेत्र)</button>
+                    <button onclick="openSpecificLinkModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold">Specific Link (तह-तह)</button>
+                </div>
+                <div id="activeLinksDisplay" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+            </div>
+        </div>
+
+        <!-- TAB 3: RATE ENTRY -->
+        <div id="rates" class="tab-content bg-white p-6 rounded-b-2xl shadow">
+            <div class="mb-6 flex items-center gap-4">
+                <label class="font-bold text-lg">क्षेत्र छान्नुहोस्:</label>
+                <select id="entryRegionSelect" onchange="renderRateTable()" class="p-3 border-2 border-blue-200 rounded-xl bg-blue-50 font-bold min-w-[300px]"></select>
+            </div>
+            <div id="rateTableContainer" class="overflow-x-auto border rounded-xl"></div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="linkModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <h2 id="modalTitle" class="text-xl font-bold mb-4">Rate Linking</h2>
+            <div id="modalInputs" class="space-y-4"></div>
+            <div class="flex gap-2 mt-6">
+                <button onclick="saveLink()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-bold">Save Link</button>
+                <button onclick="closeModal()" class="flex-1 bg-gray-200 py-2 rounded-lg">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA PERSISTENCE ---
+        let config = {
+            activeFY: "82/83",
+            dates: { magh_end: "", asar_start: "" },
+            allFYs: [],
+            allBTs: ["गाउँपालिका", "नगरपालिका"],
+            regions: [],
+            regionBTs: {},
+            bulkLinks: {},
+            specificLinks: [],
+            data: {}
+        };
+
+        // Load data from LocalStorage on Startup
+        window.onload = () => {
+            const saved = localStorage.getItem('guthi_admin_config');
+            if (saved) {
+                config = JSON.parse(saved);
+            }
+            renderAll();
+        };
+
+        function save() {
+            localStorage.setItem('guthi_admin_config', JSON.stringify(config));
+        }
+
+        function clearLocalStorage() {
+            if(confirm("के तपाईँ सबै डाटा हटाउन चाहनुहुन्छ?")) {
+                localStorage.removeItem('guthi_admin_config');
+                location.reload();
+            }
+        }
+
+        function renderAll() {
+            renderSetup();
+            renderRegionConfig();
+            renderActiveLinks();
+            updateEntrySelect();
+        }
+
+        // --- TABS ---
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.flex button').forEach(b => b.classList.remove('active-tab'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('tab-'+id).classList.add('active-tab');
+            if(id === 'rates') updateEntrySelect();
+            if(id === 'linking') renderRegionConfig();
+        }
+
+        // --- SETUP TAB ---
+        function updateConfig() {
+            config.activeFY = document.getElementById('activeFY').value;
+            config.dates.magh_end = document.getElementById('magh_end').value;
+            config.dates.asar_start = document.getElementById('asar_start').value;
+            save();
+        }
+
+        function renderSetup() {
+            document.getElementById('activeFY').value = config.activeFY;
+            document.getElementById('magh_end').value = config.dates.magh_end;
+            document.getElementById('asar_start').value = config.dates.asar_start;
+            document.getElementById('btList').innerHTML = config.allBTs.map(bt => 
+                `<span class="bg-white border border-emerald-200 text-emerald-800 px-3 py-1 rounded-lg text-sm font-bold flex items-center gap-2">${bt} <button onclick="removeBT('${bt}')" class="text-red-400">×</button></span>`
+            ).join('');
+        }
+
+// १. वर्षहरू सानाबाट ठूला (Ascending) क्रममा बनाउनका लागि यो कोड रिप्लेस गर्नुहोस्:
+function generateFYRange() {
+    const start = parseInt(document.getElementById('fyStart').value);
+    const end = parseInt(document.getElementById('fyEnd').value);
+    if(isNaN(start) || isNaN(end)) return alert("Year रेन्ज भर्नुहोस्");
+    
+    config.allFYs = [];
+    // i-- को सट्टा i++ प्रयोग गरिएको छ जसले ४६ बाट ८३ सम्म लैजान्छ
+    for(let i = start; i <= end; i++) {
+        config.allFYs.push(`${i}/${i+1}`);
+    }
+    
+    save(); 
+    renderAll();
+}
+        function addBT() {
+            const val = document.getElementById('newBT').value.trim();
+            if(val && !config.allBTs.includes(val)) {
+                config.allBTs.push(val);
+                save(); renderSetup();
+            }
+        }
+
+        function removeBT(bt) {
+            config.allBTs = config.allBTs.filter(b => b !== bt);
+            save(); renderSetup();
+        }
+
+        // --- REGION CONFIG ---
+        function addRegion() {
+            const val = document.getElementById('newRegion').value.trim();
+            if(val && !config.regions.includes(val)) {
+                config.regions.push(val);
+                config.regionBTs[val] = [...config.allBTs]; // Default all checked
+                document.getElementById('newRegion').value = '';
+                save(); renderRegionConfig();
+            }
+        }
+
+        function renderRegionConfig() {
+            const container = document.getElementById('regionConfigList');
+            container.innerHTML = config.regions.map(r => `
+                <div class="p-4 bg-white border-2 border-slate-100 rounded-xl shadow-sm">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-slate-800">${r}</span>
+                        <button onclick="removeRegion('${r}')" class="text-red-500 text-xs">हटाउनुहोस्</button>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${config.allBTs.map(bt => `
+                            <label class="text-[10px] flex items-center gap-1 bg-slate-50 px-2 py-1 rounded border">
+                                <input type="checkbox" ${config.regionBTs[r].includes(bt) ? 'checked' : ''} 
+                                    onchange="toggleRegionBT('${r}', '${bt}')"> ${bt}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleRegionBT(r, bt) {
+            const idx = config.regionBTs[r].indexOf(bt);
+            if(idx > -1) config.regionBTs[r].splice(idx, 1);
+            else config.regionBTs[r].push(bt);
+            save();
+        }
+
+        function removeRegion(r) {
+            config.regions = config.regions.filter(reg => reg !== r);
+            delete config.regionBTs[r];
+            save(); renderRegionConfig();
+        }
+
+        // --- LINKING ---
+        let modalType = '';
+        function openBulkLinkModal() {
+            modalType = 'bulk';
+            document.getElementById('modalTitle').innerText = "Bulk Link";
+            document.getElementById('modalInputs').innerHTML = `
+                <label class="text-xs font-bold">Source Region (डाटा भएको):</label>
+                <select id="srcR" class="w-full p-2 border rounded">${config.regions.map(r=>`<option value="${r}">${r}</option>`).join('')}</select>
+                <label class="text-xs font-bold">Target Region (लिङ्क गर्ने):</label>
+                <select id="tarR" class="w-full p-2 border rounded">${config.regions.map(r=>`<option value="${r}">${r}</option>`).join('')}</select>
+            `;
+            document.getElementById('linkModal').classList.remove('hidden');
+        }
+
+        function openSpecificLinkModal() {
+            modalType = 'specific';
+            document.getElementById('modalTitle').innerText = "Specific Link";
+            document.getElementById('modalInputs').innerHTML = `
+                <div class="space-y-2">
+                    <select id="sR" class="w-full p-2 border rounded" onchange="updModalBT('sR','sB')">${config.regions.map(r=>`<option value="${r}">${r}</option>`).join('')}</select>
+                    <select id="sB" class="w-full p-2 border rounded"></select>
+                    <div class="text-center font-bold text-blue-600">लिङ्क टु ↓</div>
+                    <select id="tR" class="w-full p-2 border rounded" onchange="updModalBT('tR','tB')">${config.regions.map(r=>`<option value="${r}">${r}</option>`).join('')}</select>
+                    <select id="tB" class="w-full p-2 border rounded"></select>
+                </div>
+            `;
+            updModalBT('sR','sB'); updModalBT('tR','tB');
+            document.getElementById('linkModal').classList.remove('hidden');
+        }
+
+        function updModalBT(rid, bid) {
+            const r = document.getElementById(rid).value;
+            document.getElementById(bid).innerHTML = config.regionBTs[r].map(b=>`<option value="${b}">${b}</option>`).join('');
+        }
+
+        function saveLink() {
+            if(modalType==='bulk') {
+                config.bulkLinks[document.getElementById('tarR').value] = document.getElementById('srcR').value;
+            } else {
+                config.specificLinks.push({
+                    sR: document.getElementById('sR').value, sB: document.getElementById('sB').value,
+                    tR: document.getElementById('tR').value, tB: document.getElementById('tB').value
+                });
+            }
+            save(); closeModal(); renderActiveLinks();
+        }
+
+        function closeModal() { document.getElementById('linkModal').classList.add('hidden'); }
+
+        function renderActiveLinks() {
+            const div = document.getElementById('activeLinksDisplay');
+            let h = '';
+            for(let t in config.bulkLinks) h += `<div class="bg-orange-50 p-2 rounded border text-xs flex justify-between"><span>${t} ← ${config.bulkLinks[t]}</span><button onclick="delete config.bulkLinks['${t}']; save(); renderActiveLinks()" class="text-red-500">×</button></div>`;
+            config.specificLinks.forEach((l,i) => h += `<div class="bg-indigo-50 p-2 rounded border text-[10px] flex justify-between"><span>${l.tR}(${l.tB}) ← ${l.sR}(${l.sB})</span><button onclick="config.specificLinks.splice(${i},1); save(); renderActiveLinks()" class="text-red-500">×</button></div>`);
+            div.innerHTML = h;
+        }
+
+        // --- RATE ENTRY ---
+        function updateEntrySelect() {
+            const sel = document.getElementById('entryRegionSelect');
+            sel.innerHTML = config.regions.map(r => `<option value="${r}">${r}</option>`).join('');
+            renderRateTable();
+        }
+
+        function renderRateTable() {
+            const region = document.getElementById('entryRegionSelect').value;
+            if(!region) return;
+            const bts = config.regionBTs[region] || [];
+            let h = `<table class="w-full text-xs border-collapse"><thead class="bg-slate-800 text-white"><tr><th class="p-2 sticky-col">FY</th>${bts.map(b=>`<th class="p-2 border border-slate-700">${b}</th>`).join('')}<th class="p-2 bg-red-900">जरिवाना %</th></tr></thead><tbody>`;
+            config.allFYs.forEach(fy => {
+                h += `<tr><td class="p-2 border sticky-col font-bold text-center">${fy}</td>`;
+                bts.forEach(bt => {
+                    const l = getVal(region, fy, bt);
+                    const v = (config.data[region] && config.data[region][fy] && config.data[region][fy][bt]) || '';
+                    h += `<td class="p-1 border text-center ${l.isL?'linked-cell':''}">
+                        <input type="number" step="0.01" value="${l.isL?l.v:v}" ${l.isL?'disabled':''} onchange="propRate('${region}','${fy}','${bt}',this.value)">
+                    </td>`;
+                });
+                const pen = (config.data[region] && config.data[region][fy] && config.data[region][fy].penalty) || '';
+                h += `<td class="p-1 border bg-red-50 text-center"><input type="number" step="0.01" value="${pen}" onchange="propPen('${region}','${fy}',this.value)"></td></tr>`;
+            });
+            h += `</tbody></table>`;
+            document.getElementById('rateTableContainer').innerHTML = h;
+        }
+
+        function getVal(r, fy, bt) {
+            const sL = config.specificLinks.find(l=>l.tR===r && l.tB===bt);
+            if(sL) return {isL:true, v: (config.data[sL.sR] && config.data[sL.sR][fy] && config.data[sL.sR][fy][sL.sB]) || 0};
+            if(config.bulkLinks[r]) {
+                const src = config.bulkLinks[r];
+                return {isL:true, v: (config.data[src] && config.data[src][fy] && config.data[src][fy][bt]) || 0};
+            }
+            return {isL:false, v:0};
+        }
+
+        function propRate(r, fy, bt, val) {
+            val = parseFloat(val) || 0;
+            if(!config.data[r]) config.data[r] = {};
+            const fyIdx = config.allFYs.indexOf(fy);
+            const btIdx = config.regionBTs[r].indexOf(bt);
+            for(let i=fyIdx; i<config.allFYs.length; i++) {
+                const f = config.allFYs[i];
+                if(!config.data[r][f]) config.data[r][f] = {};
+                for(let j=btIdx; j<config.regionBTs[r].length; j++) {
+                    config.data[r][f][config.regionBTs[r][j]] = val;
+                }
+            }
+            save(); renderRateTable();
+        }
+
+        function propPen(r, fy, val) {
+            val = parseFloat(val) || 0;
+            if(!config.data[r]) config.data[r] = {};
+            const fyIdx = config.allFYs.indexOf(fy);
+            for(let i=fyIdx; i<config.allFYs.length; i++) {
+                const f = config.allFYs[i];
+                if(!config.data[r][f]) config.data[r][f] = {};
+                config.data[r][f].penalty = val;
+            }
+            save(); renderRateTable();
+        }
+
+        // --- EXPORT/IMPORT ---
+        function exportData() {
+            const blob = new Blob([JSON.stringify(config, null, 2)], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = "config.json"; a.click();
+        }
+
+        function importData(e) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                config = JSON.parse(ev.target.result);
+                save(); renderAll();
+            };
+            reader.readAsText(e.target.files[0]);
+        }
+    </script>
+</body>
+</html>
