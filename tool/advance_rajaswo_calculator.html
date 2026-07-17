@@ -129,6 +129,67 @@
                         <div id="dropdownList" class="absolute left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto hidden"></div>
                     </div>
 
+                    <!-- कारोबार शिर्षक पछि राखिने दर्ताफारी स्पेशल सेक्सन -->
+<div id="dartaPhariSection" class="hide mb-6 p-4 bg-purple-50 border border-purple-200 rounded-2xl space-y-4">
+    <div class="text-xs font-bold text-purple-900 border-b border-purple-200 pb-2 uppercase">
+        दर्ताफारी विशेष विवरण
+    </div>
+
+    <!-- १. तिन पुस्ता सम्बन्धी अप्सन -->
+    <div>
+        <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">नाता / पुस्ता छान्नुहोस्</label>
+        <div class="flex gap-6 bg-white p-2.5 rounded-xl border border-purple-100">
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                <input type="radio" name="pustaType" value="inside"  onchange="updateThailiVisibility(); calculate();" class="text-purple-600 focus:ring-purple-500">
+                <span>तिन पुस्ता भित्र</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                <input type="radio" name="pustaType" value="outside" checked onchange="updateThailiVisibility(); calculate();" class="text-purple-600 focus:ring-purple-500">
+                <span>तिन पुस्ता बाहिर</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- २. क्षेत्रफल अप्सन -->
+    <div>
+        <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">क्षेत्रफल प्रकार</label>
+        <div class="flex gap-6 bg-white p-2.5 rounded-xl border border-purple-100">
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                <input type="radio" name="areaType" value="different" checked onchange="toggleAreaInputs(); calculate();" class="text-purple-600 focus:ring-purple-500">
+                <span>क्षेत्रफल फरक</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+                <input type="radio" name="areaType" value="equal" onchange="toggleAreaInputs(); calculate();" class="text-purple-600 focus:ring-purple-500">
+                <span>क्षेत्रफल बराबर</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- ३. क्षेत्रफल र जग्गाधनी विवरण इनपुट (क्षेत्रफल फरक भएको अवस्थामा खुल्ने) -->
+    <div id="areaDetailInputs" class="space-y-4 pt-2">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">क्षेत्रफल मापन इकाई</label>
+                <select id="areaSystem" onchange="renderPersonRows(); calculate();" class="custom-input text-xs bg-white">
+                    <option value="rapd">रोपनी - आना - पैसा - दाम</option>
+                    <option value="sqm">वर्ग मिटर (Sq. Meter)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">जम्मा जग्गाधनी संख्या</label>
+                <input type="number" id="ownerCount" value="2" min="1" oninput="renderPersonRows(); calculate();" class="custom-input text-xs font-bold bg-white">
+            </div>
+        </div>
+
+        <!-- कुल क्षेत्रफल इनपुट -->
+        <div id="totalAreaInputContainer"></div>
+
+        <!-- जग्गाधनी अनुसार प्राप्त गर्ने क्षेत्रफल इनपुटहरु -->
+        <div id="personRowsContainer" class="space-y-2 pt-2 border-t border-purple-200"></div>
+    </div>
+</div>
+
+
                     <!-- थैली अङ्क र लाभकर अप्सन -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div id="thailiWrapper">
@@ -143,6 +204,8 @@
                             </select>
                         </div>
                     </div>
+
+
                     <!-- विलम्व शुल्क सम्बन्धी थप विवरण (कन्डिसनल) -->
 <div id="vilambaYearWrapper" class="hide mb-4 p-3 bg-red-50 border border-red-100 rounded-xl">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
@@ -331,6 +394,60 @@ function updateThailiVisibility() {
         document.getElementById('thaili').value = ''; // लुकेको बेला भ्यालु सफा गर्ने
     }
 
+
+    // १. जग्गाको क्षेत्रफललाई एउटै इकाइमा बदल्ने (For Calculation)
+function getConvertedArea(prefix) {
+    const system = document.getElementById('areaSystem').value;
+    if (system === 'sqm') {
+        return parseFloat(document.getElementById(prefix + '_sqm').value) || 0;
+    } else {
+        const r = parseFloat(document.getElementById(prefix + '_r').value) || 0;
+        const a = parseFloat(document.getElementById(prefix + '_a').value) || 0;
+        const p = parseFloat(document.getElementById(prefix + '_p').value) || 0;
+        const d = parseFloat(document.getElementById(prefix + '_d').value) || 0;
+        // Total in Dam for accuracy
+        return (r * 256) + (a * 16) + (p * 4) + d;
+    }
+}
+
+// २. जग्गाधनी अनुसारको रोहरु बनाउने
+function renderPersonRows() {
+    const count = parseInt(document.getElementById('ownerCount').value) || 0;
+    const system = document.getElementById('areaSystem').value;
+    const container = document.getElementById('personRowsContainer');
+    const totalContainer = document.getElementById('totalAreaInputContainer');
+
+    // Total Area Input
+    totalContainer.innerHTML = `<label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">कारोबार हुने कुल क्षेत्रफल</label>` + 
+        generateAreaInputs('total_land', system);
+
+    // Individual Person Rows
+    container.innerHTML = `<label class="block text-xs font-bold text-purple-700 mb-2">प्राप्त गर्ने क्षेत्रफल विवरण:</label>`;
+    for (let i = 1; i <= count; i++) {
+        container.innerHTML += `
+            <div class="p-3 bg-white rounded-xl border border-purple-100">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs font-bold">धनी ${i}:</span>
+                    <span id="diff_p${i}" class="text-[10px] font-bold text-red-500"></span>
+                </div>
+                ${generateAreaInputs('p'+i, system)}
+            </div>`;
+    }
+}
+
+function generateAreaInputs(id, system) {
+    if (system === 'sqm') {
+        return `<input type="number" id="${id}_sqm" placeholder="वर्ग मिटर" oninput="calculate()" class="custom-input text-sm">`;
+    }
+    return `
+        <div class="grid grid-cols-4 gap-1">
+            <input type="number" id="${id}_r" placeholder="रो" oninput="calculate()" class="w-full p-1 border rounded text-xs">
+            <input type="number" id="${id}_a" placeholder="आ" oninput="calculate()" class="w-full p-1 border rounded text-xs">
+            <input type="number" id="${id}_p" placeholder="पै" oninput="calculate()" class="w-full p-1 border rounded text-xs">
+            <input type="number" id="${id}_d" placeholder="दा" oninput="calculate()" class="w-full p-1 border rounded text-xs">
+        </div>`;
+}
+
     // लाभकर अप्सन र छुट सेक्सनको भिजिबिलिटी
     const hasLabha = rates['labhakar'] && rates['labhakar'].length > 0;
     document.getElementById('labhakarBox').className = hasLabha ? '' : 'hide';
@@ -455,6 +572,17 @@ function autoUpdateTotalBuyers() {
             document.getElementById('dropdownList').classList.add('hidden');
              addedExemptions = []; 
 
+                 // दर्ताफारी चेक
+    const isDartaPhari = t.includes("दर्ताफारी");
+    const dpSection = document.getElementById('dartaPhariSection');
+    if (isDartaPhari) {
+        dpSection.classList.remove('hide');
+        renderPersonRows();
+    } else {
+        dpSection.classList.add('hide');
+    }
+
+
              handleVilambaUI(t) 
     renderExemptionRows();
             updateThailiVisibility();
@@ -474,19 +602,217 @@ const vilambaConfig = {
     "अदालत वा न्यायिक निकाय": { text: "(चिठीको २१ दिन नाघेपछि भएको वर्ष ?):", showYear: true }
 };
 
+// १. क्षेत्रफल इनपुट देखाउने वा लुकाउने
+function toggleAreaInputs() {
+    const areaType = document.querySelector('input[name="areaType"]:checked')?.value;
+    const inputsDiv = document.getElementById('areaDetailInputs');
+    if (areaType === 'different') {
+        inputsDiv.classList.remove('hide');
+        renderPersonRows();
+    } else {
+        inputsDiv.classList.add('hide');
+    }
+}
+
+// २. जग्गाको क्षेत्रफललाई इकाइमा परिणत गर्ने (Conversion to Dam / Sqm)
+function getConvertedArea(prefix) {
+    const system = document.getElementById('areaSystem')?.value || 'rapd';
+    if (system === 'sqm') {
+        return parseFloat(document.getElementById(prefix + '_sqm')?.value) || 0;
+    } else {
+        const r = parseFloat(document.getElementById(prefix + '_r')?.value) || 0;
+        const a = parseFloat(document.getElementById(prefix + '_a')?.value) || 0;
+        const p = parseFloat(document.getElementById(prefix + '_p')?.value) || 0;
+        const d = parseFloat(document.getElementById(prefix + '_d')?.value) || 0;
+        // 1 Ropani = 256 Dam, 1 Aana = 16 Dam, 1 Paisa = 4 Dam
+        return (r * 256) + (a * 16) + (p * 4) + d;
+    }
+}
+
+// ३. जग्गाधनी संख्या अनुसार इनपुट फिल्डहरु अटो-जेनेरेट गर्ने
+function renderPersonRows() {
+    const count = parseInt(document.getElementById('ownerCount')?.value) || 0;
+    const system = document.getElementById('areaSystem')?.value || 'rapd';
+    const container = document.getElementById('personRowsContainer');
+    const totalContainer = document.getElementById('totalAreaInputContainer');
+
+    if (!container || !totalContainer) return;
+
+    // कुल क्षेत्रफल इनपुट
+    totalContainer.innerHTML = `
+        <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">कारोबार हुने कुल क्षेत्रफल</label>
+        ${generateAreaInputs('total_land', system)}`;
+
+    // प्रत्येक जग्गाधनीको क्षेत्रफल इनपुट
+    let html = `<label class="block text-xs font-bold text-purple-800 mb-2">प्राप्त गर्ने क्षेत्रफल विवरण:</label>`;
+    for (let i = 1; i <= count; i++) {
+        html += `
+            <div class="p-3 bg-white rounded-xl border border-purple-100 shadow-sm">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs font-bold text-slate-700">व्यक्ति ${i} (Person ${i}):</span>
+                    <span id="diff_p${i}" class="text-[11px] font-bold text-red-600"></span>
+                </div>
+                ${generateAreaInputs('p' + i, system)}
+            </div>`;
+    }
+    container.innerHTML = html;
+}
+
+// ४. रोपनी/आना/पैसा/दाम वा वर्ग मिटर इनपुट एचटीएमएल जेनेरेटर
+function generateAreaInputs(id, system) {
+    if (system === 'sqm') {
+        return `<input type="number" id="${id}_sqm" placeholder="वर्ग मिटर लेख्नुहोस्" oninput="calculate()" class="custom-input text-xs font-bold">`;
+    }
+    return `
+        <div class="grid grid-cols-4 gap-1.5">
+            <div><label class="text-[9px] text-slate-400 block text-center">रोपनी</label><input type="number" id="${id}_r" placeholder="०" oninput="calculate()" class="w-full p-1.5 border rounded-lg text-xs font-bold text-center border-slate-300"></div>
+            <div><label class="text-[9px] text-slate-400 block text-center">आना</label><input type="number" id="${id}_a" placeholder="०" oninput="calculate()" class="w-full p-1.5 border rounded-lg text-xs font-bold text-center border-slate-300"></div>
+            <div><label class="text-[9px] text-slate-400 block text-center">पैसा</label><input type="number" id="${id}_p" placeholder="०" oninput="calculate()" class="w-full p-1.5 border rounded-lg text-xs font-bold text-center border-slate-300"></div>
+            <div><label class="text-[9px] text-slate-400 block text-center">दाम</label><input type="number" id="${id}_d" placeholder="०" oninput="calculate()" class="w-full p-1.5 border rounded-lg text-xs font-bold text-center border-slate-300"></div>
+        </div>`;
+}
+
+// ५. तोकिएको थैली रकम र दरका आधारमा शुल्क निकाल्ने
+function getFeeAmount(prov, local, title, col, thailiVal) {
+    if (!masterData.rates[prov] || !masterData.rates[prov][title]) {
+        console.warn(`डाटा भेटिएन: ${title}`);
+        return 0;
+    }
+    
+    const ranges = masterData.rates[prov][title][col] || [];
+    if (ranges.length === 0) return 0; // यदि त्यो महलमा कुनै डाटै छैन भने ०
+
+    // १. पहिले रेन्ज अनुसार खोज्ने
+    let match = ranges.find(r => {
+        let f = parseFloat(r.from) || 0;
+        let t = (r.to !== "" && r.to !== undefined) ? parseFloat(r.to) : Infinity;
+        return thailiVal >= f && thailiVal <= t;
+    });
+
+    // २. यदि रेन्ज भेटिएन तर डाटा छ भने, पहिलो रो (First Row) लाई नै 'Flat Rate' मान्ने
+    if (!match && ranges.length > 0) {
+        match = ranges[0];
+    }
+
+    if (!match) return 0;
+
+    let k = (col === 'labhakar') ? local + '_' + document.getElementById('ownershipPeriod').value : local;
+    let v = parseFloat(match[k]) || 0;
+
+    // यदि v (दर) प्रतिशतमा छ (जस्तै ५ प्रतिशत) भने थैलीमा गुणा गर्ने, नत्र सिधै अंक फर्काउने
+    return (v < 25 && v > 0) ? Math.ceil(thailiVal * (v / 100)) : Math.ceil(v);
+}
         // ४. क्याल्कुलेसन लजिक
 function calculate() {
     const prov = document.getElementById('province').value;
     const local = document.getElementById('localLevel').value;
     const title = document.getElementById('karobarInput').value;
-    const thaili = parseFloat(document.getElementById('thaili').value) || 0;
+    const totalThaili = parseFloat(document.getElementById('thaili').value) || 0;
 
     if (!masterData.rates[prov] || !masterData.rates[prov][title]) {
         document.getElementById('resultCard').classList.add('hide');
         return;
     }
 
-    // १. छुट गणना गर्ने आन्तरिक फसन
+    const isDartaPhari = title.includes("दर्ताफारी");
+    const pustaType = document.querySelector('input[name="pustaType"]:checked')?.value || 'inside';
+    const areaType = document.querySelector('input[name="areaType"]:checked')?.value || 'different';
+
+    document.getElementById('resultCard').classList.remove('hide');
+    let fees = { registration: 0, labhakar: 0, sewa: 0, bilamba: 0, rokka: 0 };
+
+// ==========================================
+    // १. रजिष्ट्रेशन दस्तुर गणना (REGISTRATION FEE)
+    // ==========================================
+    if (isDartaPhari && areaType === 'different') {
+        // क. सबै व्यक्तिहरूको क्षेत्रफल जोड्ने
+        let totalAreaSum = 0;
+        const count = parseInt(document.getElementById('ownerCount').value) || 1;
+        for (let i = 1; i <= count; i++) {
+            totalAreaSum += getConvertedArea('p' + i);
+        }
+
+        // ख. युजरले भरेको कुल क्षेत्रफलसँग रुजु गर्ने (Validation)
+        const enteredTotalArea = getConvertedArea('total_land');
+        const container = document.getElementById('totalAreaInputContainer');
+        
+        if (totalAreaSum > 0 && Math.abs(totalAreaSum - enteredTotalArea) > 0.1) {
+            container.style.background = "#fee2e2"; // जोड मिलेन भने रातो रङ देखाउने
+            container.querySelector('label').innerText = "कारोबार हुने कुल क्षेत्रफल (व्यक्तिहरूको जोडसँग मिलेन !)";
+        } else {
+            container.style.background = "";
+            container.querySelector('label').innerText = "कारोबार हुने कुल क्षेत्रफल";
+        }
+
+        // ग. मुख्य हिसाब (तपाईंको उदाहरण अनुसार)
+        if (totalAreaSum > 0 && totalThaili > 0) {
+            const unitThaili = totalThaili / totalAreaSum; // प्रति इकाई मूल्य
+            const avgArea = totalAreaSum / count;        // औसत क्षेत्रफल
+            
+            let sumExcessArea = 0;
+            for (let i = 1; i <= count; i++) {
+                const pArea = getConvertedArea('p' + i);
+                const diffSpan = document.getElementById('diff_p' + i);
+                if (pArea > avgArea) {
+                    const excess = pArea - avgArea;
+                    sumExcessArea += excess;
+                    if (diffSpan) diffSpan.innerText = `(+ ${excess.toFixed(1)} बढी)`;
+                } else {
+                    if (diffSpan) diffSpan.innerText = "";
+                }
+            }
+
+            // थैलीलाई दुई हिस्सामा बाँड्ने
+            const excessThailiPart = sumExcessArea * unitThaili;      // बढी क्षेत्रफलको मूल्य
+            const remainingThailiPart = totalThaili - excessThailiPart; // बाँकी क्षेत्रफलको मूल्य
+
+            // घ. दर लगाउने
+            // 'राजीनामा' को दर बढी भएको हिस्सामा
+            const regFeeRajinama = getFeeAmount(prov, local, "राजीनामा", 'registration', excessThailiPart);
+            // 'दर्ताफारी' को दर बाँकी हिस्सामा
+            const regFeeDartaPhari = getFeeAmount(prov, local, title, 'registration', remainingThailiPart);
+
+            fees.registration = regFeeRajinama + regFeeDartaPhari;
+        } else {
+            fees.registration = getFeeAmount(prov, local, title, 'registration', totalThaili);
+        }
+    } else {
+        // दर्ताफारी बाहेक वा क्षेत्रफल बराबर भएको अवस्थामा साविककै नियम
+        fees.registration = getFeeAmount(prov, local, title, 'registration', totalThaili);
+    }
+
+    // ==========================================
+    // २. लाभकर गणना (LABHAKAR FEE)
+    // ==========================================
+    if (isDartaPhari && pustaType === 'outside') {
+        // तिन पुस्ता बाहिर भए लाभकर 'राजीनामा' अनुसार लाग्ने
+        fees.labhakar = getFeeAmount(prov, local, "राजीनामा", 'labhakar', totalThaili);
+    } else {
+        fees.labhakar = getFeeAmount(prov, local, title, 'labhakar', totalThaili);
+    }
+
+    // ==========================================
+    // ३. अन्य दस्तुरहरू (सेवा शुल्क, विलम्ब शुल्क, रोक्का)
+    // ==========================================
+    fees.sewa = getFeeAmount(prov, local, title, 'sewa', totalThaili);
+    fees.rokka = getFeeAmount(prov, local, title, 'rokka', totalThaili);
+
+    // विलम्ब शुल्क विशेष हिसाब
+    const baseBilamba = getFeeAmount(prov, local, title, 'bilamba', totalThaili);
+    const yearInput = document.getElementById('vilambaYear');
+    const configKey = Object.keys(vilambaConfig).find(k => title.startsWith(k));
+    const config = vilambaConfig[configKey];
+
+    let multiplier = 1;
+    if (config && config.showYear) {
+        multiplier = parseFloat(yearInput.value);
+        if (isNaN(multiplier)) multiplier = 0;
+    }
+    fees.bilamba = baseBilamba * multiplier;
+
+    // ==========================================
+    // ४. छुट (DISCOUNT) र नतिजा डिस्प्ले अपडेट
+    // ==========================================
     function calculateExemptionAmount(regFee) {
         if (!document.getElementById('hasDiscount').checked || regFee <= 0) return 0;
         const totalBuyers = parseFloat(document.getElementById('totalBuyers').value) || 1;
@@ -502,99 +828,56 @@ function calculate() {
         return totalDiscountAmount;
     }
 
-    document.getElementById('resultCard').classList.remove('hide');
-    let fees = { registration: 0, labhakar: 0, sewa: 0, bilamba: 0, rokka: 0 };
-    const rateData = masterData.rates[prov][title];
-    const colMap = { 'registration': 'Reg', 'labhakar': 'Labha', 'sewa': 'Sewa', 'bilamba': 'Bilamba', 'rokka': 'Rokka' };
-
-    // २. सबै शुल्कहरूको आधारभूत गणना
-Object.keys(fees).forEach(col => {
-    const ranges = rateData[col] || [];
-    const match = ranges.find(r => {
-        let f = parseFloat(r.from) || 0;
-        let t = (r.to !== "" && r.to !== undefined) ? parseFloat(r.to) : Infinity;
-        return thaili >= f && thaili <= t;
-    });
-
-    if (match) {
-        let k = (col === 'labhakar') ? local + '_' + document.getElementById('ownershipPeriod').value : local;
-        let v = parseFloat(match[k]) || 0;
+// १. कुनै पनि दस्तुर (Reg/Labha) मा छुट गणना गर्ने आन्तरिक फसन
+    function getDiscountedAmount(feeValue, colName) {
+        if (!document.getElementById('hasDiscount').checked || feeValue <= 0) return 0;
         
-        // १. आधारभूत शुल्क निकाल्ने (Base Fee)
-        let baseFee = (v < 25 && v > 0) ? Math.ceil(thaili * (v / 100)) : Math.ceil(v);
+        const totalBuyers = parseFloat(document.getElementById('totalBuyers').value) || 1;
+        let totalDiscountForThisCol = 0;
 
-        // २. विलम्व शुल्कको विशेष कन्डिसन (यहाँ थपिएको छ)
-// २. विलम्व शुल्कको विशेष कन्डिसन (परिमार्जित)
-        if (col === 'bilamba') {
-            const yearInput = document.getElementById('vilambaYear');
-            const configKey = Object.keys(vilambaConfig).find(k => title.startsWith(k));
-            const config = vilambaConfig[configKey];
-
-            let multiplier = 1; // डिफल्टमा १ मान्ने (नामसारी जस्ता शिर्षकका लागि)
-
-            if (config && config.showYear) {
-                // यदि 'वर्ष' भर्ने बक्स देखिने शिर्षक हो भने, युजरले जे लेख्यो त्यही लिने (० भए ० नै लिने)
-                multiplier = parseFloat(yearInput.value);
-                if (isNaN(multiplier)) multiplier = 0; 
+        addedExemptions.forEach(ex => {
+            // यदि यो छुट यो महल (colName जस्तै: registration वा labhakar) मा लागु हुन्छ भने
+            if (ex.columns.includes(colName)) {
+                if (ex.rates[prov] && ex.rates[prov][local]) {
+                    let percent = parseFloat(ex.rates[prov][local]) || 0;
+                    // भाग अनुसारको दस्तुरमा छुट निकाल्ने
+                    let shareAmount = feeValue * (ex.beneficiaryCount / totalBuyers);
+                    totalDiscountForThisCol += Math.floor(shareAmount * (percent / 100));
+                }
             }
-            
-            fees[col] = baseFee * multiplier;
-        }        else {
-            // अन्य दस्तुरहरू साविक बमोजिम
-            fees[col] = baseFee;
-        }
+        });
+        return totalDiscountForThisCol;
     }
-});
 
-    
-// ३. छुट घटाउने र डिस्प्ले अपडेट गर्ने
-    let discountAmount = calculateExemptionAmount(fees.registration);
-    let total = Object.values(fees).reduce((a, b) => a + b, 0) - discountAmount;
+    // २. नतिजा कार्ड र जम्मा रकम अपडेट गर्ने
+    let grandTotal = 0;
+    const colMap = { 'registration': 'Reg', 'labhakar': 'Labha', 'sewa': 'Sewa', 'bilamba': 'Bilamba', 'rokka': 'Rokka' };
 
     Object.keys(fees).forEach(col => {
         const row = document.getElementById('row' + colMap[col]);
         const res = document.getElementById('res' + colMap[col]);
-            const noteSpan = document.getElementById('vilambaNote'); // नोटको लागि
+        
+        // यो महलको लागि छुट निकाल्ने
+        let discountForThisCol = getDiscountedAmount(fees[col], col);
+        let finalVal = fees[col] - discountForThisCol;
+        grandTotal += finalVal;
 
+        if (finalVal <= 0) {
+            row.classList.add('hide');
+        } else {
+            row.classList.remove('hide');
             
-
-        
-        // शुल्क कति छ भनेर निश्चित गर्ने (रजिष्ट्रेशनको हकमा छुट घटाएर)
-    let finalVal = fees[col];
-    if (col === 'registration') finalVal = fees.registration - discountAmount;
-
-    if (finalVal <= 0) {
-        row.classList.add('hide');
-    } else {
-        row.classList.remove('hide');
-        
-        // विलम्व शुल्कको लागि विशेष नोट र वर्षको हिसाब देखाउने
-        if (col === 'bilamba') {
-            const config = vilambaConfig[title];
-            if (config) {
-                noteSpan.innerText = config.text; // यहाँ नामसारीको ३५ दिन वाला मेसेज बस्छ
+            if (discountForThisCol > 0) {
+                // यदि छुट छ भने (Base - Discount) = Final देखाउने
+                res.innerHTML = `<span class="text-[10px] text-slate-400">(${fees[col].toLocaleString()} - ${discountForThisCol.toLocaleString()})</span> ${finalVal.toLocaleString('ne-NP')}`;
             } else {
-                noteSpan.innerText = "";
-            }
-            res.innerText = fees[col].toLocaleString('ne-NP');
-        } 
-        else if (col === 'registration') {
-                if (discountAmount > 0) {
-                    // छुट सहितको विवरण देखाउने
-                    res.innerHTML = `<span class="text-[10px] text-slate-400">(${fees.registration.toLocaleString()} - ${discountAmount.toLocaleString()})</span> ${finalVal.toLocaleString()}`;
-                } else {
-                    res.innerText = finalVal.toLocaleString('ne-NP');
-                }
-            } else {
-                // अन्य शुल्कहरू (Sewa, Labhakar, etc.) देखाउने
-                res.innerText = fees[col].toLocaleString('ne-NP');
+                res.innerText = finalVal.toLocaleString('ne-NP');
             }
         }
     });
 
-    // कुल जम्मा अपडेट गर्ने
-    document.getElementById('resTotal').innerText = "रु. " + total.toLocaleString('ne-NP');
-}
+    document.getElementById('resTotal').innerText = "रु. " + grandTotal.toLocaleString('ne-NP');};
+    
         function resetForm() {
             document.getElementById('karobarInput').value = '';
             document.getElementById('thaili').value = '';
