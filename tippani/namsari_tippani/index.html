@@ -5,21 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>नामसारी - टिप्पणी</title>
-
-        <!-- २. वर्णन (Description) - गुगल सर्चमा देखिने छोटो बिवरण -->
+            <!-- २. वर्णन (Description) - गुगल सर्चमा देखिने छोटो बिवरण -->
     <meta name="description"
         content="जग्गा नामसारीको टिप्पणी तयार गर्ने टुल ।">
 
     <!-- ३. कीवर्डहरू (Keywords) -->
     <meta name="keywords"
         content="acharyasuman, acharyasuman4, मालपोत, नामसारी, death transfer, land transfer, जग्गा नामसारी, नामसारी टिप्पणी, जग्गा हस्तान्तरण, जग्गा नामसारी प्रक्रिया, नामसारी टिप्पणी कसारी तयार गर्ने ?, नामसारी टिप्पणीको नमुना, टिप्पणीको नमुना, कार्यलयमा प्रयोग हुने टिप्पणीको नमुना " 
-        );>
+        ;>
 
     <!-- ४. सामाजिक सञ्जालका लागि (Open Graph Tags) - फेसबुकमा लिङ्क सेयर गर्दा राम्रो देखिनका लागि -->
     <meta property="og:title" content="नामसारी टिप्पणी ">
     <meta property="og:description" content="कार्यलयको लागि नामसारी टिप्पणी तयार गर्ने टुल">
     <meta property="og:url" content="https://acharyasuman4.com.np/tippani/namsari_tippani/">
-
 
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -168,14 +166,6 @@
         }
 
         @media print {
-
-            /* १. ब्राउजरको डिफल्ट मार्जिन र साइज कन्ट्रोल गर्ने */
-            @page {
-                size: A4;
-                margin: 0;
-                /* ब्राउजरको मार्जिन शून्य पार्ने, कन्टिएन्टको प्याडिङले काम गर्छ */
-            }
-
             .no-print {
                 display: none !important;
             }
@@ -199,34 +189,62 @@
                 box-shadow: none !important;
                 border: none !important;
                 width: 100% !important;
-                /* २. प्रिन्ट गर्दा min-height हटाउने ताकि कन्टिएन्ट जति छ त्यतिमै रोकिओस् */
                 min-height: auto !important;
                 height: auto !important;
                 margin: 0 !important;
-                /* ३. प्याडिङ कायम राख्ने ताकि मार्जिन देखियोस् */
                 padding: 1.5cm 1.27cm 1.5cm 2.54cm !important;
                 page-break-after: avoid !important;
                 page-break-before: avoid !important;
             }
+            .preview-page p {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0;
+    text-indent: 0px; /* Adjust indent as needed */
+    line-height: 1.6;
+    text-align: justify;
+}
 
-            /* ४. स्क्रोलबार लुकाउने */
-            ::-webkit-scrollbar {
-                display: none;
-            }
+
+/* टेबलको अगाडि र पछाडि थोरै मात्र ग्याप राख्न */
+.doc-table {
+    margin: 3px 0;
+}
         }
     </style>
 </head>
 
 <body>
-
     <div class="main-layout">
         <div class="input-panel no-print">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <h2 style="margin:0; font-size:1.1rem;">नामसारी टिप्पणी</h2>
-                    <div style="display: flex;">
-        <button onclick="location.href='/'" class="btn btn-home" style="color:#166534; margin-right: 20px; " >🏠 Home</button>
-                <button onclick="resetAll()" class="btn btn-red" style="width:auto; padding:4px 10px;">Reset</button>
-           </div>
+                <div style="display: flex;">
+                    <button onclick="location.href='/'" class="btn btn-home"
+                        style="color:#166534; margin-right: 20px;">🏠 Home</button>
+                    <button onclick="resetAll()" class="btn btn-red"
+                        style="width:auto; padding:4px 10px;">Reset</button>
+                </div>
+            </div>
+
+            <!-- १. प्रदेश र नाता (स्थायी सेटिङ) -->
+            <div class="input-group" style="background:#f1f5f9; border: 1px solid #64748b;">
+                <label>प्रदेश र नाता सम्बन्ध (Permanent):</label>
+                <select id="in_province" class="input-box" onchange="saveGlobalSettings(); update();">
+                    <option value="कोशी प्रदेश">कोशी प्रदेश</option>
+                    <option value="मधेश प्रदेश">मधेश प्रदेश</option>
+                    <option value="बाग्मती प्रदेश" selected>बागमती प्रदेश</option>
+                    <option value="गण्डकी प्रदेश">गण्डकी प्रदेश</option>
+                    <option value="लुम्बिनी प्रदेश">लुम्बिनी प्रदेश</option>
+                    <option value="कर्णाली प्रदेश">कर्णाली प्रदेश</option>
+                    <option value="सुदूरपश्चिम प्रदेश">सुदूरपश्चिम प्रदेश</option>
+                </select>
+                <div style="font-size: 11px; display: flex; gap: 15px; margin-top: 5px;">
+                    <label><input type="radio" name="rel_type" value="inside" checked
+                            onchange="saveGlobalSettings(); update();"> ३ पुस्ता भित्र</label>
+                    <label><input type="radio" name="rel_type" value="outside"
+                            onchange="saveGlobalSettings(); update();"> ३ पुस्ता बाहिर</label>
+                </div>
             </div>
 
             <div class="input-group">
@@ -242,6 +260,7 @@
                 </div>
             </div>
 
+            <!-- निवेदक -->
             <div class="input-group" style="background:#eef2ff;">
                 <label>१. निवेदक विवरण</label>
                 <input type="text" id="app_name" placeholder="नाम थर" class="input-box">
@@ -255,13 +274,13 @@
                 <input type="text" id="app_gf" placeholder="बाजे/ससुराको नाम" class="input-box">
                 <button onclick="addApp()" class="btn btn-blue">+ निवेदक थप्नुहोस्</button>
                 <div id="list_apps"></div>
-
                 <div style="margin-top:10px;">
                     <label><input type="checkbox" id="chk_haq" onchange="renderHaqUI(); update();"> हक छोड्ने छ?</label>
                     <div id="haq_inputs"></div>
                 </div>
             </div>
 
+            <!-- मृतक -->
             <div class="input-group" style="background:#fff1f2;">
                 <label>२. मृतक/जग्गाधनी विवरण</label>
                 <input type="text" id="m_name" placeholder="मृतकको नाम" class="input-box"
@@ -277,6 +296,7 @@
                 <input type="text" id="in_landowner" placeholder="जग्गाधनीको नाम" class="input-box" oninput="update()">
             </div>
 
+            <!-- जग्गा र क्षेत्रफल -->
             <div class="input-group" style="background:#f0fdf4;">
                 <label>३. जग्गा विवरण</label>
                 <div class="row-2">
@@ -289,39 +309,74 @@
                     <button onclick="addLand('new')" class="btn btn-dark">New VDC</button>
                 </div>
                 <div id="list_lands"></div>
+
+                <div id="area_input_container"
+                    style="display:none; margin-top:10px; border-top:1px solid #ddd; padding-top:5px;">
+                    <label style="color: #b45309;">क्षेत्रफल भर्नुहोस्:</label>
+                    <div class="row-2">
+                        <label><input type="radio" name="area_sys" value="rapd" checked onchange="renderAreaInputs()">
+                            रो/आ/पै/दा</label>
+                        <label><input type="radio" name="area_sys" value="sqm" onchange="renderAreaInputs()"> वर्ग
+                            मि.</label>
+                    </div>
+                    <div id="area_fields"></div>
+                </div>
             </div>
 
+            <!-- सिफारिस र घरबाटो -->
             <div class="input-group">
                 <div class="row-2">
-                    <input type="text" id="in_loc" placeholder="स्थानीय तह" class="input-box" oninput="update()">
-                    <input type="text" id="in_lw" placeholder="वडा नं." class="input-box" oninput="update()">
+                    <label><input type="checkbox" id="chk_rec_namsari" checked onchange="update()"> नामसारी
+                        सिफारिस</label>
+                    <label><input type="checkbox" id="chk_rec_house" onchange="toggleHouseRoad(); update();"> घरबाटो
+                        विवरण</label>
+                </div>
+                <div class="row-2">
+                    <input type="text" id="in_loc" placeholder="स्थानीय तह" class="input-box"
+                        oninput="syncHR(); update();">
+                    <input type="text" id="in_lw" placeholder="वडा नं." class="input-box" oninput="syncHR(); update();">
                 </div>
                 <div class="row-2">
                     <input type="text" id="in_sc" placeholder="सि.च.नं." class="input-box" oninput="update()">
-                    <input type="text" id="in_sd" placeholder="सि.मिति" class="input-box" oninput="update()">
+                    <input type="text" id="in_sd" placeholder="सि.मिति" class="input-box" oninput="syncHR(); update();">
                 </div>
+
+                <div id="hr_inputs"
+                    style="display:none; background:#fff7ed; padding:5px; border:1px dashed #fdba74; margin-bottom:10px;">
+                    <div class="row-2">
+                        <input type="text" id="hr_loc" placeholder="स्थानीय तह (घरबाटो)" class="input-box"
+                            oninput="update()">
+                        <input type="text" id="hr_ward" placeholder="वडा" class="input-box" oninput="update()">
+                    </div>
+                    <div class="row-2">
+                        <input type="text" id="hr_sc" placeholder="घरबाटो च.नं." class="input-box" oninput="update()">
+                        <input type="text" id="hr_sd" placeholder="घरबाटो मिति" class="input-box" oninput="update()">
+                    </div>
+                    <button class="btn btn-dark" onclick="openValModal()">🏠 घरबाटो विवरण भर्नुहोस्</button>
+                </div>
+
                 <textarea id="in_extra" placeholder="थप विवरण (सनाखत पछिको)..." class="input-box"
                     oninput="update()"></textarea>
                 <div class="row-2">
-                    <input type="text" id="fee_s" value="२५००" class="input-box" oninput="update()">
+                    <input type="text" id="fee_s" value="३५००" class="input-box" oninput="update()">
                     <label style="display:flex; align-items:center;"><input type="checkbox" id="chk_late" checked
                             onchange="update()"> विलम्ब</label>
                     <input type="text" id="fee_l" value="१००" class="input-box" oninput="update()">
                 </div>
             </div>
+
             <div class="input-group">
-                <label style="color: #1e40af; font-weight: bold; font-size: 16px;">
-                    <input type="checkbox" id="chk_hissa" onchange="update()"> हकहिस्सा मात्र नामसारी हो?
-                </label>
+                <label style="color: #1e40af; font-weight: bold; font-size: 16px;"><input type="checkbox" id="chk_hissa"
+                        onchange="update()"> हकहिस्सा मात्र?</label>
+                <label style="color: #9333ea; font-weight: bold; font-size: 16px"><input type="checkbox" id="chk_guthi"
+                        onchange="update()"> गुठी जग्गा?</label>
                 <div class="input-group" style="background:#fefce8; border: 1px solid #facc15;">
                     <label style="color: #854d0e; font-weight: bold; font-size: 16px;">
                         <input type="checkbox" id="chk_mohi" onchange="renderMohiUI(); update();"> मोही छ ?
                     </label>
                     <div id="mohi_inputs"></div>
                 </div>
-                <label style="color: #9333ea; font-weight: bold; font-size: 16px">
-                    <input type="checkbox" id="chk_guthi" onchange="update()"> गुठी जग्गा हो?
-                </label>
+
             </div>
 
             <button onclick="window.print()" class="btn btn-blue">🖨️ Print</button>
@@ -329,130 +384,73 @@
         </div>
 
         <div class="preview-container">
+            <!-- Modal -->
+<!-- १. मोडल ओभरले (पछाडिको कालो भाग) -->
+<div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000;" onclick="closeValModal()"></div>
+
+<!-- २. मुख्य मोडल पपअप -->
+<div id="valModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; z-index:1001; padding:20px; box-shadow:0 0 50px rgba(0,0,0,0.5); width:95%; max-width:900px; border-radius:10px; max-height:90vh; overflow-y:auto;">
+    <h3 style="margin:0 0 15px 0; border-bottom:1px solid #ddd; padding-bottom:10px;">🏠 घरबाटो मुल्याङ्कन विवरण</h3>
+    
+    <div style="margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:5px; display:flex; gap:20px;">
+        <label><input type="checkbox" id="chk_show_table" onchange="update()"> टिप्पणीमा टेबल राख्ने ?</label>
+        <label><input type="checkbox" id="chk_reg_fant" onchange="update()"> रजिष्ट्रेशन फाँटबाट प्राप्त</label>
+        <label><input type="checkbox" id="chk_no_total" onchange="update()"> कुल मुल्य नराख्ने ?</label>
+    </div>
+
+    <table class="doc-table">
+        <thead>
+            <tr style="background:#f1f5f9;">
+                <th>गा.वि.स. - वडा : कि.नं.</th>
+                <th>क्षेत्रफल (R-A-P-D)</th>
+                <th>बाटोको प्रकार</th>
+                <th>वर्गिकरण</th>
+                <th>दररेट (प्रति रोपनी)</th>
+                <th>न्युनत्तम मुल्य</th>
+            </tr>
+        </thead>
+        <tbody id="val_body">
+            <!-- JS ले यहाँ डेटा भर्नेछ -->
+        </tbody>
+        <tfoot>
+            <tr style="background:#fefce8; font-weight:bold;">
+                <td colspan="5" style="text-align:right; padding-right:10px;">कुल न्युनत्तम मुल्याङ्कन (कुल थैली) :</td>
+                <td id="total_thaili_disp">०।००</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div style="margin-top:20px; text-align:right;">
+        <button onclick="closeValModal()" class="btn btn-red" style="width:auto; padding:8px 30px;">बन्द गर्नुहोस् (Close)</button>
+    </div>
+
+    <!-- अटो-कम्प्लिट लिस्टहरू -->
+    <datalist id="road_list">
+        <option value="गोरेटो बाटो">
+        <option value="नभएको">
+        <option value="अन्य बाटो">
+    </datalist>
+    <datalist id="cat_list">
+        <option value="कृषि">
+        <option value="आवासीय">
+        <option value="व्यवसायिक">
+    </datalist>
+</div>
             <div id="preview" class="preview-page"></div>
         </div>
     </div>
 
     <script>
-        let state = { apps: [], mrtks: [], lands: [], mohis: [] };
+    let state = { apps: [], mrtks: [], lands: [], mohis: [], areas: {} };
 
+    // --- 1. FUNCTIONAL FIXES (Missing functions you called in HTML) ---
 
-// १. अङ्क र डटलाई व्यवस्थापन गर्ने फङ्सन
-document.addEventListener('input', e => {
-    if (e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
-        // जग्गाधनीको नाममा केही नगर्ने
-        if (e.target.id === 'in_landowner') return;
-
-        let start = e.target.selectionStart;
-        let end = e.target.selectionEnd;
-        let originalValue = e.target.value;
-
-        // क) अङ्क बदल्ने (यो सबै फिल्डमा लागु हुन्छ)
-        let newValue = originalValue.replace(/\d/g, d => "०१२३४५६७८९"[d]);
-
-        // ख) डट (.) लाई । मा बदल्ने - मिति लेख्ने कोठाहरूमा मात्र
-        // यहाँ ती सबै ID हरू छन् जो मिति सँग सम्बन्धित छन्
-        const dateFields = ['in_dt', 'in_rd', 'm_dt', 'in_sd'];
-        
-        // यदि फिल्डको ID लिस्टमा छ वा त्यसको placeholder "मिति" छ भने मात्र बदल्ने
-        const isDateField = dateFields.includes(e.target.id) || e.target.placeholder.includes("मिति");
-
-        if (isDateField) {
-            newValue = newValue.replace(/\./g, "।");
-        }
-
-        if (originalValue !== newValue) {
-            e.target.value = newValue;
-            e.target.setSelectionRange(start, end);
-        }
+    function syncLandowner(val) {
+        document.getElementById('in_landowner').value = val;
+        update();
     }
-    update();
-});
 
-        // २. सिरियल नम्बर आदिको लागि प्रयोग हुने फङ्सन अपडेट
-        function toNep(num) {
-            if (!num) return "";
-            return num.toString()
-                .replace(/\d/g, d => "०१२३४५६७८९"[d])
-                .replace(/\./g, "।");
-        }
-
-        function syncLandowner(val) {
-            if (state.mrtks.length === 0) {
-                document.getElementById('in_landowner').value = val;
-                update();
-            }
-        }
-
-        function addApp() {
-            const name = document.getElementById('app_name').value;
-            if (!name) return;
-            state.apps.push({
-                name,
-                type: document.getElementById('app_type').value,
-                f: document.getElementById('app_f').value,
-                gf: document.getElementById('app_gf').value,
-                renounce: false, r_reg: "", r_dt: ""
-            });
-            document.getElementById('app_name').value = "";
-            renderHaqUI();
-            update();
-        }
-
-        function addMrtk() {
-            const name = document.getElementById('m_name').value;
-            if (!name) return;
-            state.mrtks.push({ name, rel: document.getElementById('m_rel').value, dt: document.getElementById('m_dt').value });
-            if (state.mrtks.length === 1 && !document.getElementById('in_landowner').value)
-                document.getElementById('in_landowner').value = name;
-            document.getElementById('m_name').value = "";
-            update();
-        }
-
-        function addLand(mode) {
-            const v = document.getElementById('l_vdc').value;
-            const w = document.getElementById('l_ward').value;
-            const k = document.getElementById('l_kitta').value;
-            if (!k) return;
-            let match = state.lands.find(x => x.vdc === v && x.ward === w);
-            if (match) match.ks.push(k); else state.lands.push({ vdc: v, ward: w, ks: [k] });
-
-            document.getElementById('l_kitta').value = "";
-
-            if (mode === 'new') {
-                document.getElementById('l_vdc').value = "";
-                document.getElementById('l_ward').value = "";
-                document.getElementById('l_vdc').focus(); // Autofocus to VDC
-            } else {
-                document.getElementById('l_kitta').focus(); // Autofocus to Kitta No.
-            }
-            update();
-            renderMohiUI();
-        }
-        function nepJoin(arr) {
-            let localArr = [...arr];
-            if (!localArr.length) return "";
-            if (localArr.length === 1) return localArr[0];
-            const last = localArr.pop();
-            return localArr.join(', ') + ' र ' + last;
-        }
-
-        // १. अङ्क र डट तत्काल कन्भर्ट गर्ने फङ्सन
-function nepalify(el) {
-    let start = el.selectionStart;
-    let end = el.selectionEnd;
-    let value = el.value;
-    
-    // अङ्क बदल्ने
-    value = value.replace(/\d/g, d => "०१२३४५६७८९"[d]);
-    // डटलाई । मा बदल्ने
-    value = value.replace(/\./g, "।");
-    
-    el.value = value;
-    el.setSelectionRange(start, end);
-}
-
-// १. हक छाड्ने समूह थप्ने फङ्सन
+    // Function to handle the "Renouncing rights" UI
 function addHaqGroup() {
     const reg = document.getElementById('haq_reg_input').value;
     const dt = document.getElementById('haq_dt_input').value;
@@ -558,214 +556,575 @@ function removeHaqGroup(index) {
     renderHaqUI();
     update();
 }
+
+    // --- 2. PRESERVING YOUR ORIGINAL WORDING & LOGIC ---
+
+    function toNep(num) {
+        if (num === "" || num === undefined) return "";
+        return num.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]).replace(/\./g, "।");
+    }
+    function toNepNum(num) {
+    if (num === "" || num === undefined || num === null) return "";
+    return num.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
+}
+
+    function n2e(str) {
+        if (!str) return 0;
+        let eng = str.toString().replace(/[०-९]/g, d => "0123456789"["०१२३४५६७८९".indexOf(d)]);
+        return parseFloat(eng) || 0;
+    }
+
+    function nepJoin(arr) {
+        let localArr = [...arr];
+        if (!localArr.length) return "";
+        if (localArr.length === 1) return localArr[0];
+        const last = localArr.pop();
+        return localArr.join(', ') + ' र ' + last;
+    }
+
+    function numberToNepaliWords(num) {
+        if (num === 0) return "शुन्य";
+        const NUM_NE = ["", "एक", "दुई", "तीन", "चार", "पाँच", "छ", "सात", "आठ", "नौ", "दस", "एघार", "बाह्र", "तेह्र", "चौध", "पन्ध्र", "सोह्र", "सत्र", "अठार", "उन्नाइस", "बीस", "एक्काइस", "बाइस", "तेइस", "चौबीस", "पच्चीस", "छब्बीस", "सत्ताइस", "अठ्ठाइस", "उनन्तीस", "तीस", "एकतीस", "बत्तीस", "तेत्तीस", "चौँतीस", "पैंतीस", "छत्तीस", "सैंतीस", "अठतीस", "उनन्चालीस", "चालीस", "एकचालीस", "बयालीस", "त्रिचालीस", "चवालीस", "पैँतालीस", "छयालीस", "सत्चालीस", "अठचालीस", "उनन्चास", "पचास", "एकाउन्न", "बाउन्न", "त्रिपन्न", "चवन्न", "पचपन्न", "छपन्न", "सन्ताउन्न", "अन्ठाउन्न", "उनन्साठी", "साठी", "एकसट्ठी", "बैसट्ठी", "त्रिसट्ठी", "चौसट्ठी", "पैंसट्ठी", "छैंसट्ठी", "सडसट्ठी", "अठसट्ठी", "उनन्सत्तरी", "सत्तरी", "एकहत्तर", "बहत्तर", "त्रिहत्तर", "चौरहत्तर", "पचहत्तर", "छयहत्तर", "सतहत्तर", "अठहत्तर", "उनासी", "अस्सी", "एकासी", "बयासी", "त्रियासी", "चौरासी", "पचासी", "छयासी", "सतासी", "अठासी", "उनान्नब्बे", "नब्बे", "एकान्नब्बे", "बयान्नब्बे", "त्रियान्नब्बे", "चौरान्नब्बे", "पन्चान्नब्बे", "छयान्नब्बे", "सन्तानब्बे", "अन्ठान्नब्बे", "उनान्सय"];
+        let n = Math.floor(num);
+        let words = "";
+        const crore = Math.floor(n / 10000000); n %= 10000000;
+        const lakh = Math.floor(n / 100000); n %= 100000;
+        const thousand = Math.floor(n / 1000); n %= 1000;
+        const hundred = Math.floor(n / 100); n %= 100;
+        if (crore > 0) words += NUM_NE[crore] + " करोड ";
+        if (lakh > 0) words += NUM_NE[lakh] + " लाख ";
+        if (thousand > 0) words += NUM_NE[thousand] + " हजार ";
+        if (hundred > 0) words += NUM_NE[hundred] + " सय ";
+        if (n > 0) words += NUM_NE[n];
+        return words.trim();
+    }
+
+    // Prevent focus loss on area inputs while typing
+document.addEventListener('input', e => {
+    // Area field वा Modal Rate Input मा फोकस नहटोस् भनेर क्लास चेक गर्ने
+    if (e.target.classList.contains('area-field') || e.target.classList.contains('modal-rate-input')) {
+        // यहाँ अंक मात्र कन्भर्ट गर्ने, थोप्लोलाई केही नगर्ने
+        let start = e.target.selectionStart;
+        let val = e.target.value.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+        if (e.target.value !== val) {
+            e.target.value = val;
+            e.target.setSelectionRange(start, start);
+        }
+        update();
+        return;
+    }; 
+
+    if (e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
+        if (e.target.id === 'in_landowner') return;
+
+        let start = e.target.selectionStart;
+        
+        // १. पहिले सबै अङ्कलाई नेपाली बनाउने
+        let val = e.target.value.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+        
+        // २. वर्ग मिटर र दररेट बाहेकका फिल्डमा मात्र थोप्लोलाई पूर्णविराम बनाउने
+        const isMeasurementField = e.target.placeholder.includes("वर्ग मिटर") || 
+                                   e.target.placeholder.includes("दररेट") || 
+                                   e.target.id.includes("rate") ||
+                                   e.target.classList.contains('modal-rate-input');
+
+        if (!isMeasurementField) {
+            if (e.target.placeholder.includes("मिति") || 
+                ['in_dt', 'in_rd', 'm_dt', 'in_sd', 'hr_sd', 'haq_dt_input'].includes(e.target.id)) {
+                val = val.replace(/\./g, "।");
+            }
+        }
+
+        if (e.target.value !== val) {
+            e.target.value = val;
+            e.target.setSelectionRange(start, start);
+        }
+    }
+    update();
+});
+
+        function saveGlobalSettings() {
+            const province = document.getElementById('in_province').value;
+            const relType = document.querySelector('input[name="rel_type"]:checked').value;
+            localStorage.setItem('namsari_persistent_v2', JSON.stringify({ province, relType }));
+        }
+
+        function loadGlobalSettings() {
+            const saved = localStorage.getItem('namsari_persistent_v2');
+            if (saved) {
+                const d = JSON.parse(saved);
+                document.getElementById('in_province').value = d.province;
+                const rad = document.querySelector(`input[name="rel_type"][value="${d.relType}"]`);
+                if (rad) rad.checked = true;
+            }
+        }
+
+        // २. इनपुट ह्यान्डलर
+        document.addEventListener('input', e => {
+            if (e.target.type === 'text' || e.target.tagName === 'TEXTAREA') {
+                if (e.target.id === 'in_landowner') return;
+                let start = e.target.selectionStart, end = e.target.selectionEnd;
+                let val = e.target.value.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+                if (e.target.placeholder.includes("मिति") || ['in_dt', 'in_rd', 'm_dt', 'in_sd', 'hr_sd'].includes(e.target.id)) val = val.replace(/\./g, "।");
+                e.target.value = val;
+                e.target.setSelectionRange(start, end);
+            }
+            update();
+        });
+
+        function syncHR() {
+            if (document.getElementById('chk_rec_house').checked) {
+                        const toNepVal = (val) => val.replace(/\d/g, d => "०१२३४५६७८९"[d]).replace(/\./g, "।");
+
+                document.getElementById('hr_loc').value = document.getElementById('in_loc').value;
+                document.getElementById('hr_ward').value = document.getElementById('in_lw').value;
+                document.getElementById('hr_sd').value = document.getElementById('in_sd').value;
+            }
+        }
+
+        function toggleHouseRoad() {
+            document.getElementById('hr_inputs').style.display = document.getElementById('chk_rec_house').checked ? 'block' : 'none';
+            syncHR();
+        }
+
+        function openValModal() {
+    document.getElementById('valModal').style.display = 'block';
+    document.getElementById('modalOverlay').style.display = 'block';
+    renderValRows();
+}
+
+function closeValModal() {
+    document.getElementById('valModal').style.display = 'none';
+    document.getElementById('modalOverlay').style.display = 'none';
+}
+
+function renderValRows() {
+    const tbody = document.getElementById('val_body');
+    let html = "";
+    
+    state.lands.forEach(l => {
+        l.ks.forEach(k => {
+            const id = `${l.vdc}_${l.ward}_${k}`;
+            const a = state.areas[id];
+            
+            let areaDisp = a.sqm ? toNep(a.sqm) + ' व.मि.' : `${toNep(a.r||'०')}-${toNep(a.a||'०')}-${toNep(a.p||'०')}-${toNep(a.d||'०')}`;
+            
+            // row_total_${id} भन्ने एउटा ID राखिएको छ जसलाई हामी पछि सिधै अपडेट गर्छौं
+            html += `<tr>
+                <td>${l.vdc} ${l.ward} - ${k}</td>
+                <td>${areaDisp}</td>
+                <td><input type="text" list="road_list" class="input-box" oninput="state.areas['${id}'].path=this.value; update()" value="${a.path||''}"></td>
+                <td><input type="text" list="cat_list" class="input-box" oninput="state.areas['${id}'].cat=this.value; update()" value="${a.cat||''}"></td>
+                <td><input type="text" class="input-box modal-rate-input" oninput="calculateLiveTotal('${id}', this.value)" value="${a.rate||''}"></td>
+                <td id="row_total_${id}" style="font-weight:bold;">${toNep(calculateSingleRowTotal(a))}</td>
+            </tr>`;
+        });
+    });
+    tbody.innerHTML = html;
+    updateGrandTotalDisp();
+}
+// १. दररेट टाइप गर्दा सिधै त्यही लाइनको टोटल र ग्राण्ड टोटल मात्र अपडेट गर्ने (Focus नगुमाई)
+function calculateLiveTotal(id, rate) {
+    // पहिले अंकलाई नेपाली बनाउने
+    const nepRate = rate.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    state.areas[id].rate = nepRate;
+    
+    // यो लाइनको नयाँ टोटल निकाल्ने
+    const singleTotal = calculateSingleRowTotal(state.areas[id]);
+    
+    // केवल यो सेलको भ्यालु मात्र फेर्ने (यसो गर्दा इनपुट बक्स रि-रेन्डर हुँदैन र फोकस रहिरहन्छ)
+    document.getElementById(`row_total_${id}`).innerText = toNep(singleTotal);
+    
+    // कुल थैली (Grand Total) पनि अपडेट गर्ने
+    updateGrandTotalDisp();
+    update(); // मुख्य टिप्पणी पनि अपडेट गर्ने
+}
+
+// २. एउटा कित्ताको मात्र थैली निकाल्ने लजिक
+function calculateSingleRowTotal(a) {
+    let decRopani = 0;
+    if (a.sqm) {
+        decRopani = n2e(a.sqm) / 508.72;
+    } else {
+        decRopani = n2e(a.r) + (n2e(a.a)/16) + (n2e(a.p)/64) + (n2e(a.d)/256);
+    }
+    return Math.ceil(n2e(a.rate) * decRopani);
+}
+
+// ३. मोडलको मुनि रहेको कुल थैली अङ्क मात्र अपडेट गर्ने
+function updateGrandTotalDisp() {
+    let grandTotal = 0;
+    for (let key in state.areas) {
+        grandTotal += calculateSingleRowTotal(state.areas[key]);
+    }
+    document.getElementById('total_thaili_disp').innerText = toNep(grandTotal);
+}
+        // ३. डेटा थप्ने
+        function addApp() {
+            const name = document.getElementById('app_name').value;
+            if (!name) return;
+            state.apps.push({ name, type: document.getElementById('app_type').value, f: document.getElementById('app_f').value, gf: document.getElementById('app_gf').value, renounce: false });
+            document.getElementById('app_name').value = "";
+            update(); 
+        }
+
+        function addMrtk() {
+            const name = document.getElementById('m_name').value;
+            if (!name) return;
+            state.mrtks.push({ name, rel: document.getElementById('m_rel').value, dt: document.getElementById('m_dt').value });
+            if (state.mrtks.length === 1 && !document.getElementById('in_landowner').value) document.getElementById('in_landowner').value = name;
+            document.getElementById('m_name').value = "";
+            update();
+        }
+
+function addLand(mode) {
+    const vdc = document.getElementById('l_vdc').value;
+    const ward = document.getElementById('l_ward').value;
+    const kitta = document.getElementById('l_kitta').value;
+    
+    if (!kitta) return;
+
+    let match = state.lands.find(x => x.vdc === vdc && x.ward === ward);
+    if (match) {
+        if(!match.ks.includes(kitta)) match.ks.push(kitta); 
+    } else {
+        state.lands.push({ vdc, ward, ks: [kitta] });
+    }
+
+    document.getElementById('l_kitta').value = "";
+
+    if (mode === 'new') {
+        document.getElementById('l_vdc').value = "";
+        document.getElementById('l_ward').value = "";
+        document.getElementById('l_vdc').focus();
+    } else {
+        document.getElementById('l_kitta').focus();
+    }
+
+    // क्रम फेरिएको छ: पहिले क्षेत्रफलको इनपुट बनाउने, अनि मात्र अपडेट गर्ने
+    renderAreaInputs(); 
+    renderMohiUI();
+    update(); 
+}
+
+function renderAreaInputs() {
+    const cont = document.getElementById('area_input_container');
+    const fields = document.getElementById('area_fields');
+    if (state.lands.length === 0) { cont.style.display = 'none'; return; }
+    cont.style.display = 'block';
+    const sys = document.querySelector('input[name="area_sys"]:checked').value;
+    let html = "";
+    
+    state.lands.forEach(l => {
+        l.ks.forEach(k => {
+            const id = `${l.vdc}_${l.ward}_${k}`;
+            if (!state.areas[id]) state.areas[id] = { r:'', a:'', p:'', d:'', sqm:'', rate:0, path:'', cat:'' };
+            const a = state.areas[id];
+            
+            html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; border-bottom:1px solid #eee; padding:3px 0;">
+                <div style="font-size:13px; font-weight:bold;">${l.vdc} ${l.ward}-${k}</div>
+                <div style="display:flex; gap:3px;">`;
+            
+            if (sys === 'rapd') {
+                html += `
+                    <input type="text" class="input-box" style="width:40px; font-size:15px; text-align:center; font-weight:bold;" oninput="state.areas['${id}'].r=this.value;update()" value="${a.r||''}" placeholder="रो">
+                    <input type="text" class="input-box" style="width:40px; font-size:15px; text-align:center; font-weight:bold;" oninput="state.areas['${id}'].a=this.value;update()" value="${a.a||''}" placeholder="आ">
+                    <input type="text" class="input-box" style="width:40px; font-size:15px; text-align:center; font-weight:bold;" oninput="state.areas['${id}'].p=this.value;update()" value="${a.p||''}" placeholder="पै">
+                    <input type="text" class="input-box" style="width:40px; font-size:15px; text-align:center; font-weight:bold;" oninput="state.areas['${id}'].d=this.value;update()" value="${a.d||''}" placeholder="दा">`;
+            } else {
+                html += `<input type="text" class="input-box area-field" style="width:120px; font-size:15px; font-weight:bold;" oninput="state.areas['${id}'].sqm=this.value;update()" value="${a.sqm||''}" placeholder="वर्ग मिटर">`;
+            }
+            html += `</div></div>`;
+        });
+    });
+    fields.innerHTML = html;
+}
+
+function calculateSingleRowTotal(a) {
+    if (!a) return 0; // सुरक्षा थपिएको
+    let decRopani = 0;
+    if (a.sqm) {
+        decRopani = n2e(a.sqm) / 508.72;
+    } else {
+        decRopani = n2e(a.r) + (n2e(a.a)/16) + (n2e(a.p)/64) + (n2e(a.d)/256);
+    }
+    return Math.ceil(n2e(a.rate) * decRopani);
+}
+
+
+        // ४. UPDATE (Main Preview Generator)
         function update() {
             const v = (id) => document.getElementById(id)?.value || ".......";
+            const settings = JSON.parse(localStorage.getItem('global_office_settings')) || { gov: "नेपाल सरकार", ministry: "भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय", dept: "भूमि व्यवस्थापन तथा अभिलेख विभाग", office: "भूमि प्रशासन कार्यालय", addr: "चौतारा, सिन्धुपाल्चोक", def_dist: "सिन्धुपाल्चोक" };
 
-            // 1. FETCH GLOBAL SETTINGS
-            const settings = JSON.parse(localStorage.getItem('global_office_settings')) || {
-                gov: "नेपाल सरकार",
-                ministry: "भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय",
-                dept: "भूमि व्यवस्थापन तथा अभिलेख विभाग",
-                office: "भूमि प्रशासन कार्यालय",
-                addr: "चौतारा, सिन्धुपाल्चोक",
-                def_dist: "सिन्धुपाल्चोक"
-            };
-
-            // Sidebar lists (UI sync)
-            document.getElementById('list_apps').innerHTML = state.apps.map((x, i) => `<div class="item-list">${x.name}<span class="del-btn" onclick="state.apps.splice(${i},1);update();renderHaqUI();">×</span></div>`).join('');
+            // Sidebar
+            document.getElementById('list_apps').innerHTML = state.apps.map((x, i) => `<div class="item-list">${x.name}<span class="del-btn" onclick="state.apps.splice(${i},1);update();">×</span></div>`).join('');
             document.getElementById('list_mrtks').innerHTML = state.mrtks.map((x, i) => `<div class="item-list">${x.name}<span class="del-btn" onclick="state.mrtks.splice(${i},1);update();">×</span></div>`).join('');
             document.getElementById('list_lands').innerHTML = state.lands.map((x, i) => `<div class="item-list">${x.vdc}-${x.ward}: ${x.ks.join(',')}<span class="del-btn" onclick="state.lands.splice(${i},1);update();">×</span></div>`).join('');
 
-            const activeApps = state.apps.filter(x => !x.renounce);
-            const renouncers = state.apps.filter(x => x.renounce);
-            const sons = state.apps.filter(x => x.type === 'son');
-            const wives = state.apps.filter(x => x.type === 'wife');
+            // जग्गा ब्यहोरा
+// update() फङ्सन भित्र:
+const landFinal = nepJoin(state.lands.map(l => {
+    // क्षेत्रफल (aStr) वाला लजिक हटाइयो, सिधै कित्ता मात्र राखियो
+    let kits = l.ks.map(k => `<b>${k}</b>`); 
+    return `साविक <b>${l.vdc}</b> वडा नं. <b>${l.ward}</b> को कि.नं. ${nepJoin(kits)}`;
+}));
 
-            const isPlural = state.apps.length > 1;
-            const nijaText = state.mrtks.length > 1 ? "निजहरू" : "निज";
-            const activehakdar = activeApps.length > 1 ? "हकदारहरू" : "हकदार";
-            const activeNivedakLabel = activeApps.length > 1 ? "निवेदकहरू" : "निवेदक";
-            const nivedakWord = isPlural ? "निवेदकहरूको" : "निवेदकको";
-            const nivedakWordPlain = isPlural ? "निवेदकहरू" : "निवेदक";
-            const nivedakKa = isPlural ? "निवेदकहरूको" : "निवेदकको";
+const gharbato = document.getElementById('chk_rec_house').checked
+                ? `<b>${v('in_loc')} ${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('hr_sc')}</b> मिति <b>${v('hr_sd')}</b> को घरबाटो सिफारिस`
+                : "";
 
-            const totalKittas = state.lands.reduce((acc, land) => acc + land.ks.length, 0);
-            const landPluralLabel = totalKittas > 1 ? "का जग्गाहरू" : "को जग्गा";
+            // सिफारिस लजिक
+            let recText = "";
+            const isN = document.getElementById('chk_rec_namsari').checked;
+            const isH = document.getElementById('chk_rec_house').checked;
+            if (isN && !isH) recText = `<b>${v('in_loc')} ${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस`;
+            else if (isN && isH) {
+                if (v('in_sc') === v('hr_sc') && v('in_sd') === v('hr_sd')) recText = `<b>${v('in_loc')} ${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस र सोही सिफारिसमा उल्लेख भएको घरबाटोको व्यहोरा`;
+                else {
+                    let hrPre = (v('in_loc') === v('hr_loc') && v('in_lw') === v('hr_ward')) ? "ऐ.ऐ. को" : `<b>${v('hr_loc')} ${v('hr_ward')}</b> नं. वडा कार्यालयको`;
+                    recText = `<b>${v('in_loc')} ${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, ${hrPre} च.नं. <b>${v('hr_sc')}</b> मिति <b>${v('hr_sd')}</b> को घरबाटो सिफारिस`;
+                }
+            }
 
-            const allMrtkNames = nepJoin(state.mrtks.map(m => `<b>${m.name}</b>`));
-            let hissaText = (document.getElementById('chk_hissa') && document.getElementById('chk_hissa').checked) ? "को " + allMrtkNames + "को हकहिस्सा मात्र" : "";
-            // गुठी चेक गरिएको छ भने शब्द थप्ने
-            let guthiText = (document.getElementById('chk_guthi') && document.getElementById('chk_guthi').checked) ? " <b>गुठी यथावत कायम राखी</b> " : "";
+            let mohiTextParts = [];
+            if (document.getElementById('chk_mohi') && document.getElementById('chk_mohi').checked) {
+                state.mohis.forEach(m => {
+                    const kittaLabel = m.kittas.length > 1 ? "का जग्गाहरूमा" : "को जग्गामा";
+                    const kittaList = nepJoin(m.kittas.map(k => `<b>${toNep(k)}</b>`));
+                    mohiTextParts.push(m.name.trim() === "" ? `कि.नं. ${kittaList} ${kittaLabel} मोही यथावत कायम राखी` : `कि.नं. ${kittaList} मा मोही <b>${m.name}</b> कायमै राखी`);
+                });
+            }
+            const mohiFinalText = mohiTextParts.length > 0 ? " " + nepJoin(mohiTextParts) + " " : "";
 
-            const decDts = state.mrtks.map(m => `<b>${m.rel} ${m.name}</b>को मिति <b>${m.dt}</b>`).join(' र ');
-            const landFinal = nepJoin(state.lands.map(l => `साविक <b>${l.vdc}</b> वडा नं. <b>${l.ward}</b> को कि.नं. <b>${nepJoin([...l.ks])}</b>`));
-            const activeNamesOnly = nepJoin(activeApps.map(a => `<b>${a.name}</b>`));
 
-            // 2. GENERATE HEADER (Using Global Settings)
-            let headerHtml = `
-    <table style="width: 100%; border-bottom: 2px double black; margin-bottom: 15px; border-collapse: collapse; border: none;">
-            <tr>
-                <td style="width: 15%; text-align: left; vertical-align: top; border: none;">
+
+            // शुल्क
+// update() फङ्सन भित्र हिसाब र अक्षेरेपी
+// १. कुल थैली र अक्षेरेपी हिसाब गर्ने
+let totalThaili = 0;
+for (let key in state.areas) {
+    let a = state.areas[key];
+    // रोपनीलाई डेसिमलमा बदल्ने
+    let decRopani = a.sqm ? (n2e(a.sqm) / 508.72) : (n2e(a.r) + (n2e(a.a) / 16) + (n2e(a.p) / 64) + (n2e(a.d) / 256));
+    totalThaili += Math.ceil(n2e(a.rate) * decRopani);
+}
+
+let aksherapi = numberToNepaliWords(totalThaili); // अक्षेरेपी
+let feeText = ""; // टिप्पणीमा देखिने शुल्कको ब्यहोरा
+const prov = document.getElementById('in_province').value.toUpperCase(); // प्रदेशको नाम
+const isHR = document.getElementById('chk_rec_house').checked; // घरबाटो टिक छ कि छैन
+
+    const extraIn = document.getElementById('in_extra').value.trim();
+    let extrainfo =  (extraIn ? ` साथै ${extraIn}` : "");
+
+
+// २. शुल्कको ब्यहोरा तयार गर्ने (Logic Fix)
+if (isHR) {
+    let prefix = ""; // "कुल थैली..." वा "रजिष्ट्रेशन फाँट..." वाला भाग
+    const isRegFant = document.getElementById('chk_reg_fant').checked;
+    const isNoTotal = document.getElementById('chk_no_total').checked;
+
+    if (isRegFant) {
+        prefix = `रजिष्ट्रेशन फाँटबाट प्राप्त न्युनत्तम मुल्याङ्कन रू. <b>${toNep(totalThaili)}</b> अक्षेरेपी <b>${aksherapi}</b> रूपैयाँको `;
+    } else if (!isNoTotal) {
+        prefix = `कुल थैली अंक रू. <b>${toNep(totalThaili)}</b> अक्षेरेपी <b>${aksherapi}</b> रूपैयाँको `;
+    }
+
+    // घरबाटो भएको बेलाको पूर्ण वाक्य
+    feeText = `${prefix}${prov} प्रदेश आर्थिक ऐन बमोजिमको सेवा शुल्क रू. <b>${v('fee_s')}</b>${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''}`;
+} else {
+    // घरबाटो नभएको बेलाको सामान्य नामसारी शुल्क वाक्य
+    feeText = `नामसारी सेवा शुल्क रू. <b>${v('fee_s')}</b>${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''}`;
+}
+let hrTableHtml = "";
+if (document.getElementById('chk_show_table').checked) {
+    // टेबलको हेडिङमा 'वर्गिकरण' थपिएको छ
+    hrTableHtml = `${gharbato}को आधारमा देहाय बमोजिम न्युनत्तम मुल्याङ्कन कायम हुने ।
+    <table class="doc-table">
+        <tr>
+            <th>गा.वि.स.</th>
+            <th>कि.नं.</th>
+            <th>क्षेत्रफल</th>
+            <th>बाटोको प्रकार</th>
+            <th>वर्गिकरण</th>
+            <th>न्युनत्तम मुल्य</th>
+        </tr>`;
+    
+    state.lands.forEach(l => l.ks.forEach(k => {
+        const a = state.areas[`${l.vdc}_${l.ward}_${k}`];
+        // क्षेत्रफललाई रो-आ-पै-दा (२-१-१-१) ढाँचामा बनाउने लजिक
+        let formattedArea = a.sqm ? toNepNum(a.sqm) + " व.मि." : 
+            `${toNep(a.r||'०')}-${toNep(a.a||'०')}-${toNep(a.p||'०')}-${toNep(a.d||'०')}`;
+                if (!a) return; 
+
+        
+    hrTableHtml += `<tr>
+        <td>${l.vdc}-${l.ward}</td>
+        <td>${k}</td>
+        <td>${formattedArea}</td>
+        <td>${a.path || '-'}</td>
+        <td>${a.cat || '-'}</td> 
+        <td>${toNepNum(calculateSingleRowTotal(a))}</td>
+    </tr>`;
+    }));
+    hrTableHtml += `<tr><td colspan="5" style="text-align:right; padding-right:10px;"><b>कुल न्युनत्तम मुल्याङ्कन</b></td><td><b>${toNep(totalThaili)}</b></td></tr></table>`;
+}
+            // ओरिजिनल व्याकरण र टेबल लेआउट
+// ओरिजिनल व्याकरण र टेबल लेआउट
+let activeApps = state.apps.filter(x => !x.renounce);
+let sons = state.apps.filter(x => x.type === 'son');
+let wives = state.apps.filter(x => x.type === 'wife');
+let decDts = state.mrtks.map(m => `<b>${m.rel} ${m.name}</b>को मिति <b>${m.dt}</b>`).join(' र ');
+let nijaText = state.mrtks.length > 1 ? "निजहरू" : "निज";
+let activeNamesOnly = nepJoin(activeApps.map(a => `<b>${a.name}</b>`));
+let nivedakKa = state.apps.length > 1 ? "निवेदकहरूको" : "निवेदकको";
+
+// हक छोड्ने व्यहोरा (Haq Chhodne Note)
+let haqNote = "";
+if (state.haq_groups && state.haq_groups.length > 0) {
+    haqNote = state.haq_groups.map(g => 
+        `, हकदारहरू मध्येका <b>${nepJoin(g.names)}</b> ले द.नं. <b>${g.reg}</b> मिति <b>${g.dt}</b> को निवेदनबाट दिएको मञ्जुरी`
+    ).join(' र ') ;
+}
+
+// हकहिस्सा व्यहोरा
+let hissaText = (document.getElementById('chk_hissa')?.checked) ? " को हकहिस्सा मात्र" : "";
+let guthiText = (document.getElementById('chk_guthi')?.checked) ? " <b>गुठी यथावत कायम राखी</b> " : "";
+
+
+            // ओरिजिनल Header Table (Add your logo logic here)
+            let headerHtml = `<table style="width: 100%; border-bottom: 2px double black; margin-bottom: 15px; border-collapse: collapse; border: none;">
+                <tr>
+            <td style="width: 15%; text-align: left; vertical-align: top; border: none;">
                     <img src="data:image/jpeg;base64,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">
                 </td>
-                <td style="text-align: center; color: red; vertical-align: top; border: none; line-height: 1.1;">
-                    <div style="font-size: 10pt; font-weight: bold;">${settings.gov}</div>
-                    <div style="font-size: 11pt; font-weight: bold;">${settings.ministry}</div>
-                    <div style="font-size: 12pt; font-weight: bold;">${settings.dept}</div>
-                    <div style="font-size: 16pt; font-weight: bold;">${settings.office}</div>
-                    <div style="font-size: 11pt; font-weight: bold;">${settings.addr}</div>
-                </td>
-                <td style="width: 15%; border: none;"></td>
-            </tr>
-        </table>
-        <div style="text-align:center; font-weight:bold; font-size:16pt; text-decoration:underline; margin:5px 0;">टिप्पणी र आदेश</div>
-        <table style="width: 100%; font-weight: bold; font-size: 13pt; margin-bottom: 15px; border: none; border-collapse: collapse;">
-            <tr>
-                <td style="text-align: left; border: none; padding: 0;">मि.नं.: ${v('in_mn')}</td>
-                <td style="text-align: right; border: none; padding: 0;">मिति: ${v('in_dt')}</td>
-            </tr>
-        </table>`;
+                <td style="text-align: center; color: red; border: none; line-height: 1.1;"><div style="font-size: 10pt; font-weight: bold;">${settings.gov}</div><div style="font-size: 11pt; font-weight: bold;">${settings.ministry}</div><div style="font-size: 12pt; font-weight: bold;">${settings.dept}</div><div style="font-size: 16pt; font-weight: bold;">${settings.office}</div><div style="font-size: 11pt; font-weight: bold;">${settings.addr}</div></td><td style="width: 15%; border: none;"></td></tr></table><div style="text-align:center; font-weight:bold; font-size:16pt; text-decoration:underline; margin:5px 0;">टिप्पणी र आदेश</div><table style="width: 100%; font-weight: bold; font-size: 13pt; border: none;"><tr><td>मि.नं.: ${v('in_mn')}</td><td style="text-align: right;">मिति: ${v('in_dt')}</td></tr></table>`;
 
-            // 3. GENERATE TABLES (Applicants & Deceased)
-            let tableHtml = `<table style="width:100%; border:none; border-collapse:collapse; margin-bottom:10px;">
-        <tr>
-            <td style="width:65%; vertical-align:top; padding-right:10px;">
-                <table class="doc-table">
-                    ${sons.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>बाबुको नाम</th><th>बाजेको नाम</th></tr>` : ''}
-                    ${sons.map((x, i) => `<tr><td>${toNep(i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}
-                    ${wives.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>पतिको नाम</th><th>ससुराको नाम</th></tr>` : ''}
-                    ${wives.map((x, i) => `<tr><td>${toNep(sons.length + i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}
-                </table>
-            </td>
-            <td style="width:35%; vertical-align:top;">
-                <table class="doc-table">
-                    <tr><th>मृतकको नाम</th><th>नाता</th><th>मृत्यु मिति</th></tr>
-                    ${state.mrtks.map(m => `<tr><td>${m.name}</td><td>${m.rel}</td><td>${m.dt}</td></tr>`).join('')}
-                </table>
-            </td>
-        </tr>
-    </table>`;
+            let tableHtml = `<table style="width:100%; border:none; border-collapse:collapse; margin-bottom:10px;"><tr><td style="width:65%; vertical-align:top; padding-right:10px;"><table class="doc-table">${sons.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>बाबुको नाम</th><th>बाजेको नाम</th></tr>` : ''}${sons.map((x, i) => `<tr><td>${toNep(i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}${wives.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>पतिको नाम</th><th>ससुराको नाम</th></tr>` : ''}${wives.map((x, i) => `<tr><td>${toNep(sons.length + i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}</table></td><td style="width:35%; vertical-align:top;"><table class="doc-table"><tr><th>मृतकको नाम</th><th>नाता</th><th>मृत्यु मिति</th></tr>${state.mrtks.map(m => `<tr><td>${m.name}</td><td>${m.rel}</td><td>${m.dt}</td></tr>`).join('')}</table></td></tr></table>`;
 
-            // 4. GENERATE BODY TEXT
-let haqText = "";
-if (document.getElementById('chk_haq').checked && state.haq_groups && state.haq_groups.length > 0) {
-    let haqSegments = state.haq_groups.map(g => 
-        `हकदार <b>${nepJoin(g.names)}</b>ले द.नं. <b>${g.reg}</b> मिति <b>${g.dt}</b> को`
-    );
-    
-    haqText = nepJoin(haqSegments) + " निवेदनबाट नामसारी गर्न दिएको मञ्जुरी";
-}
-
-            const extraIn = document.getElementById('in_extra').value.trim();
-            let finalGrammar = `निवेदकको नागरिकता प्रमाणपत्र र ${nivedakKa} सनाखत` + (extraIn ? ` साथै ${extraIn}` : "") + (haqText ? ` तथा ${haqText}` : "");
-
-           let mohiTextParts = [];
-if (document.getElementById('chk_mohi') && document.getElementById('chk_mohi').checked) {
-    state.mohis.forEach(m => {
-        const kittaLabel = m.kittas.length > 1 ? "का जग्गाहरूमा" : "को जग्गामा";
-        const kittaList = nepJoin(m.kittas.map(k => `<b>${toNep(k)}</b>`));
-        
-        if (m.name.trim() === "") {
-            mohiTextParts.push(`कि.नं. ${kittaList} ${kittaLabel} मोही यथावत कायम राखी`);
-        } else {
-            mohiTextParts.push(`कि.नं. ${kittaList} मा मोही <b>${m.name}</b> कायमै राखी`);
-        }
-    });
-}
-const mohiFinalText = mohiTextParts.length > 0 ? " " + nepJoin(mohiTextParts) + " " : "";
-
-           
-            let bodyHtml = `
-    <p style="text-indent:50px; margin-top:1px;">श्रीमान्,</p>
-    <p style="text-indent:50px;">${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा ${nivedakWordPlain}को ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${isPlural ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakWord} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन ।</p>
-    <p style="text-indent:50px;">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । मिसिल संलग्न रहेका माग दावी अनुसारका जग्गा ${nivedakWordPlain}को नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै <b>${v('in_loc')}</b> <b>${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, ${finalGrammar} समेतको आधारमा नामसारी सेवा शुल्क रू. ${v('fee_s')} ${document.getElementById('chk_late').checked ? ' र विलम्ब शुल्क रू. ' + v('fee_l') : ''} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको हकदार ${activeNivedakLabel} <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal} ${landPluralLabel}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन आवश्यक निर्णयार्थ पेश ।</p>
-    `;
-
-            // 5. UPDATE PREVIEW
+let bodyHtml = `<p style="text-indent:10px; margin:2px; padding:0px">श्रीमान्,</p>
+<p style="text-indent:50px; margin:2px; padding:0px">${settings.def_dist} जिल्ला ${landFinal} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा निवेदकको ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${state.apps.length > 1 ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakKa} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन ।</p>
+<p style="text-indent:50px; margin:2px; padding:0px">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । ${hrTableHtml} माग दावी अनुसारका जग्गा निवेदकको नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै ${recText}, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, निवेदकको नागरिकता र सनाखत ${haqNote} ${extrainfo} समेतको आधारमा ${feeText} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको हकदार <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन आवश्यक निर्णयार्थ पेश ।</p>`;
             document.getElementById('preview').innerHTML = headerHtml + tableHtml + bodyHtml;
             saveState();
+
+
         }
 
         function renderMohiUI() {
-    const container = document.getElementById('mohi_inputs');
-    if (!document.getElementById('chk_mohi').checked) { container.innerHTML = ""; return; }
+            const container = document.getElementById('mohi_inputs');
+            if (!document.getElementById('chk_mohi').checked) { container.innerHTML = ""; return; }
 
-    // Get all kitta numbers added so far
-    const allKittas = state.lands.flatMap(l => l.ks);
-    
-    if (allKittas.length === 0) {
-        container.innerHTML = "<small color='red'>पहिले जग्गा विवरण थप्नुहोस्।</small>";
-        return;
-    }
+            // Get all kitta numbers added so far
+            const allKittas = state.lands.flatMap(l => l.ks);
 
-    let html = `<div style="margin-top:10px; padding:5px; border:1px dashed #ca8a04;">
+            if (allKittas.length === 0) {
+                container.innerHTML = "<small color='red'>पहिले जग्गा विवरण थप्नुहोस्।</small>";
+                return;
+            }
+
+            let html = `<div style="margin-top:10px; padding:5px; border:1px dashed #ca8a04;">
         <label>मोहीको नाम (खाली छोडे टिप्पणीमा मोहीको नाम आउँदैन):</label>
         <input type="text" id="temp_mohi_name" class="input-box" placeholder="मोहीको नाम">
         <label>कित्ताहरू छान्नुहोस्:</label>
         <div style="display:grid; grid-template-columns: 1fr 1fr; max-height:100px; overflow-y:auto; background:white; padding:5px; border:1px solid #ddd;">`;
-    
-    allKittas.forEach(k => {
-        html += `<label style="font-weight:normal;"><input type="checkbox" class="mohi-kitta-chk" value="${k}"> कि.नं. ${k}</label>`;
-    });
 
-    html += `</div>
+            allKittas.forEach(k => {
+                html += `<label style="font-weight:normal;"><input type="checkbox" class="mohi-kitta-chk" value="${k}"> कि.नं. ${k}</label>`;
+            });
+
+            html += `</div>
         <button onclick="addMohiEntry()" class="btn btn-dark" style="background:#ca8a04;">+ मोही विवरण थप्नुहोस्</button>
     </div>
     <div id="mohi_list_ui"></div>`;
 
-    container.innerHTML = html;
-    renderMohiList();
-}
+            container.innerHTML = html;
+            renderMohiList();
+        }
 
-function addMohiEntry() {
-    const nameInput = document.getElementById('temp_mohi_name');
-    const name = nameInput ? nameInput.value : "";
-    
-    // Find all checkboxes that are checked
-    const checkboxes = document.querySelectorAll('.mohi-kitta-chk:checked');
-    const selectedKittas = Array.from(checkboxes).map(el => el.value);
-    
-    if (selectedKittas.length === 0) {
-        alert("कृपया कम्तिमा एउटा कित्ता नम्बर छान्नुहोस् ।");
-        return;
-    }
+        function addMohiEntry() {
+            const nameInput = document.getElementById('temp_mohi_name');
+            const name = nameInput ? nameInput.value : "";
 
-    // Initialize if it doesn't exist
-    if (!state.mohis) state.mohis = [];
+            // Find all checkboxes that are checked
+            const checkboxes = document.querySelectorAll('.mohi-kitta-chk:checked');
+            const selectedKittas = Array.from(checkboxes).map(el => el.value);
 
-    state.mohis.push({
-        name: name,
-        kittas: selectedKittas
-    });
+            if (selectedKittas.length === 0) {
+                alert("कृपया कम्तिमा एउटा कित्ता नम्बर छान्नुहोस् ।");
+                return;
+            }
 
-    // Reset input and UI
-    if (nameInput) nameInput.value = "";
-    
-    // Clear checkmarks after adding
-    checkboxes.forEach(cb => cb.checked = false);
+            // Initialize if it doesn't exist
+            if (!state.mohis) state.mohis = [];
 
-    renderMohiList(); // Refresh the list of added mohis
-    update();         // Refresh the document preview
-    saveState();      // Save to local storage
-}
+            state.mohis.push({
+                name: name,
+                kittas: selectedKittas
+            });
 
-function renderMohiList() {
-    const listDiv = document.getElementById('mohi_list_ui');
-    listDiv.innerHTML = state.mohis.map((m, i) => `
+            // Reset input and UI
+            if (nameInput) nameInput.value = "";
+
+            // Clear checkmarks after adding
+            checkboxes.forEach(cb => cb.checked = false);
+
+            renderMohiList(); // Refresh the list of added mohis
+            update();         // Refresh the document preview
+            saveState();      // Save to local storage
+        }
+
+        function renderMohiList() {
+            const listDiv = document.getElementById('mohi_list_ui');
+            listDiv.innerHTML = state.mohis.map((m, i) => `
         <div class="item-list" style="background:#fef9c3">
             <span>${m.name ? m.name : 'यथावत'} (कि.नं. ${m.kittas.join(',')})</span>
             <span class="del-btn" onclick="state.mohis.splice(${i},1); renderMohiUI(); update();">×</span>
         </div>
     `).join('');
+        }
+
+        window.onload = () => {
+    loadGlobalSettings(); // प्रदेश र नाता लोड गर्ने
+    const saved = localStorage.getItem('namsari_v3_storage');
+    if (saved) {
+        const d = JSON.parse(saved); 
+        state = d.state;
+        
+        // सबै इनपुटहरूको भ्यालु भर्ने
+        for (let id in d.inputs) {
+            const el = document.getElementById(id);
+            if (el) { 
+                if (el.type === 'checkbox') el.checked = d.inputs[id]; 
+                else el.value = d.inputs[id]; 
+            }
+        }
+    }
+    
+    // लोड भएपछि हराउन नदिन यी फङ्सनहरू अनिवार्य कल गर्नुपर्छ:
+    renderAreaInputs();   // क्षेत्रफलको लिस्ट देखाउन
+    toggleHouseRoad();    // घरबाटोको सिफारिस इनपुट देखाउन (यदि टिक छ भने)
+    update();             // प्रिभ्यू अपडेट गर्न
+    renderMohiUI();
+        renderHaqUI();
+
 }
 
-function resetAll() { 
-    if (confirm("विवरण मेटाउने?")) { 
-        // Only delete the data for THIS specific page
-        localStorage.removeItem('namsari_v2_storage'); 
-        location.reload(); 
-    } 
+
+        function saveState() {
+            const inputs = {};
+            document.querySelectorAll('.input-box, textarea, input[type="checkbox"]').forEach(el => { if (el.id) inputs[el.id] = (el.type === 'checkbox') ? el.checked : el.value; });
+            localStorage.setItem('namsari_v3_storage', JSON.stringify({ state, inputs }));
+        }
+        function resetAll() { if (confirm("विवरण मेटाउने?")) { localStorage.removeItem('namsari_v3_storage'); location.reload(); } }
+// नम्बर टाइप गर्दा नेपाली बनाउने फङ्सन
+function nepalify(el) {
+    el.value = el.value.replace(/\d/g, d => "०१२३४५६७८९"[d]).replace(/\./g, "।");
+    update();
 }
+
+// फाइल एक्सपोर्ट फङ्सन (अन्तिमको हटाएर यो राख्नुहोस्)
 function exportWord() {
     const content = document.getElementById('preview').innerHTML;
     const appName = state.apps.length > 0 ? state.apps[0].name.replace(/\s+/g, '_') : 'विवरण';
@@ -813,52 +1172,11 @@ function exportWord() {
     a.click();
 }
 
-window.onload = () => {
-            const saved = localStorage.getItem('namsari_v2_storage');
-            if (saved) {
-                const d = JSON.parse(saved); state = d.state;
-                        if (!state.mohis) state.mohis = [];
-
-                for (let id in d.inputs) {
-                    const el = document.getElementById(id);
-                    if (el) { if (el.type === 'checkbox') el.checked = d.inputs[id]; else el.value = d.inputs[id]; }
-                }
-            }
-            update(); renderHaqUI(); renderMohiUI();
-        }
-        function saveState() {
-            const inputs = {};
-            // सबै input, textarea र checkbox को भ्यालु जम्मा गर्ने
-            document.querySelectorAll('.input-box, textarea, input[type="checkbox"]').forEach(el => {
-                if (el.id) {
-                    inputs[el.id] = (el.type === 'checkbox') ? el.checked : el.value;
-                }
-            });
-            // localStorage मा सेभ गर्ने
-            localStorage.setItem('namsari_v2_storage', JSON.stringify({ state, inputs }));
-        }
-
-        // यो कोड सबै पेज (Malpot, Kutabali, Tippani आदि) मा राख्नुहोस्
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        // यहाँ './sw.js' को सट्टा '/sw.js' (Root Path) प्रयोग गर्नुहोला 
-        // जसले गर्दा फोल्डर भित्रबाट पनि यसले मेन फाइल भेट्छ
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => {
-                console.log('Service Worker Registered for this page!');
-                
-                // नयाँ अपडेट चेक गर्ने लजिक
-                reg.onupdatefound = () => {
-                    const installingWorker = reg.installing;
-                    installingWorker.onstatechange = () => {
-                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('नयाँ अपडेट उपलब्ध छ! कृपया पेज रिलोड गर्नुहोस्।');
-                        }
-                    };
-                };
-            })
-            .catch(err => console.log('Service Worker Registration Failed:', err));
-    });
+function resetAll() { 
+    if (confirm("विवरण मेटाउने?")) { 
+        localStorage.removeItem('namsari_v3_storage'); 
+        location.reload(); 
+    } 
 }
     </script>
 </body>
