@@ -5,219 +5,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>संशोधन - टिप्पणी</title>
+
+        <!-- २. वर्णन (Description) - गुगल सर्चमा देखिने छोटो बिवरण -->
+    <meta name="description"
+        content="जग्गाधनी प्रमाणपुर्जाको संशोधन ।">
+
+    <!-- ३. कीवर्डहरू (Keywords) -->
+    <meta name="keywords"
+        content="acharyasuman, acharyasuman4, मालपोत, संशोधन टिप्पणी, संसोधन, जग्गाधनी पुर्जा संशोधन टिप्पणी, पुर्जा संसोधन टिप्पणी, टिप्पणी, संशोधन, विवरण फरक, पुर्जामा नाम फरक, पुर्जामा बाबुको नाम फरक, पुर्जामा बाजेको नाम फरक, ठेगाना फरक ";>
+
+    <!-- ४. सामाजिक सञ्जालका लागि (Open Graph Tags) - फेसबुकमा लिङ्क सेयर गर्दा राम्रो देखिनका लागि -->
+    <meta property="og:title" content="संशोधन टिप्पणी ">
+    <meta property="og:description" content="कार्यलयको लागि संशोधन टिप्पणी तयार गर्ने टुल">
+    <meta property="og:url" content="https://acharyasuman4.com.np/tippani/sansodhan_tippani/">
+
+
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+    * { box-sizing: border-box; }
 
-        body {
-            font-family: 'Mukta', sans-serif;
-            background-color: #cbd5e1;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .main-layout {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        .input-panel {
-            flex: 0 0 420px;
-            background: white;
-            padding: 15px;
-            border-right: 1px solid #94a3b8;
-            overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .input-group {
-            margin-bottom: 12px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        label {
-            display: block;
-            font-size: 11px;
-            font-weight: bold;
-            margin-bottom: 2px;
-            color: #475569;
-        }
-
-        .input-box {
-            border: 1px solid #94a3b8;
-            padding: 5px;
-            border-radius: 4px;
-            width: 100%;
-            font-size: 13px;
-            font-family: 'Mukta', sans-serif;
-            margin-bottom: 5px;
-        }
-
-        .row-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .btn {
-            padding: 8px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            color: white;
-            font-size: 12px;
-            width: 100%;
-            margin-top: 5px;
-        }
-
-        .btn-blue {
-            background-color: #2563eb;
-        }
-
-        .btn-red {
-            background-color: #ef4444;
-        }
-
-        .btn-green {
-            background-color: #16a34a;
-        }
-
-        .btn-dark {
-            background-color: #334155;
-        }
-
-        .preview-container {
-            flex: 1;
-            background: #94a3b8;
-            overflow-y: auto;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .preview-page {
-            background: white;
-            width: 210mm;
-            min-height: 297mm;
-            padding: 1.5cm 1.27cm 1.5cm 2.54cm;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            text-align: justify;
-            line-height: 1.5;
-            font-size: 14pt;
-            color: #000;
-        }
-
-        .doc-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid black;
-            margin-bottom: 10px;
-        }
-
-        .doc-table th,
-        .doc-table td {
-            border: 1px solid black;
-            padding: 4px 8px;
-            text-align: left;
-            font-size: 12pt;
-        }
-
-.doc-table th {
-    background-color: #f9f9f9;
-    text-align: center;
-    min-width: 100px; /* This ensures headers have a decent width */
-}
-
-        .item-list {
-            background: #f1f5f9;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 11px;
-            margin-top: 4px;
-            display: flex;
-            justify-content: space-between;
-            border: 1px solid #cbd5e1;
-        }
-
-        .del-btn {
-            color: red;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-/* Update these specific parts in your existing CSS */
-
-@page {
-    size: A4;
-    /* Margins: Top (1.5cm), Right (0.5in), Bottom (1.5cm), Left (1.2in) */
-    margin: 1.5cm 0.5in 1.5cm 1.2in;
-}
-
-@media print {
-    /* Hide scrollbars and fix height */
-    html, body {
-        height: auto !important;
-        overflow: visible !important;
-        background: white !important;
-    }
-
-    .no-print {
-        display: none !important;
+    body {
+        font-family: 'Mukta', sans-serif;
+        background-color: #cbd5e1;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
     }
 
     .main-layout {
-        display: block !important;
-        height: auto !important;
+        display: flex;
+        height: 100vh;
+        width: 100vw;
     }
 
+    /* 1. CHANGE: flex set to 1 to take available space (Adalat Style) */
+    .input-panel {
+        flex: 1; 
+        min-width: 400px; /* Prevents inputs from getting too squashed */
+        background: white;
+        padding: 15px;
+        border-right: 1px solid #94a3b8;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 2. CHANGE: flex set to 1.5 to keep the preview area larger than inputs */
     .preview-container {
-        display: block !important;
-        overflow: visible !important;
-        padding: 0 !important;
-        background: white !important;
-        height: auto !important;
+        flex: 1.5; 
+        background: #94a3b8;
+        overflow-y: auto;
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
+    /* Keep your existing Input Group, Label, and Box styles */
+    .input-group { margin-bottom: 12px; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; }
+    label { display: block; font-size: 11px; font-weight: bold; margin-bottom: 2px; color: #475569; }
+    .input-box { border: 1px solid #94a3b8; padding: 5px; border-radius: 4px; width: 100%; font-size: 13px; font-family: 'Mukta', sans-serif; margin-bottom: 5px; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn { padding: 8px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; color: white; font-size: 12px; width: 100%; margin-top: 5px; }
+    .btn-blue { background-color: #2563eb; }
+    .btn-red { background-color: #ef4444; }
+    .btn-green { background-color: #16a34a; }
+    .btn-dark { background-color: #334155; }
+
+    /* SCREEN PREVIEW: Fixed A4 Width */
     .preview-page {
-        box-shadow: none !important;
-        border: none !important;
-        width: 100% !important; /* Allow the @page margin to control width */
-        min-height: auto !important;
-        padding: 0 !important; /* Padding is handled by @page margin */
-        margin: 0 !important;
+        background: white;
+        width: 210mm;
+        min-height: 297mm;
+        padding: 1.5cm 0.5in 1.5cm 1.2in; 
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
         text-align: justify;
+        line-height: 1.5;
+        font-size: 14pt;
+        color: #000;
+        box-sizing: border-box;
     }
 
-    /* Prevent tables and paragraphs from breaking awkwardly across pages */
-    .doc-table, p {
-        page-break-inside: avoid;
-    }
-}
+    /* Keep your existing table styles */
+    .doc-table { width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px; }
+    .doc-table th, .doc-table td { border: 1px solid black; padding: 4px 8px; text-align: left; font-size: 12pt; }
+    .doc-table th { background-color: #f9f9f9; text-align: center; min-width: 100px; }
 
-/* Adjust the screen preview to look closer to the print version */
-.preview-page {
-    background: white;
-    width: 210mm;
-    min-height: 297mm;
-    /* Screen View Margins */
-    padding: 1.5cm 0.5in 1.5cm 1.2in; 
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    text-align: justify;
-    line-height: 1.5;
-    font-size: 14pt;
-    color: #000;
-    box-sizing: border-box; /* Crucial for margin calculation */
-}
+    /* PRINT MODE: Fixed to prevent "taking more than A4" stretching */
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 0; /* Let the preview-page padding handle the margins */
+        }
+
+        html, body {
+            height: auto !important;
+            overflow: visible !important;
+            background: white !important;
+        }
+
+        .no-print { display: none !important; }
+
+        .main-layout { display: block !important; height: auto !important; }
+
+        .preview-container {
+            display: block !important;
+            overflow: visible !important;
+            padding: 0 !important;
+            background: white !important;
+            height: auto !important;
+        }
+
+        /* 3. FIX: Strict width of 210mm prevents horizontal stretching on print */
+        .preview-page {
+            box-shadow: none !important;
+            border: none !important;
+            width: 210mm !important; 
+            padding: 1.5cm 0.5in 1.5cm 1.2in !important;
+            margin: 0 auto !important;
+            text-align: justify;
+            min-height: 297mm;
+        }
+
+        .doc-table, p { page-break-inside: avoid; }
+    }
+</style>
     </style>
 </head>
 

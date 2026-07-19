@@ -6,59 +6,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>संसोधन- आदेश,सूचना र पत्र</title>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        /* CSS STYLES */
-        * { box-sizing: border-box; }
-        body { font-family: 'Mukta', sans-serif; background-color: #cbd5e1; margin: 0; padding: 0; height: 100vh; overflow: hidden; }
 
-        .main-layout { display: flex; height: 100vh; width: 100vw; }
-        .input-panel { flex: 0 0 350px; background: white; padding: 15px; border-right: 1px solid #94a3b8; overflow-y: auto; height: 100%; z-index: 10; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); }
-        .preview-container { flex: 1; background: #94a3b8; display: flex; flex-direction: column; align-items: center; overflow-y: auto; padding: 20px 0; }
-        .zoom-wrapper { transform: scale(0.85); transform-origin: top center; margin-bottom: -150px; }
-        .preview-page { background: white; width: 210mm; min-height: 297mm; padding: 2.54cm; box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); text-align: justify; line-height: 1.5; font-size: 16pt; }
+            <!-- २. वर्णन (Description) - गुगल सर्चमा देखिने छोटो बिवरण -->
+    <meta name="description"
+        content=" जग्गाधनी पुर्जाको संशोधनको सूचना, आदेश र पत्र ।">
 
-        .input-group { margin-bottom: 12px; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; }
-        .bg-indigo { background-color: #eef2ff; border-color: #c7d2fe; }
-        .bg-orange { background-color: #fff7ed; border-color: #fed7aa; }
-        .bg-green { background-color: #f0fdf4; border-color: #bbf7d0; }
-        .bg-sky { background-color: #f0f9ff; border-color: #bae6fd; }
+    <!-- ३. कीवर्डहरू (Keywords) -->
+    <meta name="keywords"
+        content="acharyasuman, acharyasuman4, मालपोत, संशोधन, पुर्जामा नाम फरक, पुर्जामा बाबुको नाम फरक, बाजेको नाम फरक, ना.प्र.नं. कायम, नागरिकता नं. संसोधन, कित्ता नं. फरक, ";>
 
-        label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 2px; color: #475569; }
-        .input-box { border: 1px solid #94a3b8; padding: 5px; border-radius: 4px; width: 100%; font-size: 15px; font-family: 'Mukta', sans-serif; }
-        textarea.input-box { resize: vertical; min-height: 60px; }
-        .input-box:focus { outline: 2px solid #2563eb; }
+    <!-- ४. सामाजिक सञ्जालका लागि (Open Graph Tags) - फेसबुकमा लिङ्क सेयर गर्दा राम्रो देखिनका लागि -->
+    <meta property="og:title" content="संशोधन सूचना आदेश टिप्पणी ">
+    <meta property="og:description" content="कार्यलयको लागि संशोधनको सूचना, आदेश र पत्र तयार गर्ने टुल">
+    <meta property="og:url" content="https://acharyasuman4.com.np/tippani/sansodhan/">
 
-        .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+<style>
+    /* CSS STYLES */
+    * { box-sizing: border-box; }
+    body { font-family: 'Mukta', sans-serif; background-color: #cbd5e1; margin: 0; padding: 0; height: 100vh; overflow: hidden; }
 
-        .list-item { background: white; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 11px; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
-        .del-btn { color: red; font-weight: bold; cursor: pointer; margin-left: 5px; }
+    .main-layout { display: flex; height: 100vh; width: 100vw; }
 
-        .tab-container { position: sticky; top: 0; z-index: 20; background: rgba(255, 255, 255, 0.9); padding: 8px 15px; border-radius: 30px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); backdrop-filter: blur(5px); }
-        .tab-btn { padding: 8px 20px; border-radius: 20px; border: none; background: transparent; font-weight: bold; color: #64748b; cursor: pointer; font-size: 14px; }
-        .tab-active { background-color: #ea580c; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
+    /* 1. FIX: Changed from 'flex: 0 0 350px' to 'flex: 1' so it fills available space */
+    .input-panel { 
+        flex: 1; 
+        min-width: 400px; /* Ensures it doesn't get too small */
+        background: white; 
+        padding: 15px; 
+        border-right: 1px solid #94a3b8; 
+        overflow-y: auto; 
+        height: 100%; 
+        z-index: 10; 
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); 
+    }
 
-        .btn { padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; color: white; font-size: 13px; width: 100%; margin-top: 5px; }
-        .btn:hover { opacity: 0.9; }
-        .btn-blue { background-color: #2563eb; }
-        .btn-dark { background-color: #0f172a; }
-        .btn-add { background-color: #2563eb; color: white; border: none; border-radius: 4px; padding: 0 10px; cursor: pointer; font-weight: bold; }
-        .btn-red { background-color: #ef4444; width: auto; font-size: 11px; padding: 4px 10px; float: right; }
+    /* 2. FIX: Adjusted weight so the preview stays large but allows input to grow */
+    .preview-container { 
+        flex: 1.2; 
+        background: #94a3b8; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        overflow-y: auto; 
+        padding: 20px 0; 
+    }
 
-        .aadesh-table { width: 100%; border: 1px solid black; border-collapse: collapse; margin-top: 15px; }
-        .aadesh-table td { border: 1px solid black; padding: 10px; vertical-align: top; font-size: 16pt; }
+    /* Keep your scale and margins from your improved version */
+    .zoom-wrapper { transform: scale(0.85); transform-origin: top center; margin-bottom: -150px; }
+    
+    /* Keep your 16pt Font Size as requested */
+    .preview-page { 
+        background: white; 
+        width: 210mm; 
+        min-height: 297mm; 
+        padding: 2.54cm; 
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); 
+        text-align: justify; 
+        line-height: 1.5; 
+        font-size: 16pt; 
+    }
 
-        @media print {
-            @page { margin: 0.5in 0.5in 0.5in 1.25in; size: A4 portrait; }
-            body { background: white; padding: 0; margin: 0; overflow: visible; height: auto; }
-            .input-panel, .tab-container, button, .no-print { display: none !important; }
-            .main-layout { display: block; height: auto; }
-            .preview-container { display: block; background: white; padding: 0; overflow: visible; }
-            .zoom-wrapper { transform: none; margin: 0; width: 100%; }
-            .preview-page { box-shadow: none; margin: 0; width: 100%; padding: 0; min-height: auto; }
+    .input-group { margin-bottom: 12px; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; }
+    .bg-indigo { background-color: #eef2ff; border-color: #c7d2fe; }
+    .bg-orange { background-color: #fff7ed; border-color: #fed7aa; }
+    .bg-green { background-color: #f0fdf4; border-color: #bbf7d0; }
+    .bg-sky { background-color: #f0f9ff; border-color: #bae6fd; }
+
+    label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 2px; color: #475569; }
+    .input-box { border: 1px solid #94a3b8; padding: 5px; border-radius: 4px; width: 100%; font-size: 15px; font-family: 'Mukta', sans-serif; }
+    textarea.input-box { resize: vertical; min-height: 60px; }
+    .input-box:focus { outline: 2px solid #2563eb; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+    .list-item { background: white; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 11px; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
+    .del-btn { color: red; font-weight: bold; cursor: pointer; margin-left: 5px; }
+
+    .tab-container { position: sticky; top: 0; z-index: 20; background: rgba(255, 255, 255, 0.9); padding: 8px 15px; border-radius: 30px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); backdrop-filter: blur(5px); }
+    .tab-btn { padding: 8px 20px; border-radius: 20px; border: none; background: transparent; font-weight: bold; color: #64748b; cursor: pointer; font-size: 14px; }
+    .tab-active { background-color: #ea580c; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
+
+    .btn { padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; color: white; font-size: 13px; width: 100%; margin-top: 5px; }
+    .btn-blue { background-color: #2563eb; }
+    .btn-dark { background-color: #0f172a; }
+    .btn-add { background-color: #2563eb; color: white; border: none; border-radius: 4px; padding: 0 10px; cursor: pointer; font-weight: bold; }
+    .btn-red { background-color: #ef4444; width: auto; font-size: 11px; padding: 4px 10px; float: right; }
+
+    /* Keep your 16pt font size for table as requested */
+    .aadesh-table { width: 100%; border: 1px solid black; border-collapse: collapse; margin-top: 15px; }
+    .aadesh-table td { border: 1px solid black; padding: 10px; vertical-align: top; font-size: 16pt; }
+
+    .input-top{
+        display: flex;
+        gap: 2px;
+    }
+    .input-top input {
+  flex: 1; 
+}
+
+.input-top input:nth-child(2) input,
+.input-top input:nth-child(3) input {
+  flex: 2;}
+
+    /* 3. PRINT FIX: Ensures document stays exactly A4 and doesn't stretch */
+    @media print {
+        @page { 
+            margin: 0; 
+            size: A4 portrait; 
         }
-    </style>
-</head>
+        body { background: white; padding: 0; margin: 0; overflow: visible; height: auto; }
+        
+        .input-panel, .tab-container, button, .no-print { display: none !important; }
+        
+        .main-layout { display: block; height: auto; }
+        .preview-container { display: block; background: white; padding: 0; overflow: visible; }
+        
+        .zoom-wrapper { transform: none !important; margin: 0 !important; width: 100%; }
+        
+        /* FIX: Strict 210mm width prevents the "taking more than A4" issue */
+        .preview-page { 
+            box-shadow: none; 
+            margin: 0 auto; 
+            width: 210mm; 
+            padding: 2.54cm; 
+            min-height: 297mm; 
+        }
+    }
+</style></head>
 
 <body>
 
@@ -77,13 +152,13 @@
 
             <div class="input-group" style="background:#f8fafc;">
                 <!-- HIDDEN PATRA SANKHYA -->
-                <input type="hidden" id="in_p_s" value="२०८२।०८३">
+                <input type="hidden" id="in_p_s" value="२०८३।०८४">
                 
-                <div class="row-2">
+                <div class="input-top">
                     <div><label>च.नं.:</label><input type="text" id="in_c_n" oninput="scheduleUpdate()" placeholder="च.नं." class="input-box"></div>
                     <div><label>मिति:</label><input type="text" id="in_date" oninput="autoFormatDate(this)" placeholder="२०८२।०१।०४" class="input-box"></div>
-                </div>
-                <div class="row-2" style="margin-top:8px;">
+                <!-- </div>
+                <div class="row-2" style="margin-top:8px;"> -->
                     <div><label>पद:</label><input type="text" id="in_officer" oninput="scheduleUpdate()" value="भूमि प्रशासन अधिकृत" class="input-box"></div>
                     <div><label>मि.नं.:</label><input type="text" id="in_misil" oninput="scheduleUpdate()" placeholder="मि.नं." class="input-box"></div>
                 </div>

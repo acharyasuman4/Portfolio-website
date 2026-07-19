@@ -1,87 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+<?xml-stylesheet type="text/css" href="https://www.xml-sitemaps.com/css/sitemap.css"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-
-<url>
-  <loc>https://acharyasuman4.com.np/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/index.html</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/Registration/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/malpot%20calculator/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/kutabali%20calculator/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/tippani/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/ropani%20adder/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/tippani/template.html</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/tippani/adalat%20Dakhila%20Kharej/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/tippani/seba%20dakhila%20kharej/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/tippani/namsari%20suchana%20aades/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/tippani/namsari_tippani/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/tippani/sansodhan/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/tippani/sansodhan_tippani/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-<url>
-  <loc>https://acharyasuman4.com.np/tippani/jagga%20darta%20sifaris/</loc>
-  <lastmod>2026-05-22T17:38:20+00:00</lastmod>
-  <priority>0.64</priority>
-</url>
-
-
+  <url>
+       <loc>https://acharyasuman4.com.np/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>1.0000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/index.html</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/Registration/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/malpot%20calculator/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/kutabali%20calculator/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/ropani%20adder/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/ropani%20divider/index.html</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tool/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/namsari_tippani/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/sansodhan_tippani/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/adalat%20Dakhila%20Kharej/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.8000</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/template.html</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/ropani%20divider/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/seba%20dakhila%20kharej/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/namsari%20suchana%20aades/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/sansodhan/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/pratilipi_purja/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tippani/jagga%20darta%20sifaris/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tool/index.html</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tool/rajaswo_calculator.html</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.6400</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/malpot%20calculator/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.5120</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/kutabali%20calculator/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.5120</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/ropani%20adder/</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.5120</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/tool/advance_rajaswo_calculator.html</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.5120</priority>
+  </url>
+  <url>
+       <loc>https://acharyasuman4.com.np/Registration/index.html</loc>
+       <lastmod>2026-07-18T18:07:16+00:00</lastmod>
+       <changefreq>daily</changefreq>
+       <priority>0.5120</priority>
+  </url>
 </urlset>

@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>जग्गा दर्ता समितिको सिफारिस</title>
+
+            <!-- २. वर्णन (Description) - गुगल सर्चमा देखिने छोटो बिवरण -->
+    <meta name="description"
+        content="जग्गा दर्ता समितिले भर्ने सिफारिस फाराम ।">
+
+    <!-- ३. कीवर्डहरू (Keywords) -->
+    <meta name="keywords"
+        content="acharyasuman, acharyasuman4, मालपोत, जग्गा दर्ता, जग्गा दर्ता सिफारिस, जग्गा दर्ता सिफारिस फाराम, सिफारिस फाराम, भूमिसुधार कार्यालय, दर्ता सिफारिस फाराम ";>
+
+    <!-- ४. सामाजिक सञ्जालका लागि (Open Graph Tags) - फेसबुकमा लिङ्क सेयर गर्दा राम्रो देखिनका लागि -->
+    <meta property="og:title" content="जग्गा दर्ता सिफारिस फाराम ">
+    <meta property="og:description" content="कार्यलयको लागि जग्गा दर्ता सिफारिस फाराम तयार गर्ने टुल">
+    <meta property="og:url" content="https://acharyasuman4.com.np/tippani/jagga%20darta%20sifaris/">
+
+
     <style>
         /* GENERAL RESET */
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Kalimati', 'Arial', sans-serif; background-color: #eef2f5; box-sizing: border-box; }
@@ -28,7 +43,20 @@
         h3 { color: #2c3e50; font-size: 15px; margin-top: 15px; border-bottom: 1px solid #eee; background: #f9f9f9; padding: 5px; }
         .form-group { margin-bottom: 10px; }
         label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 3px; color: #444; }
-        input[type="text"], select, textarea { width: 100%; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; box-sizing: border-box; font-size: 13px; }
+input[type="text"], select, textarea { 
+    width: 100%; 
+    padding: 8px 10px; /* थोरै प्याडिङ पनि बढाइएको छ */
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    font-family: inherit; 
+    box-sizing: border-box; 
+    font-size: 16px; /* पहिले १३px थियो */
+}
+
+/* टेबल भित्रका इनपुटहरूको साइज पनि मिलाउन */
+.input-table td input {
+    font-size: 14px;
+}
         input:focus, select:focus, textarea:focus { border-color: #3498db; outline: none; background: #f0f8ff; }
         .row { display: flex; gap: 10px; } .col { flex: 1; }
 
@@ -146,7 +174,7 @@
             <thead>
                 <tr>
                     <th>मौजा/गा.वि.स.</th><th width="40px">वडा</th><th width="40px">कि.नं.</th><th width="50px">क्षे.फ.</th>
-                    <th>खलो</th><th>विरह</th><th>किसिम</th><th>प्रकृति</th><th></th>
+                    <th>खलो</th><th>लगतको विरह</th><th>प्रकृति</th><th></th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -155,6 +183,14 @@
             <button class="btn btn-blue" onclick="addSameGavisa()">+ Add (Same Gavisa)</button>
             <button class="btn btn-green" onclick="addNewGavisa()">+ Add (New Gavisa)</button>
         </div>
+
+        <!-- New Section for Fieldbook Virah/Kisim -->
+<div id="fb_virah_input_section" style="background:#fff3e0; padding:10px; border:1px solid #ffe0b2; border-radius:5px; margin-top:15px;">
+    <label style="color:#e65100; font-weight:bold;">फिल्डबुक अनुसारको विरह/किसिम:</label>
+    <div id="fb_virah_container" style="margin-top:10px;" >
+        <!-- Dynamic inputs will appear here -->
+    </div>
+</div>
 
         <h3>अन्य विवरण</h3>
         <div class="form-group"><label>४. ७ नं. फाँटवारी भिड्छ?</label><input type="text" id="q4" value="भिड्छ ।" oninput="updatePreview()"></div>
@@ -226,6 +262,13 @@
         <div class="form-group"><label>१९. अन्य विवरण:</label><textarea rows="2" id="q19" oninput="updatePreview()">नभएको</textarea></div>
         <div class="form-group"><label>२१. कार्यालयको राय:</label><textarea rows="3" id="q21" oninput="updatePreview()">निवेदकले दर्ताका लागि चाहिने आवश्यक प्रमाण साथ हकदार र हकभोग खुली आएको स्थानीय निकायको सिफारिस साथ मागदाबी लिएको जग्गा निवेदकका नाउँमा दर्ता हुने देखि पेश भएको ।</textarea></div>
 
+        <div class="form-group" style="background:#e8f5e9; padding:10px; border:1px solid #c8e6c9; margin-top:10px;">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <label>२२. समितिको सिफारिस:</label>
+    <button type="button" onclick="forceSyncRec()" style="font-size: 10px; background: #3498db; color: white; border: none; padding: 2px 5px; cursor: pointer; border-radius: 3px;">🔄 विवरण रि-सिंक (Sync) गर्नुहोस्</button>
+</div>
+<textarea rows="6" id="q22" oninput="debouncedUpdate()"></textarea>
+</div>
         <br>
         <button class="btn btn-print" onclick="window.print()">🖨 Print / Save PDF</button>
         <button class="btn btn-word" onclick="exportToWord()">⬇ Download Word (.doc)</button>
@@ -245,8 +288,48 @@
     let applicants = []; 
     let mohiGroups = []; 
     let fbRemarkGroups = [];
-    const FORM_KEY = 'jagga_darta_fixed_v4'; // New key to clear old corrupted data
+    let lastNamePhrase = "................ हकदार हुन्"; 
+let lastLandText = "................";
+let lastNameText = "................";
+let lastType = "";    const FORM_KEY = 'jagga_darta_fixed_v4'; // New key to clear old corrupted data
 
+function getLandDescriptionOnly() {
+    const lVdcs = document.querySelectorAll('.l-vdc');
+    const lWards = document.querySelectorAll('.l-ward');
+    const lKits = document.querySelectorAll('.l-kit');
+    
+    let landSummary = [];
+    for (let i = 0; i < lVdcs.length; i++) {
+        let kitVal = lKits[i].value.trim();
+        if(kitVal !== "") {
+            landSummary.push({ 
+                vdc: lVdcs[i].value || "..........", 
+                ward: lWards[i].value || "...", 
+                kit: kitVal 
+            });
+        }
+    }
+
+    if (landSummary.length === 0) return "................";
+
+    let vdcMap = {};
+    landSummary.forEach(d => {
+        if (!vdcMap[d.vdc]) vdcMap[d.vdc] = {};
+        if (!vdcMap[d.vdc][d.ward]) vdcMap[d.vdc][d.ward] = [];
+        vdcMap[d.vdc][d.ward].push(d.kit);
+    });
+
+    let vdcParts = [];
+    for (let vdc in vdcMap) {
+        let wardParts = [];
+        for (let ward in vdcMap[vdc]) {
+            let kitsJoined = joinWithRa(vdcMap[vdc][ward]);
+            wardParts.push(`वडा नं. <b>${ward}</b> को कि.नं. <b>${kitsJoined}</b>`);
+        }
+        vdcParts.push(`साबिक <b>${vdc}</b> गा.वि.स. ${joinWithRa(wardParts)}`);
+    }
+    return joinWithRa(vdcParts);
+}
     // --- HELPER FUNCTIONS ---
     function joinWithRa(arr) {
         if (!arr || arr.length === 0) return '';
@@ -282,20 +365,57 @@
         });
     }
 
-    // --- KITTA SELECTORS (FIXED DUPLICATES) ---
-    function updateKittaSelectors() {
-        const uniqueKittas = new Set();
-        document.querySelectorAll('.l-kit').forEach(input => {
-            const val = input.value.trim();
-            if(val !== '') uniqueKittas.add(val);
-        });
-        const kittas = Array.from(uniqueKittas);
-        
-        renderCheckboxes('mohi_kitta_container', kittas, 'mohi_assign');
-        renderCheckboxes('jhagada_kitta_container', kittas, 'jhagada_chk');
-        renderCheckboxes('fb_kitta_container', kittas, 'fb_assign');
+    function toNepaliNum(num) {
+    if (num === undefined || num === null) return '';
+    return num.toString().replace(/[0-9]/g, m => '०१२३४५६७८९'[m]);
+}
+function forceSyncRec() {
+    if(confirm("विवरण रि-सिंक गर्दा तपाईंले बीचमा लेख्नुभएको केही कुराहरू हट्न सक्छन्। जारी राख्न चाहनुहुन्छ?")) {
+        document.getElementById('q22').value = ""; // खाली गरिदिने
+        smartUpdateRecommendation(); // यसले नयाँ सिराबाट ढाँचा भर्छ
+        updatePreview();
     }
+}
 
+    // --- KITTA SELECTORS (FIXED DUPLICATES) ---
+function updateKittaSelectors() {
+    const uniqueKittas = new Set();
+    document.querySelectorAll('.l-kit').forEach(input => {
+        const val = input.value.trim();
+        if(val !== '') uniqueKittas.add(val);
+    });
+    const kittas = Array.from(uniqueKittas);
+    
+    renderCheckboxes('mohi_kitta_container', kittas, 'mohi_assign');
+    renderCheckboxes('jhagada_kitta_container', kittas, 'jhagada_chk');
+    renderCheckboxes('fb_kitta_container', kittas, 'fb_assign');
+
+    // --- NEW: Render Fieldbook Virah/Kisim Inputs ---
+    const fbContainer = document.getElementById('fb_virah_container');
+    // Save current values so they don't disappear when re-rendering
+    const currentFbValues = {};
+    fbContainer.querySelectorAll('input').forEach(inp => {
+        currentFbValues[inp.dataset.kit] = inp.value;
+    });
+
+    fbContainer.innerHTML = '';
+    if (kittas.length === 0) {
+        fbContainer.innerHTML = '<i>माथि कित्ता नं. भर्नुहोस्</i>';
+    } else {
+        kittas.forEach(k => {
+            const row = document.createElement('div');
+            row.style = "display:flex; align-items:center; margin-bottom:5px; gap:10px;";
+            const savedVal = currentFbValues[k] || '';
+            row.innerHTML = `
+                <span style="width:80px; font-weight:bold;">कि.नं. ${toNepaliNum(k)}:</span>
+                <input type="text" class="fb-virah-input" data-kit="${k}" value="${savedVal}" 
+                       placeholder="विरह/किसिम (उदा: अब्बल बारी)" 
+                       oninput="updatePreview(); saveToLocal();" style="flex:1;">
+            `;
+            fbContainer.appendChild(row);
+        });
+    }
+}
     function renderCheckboxes(containerId, kittas, prefix) {
         const container = document.getElementById(containerId);
         // Save state
@@ -332,9 +452,13 @@
                 if (target.setSelectionRange) target.setSelectionRange(start, end);
                 updatePreview();
                 saveToLocal();
+                    debouncedUpdate();
+
             }
         });
     };
+    document.querySelector('.form-pane').addEventListener('change', debouncedUpdate);
+
 
     // --- APPLICANT LOGIC ---
     function handleRelChange() {
@@ -357,7 +481,7 @@
             rel2N: document.getElementById('inp_rel2_name').value
         };
         applicants.push(app);
-        renderApplicantList(); updateDatalist(); updatePreview();
+        renderApplicantList(); updateDatalist(); debouncedUpdate(); updatePreview();
 
         if (mode === 'new') {
             document.getElementById('inp_app_name').value = '';
@@ -372,8 +496,20 @@
         }
         document.getElementById('inp_app_name').focus();
     }
-    function removeApplicant(idx) { applicants.splice(idx, 1); renderApplicantList(); updateDatalist(); updatePreview(); }
-    function renderApplicantList() {
+function removeApplicant(idx) {
+    if(confirm("के तपाईं यो निवेदकलाई हटाउन चाहनुहुन्छ?")) {
+        applicants.splice(idx, 1);
+        renderApplicantList();
+        updateDatalist();
+        
+        // हटाउने बित्तिकै सिफारिस बक्स अपडेट गर्न यो कल गर्नुहोस्
+        if(typeof debouncedUpdate === 'function') {
+            debouncedUpdate();
+        } else {
+            smartUpdateRecommendation();
+        }
+    }
+}    function renderApplicantList() {
         const div = document.getElementById('applicant_list_container'); div.innerHTML = '';
         applicants.forEach((app, i) => {
             const d = document.createElement('div'); d.className = 'list-item';
@@ -417,7 +553,7 @@
     function addLandRowHTML(vdcVal, wardVal) {
         const tbody = document.querySelector('#land_table tbody');
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="text" class="l-vdc" value="${vdcVal}" oninput="updateKittaSelectors(); updatePreview()"></td><td><input type="text" class="l-ward" value="${wardVal}" oninput="updatePreview()"></td><td><input type="text" class="l-kit" oninput="updateKittaSelectors(); updatePreview()"></td><td><input type="text" class="l-area" oninput="updatePreview()"></td><td><input type="text" class="l-khalo" oninput="updatePreview()"></td><td><input type="text" class="l-virah" oninput="updatePreview()"></td><td><input type="text" class="l-kisim" oninput="updatePreview()"></td><td><input type="text" class="l-prakriti" value="रैकर" oninput="updatePreview()"></td><td style="text-align:center;"><button class="btn btn-red" style="margin:0;" onclick="removeRow(this)">X</button></td>`;
+        tr.innerHTML = `<td><input type="text" class="l-vdc" value="${vdcVal}" oninput="updateKittaSelectors(); updatePreview()"></td><td><input type="text" class="l-ward" value="${wardVal}" oninput="updatePreview()"></td><td><input type="text" class="l-kit" style="width: 50px;" oninput="updateKittaSelectors(); updatePreview()"></td><td><input type="text" class="l-area" style="width: 82px;" oninput="updatePreview()"></td><td><input type="text" class="l-khalo" oninput="updatePreview()"></td><td><input type="text" class="l-virah"  oninput="updatePreview()"></td><td><input type="text" class="l-prakriti" value="रैकर" oninput="updatePreview()"></td><td style="text-align:center;"><button class="btn btn-red" style="margin:0;" onclick="removeRow(this)">X</button></td>`;
         tbody.appendChild(tr); return tr;
     }
     function addSameGavisa() {
@@ -432,8 +568,14 @@ function addNewGavisa(doFocus = true) { // Added parameter
         updatePreview();
         // Only focus if requested (True for buttons, False for page load)
         if(doFocus) newRow.querySelector('.l-vdc').focus(); 
-    }    function removeRow(btn) { btn.closest('tr').remove(); updateKittaSelectors(); updatePreview(); }
-
+    }   
+function removeRow(btn) {
+    if(confirm("के तपाईं यो विवरण हटाउन चाहनुहुन्छ?")) {
+        btn.closest('tr').remove();
+        updateKittaSelectors(); // कित्ता लिस्ट अपडेट गर्ने
+        debouncedUpdate();      // सिफारिस बक्स अपडेट गर्ने र डाटा सेभ गर्ने
+    }
+}
     function toggleMohi() {
         const val = document.querySelector('input[name="mohi_opt"]:checked').value;
         document.getElementById('mohi_section').classList.toggle('hidden', val === 'chhaina');
@@ -493,6 +635,145 @@ function addNewGavisa(doFocus = true) { // Added parameter
         return spans;
     }
 
+function smartUpdateRecommendation() {
+    const recBox = document.getElementById('q22');
+    if (!recBox) return;
+
+    let currentText = recBox.value;
+
+    // १. नयाँ निवेदक वाक्यांश तयार गर्ने
+    let applicantNames = [];
+    if (applicants.length > 0) {
+        applicantNames = applicants.map(a => a.name);
+    } else {
+        const rawName = document.getElementById('inp_app_name').value.trim();
+        if (rawName) applicantNames = [rawName];
+    }
+
+    let newNamePhrase = "................ हकदार हुन्"; 
+    if (applicantNames.length > 0) {
+        if (applicantNames.length === 1) {
+            newNamePhrase = `निवेदक <b>${applicantNames[0]}</b> हकदार हुन्`;
+        } else {
+            let namesJoined = joinWithRa(applicantNames);
+            newNamePhrase = `निवेदकहरू <b>${namesJoined}</b> हकदारहरू हुन्`;
+        }
+    }
+
+    // २. नयाँ जग्गा र दर्ता प्रकार विवरण
+    let newLandText = getLandDescriptionOnly();
+    const newType = document.querySelector('input[name="req_type"]:checked').value;
+
+    // ३. बक्स खाली छ भने नयाँ भर्ने
+    if (currentText.trim() === "") {
+        const extraPramaan = document.getElementById('q5_extra').value || 'छैन';
+        currentText = `मिसिल साथ संलग्न फिल्डबुक, साबिक लगत, साबिक तिरोको दरपिठ रसिद, १ नं. र २ नं. अनुसूचिका फारम, किटानी हकदार र हकभोग खुलेको स्थानीय निकायको सिफारिस, ${extraPramaan}, हकदाबी सम्बन्धि प्रकाशित ३५ दिने सार्वजनिक सूचना, सोको म्याद भुक्तान हुँदा कोही कसैको पनि नपरेको दाबी विरोध, कार्यालयको तर्फबाट बुझिएको स्थलगत सर्जमिन सिफारिसबाट समेत ${newNamePhrase} भन्ने कुरामा मतैक्य रहेको देखिएको हुँदा निजका नाउँमा ${newLandText} को जग्गा ${newType} गरी श्रेष्ता पुर्जा कायम गरिदिन आवश्यक निर्णय सहित सिफारिस गरियो ।`;
+        recBox.value = currentText;
+    } 
+    // ४. स्मार्ट रिप्लेसमेन्ट (हटाउँदा पनि काम गर्ने गरी)
+    else {
+        let changed = false;
+
+        // नाम र व्याकरण अपडेट (यदि पुरानो भेटिएन भने व्याकरणको प्याटर्नबाट खोज्ने)
+        if (newNamePhrase !== lastNamePhrase) {
+            if (currentText.includes(lastNamePhrase)) {
+                currentText = currentText.replace(lastNamePhrase, newNamePhrase);
+                changed = true;
+            } else {
+                // FALLBACK: यदि 'Link' टुट्यो भने "हकदार हुन" वा "हकदारहरू हुन्" भएको वाक्य खोजेर बदल्ने प्रयास गर्ने
+                const pattern = /निवेदक(हरू)? .* हकदार(हरू)? हुन्?/;
+                if (pattern.test(currentText)) {
+                    currentText = currentText.replace(pattern, newNamePhrase);
+                    changed = true;
+                }
+            }
+            lastNamePhrase = newNamePhrase;
+        }
+
+        // जग्गा विवरण अपडेट
+if (newLandText !== lastLandText) {
+    if (currentText.includes(lastLandText)) {
+        currentText = currentText.replace(lastLandText, newLandText);
+        changed = true;
+    } else {
+        // FALLBACK: यदि 'Link' टुट्यो भने "साबिक ... को जग्गा" भएको खण्ड खोज्ने
+        // यसले 'साबिक' देखि 'को जग्गा' सम्मको सबैलाई नयाँ विवरणले रिप्लेस गर्छ
+        const landPattern = /साबिक .* को कि\.नं\. .* को जग्गा/;
+        if (landPattern.test(currentText)) {
+            currentText = currentText.replace(landPattern, newLandText + " को जग्गा");
+            changed = true;
+        }
+    }
+    lastLandText = newLandText;
+}
+
+        // दर्ता प्रकार अपडेट
+        if (newType !== lastType) {
+            if (currentText.includes(lastType)) {
+                currentText = currentText.replace(lastType, newType);
+                changed = true;
+            }
+            lastType = newType;
+        }
+
+        if (changed) {
+            recBox.value = currentText;
+        }
+    }
+}
+
+//     function generateRecommendationText() {
+//     const typeVal = document.querySelector('input[name="req_type"]:checked').value;
+//     const firstAppName = (applicants.length > 0) ? applicants[0].name : '................';
+//     const extraPramaan = document.getElementById('q5_extra').value ? document.getElementById('q5_extra').value + ',' : '';
+    
+//     // जग्गाको विवरण (recText) निकाल्ने लजिक
+//     const lVdcs = document.querySelectorAll('.l-vdc');
+//     const lWards = document.querySelectorAll('.l-ward');
+//     const lKits = document.querySelectorAll('.l-kit');
+    
+//     let landDataSummary = [];
+//     for (let i = 0; i < lVdcs.length; i++) {
+//         if(lKits[i].value) {
+//             landDataSummary.push({ vdc: lVdcs[i].value, ward: lWards[i].value, kit: lKits[i].value });
+//         }
+//     }
+
+//     let recText = "................";
+//     if (landDataSummary.length > 0) {
+//         let vdcMap = {};
+//         landDataSummary.forEach(d => {
+//             if (!vdcMap[d.vdc]) vdcMap[d.vdc] = {};
+//             if (!vdcMap[d.vdc][d.ward]) vdcMap[d.vdc][d.ward] = [];
+//             vdcMap[d.vdc][d.ward].push(d.kit);
+//         });
+//         let vdcParts = [];
+//         for (let vdc in vdcMap) {
+//             let wardParts = [];
+//             for (let ward in vdcMap[vdc]) {
+//                 wardParts.push(`वडा नं. ${ward} को कि.नं. ${joinWithRa(vdcMap[vdc][ward])}`);
+//             }
+//             vdcParts.push(`साबिक ${vdc} गा.वि.स. ${joinWithRa(wardParts)}`);
+//         }
+//         recText = joinWithRa(vdcParts);
+//     }
+
+//     const text = `मिसिल साथ संलग्न फिल्डबुक, साबिक लगत, साबिक तिरोको दरपिठ रसिद, १ नं. र २ नं. अनुसूचिका फारम, किटानी हकदार र हकभोग खुलेको स्थानीय निकायको सिफारिस, ${extraPramaan} हकदाबी सम्बन्धि प्रकाशित ३५ दिने सार्वजनिक सूचना, सोको म्याद भुक्तान हुँदा कोही कसैको पनि नपरेको दाबी विरोध, कार्यालयको तर्फबाट बुझिएको स्थलगत सर्जमिन सिफारिसबाट समेत निवेदक <b>${firstAppName} ${applicants.length > 1 ? 'समेत' : ''}</b> हकदार हुन भन्ने कुरामा मतैक्य रहेको देखिएको हुँदा निजका नाउँमा ${recText} को जग्गा ${typeVal} गरी श्रेष्ता पुर्जा कायम गरिदिन आवश्यक निर्णय सहित सिफारिस गरियो ।`;
+    
+//     document.getElementById('q22').value = text;
+//     updatePreview(); // प्रिभ्युलाई अपडेट गर्ने
+// }
+
+let debounceTimer;
+
+function debouncedUpdate() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        smartUpdateRecommendation(); // पहिले टेक्स्ट अपडेट गर्ने
+        updatePreview();             // अनि मात्र प्रिभ्यु देखाउने
+        saveToLocal();               // अनि सेभ गर्ने
+    }, 300); 
+}
     // --- PREVIEW LOGIC ---
 // --- PREVIEW LOGIC ---
     function updatePreview() {
@@ -502,6 +783,9 @@ function addNewGavisa(doFocus = true) { // Added parameter
         const date = getValue('date'); const regNo = getValue('reg_no');
         let subject = getValue('subject_opt');
         if (subject === 'custom') subject = getValue('subject_custom');
+
+        const recommendationFinal = getValue('q22') || '<i style="color:red;">[विवरण भरेर "सिफारिस तयार पार्नुहोस्" बटन थिच्नुहोस्]</i>';
+
 
         let applicantTableHTML = '';
         let applicantNames = [];
@@ -547,7 +831,6 @@ function addNewGavisa(doFocus = true) { // Added parameter
         const lAreas = document.querySelectorAll('.l-area');
         const lKhalos = document.querySelectorAll('.l-khalo');
         const lVirahs = document.querySelectorAll('.l-virah');
-        const lKisims = document.querySelectorAll('.l-kisim');
         const lPrakritis = document.querySelectorAll('.l-prakriti');
 
         const isMohiEnabled = document.querySelector('input[name="mohi_opt"]:checked').value === 'chha';
@@ -573,7 +856,7 @@ function addNewGavisa(doFocus = true) { // Added parameter
             landData.push({
                 vdc: lVdcs[i].value, ward: lWards[i].value, kit: kit,
                 area: lAreas[i].value, khalo: lKhalos[i].value, virah: lVirahs[i].value,
-                kisim: lKisims[i].value, prakriti: lPrakritis[i].value,
+                 prakriti: lPrakritis[i].value,
                 mohi: rowMohi, jhagada: rowJhagada,
                 owner9a: isNamsari ? getValue('old_owner_name') : firstAppName,
                 fbRemark: rowFbRemark,
@@ -585,8 +868,12 @@ function addNewGavisa(doFocus = true) { // Added parameter
         let sec3Rows = '', sec9aRows = '', sec9bRows = '';
         const landRec = getValue('land_rec_no');
 
-        landData.forEach((row, i) => {
-            const sp = spans[i];
+landData.forEach((row, i) => {
+    const sp = spans[i];
+    
+    // 1. Get the specific Fieldbook Virah for this kitta
+    const fbInput = document.querySelector(`.fb-virah-input[data-kit="${row.kit}"]`);
+    const fieldbookVirah = fbInput ? fbInput.value : ''; // Separate from row.virah/row.kisim
             sec3Rows += '<tr>';
             if (sp.vdc > 0) {
                 sec3Rows += `<td rowspan="${sp.vdc}">${row.vdc}</td>`;
@@ -599,14 +886,17 @@ function addNewGavisa(doFocus = true) { // Added parameter
             sec3Rows += `<td>${row.prakriti}</td>`;
             if (sp.vdc > 0) sec3Rows += `<td rowspan="${sp.vdc}">${row.vdc}</td>`;
             if (sp.ward > 0) sec3Rows += `<td rowspan="${sp.ward}">${row.ward}</td>`;
-            sec3Rows += `<td>${row.kit}</td><td>${row.area}</td><td>${row.virah} ${row.kisim}</td></tr>`;
+            sec3Rows += `<td>${row.kit}</td><td>${row.area}</td><td>${row.virah}</td></tr>`;
 
-            sec9aRows += '<tr>';
-            if (sp.vdc > 0) sec9aRows += `<td rowspan="${sp.vdc}">${row.vdc}</td>`;
-            sec9aRows += `<td>${row.ward} / ${row.kit}</td>`;
-            if (sp.owner9a > 0) sec9aRows += `<td rowspan="${sp.owner9a}">${row.owner9a}</td>`;
-            sec9aRows += `<td>${row.mohi}</td><td>${row.fbRemark}</td>`;
-            sec9aRows += `<td>उल्लेख छैन</td><td>${row.jhagada}</td><td>${row.virah} ${row.kisim}</td></tr>`;
+    sec9aRows += '<tr>';
+    if (sp.vdc > 0) sec9aRows += `<td rowspan="${sp.vdc}">${row.vdc}</td>`;
+    sec9aRows += `<td>${row.ward} / ${row.kit}</td>`;
+    if (sp.owner9a > 0) sec9aRows += `<td rowspan="${sp.owner9a}">${row.owner9a}</td>`;
+    sec9aRows += `<td>${row.mohi}</td><td>${row.fbRemark}</td>`;
+    sec9aRows += `<td>उल्लेख छैन</td><td>${row.jhagada}</td>`;
+    
+    // 2. Change THIS line to use the new fieldbookVirah variable
+    sec9aRows += `<td>${fieldbookVirah}</td></tr>`; 
 
             sec9bRows += '<tr>';
             if (sp.vdc > 0) sec9bRows += `<td rowspan="${sp.vdc}">${row.vdc}</td>`;
@@ -738,79 +1028,113 @@ function addNewGavisa(doFocus = true) { // Added parameter
                 <div style="margin-left: 20px; margin-bottom:8px;">${replacer(getValue('q21'))}</div>
             </div>
 
-            <div class="bold-text" style="margin-bottom: 5px;">२२. समितिको सिफारिसः-</div>
-            <div style="text-align: justify; margin-bottom: 30px;">मिसिल साथ संलग्न फिल्डबुक, साबिक लगत, साबिक तिरोको दरपिठ रसिद, १ नं. र २ नं. अनुसूचिका फारम, किटानी हकदार र हकभोग खुलेको स्थानीय निकायको सिफारिस, ${getValue('q5_extra') ? getValue('q5_extra') + ',' : ''} हकदाबी सम्बन्धि प्रकाशित ३५ दिने सार्वजनिक सूचना, सोको म्याद भुक्तान हुँदा कोही कसैको पनि नपरेको दाबी विरोध, कार्यालयको तर्फबाट बुझिएको स्थलगत सर्जमिन सिफारिसबाट समेत निवेदक <b>${firstAppName} ${applicants.length > 1 ? 'समेत' : ''}</b> हकदार हुन भन्ने कुरामा मतैक्य रहेको देखिएको हुँदा निजका नाउँमा ${recText} को जग्गा ${typeText} गरी श्रेष्ता पुर्जा कायम गरिदिन आवश्यक निर्णय सहित सिफारिस गरियो ।</div>
-            
+
+        <div class="bold-text">२२. समितिको सिफारिसः-</div>
+        <div style="text-align: justify; margin-bottom: 30px;">${recommendationFinal}</div>
             <table style="width:100%; border:none; margin-top:30px;"><tr><td style="border:none; text-align:center; vertical-align:top;">...........................<br>भूमि प्रशासन कार्यालयको<br>वरिष्ठ कर्मचारी<br>सदस्य</td><td style="border:none; text-align:center; vertical-align:top;">...........................<br>नापी कार्यालयको <br>प्रतिनिधि<br>सदस्य</td><td style="border:none; text-align:center; vertical-align:top;">...........................<br>प्रमुख भूमि प्रशासन अधिकृत<br>अध्यक्ष</td></tr></table>
         `;
         document.getElementById('print-preview').innerHTML = html;
         window.generatedAppName = firstAppName || 'निवेदक';
+
     }
 
-    function saveToLocal() {
-        const inputs = {};
-        document.querySelectorAll('input:not([id^="mohi_assign"]), textarea, select').forEach(el => {
-            if (el.id) inputs[el.id] = (el.type === 'checkbox' || el.type === 'radio') ? el.checked : el.value;
-            else if (el.name && el.type === 'radio' && el.checked) inputs[el.name] = el.value;
-        });
-        const heirRows = [];
-        document.querySelectorAll('#heir_table tbody tr').forEach(tr => {
-            heirRows.push({ rel: tr.querySelector('.h-rel').value, name: tr.querySelector('.h-name').value, rem: tr.querySelector('.h-rem').value });
-        });
-        const landRows = [];
-        document.querySelectorAll('#land_table tbody tr').forEach(tr => {
-            landRows.push({
-                vdc: tr.querySelector('.l-vdc').value, ward: tr.querySelector('.l-ward').value, kit: tr.querySelector('.l-kit').value,
-                area: tr.querySelector('.l-area').value, khalo: tr.querySelector('.l-khalo').value, virah: tr.querySelector('.l-virah').value,
-                kisim: tr.querySelector('.l-kisim').value, prakriti: tr.querySelector('.l-prakriti').value
-            });
-        });
-        const data = { inputs, applicants, mohiGroups, fbRemarkGroups, heirRows, landRows };
-        localStorage.setItem(FORM_KEY, JSON.stringify(data));
-    }
+function saveToLocal() {
+    const inputs = {};
+    document.querySelectorAll('input:not([id^="mohi_assign"]), textarea, select').forEach(el => {
+        if (el.id) inputs[el.id] = (el.type === 'checkbox' || el.type === 'radio') ? el.checked : el.value;
+        else if (el.name && el.type === 'radio' && el.checked) inputs[el.name] = el.value;
+    });
 
-    function restoreFromLocal() {
-        try {
-            const raw = localStorage.getItem(FORM_KEY);
-            if (!raw) return false;
-            const data = JSON.parse(raw);
-            if (!data.landRows) return false;
-
-            applicants = data.applicants || []; renderApplicantList();
-            mohiGroups = data.mohiGroups || []; renderMohiList();
-            fbRemarkGroups = data.fbRemarkGroups || []; renderFbRemarkList();
-            
-            document.querySelector('#heir_table tbody').innerHTML = '';
-            (data.heirRows || []).forEach(row => {
-                addHeirRow(); const tr = document.querySelector('#heir_table tbody tr:last-child');
-                tr.querySelector('.h-rel').value = row.rel; tr.querySelector('.h-name').value = row.name; tr.querySelector('.h-rem').value = row.rem;
-            });
-
-            document.querySelector('#land_table tbody').innerHTML = '';
-            (data.landRows || []).forEach(row => {
-                const tr = addLandRowHTML(row.vdc, row.ward);
-                tr.querySelector('.l-kit').value = row.kit; tr.querySelector('.l-area').value = row.area;
-                tr.querySelector('.l-khalo').value = row.khalo; tr.querySelector('.l-virah').value = row.virah;
-                tr.querySelector('.l-kisim').value = row.kisim; tr.querySelector('.l-prakriti').value = row.prakriti;
-            });
-
-            // IMPORTANT: Build Checkbox DOM BEFORE restoring input values
-            updateKittaSelectors(); 
-
-            for (const [key, val] of Object.entries(data.inputs)) {
-                const el = document.getElementById(key);
-                if (el) { (el.type === 'checkbox') ? el.checked = val : el.value = val; }
-                else { const radio = document.querySelector(`input[name="${key}"][value="${val}"]`); if (radio) radio.checked = true; }
-            }
-
-            checkSubject(); toggleMohi(); toggleJhagada();
-            return true;
-        } catch (e) {
-            console.error("Data Corrupted", e);
-            localStorage.removeItem(FORM_KEY);
-            return false;
+    // --- ADD THIS BLOCK TO SAVE FB VIRAH VALUES ---
+    const fbVirahValues = {};
+    document.querySelectorAll('.fb-virah-input').forEach(inp => {
+        if (inp.dataset.kit) {
+            fbVirahValues[inp.dataset.kit] = inp.value;
         }
+    });
+
+    const heirRows = [];
+    document.querySelectorAll('#heir_table tbody tr').forEach(tr => {
+        heirRows.push({ rel: tr.querySelector('.h-rel').value, name: tr.querySelector('.h-name').value, rem: tr.querySelector('.h-rem').value });
+    });
+
+// saveToLocal भित्र यो चेक गर्नुहोस्:
+const landRows = [];
+document.querySelectorAll('#land_table tbody tr').forEach(tr => {
+    landRows.push({
+        vdc: tr.querySelector('.l-vdc').value,
+        ward: tr.querySelector('.l-ward').value,
+        kit: tr.querySelector('.l-kit').value,
+        area: tr.querySelector('.l-area').value,
+        khalo: tr.querySelector('.l-khalo').value,
+        virah: tr.querySelector('.l-virah').value,
+        prakriti: tr.querySelector('.l-prakriti').value
+    });
+});
+    // Include fbVirahValues in the final object
+    const data = { inputs, applicants, mohiGroups, fbRemarkGroups, heirRows, landRows, fbVirahValues, lastNameText, lastLandText, lastType,     lastNamePhrase,
+ };
+    localStorage.setItem(FORM_KEY, JSON.stringify(data));
+}
+
+function restoreFromLocal() {
+    try {
+        const raw = localStorage.getItem(FORM_KEY);
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (!data.landRows) return false;
+
+        applicants = data.applicants || []; renderApplicantList();
+        mohiGroups = data.mohiGroups || []; renderMohiList();
+        fbRemarkGroups = data.fbRemarkGroups || []; renderFbRemarkList();
+        // डाटा रिस्टोर गर्दा यी पनि रिस्टोर गर्ने
+lastNameText = data.lastNameText || "................";
+// restoreFromLocal फङ्सन भित्र थप्नुहोस्:
+lastNamePhrase = data.lastNamePhrase || "................ हकदार हुन";
+lastLandText = data.lastLandText || "................";
+lastType = data.lastType || "";
+        
+        document.querySelector('#heir_table tbody').innerHTML = '';
+        (data.heirRows || []).forEach(row => {
+            addHeirRow(false, false); 
+            const tr = document.querySelector('#heir_table tbody tr:last-child');
+            tr.querySelector('.h-rel').value = row.rel; tr.querySelector('.h-name').value = row.name; tr.querySelector('.h-rem').value = row.rem;
+        });
+
+        document.querySelector('#land_table tbody').innerHTML = '';
+        (data.landRows || []).forEach(row => {
+            const tr = addLandRowHTML(row.vdc, row.ward);
+            tr.querySelector('.l-kit').value = row.kit; tr.querySelector('.l-area').value = row.area;
+            tr.querySelector('.l-khalo').value = row.khalo; tr.querySelector('.l-virah').value = row.virah;
+             tr.querySelector('.l-prakriti').value = row.prakriti;
+        });
+
+        // 1. First, generate the dynamic UI elements based on restored Kitta numbers
+        updateKittaSelectors(); 
+
+        // 2. NOW restore the specific Fieldbook Virah values into those generated boxes
+        if (data.fbVirahValues) {
+            for (const [kit, val] of Object.entries(data.fbVirahValues)) {
+                const inp = document.querySelector(`.fb-virah-input[data-kit="${kit}"]`);
+                if (inp) inp.value = val;
+            }
+        }
+
+        // 3. Restore all other standard inputs
+        for (const [key, val] of Object.entries(data.inputs)) {
+            const el = document.getElementById(key);
+            if (el) { (el.type === 'checkbox') ? el.checked = val : el.value = val; }
+            else { const radio = document.querySelector(`input[name="${key}"][value="${val}"]`); if (radio) radio.checked = true; }
+        }
+
+        checkSubject(); toggleMohi(); toggleJhagada();
+        return true;
+    } catch (e) {
+        console.error("Data Corrupted", e);
+        localStorage.removeItem(FORM_KEY);
+        return false;
     }
+}
 
     function resetForm() { if (confirm("Are you sure?")) { localStorage.removeItem(FORM_KEY); location.reload(); } }
     document.querySelector('.form-pane').addEventListener('input', saveToLocal);

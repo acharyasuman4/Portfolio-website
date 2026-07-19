@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>नामसारी-आदेश, सूचना र पत्र</title>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
+        <meta name="description"
+        content="नामसारीको ३५ दिने सार्वजानिक सूचना प्रकाशन गर्ने आदेश, सूचना र पत्र तयार गर्नुहोस्।">
+
+    <!-- ३. कीवर्डहरू (Keywords) -->
+    <meta name="keywords"
+        content="acharyasuman, acharyasuman4, मालपोत, नामसारी, death transfer, land transfer, ३५ दिने सार्वजानिक सूचना,नामसारीको सार्वजानिक सुचनाको आदेश, नामसारीको सूचना आदेश, नामसारी सुचना, पत्र, जग्गा नामसारी, नामसारी सूचना, जग्गा हस्तान्तरण, जग्गा नामसारी प्रक्रिया, नामसारी सूचना कसारी तयार गर्ने ?, नामसारी टिप्पणीको नमुना, टिप्पणीको नमुना, कार्यलयमा प्रयोग हुने टिप्पणीको नमुना " 
+        ;>
+
+    <!-- ४. सामाजिक सञ्जालका लागि (Open Graph Tags) - फेसबुकमा लिङ्क सेयर गर्दा राम्रो देखिनका लागि -->
+    <meta property="og:title" content="नामसारी सूचना आदेश र पत्र ">
+    <meta property="og:description" content="कार्यलयको नामसारी ३५ दिने सार्वजानिक सूचना तयार गर्न सहयोगी">
+    <meta property="og:url" content="https://acharyasuman4.com.np/tippani/namsari%20suchana%20aades/">
+
     <style>
         /* RESET & BODY */
         * {
@@ -29,28 +42,31 @@
         }
 
         /* LEFT: INPUT PANEL */
-        .input-panel {
-            flex: 0 0 340px;
-            background: white;
-            padding: 15px;
-            border-right: 1px solid #94a3b8;
-            overflow-y: auto;
-            height: 100%;
-            z-index: 10;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        }
+/* 1. UPDATE THIS: Changed flex from fixed 340px to 1 (fill space) */
+/* LEFT: INPUT PANEL - Modified to fill space */
+.input-panel {
+    flex: 1; /* Changed from 0 0 340px to 1 to fill available space */
+    min-width: 350px; /* Prevents it from getting too small */
+    background: white;
+    padding: 15px;
+    border-right: 1px solid #94a3b8;
+    overflow-y: auto;
+    height: 100%;
+    z-index: 10;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+}
 
-        /* RIGHT: PREVIEW AREA */
-        .preview-container {
-            flex: 1;
-            background: #94a3b8;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-            padding: 20px 0;
-        }
-
+/* RIGHT: PREVIEW AREA - Modified to center the A4 */
+.preview-container {
+    flex: 2; /* Adjust this number to control the ratio (e.g., 1 for 50/50) */
+    background: #94a3b8;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Keeps the A4 centered horizontally */
+    overflow-y: auto;
+    padding: 20px;
+}
         .zoom-wrapper {
             transform: scale(1);
             transform-origin: top center;
@@ -305,7 +321,7 @@
 </div>
             <div class="input-group" style="background:#f8fafc;">
                 <!-- HIDDEN PATRA SANKHYA -->
-                <input type="hidden" id="in_p_s" value="०८२।८३">
+                <input type="hidden" id="in_p_s" value="०८३।८४">
 
                 <div class="row-2">
                     <div><label>च.नं.:</label><input type="text" id="in_c_n" oninput="scheduleUpdate()"

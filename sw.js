@@ -1,5 +1,5 @@
 // १. क्यासको नाम (भविष्यमा अपडेट गर्दा v3 लाई v4 बनाउनुहोस्)
-const CACHE_NAME = 'acharyasuman-portal-v4'; 
+const CACHE_NAME = 'acharyasuman-portal-v5'; 
 
 const ASSETS_TO_CACHE = [
   './',
@@ -15,8 +15,10 @@ const ASSETS_TO_CACHE = [
   './tippani/namsari%20suchana%20aades/',
   './tippani/namsari_tippani/',
   './tippani/sansodhan/',
+  './tippani/pratilipi_purja/',
   './tippani/sansodhan_tippani/',
   './tippani/jagga%20darta%20sifaris/',
+  './tool/advance_rajaswo_calculator.html',
   
   // स्थानीय बनाइएका फाइलहरू (तपाईँले मेन फोल्डरमा राखेका)
   './tailwind.min.js',
