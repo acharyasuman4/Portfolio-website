@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <title>Guthi Admin Pro - Kutabali Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .active-tab { border-bottom: 4px solid #2563eb; color: #2563eb; background: #eff6ff; font-weight: bold; }
+        input[type="number"] { width: 45px; text-align: center; font-size: 0.75rem; border-radius: 4px; border: 1px solid #cbd5e1; padding: 2px; }
+        .sticky-col { position: sticky; left: 0; background: #f8fafc; z-index: 10; border-right: 2px solid #e2e8f0; }
+        .linked-cell { background-color: #f0fdf4 !important; }
+        .unit-label { font-size: 9px; color: #64748b; display: block; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-[98%] mx-auto py-6">
+        <!-- HEADER -->
+        <div class="bg-slate-900 text-white p-5 rounded-t-2xl flex justify-between items-center shadow-lg">
+            <div>
+                <h1 class="text-2xl font-bold">Guthi Admin: Kutabali Portal</h1>
+                <p class="text-slate-400 text-xs">कुतबाली तथा धानको दररेट व्यवस्थापन</p>
+            </div>
+            <div class="flex gap-2">
+                <input type="file" id="importJson" class="hidden" onchange="importData(event)">
+                <button onclick="document.getElementById('importJson').click()" class="bg-slate-700 px-4 py-2 rounded-lg hover:bg-slate-600 text-sm">JSON अपलोड</button>
+                <button onclick="exportData()" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-500 text-sm font-bold">JSON डाउनलोड</button>
+                <button onclick="clearLocalStorage()" class="bg-red-600 px-4 py-2 rounded-lg text-sm">सबै रिसेट</button>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="flex bg-white border-b shadow-sm">
+            <button onclick="showTab('setup')" id="tab-setup" class="flex-1 py-4 hover:bg-gray-50 active-tab">१. मुख्य सेटअप (FY, Types)</button>
+            <button onclick="showTab('linking')" id="tab-linking" class="flex-1 py-4 hover:bg-gray-50">२. क्षेत्र कन्फिगरेसन</button>
+            <button onclick="showTab('rates')" id="tab-rates" class="flex-1 py-4 hover:bg-gray-50">३. दररेट इन्ट्री</button>
+        </div>
+
+        <!-- TAB 1: SETUP -->
+        <div id="setup" class="tab-content active bg-white p-6 rounded-b-2xl shadow">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Date & FY -->
+                <div class="p-5 bg-blue-50 rounded-xl border border-blue-100 space-y-4">
+                    <h3 class="font-bold text-blue-800 border-b border-blue-200 pb-2">आर्थिक वर्ष</h3>
+                    <div class="grid grid-cols-1 gap-2">
+                        <div><label class="block text-xs font-bold mb-1">चालु आ.व.</label><input type="text" id="activeFY" class="w-full p-2 border rounded" onchange="updateConfig()"></div>
+                    </div>
+                    <div class="mt-4 p-4 bg-white rounded-lg">
+                        <label class="text-xs font-bold">आ.व. रेन्ज (देखि - सम्म):</label>
+                        <div class="flex gap-2 mt-1"><input type="number" id="fyStart" placeholder="46" class="flex-1"><input type="number" id="fyEnd" placeholder="83" class="flex-1"></div>
+                        <button onclick="generateFYRange()" class="w-full mt-2 bg-blue-600 text-white px-4 py-2 rounded font-bold">Generate Years</button>
+                    </div>
+                </div>
+
+                <!-- Body Types -->
+                <div class="p-5 bg-emerald-50 rounded-xl border border-emerald-100">
+                    <h3 class="font-bold text-emerald-800 border-b border-emerald-200 pb-2 mb-4">स्थानीय तहका प्रकारहरू</h3>
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="newBT" class="flex-1 p-2 border rounded" placeholder="उदा: महानगर">
+                        <button onclick="addItem('allBTs', 'newBT')" class="bg-emerald-600 text-white px-4 py-2 rounded font-bold">+</button>
+                    </div>
+                    <div id="btList" class="flex flex-wrap gap-2"></div>
+                </div>
+
+                <!-- Land Types -->
+                <div class="p-5 bg-amber-50 rounded-xl border border-amber-100">
+                    <h3 class="font-bold text-amber-800 border-b border-amber-200 pb-2 mb-4">जग्गाको किसिम</h3>
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="newLT" class="flex-1 p-2 border rounded" placeholder="उदा: खेत अब्बल">
+                        <button onclick="addItem('allLTs', 'newLT')" class="bg-amber-600 text-white px-4 py-2 rounded font-bold">+</button>
+                    </div>
+                    <div id="ltList" class="flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: LINKING -->
+        <div id="linking" class="tab-content bg-white p-6 rounded-b-2xl shadow">
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold">क्षेत्र कन्फिगरेसन (तह र जग्गाको किसिम छनोट)</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="newRegion" class="p-2 border rounded w-64" placeholder="नयाँ क्षेत्रको नाम">
+                        <button onclick="addRegion()" class="bg-slate-800 text-white px-4 py-2 rounded font-bold">+ क्षेत्र थप्नुहोस्</button>
+                    </div>
+                </div>
+                <div id="regionConfigList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+            <div class="border-t pt-6">
+                <h3 class="text-lg font-bold mb-2">लिङ्किङ (Sync Logic)</h3>
+                <div class="flex gap-2 mb-4">
+                    <button onclick="openBulkLinkModal()" class="bg-orange-600 text-white px-4 py-2 rounded-lg font-bold">Bulk Link (क्षेत्र-क्षेत्र)</button>
+                </div>
+                <div id="activeLinksDisplay" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+            </div>
+        </div>
+
+        <!-- TAB 3: RATE ENTRY -->
+        <div id="rates" class="tab-content bg-white p-6 rounded-b-2xl shadow">
+            <div class="flex gap-4 mb-6 border-b pb-4">
+                <button onclick="showRateSubTab('paddy')" id="btn-paddy" class="px-6 py-2 rounded-full bg-blue-100 text-blue-700 font-bold">धानको मूल्य इन्ट्री</button>
+                <button onclick="showRateSubTab('kutabali')" id="btn-kutabali" class="px-6 py-2 rounded-full bg-gray-100 font-bold">कुतबाली दररेट (मुरि/पाथी)</button>
+            </div>
+
+            <!-- Paddy Price Sub-Tab -->
+            <div id="rate-paddy" class="rate-sub-content">
+                <div class="overflow-x-auto border rounded-xl max-h-[600px]">
+                    <table class="w-full text-sm border-collapse">
+                        <thead class="bg-slate-800 text-white sticky top-0">
+                            <tr>
+                                <th class="p-3 border border-slate-700">आर्थिक वर्ष</th>
+                                <th class="p-3 border border-slate-700">उपत्यका भित्र (धानको मूल्य)</th>
+                                <th class="p-3 border border-slate-700">उपत्यका बाहिर (धानको मूल्य)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paddyPriceTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Kutabali Sub-Tab -->
+            <div id="rate-kutabali" class="rate-sub-content hidden">
+                <div class="mb-4 flex items-center gap-4">
+                    <label class="font-bold">क्षेत्र छान्नुहोस्:</label>
+                    <select id="entryRegionSelect" onchange="renderKutabaliTable()" class="p-2 border rounded bg-white font-bold min-w-[250px]"></select>
+                </div>
+                <div id="kutabaliTableContainer" class="overflow-x-auto border rounded-xl"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="linkModal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <h2 id="modalTitle" class="text-xl font-bold mb-4">Bulk Link Regions</h2>
+            <div id="modalInputs" class="space-y-4"></div>
+            <div class="flex gap-2 mt-6">
+                <button onclick="saveLink()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-bold">Save Link</button>
+                <button onclick="closeModal()" class="flex-1 bg-gray-200 py-2 rounded-lg">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let config = {
+            activeFY: "80/81",
+            allFYs: [],
+            allBTs: ["महानगर", "उपमहानगर", "नगरपालिका", "गाउँपालिका"],
+            allLTs: ["अब्बल", "दोयम", "सीम", "चाहार"],
+            regions: [],
+            regionBTs: {},
+            regionLTs: {},
+            bulkLinks: {}, // targetRegion: sourceRegion
+            paddyPrices: {}, // FY: {valley: 0, outside: 0}
+            kutabaliData: {} // region: { LT: { BT: { muri:0, pathi:0, mana:0, muthi:0 } } }
+        };
+
+        window.onload = () => {
+            const saved = localStorage.getItem('guthi_admin_config');
+            if (saved) config = JSON.parse(saved);
+            renderAll();
+        };
+
+        function save() { localStorage.setItem('guthi_admin_config', JSON.stringify(config)); }
+
+        function clearLocalStorage() { if(confirm("सबै डाटा मेटिनेछ, के तपाइँ निश्चित हुनुहुन्छ?")) { localStorage.removeItem('guthi_admin_config'); location.reload(); } }
+
+        function renderAll() {
+            renderSetup();
+            renderRegionConfig();
+            renderActiveLinks();
+            updateEntrySelects();
+        }
+
+        // TABS
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.flex button').forEach(b => b.classList.remove('active-tab'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('tab-'+id).classList.add('active-tab');
+            if(id === 'rates') showRateSubTab('paddy');
+        }
+
+        function showRateSubTab(type) {
+            document.querySelectorAll('.rate-sub-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById('rate-' + type).classList.remove('hidden');
+            document.getElementById('btn-paddy').className = type === 'paddy' ? 'px-6 py-2 rounded-full bg-blue-600 text-white font-bold' : 'px-6 py-2 rounded-full bg-gray-100 font-bold';
+            document.getElementById('btn-kutabali').className = type === 'kutabali' ? 'px-6 py-2 rounded-full bg-blue-600 text-white font-bold' : 'px-6 py-2 rounded-full bg-gray-100 font-bold';
+            if(type === 'paddy') renderPaddyTable();
+            else renderKutabaliTable();
+        }
+
+        // SETUP
+        function renderSetup() {
+            document.getElementById('activeFY').value = config.activeFY;
+            document.getElementById('btList').innerHTML = config.allBTs.map(bt => `<span class="bg-white border px-3 py-1 rounded text-sm font-bold flex items-center gap-2">${bt} <button onclick="removeItem('allBTs', '${bt}')" class="text-red-500">×</button></span>`).join('');
+            document.getElementById('ltList').innerHTML = config.allLTs.map(lt => `<span class="bg-white border px-3 py-1 rounded text-sm font-bold flex items-center gap-2">${lt} <button onclick="removeItem('allLTs', '${lt}')" class="text-red-500">×</button></span>`).join('');
+        }
+
+        function addItem(listKey, inputId) {
+            const val = document.getElementById(inputId).value.trim();
+            if(val && !config[listKey].includes(val)) {
+                config[listKey].push(val);
+                document.getElementById(inputId).value = '';
+                save(); renderSetup();
+            }
+        }
+
+        function removeItem(listKey, val) {
+            config[listKey] = config[listKey].filter(v => v !== val);
+            save(); renderSetup();
+        }
+
+        function generateFYRange() {
+            const start = parseInt(document.getElementById('fyStart').value);
+            const end = parseInt(document.getElementById('fyEnd').value);
+            if(isNaN(start) || isNaN(end)) return;
+            config.allFYs = [];
+            for(let i=start; i<=end; i++) config.allFYs.push(`${i}/${i+1}`);
+            save(); renderPaddyTable();
+        }
+
+        // REGION CONFIG
+        function addRegion() {
+            const val = document.getElementById('newRegion').value.trim();
+            if(val && !config.regions.includes(val)) {
+                config.regions.push(val);
+                config.regionBTs[val] = [...config.allBTs];
+                config.regionLTs[val] = [...config.allLTs];
+                document.getElementById('newRegion').value = '';
+                save(); renderRegionConfig();
+            }
+        }
+
+        function renderRegionConfig() {
+            const container = document.getElementById('regionConfigList');
+            container.innerHTML = config.regions.map(r => `
+                <div class="p-4 bg-white border-2 rounded-xl shadow-sm">
+                    <div class="flex justify-between mb-2"><span class="font-bold text-slate-800 text-lg">${r}</span><button onclick="removeRegion('${r}')" class="text-red-500 text-xs">हटाउनुहोस्</button></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase">स्थानीय तह छनोट</p>
+                            <div class="flex flex-wrap gap-1 mt-1">${config.allBTs.map(bt => `<label class="text-[10px] flex items-center gap-1 bg-slate-50 px-2 py-1 rounded border"><input type="checkbox" ${config.regionBTs[r]?.includes(bt) ? 'checked' : ''} onchange="toggleArrayItem('regionBTs', '${r}', '${bt}')"> ${bt}</label>`).join('')}</div>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase">जग्गाको किसिम छनोट</p>
+                            <div class="flex flex-wrap gap-1 mt-1">${config.allLTs.map(lt => `<label class="text-[10px] flex items-center gap-1 bg-amber-50 px-2 py-1 rounded border border-amber-200"><input type="checkbox" ${config.regionLTs[r]?.includes(lt) ? 'checked' : ''} onchange="toggleArrayItem('regionLTs', '${r}', '${lt}')"> ${lt}</label>`).join('')}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleArrayItem(key, r, val) {
+            if(!config[key][r]) config[key][r] = [];
+            const idx = config[key][r].indexOf(val);
+            if(idx > -1) config[key][r].splice(idx, 1);
+            else config[key][r].push(val);
+            save();
+        }
+
+        function removeRegion(r) { config.regions = config.regions.filter(reg => reg !== r); delete config.regionBTs[r]; delete config.regionLTs[r]; save(); renderRegionConfig(); }
+
+        // RATES - PADDY
+        function renderPaddyTable() {
+            const tbody = document.getElementById('paddyPriceTableBody');
+            tbody.innerHTML = config.allFYs.map(fy => {
+                const p = config.paddyPrices[fy] || { valley: 0, outside: 0 };
+                return `<tr>
+                    <td class="p-2 border text-center font-bold bg-slate-50">${fy}</td>
+                    <td class="p-2 border text-center"><input type="number" step="0.01" class="!w-32 p-2 border" value="${p.valley}" onchange="updatePaddy('${fy}', 'valley', this.value)"></td>
+                    <td class="p-2 border text-center"><input type="number" step="0.01" class="!w-32 p-2 border" value="${p.outside}" onchange="updatePaddy('${fy}', 'outside', this.value)"></td>
+                </tr>`;
+            }).join('');
+        }
+
+// १. धानको मूल्य प्रोपागेट गर्ने फङ्सन (Replace existing updatePaddy)
+// १. धानको मूल्य प्रोपागेट गर्ने फङ्सन (Left-to-Right र Top-to-Bottom)
+function updatePaddy(fy, type, val) {
+    const value = parseFloat(val) || 0;
+    const startIdx = config.allFYs.indexOf(fy);
+    
+    // वर्तमान वर्षदेखि अन्तिम वर्षसम्म प्रोपागेट गर्ने (Vertical)
+    for (let i = startIdx; i < config.allFYs.length; i++) {
+        const targetFY = config.allFYs[i];
+        if (!config.paddyPrices[targetFY]) config.paddyPrices[targetFY] = { valley: 0, outside: 0 };
+
+        // हाल परिवर्तन गरिएको कोलम अपडेट गर्ने
+        config.paddyPrices[targetFY][type] = value;
+
+        // Left-to-Right logic: यदि 'valley' (बायाँ) चेन्ज गरियो भने 'outside' (दायाँ) पनि अपडेट गर्ने
+        if (type === 'valley') {
+            config.paddyPrices[targetFY]['outside'] = value;
+        }
+    }
+    
+    save();
+    renderPaddyTable();
+}
+
+// २. कुतबाली दररेट प्रोपागेट गर्ने फङ्सन (Replace existing updateKutabali)
+function updateKutabali(r, lt, bt, unit, val) {
+    const value = parseInt(val) || 0;
+    const bts = config.regionBTs[r] || [];
+    const lts = config.regionLTs[r] || [];
+    
+    const startBTIdx = bts.indexOf(bt);
+    const startLTIdx = lts.indexOf(lt);
+
+    // वर्तमान जग्गाको किसिम (LT) देखि तलका सबै LT सम्म
+    for (let i = startLTIdx; i < lts.length; i++) {
+        const targetLT = lts[i];
+        if (!config.kutabaliData[r]) config.kutabaliData[r] = {};
+        if (!config.kutabaliData[r][targetLT]) config.kutabaliData[r][targetLT] = {};
+
+        // वर्तमान स्थानीय तह (BT) देखि दायाँका सबै BT सम्म
+        for (let j = startBTIdx; j < bts.length; j++) {
+            const targetBT = bts[j];
+            if (!config.kutabaliData[r][targetLT][targetBT]) {
+                config.kutabaliData[r][targetLT][targetBT] = { muri: 0, pathi: 0, mana: 0, muthi: 0 };
+            }
+            // तोकिएको युनिट (muri/pathi/mana/muthi) मात्र प्रोपागेट गर्ने
+            config.kutabaliData[r][targetLT][targetBT][unit] = value;
+        }
+    }
+
+    save();
+    renderKutabaliTable(); // अपडेटेड डाटा देखाउन टेबल फेरि रेन्डर गर्ने
+}
+        // RATES - KUTABALI
+        function updateEntrySelects() {
+            const sel = document.getElementById('entryRegionSelect');
+            sel.innerHTML = config.regions.map(r => `<option value="${r}">${r}</option>`).join('');
+        }
+
+        function renderKutabaliTable() {
+            const r = document.getElementById('entryRegionSelect').value;
+            if(!r) return;
+            const bts = config.regionBTs[r] || [];
+            const lts = config.regionLTs[r] || [];
+            const src = config.bulkLinks[r];
+            
+            let h = `<table class="w-full text-xs border-collapse">
+                <thead class="bg-slate-700 text-white">
+                    <tr>
+                        <th rowspan="2" class="p-2 border border-slate-600 sticky-col">जग्गाको किसिम</th>
+                        ${bts.map(bt => `<th colspan="4" class="p-2 border border-slate-600">${bt}</th>`).join('')}
+                    </tr>
+                    <tr>
+                        ${bts.map(() => `<th class="p-1 border border-slate-600">मुरि</th><th class="p-1 border border-slate-600">पाथी</th><th class="p-1 border border-slate-600">माना</th><th class="p-1 border border-slate-600">मुठी</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            lts.forEach(lt => {
+                h += `<tr><td class="p-2 border font-bold bg-slate-50 sticky-col">${lt}</td>`;
+                bts.forEach(bt => {
+                    const d = getKutabaliData(r, lt, bt);
+                    const isL = !!src;
+                    h += `<td class="p-1 border text-center ${isL?'linked-cell':''}">
+                            <input type="number" value="${d.muri}" ${isL?'disabled':''} onchange="updateKutabali('${r}','${lt}','${bt}','muri',this.value)">
+                          </td>
+                          <td class="p-1 border text-center ${isL?'linked-cell':''}">
+                            <input type="number" value="${d.pathi}" ${isL?'disabled':''} onchange="updateKutabali('${r}','${lt}','${bt}','pathi',this.value)">
+                          </td>
+                          <td class="p-1 border text-center ${isL?'linked-cell':''}">
+                            <input type="number" value="${d.mana}" ${isL?'disabled':''} onchange="updateKutabali('${r}','${lt}','${bt}','mana',this.value)">
+                          </td>
+                          <td class="p-1 border text-center ${isL?'linked-cell':''}">
+                            <input type="number" value="${d.muthi}" ${isL?'disabled':''} onchange="updateKutabali('${r}','${lt}','${bt}','muthi',this.value)">
+                          </td>`;
+                });
+                h += `</tr>`;
+            });
+            h += `</tbody></table>`;
+            document.getElementById('kutabaliTableContainer').innerHTML = h;
+        }
+
+        function getKutabaliData(r, lt, bt) {
+            const target = config.bulkLinks[r] || r;
+            if(!config.kutabaliData[target]) config.kutabaliData[target] = {};
+            if(!config.kutabaliData[target][lt]) config.kutabaliData[target][lt] = {};
+            if(!config.kutabaliData[target][lt][bt]) config.kutabaliData[target][lt][bt] = { muri:0, pathi:0, mana:0, muthi:0 };
+            return config.kutabaliData[target][lt][bt];
+        }
+
+
+        // LINKING
+        function openBulkLinkModal() {
+            document.getElementById('modalInputs').innerHTML = `
+                <label class="text-xs font-bold">Source Region (डाटा भएको):</label>
+                <select id="srcR" class="w-full p-2 border rounded">${config.regions.map(r=>`<option value="${r}">${r}</option>`).join('')}</select>
+                <label class="text-xs font-bold mt-2 block">Target Region (लिङ्क गर्ने):</label>
+                <select id="tarR" class="w-full p-2 border rounded">${config.regions.map(r=>`<option value="${r}">${r}</option>`).join('')}</select>
+            `;
+            document.getElementById('linkModal').classList.remove('hidden');
+        }
+
+        function saveLink() {
+            const t = document.getElementById('tarR').value;
+            const s = document.getElementById('srcR').value;
+            if(t === s) return alert("Source र Target एउटै हुन सक्दैन");
+            config.bulkLinks[t] = s;
+            save(); closeModal(); renderActiveLinks();
+        }
+
+        function closeModal() { document.getElementById('linkModal').classList.add('hidden'); }
+
+        function renderActiveLinks() {
+            const div = document.getElementById('activeLinksDisplay');
+            div.innerHTML = Object.entries(config.bulkLinks).map(([t, s]) => `
+                <div class="bg-orange-50 p-2 rounded border text-xs flex justify-between items-center">
+                    <span>${t} <i class="text-gray-400">← synched from</i> ${s}</span>
+                    <button onclick="delete config.bulkLinks['${t}']; save(); renderActiveLinks();" class="text-red-500 font-bold px-2">×</button>
+                </div>
+            `).join('');
+        }
+
+        // EXPORT / IMPORT
+        function exportData() {
+            const blob = new Blob([JSON.stringify(config, null, 2)], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = "kutabali_data.json"; a.click();
+        }
+
+        function importData(e) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                config = JSON.parse(ev.target.result);
+                save(); renderAll();
+            };
+            reader.readAsText(e.target.files[0]);
+        }
+    </script>
+</body>
+</html>

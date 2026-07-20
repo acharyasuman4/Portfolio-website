@@ -98,7 +98,7 @@
     
     <!-- App Title & Credit -->
     <div class="mb-8 border-b border-slate-800 pb-4 text-center">
-        <h2 class="text-xl font-bold text-blue-400 font-mukta">गुठी क्याल्कुलेटर</h2>
+        <h2 class="text-xl font-bold text-blue-400 font-mukta">कुतबाली असुली क्याल्कुलेटर</h2>
         <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">सुमन आचार्य 'समीर'</p>
     </div>
 
@@ -122,6 +122,9 @@
         </a>
         <a href="/Registration" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="file-check" class="w-5 h-5"></i> न्युनत्तम मूल्याङ्कन
+        </a>
+        <a href="/tool/advance_rajaswo_calculator.html" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+            <i data-lucide="circle-divide" class="w-5 h-5"></i> राजस्व क्याल्कुलेटर एड्भान्स्ड
         </a>
         <a href="/tippani/" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="file-text" class="w-5 h-5"></i> टिप्पणी फर्म्याट
@@ -156,7 +159,7 @@
     <div class="lg:col-span-7 order-1"> 
                     <header class="mb-8">
                         <h1 class="text-2xl md:text-3xl font-bold text-slate-800">कुतबाली असुली क्याल्कुलेटर</h1>
-                        <p class="text-slate-500 text-sm">आ.व. ०८२।८३ (सिन्धुपाल्चोक जिल्लासँग मिल्ने दररेट भएका जिल्लाको लागि)</p>
+                        <p class="text-slate-500 text-sm">आ.व. ०८३।८४ (सिन्धुपाल्चोक जिल्लासँग मिल्ने दररेट भएका जिल्लाको लागि)</p>
                     </header>
 
                     <div class="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
@@ -176,6 +179,7 @@
                                 <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">तिरो बुझाएको
                                     आर्थिक वर्ष</label>
                                 <select id="financialYear" class="calc-input bg-slate-50">
+                                    <option value="82/83">82/83</option>
                                     <option value="81/82">81/82</option>
                                     <option value="80/81">80/81</option>
                                     <option value="79/80">79/80</option>
@@ -321,8 +325,8 @@ if ('serviceWorker' in navigator) {
             }
 
             const area = ropni + aana / 16 + paisa / 64 + daam / 256;
-            const yearOrder = ['82/83', '81/82', '80/81', '79/80', '78/79', '77/78', '76/77', '75/76', '74/75', '73/74', '72/73', '71/72', '70/71', '69/70', '68/69', '67/68', '66/67', '65/66', '64/65', '63/64', '62/63', '61/62', '60/61', '59/60', '58/59', '57/58', '56/57', '55/56', '54/55', '53/54', '52/53', '51/52', '50/51', '49/50', '48/49', '47/48', '46/47'];
-            const yearlyRates = { '46/47': 310, '47/48': 350, '48/49': 450, '49/50': 550, '50/51': 625, '51/52': 625, '52/53': 688, '53/54': 757, '54/55': 833, '55/56': 833, '56/57': 833, '57/58': 833, '58/59': 833, '59/60': 860, '60/61': 860, '61/62': 900, '62/63': 1000, '63/64': 1000, '64/65': 1100, '65/66': 1300, '66/67': 1450, '67/68': 1650, '68/69': 1650, '69/70': 1800, '70/71': 2000, '71/72': 2000, '72/73': 2000, '73/74': 2000, '74/75': 2000, '75/76': 2500, '76/77': 2700, '77/78': 2700, '78/79': 2700, '79/80': 2700, '80/81': 2700, '81/82': 2700 };
+            const yearOrder = ['83/84', '82/83', '81/82', '80/81', '79/80', '78/79', '77/78', '76/77', '75/76', '74/75', '73/74', '72/73', '71/72', '70/71', '69/70', '68/69', '67/68', '66/67', '65/66', '64/65', '63/64', '62/63', '61/62', '60/61', '59/60', '58/59', '57/58', '56/57', '55/56', '54/55', '53/54', '52/53', '51/52', '50/51', '49/50', '48/49', '47/48', '46/47'];
+            const yearlyRates = { '46/47': 310, '47/48': 350, '48/49': 450, '49/50': 550, '50/51': 625, '51/52': 625, '52/53': 688, '53/54': 757, '54/55': 833, '55/56': 833, '56/57': 833, '57/58': 833, '58/59': 833, '59/60': 860, '60/61': 860, '61/62': 900, '62/63': 1000, '63/64': 1000, '64/65': 1100, '65/66': 1300, '66/67': 1450, '67/68': 1650, '68/69': 1650, '69/70': 1800, '70/71': 2000, '71/72': 2000, '72/73': 2000, '73/74': 2000, '74/75': 2000, '75/76': 2500, '76/77': 2700, '77/78': 2700, '78/79': 2700, '79/80': 2700, '80/81': 2700, '81/82': 2700, '82/83': 2700 };
             const landTypeRates = { 'खेत अवल': 2 / 20, 'खेत दोयम': 1 / 20 + 4 / 160, 'खेत सिम\\चाहार': 1 / 20, 'पाखो': 4 / 160 };
 
             const selectedIndex = yearOrder.indexOf(financialYear);
