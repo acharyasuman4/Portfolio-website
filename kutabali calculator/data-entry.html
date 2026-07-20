@@ -45,7 +45,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Date & FY -->
                 <div class="p-5 bg-blue-50 rounded-xl border border-blue-100 space-y-4">
-                    <h3 class="font-bold text-blue-800 border-b border-blue-200 pb-2">आर्थिक वर्ष</h3>
+                    <h3 class="font-bold text-blue-800 border-b border-blue-200 pb-2">आर्थिक वर्ष (financialYear)</h3>
                     <div class="grid grid-cols-1 gap-2">
                         <div><label class="block text-xs font-bold mb-1">चालु आ.व.</label><input type="text" id="activeFY" class="w-full p-2 border rounded" onchange="updateConfig()"></div>
                     </div>
@@ -147,7 +147,7 @@
 
     <script>
         let config = {
-            activeFY: "80/81",
+            activeFY: "83/84",
             allFYs: [],
             allBTs: ["महानगर", "उपमहानगर", "नगरपालिका", "गाउँपालिका"],
             allLTs: ["अब्बल", "दोयम", "सीम", "चाहार"],
@@ -158,6 +158,11 @@
             paddyPrices: {}, // FY: {valley: 0, outside: 0}
             kutabaliData: {} // region: { LT: { BT: { muri:0, pathi:0, mana:0, muthi:0 } } }
         };
+        function updateConfig() {
+    config.activeFY = document.getElementById('activeFY').value;
+    // ... अन्य डेट अपडेटहरू
+    save(); // यसले लोकल स्टोरेजमा 'activeFY' अपडेट गर्छ
+}
 
         window.onload = () => {
             const saved = localStorage.getItem('guthi_admin_config');
@@ -196,7 +201,7 @@
 
         // SETUP
         function renderSetup() {
-            document.getElementById('activeFY').value = config.activeFY;
+    document.getElementById('activeFY').value = config.activeFY || "83/84"; // अन्तिम सेभ भएको भ्यालु देखाउने
             document.getElementById('btList').innerHTML = config.allBTs.map(bt => `<span class="bg-white border px-3 py-1 rounded text-sm font-bold flex items-center gap-2">${bt} <button onclick="removeItem('allBTs', '${bt}')" class="text-red-500">×</button></span>`).join('');
             document.getElementById('ltList').innerHTML = config.allLTs.map(lt => `<span class="bg-white border px-3 py-1 rounded text-sm font-bold flex items-center gap-2">${lt} <button onclick="removeItem('allLTs', '${lt}')" class="text-red-500">×</button></span>`).join('');
         }
@@ -225,36 +230,60 @@
         }
 
         // REGION CONFIG
-        function addRegion() {
-            const val = document.getElementById('newRegion').value.trim();
-            if(val && !config.regions.includes(val)) {
-                config.regions.push(val);
-                config.regionBTs[val] = [...config.allBTs];
-                config.regionLTs[val] = [...config.allLTs];
-                document.getElementById('newRegion').value = '';
-                save(); renderRegionConfig();
-            }
-        }
+// १. जग्गा थप्दा उपत्यका हो कि हैन भन्ने प्रोपर्टी थप्ने
+function addRegion() {
+    const val = document.getElementById('newRegion').value.trim();
+    if(val && !config.regions.includes(val)) {
+        config.regions.push(val);
+        config.regionBTs[val] = [...config.allBTs];
+        config.regionLTs[val] = [...config.allLTs];
+        if(!config.valleyStatus) config.valleyStatus = {}; // नयाँ प्रोपर्टी
+        config.valleyStatus[val] = false; // डिफल्टमा 'बाहिर'
+        document.getElementById('newRegion').value = '';
+        save(); renderRegionConfig();
+    }
+}
 
-        function renderRegionConfig() {
-            const container = document.getElementById('regionConfigList');
-            container.innerHTML = config.regions.map(r => `
-                <div class="p-4 bg-white border-2 rounded-xl shadow-sm">
-                    <div class="flex justify-between mb-2"><span class="font-bold text-slate-800 text-lg">${r}</span><button onclick="removeRegion('${r}')" class="text-red-500 text-xs">हटाउनुहोस्</button></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-500 uppercase">स्थानीय तह छनोट</p>
-                            <div class="flex flex-wrap gap-1 mt-1">${config.allBTs.map(bt => `<label class="text-[10px] flex items-center gap-1 bg-slate-50 px-2 py-1 rounded border"><input type="checkbox" ${config.regionBTs[r]?.includes(bt) ? 'checked' : ''} onchange="toggleArrayItem('regionBTs', '${r}', '${bt}')"> ${bt}</label>`).join('')}</div>
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-500 uppercase">जग्गाको किसिम छनोट</p>
-                            <div class="flex flex-wrap gap-1 mt-1">${config.allLTs.map(lt => `<label class="text-[10px] flex items-center gap-1 bg-amber-50 px-2 py-1 rounded border border-amber-200"><input type="checkbox" ${config.regionLTs[r]?.includes(lt) ? 'checked' : ''} onchange="toggleArrayItem('regionLTs', '${r}', '${lt}')"> ${lt}</label>`).join('')}</div>
-                        </div>
-                    </div>
+// २. कन्फिगरेसन लिस्टमा टिक लगाउने बक्स थप्ने
+function renderRegionConfig() {
+    const container = document.getElementById('regionConfigList');
+    container.innerHTML = config.regions.map(r => `
+        <div class="p-4 bg-white border-2 rounded-xl shadow-sm">
+            <div class="flex justify-between mb-2">
+                <span class="font-bold text-slate-800 text-lg">${r}</span>
+                <button onclick="removeRegion('${r}')" class="text-red-500 text-xs">हटाउनुहोस्</button>
+            </div>
+            
+            <!-- उपत्यका छनोट -->
+            <div class="mb-3 p-2 bg-blue-50 rounded-lg border border-blue-100">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" class="w-4 h-4" 
+                        ${config.valleyStatus && config.valleyStatus[r] ? 'checked' : ''} 
+                        onchange="toggleValley('${r}')">
+                    <span class="text-sm font-bold text-blue-800">यो क्षेत्र काठमाडौं उपत्यका भित्र पर्छ ?</span>
+                </label>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase">स्थानीय तह</p>
+                    <div class="flex flex-wrap gap-1 mt-1">${config.allBTs.map(bt => `<label class="text-[10px] flex items-center gap-1 bg-slate-50 px-2 py-1 rounded border"><input type="checkbox" ${config.regionBTs[r]?.includes(bt) ? 'checked' : ''} onchange="toggleArrayItem('regionBTs', '${r}', '${bt}')"> ${bt}</label>`).join('')}</div>
                 </div>
-            `).join('');
-        }
+                <div>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase">जग्गाको किसिम</p>
+                    <div class="flex flex-wrap gap-1 mt-1">${config.allLTs.map(lt => `<label class="text-[10px] flex items-center gap-1 bg-amber-50 px-2 py-1 rounded border border-amber-200"><input type="checkbox" ${config.regionLTs[r]?.includes(lt) ? 'checked' : ''} onchange="toggleArrayItem('regionLTs', '${r}', '${lt}')"> ${lt}</label>`).join('')}</div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
 
+// ३. उपत्यकाको भ्यालु परिवर्तन गर्ने फङ्सन
+function toggleValley(r) {
+    if(!config.valleyStatus) config.valleyStatus = {};
+    config.valleyStatus[r] = !config.valleyStatus[r];
+    save();
+}
         function toggleArrayItem(key, r, val) {
             if(!config[key][r]) config[key][r] = [];
             const idx = config[key][r].indexOf(val);

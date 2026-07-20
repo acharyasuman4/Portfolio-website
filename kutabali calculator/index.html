@@ -157,11 +157,33 @@
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
     <!-- LEFT: KUTABALI CALCULATOR -->
     <div class="lg:col-span-7 order-1"> 
-                    <header class="mb-8">
-                        <h1 class="text-2xl md:text-3xl font-bold text-slate-800">कुतबाली असुली क्याल्कुलेटर</h1>
-                        <p class="text-slate-500 text-sm">आ.व. ०८३।८४ (सिन्धुपाल्चोक जिल्लासँग मिल्ने दररेट भएका जिल्लाको लागि)</p>
-                    </header>
-
+<!-- परिमार्जित हेड - क्षेत्र र तह छनोट -->
+<header class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-800">कुतबाली असुली क्याल्कुलेटर</h1>
+            <p id="sub-header-text" class="text-slate-500 text-sm">कृपया डाटा फाइल अपलोड गर्नुहोस्</p>
+        </div>
+        <div class="flex gap-2">
+            <input type="file" id="jsonUpload" class="hidden" onchange="loadConfig(event)">
+            <!-- <button onclick="document.getElementById('jsonUpload').click()" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-blue-700 shadow-lg"> -->
+                <!-- <i data-lucide="upload" class="w-3 h-3 inline mr-1"></i> JSON लोड गर्नुहोस् -->
+            </button>
+        </div>
+    </div>
+    
+    <!-- क्षेत्र र तहको ड्रपडाउन -->
+    <div id="selection-area" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 hidden">
+        <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">क्षेत्र (Region)</label>
+            <select id="regionSelect" onchange="onRegionChange()" class="calc-input bg-white border-2 border-blue-50"></select>
+        </div>
+        <div>
+            <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">स्थानीय तह (Local Body)</label>
+            <select id="bodySelect" onchange="onBodyChange()" class="calc-input bg-white border-2 border-blue-50"></select>
+        </div>
+    </div>
+</header>
                     <div class="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                             <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">रोपनी</label><input
@@ -309,55 +331,199 @@ if ('serviceWorker' in navigator) {
             .catch(err => console.log('Service Worker Registration Failed:', err));
     });
 }
-        // ORIGINAL CALCULATION LOGIC PRESERVED
-        function calculateTax() {
-            const financialYear = document.getElementById('financialYear').value;
-            const ropni = parseFloat(document.getElementById('ropani').value) || 0;
-            const aana = parseFloat(document.getElementById('aana').value) || 0;
-            const paisa = parseFloat(document.getElementById('paisa').value) || 0;
-            const daam = parseFloat(document.getElementById('daam').value) || 0;
+// १. ग्लोबल भेरिएबल र आइकन सेटिङ
+lucide.createIcons();
+let config = null;
 
-            if (ropni < 0 || aana < 0 || paisa < 0 || daam < 0) {
-                alert('Values cannot be negative.'); return;
-            }
-            if (aana >= 16 || paisa >= 4 || daam >= 4) {
-                alert('आना १६, पैसा ४ र दाम ४ भन्दा कम हुनुपर्छ।'); return;
-            }
+// पेज लोड हुँदा लोकल स्टोरेजबाट डाटा तान्ने
+window.onload = () => {
+    const savedConfig = localStorage.getItem('guthi_kutabali_config');
+    if (savedConfig) {
+        config = JSON.parse(savedConfig);
+        initApp();
+    }
+};
 
-            const area = ropni + aana / 16 + paisa / 64 + daam / 256;
-            const yearOrder = ['83/84', '82/83', '81/82', '80/81', '79/80', '78/79', '77/78', '76/77', '75/76', '74/75', '73/74', '72/73', '71/72', '70/71', '69/70', '68/69', '67/68', '66/67', '65/66', '64/65', '63/64', '62/63', '61/62', '60/61', '59/60', '58/59', '57/58', '56/57', '55/56', '54/55', '53/54', '52/53', '51/52', '50/51', '49/50', '48/49', '47/48', '46/47'];
-            const yearlyRates = { '46/47': 310, '47/48': 350, '48/49': 450, '49/50': 550, '50/51': 625, '51/52': 625, '52/53': 688, '53/54': 757, '54/55': 833, '55/56': 833, '56/57': 833, '57/58': 833, '58/59': 833, '59/60': 860, '60/61': 860, '61/62': 900, '62/63': 1000, '63/64': 1000, '64/65': 1100, '65/66': 1300, '66/67': 1450, '67/68': 1650, '68/69': 1650, '69/70': 1800, '70/71': 2000, '71/72': 2000, '72/73': 2000, '73/74': 2000, '74/75': 2000, '75/76': 2500, '76/77': 2700, '77/78': 2700, '78/79': 2700, '79/80': 2700, '80/81': 2700, '81/82': 2700, '82/83': 2700 };
-            const landTypeRates = { 'खेत अवल': 2 / 20, 'खेत दोयम': 1 / 20 + 4 / 160, 'खेत सिम\\चाहार': 1 / 20, 'पाखो': 4 / 160 };
+// JSON फाइल लोड गर्ने
+function loadConfig(event) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        config = JSON.parse(e.target.result);
+        localStorage.setItem('guthi_kutabali_config', JSON.stringify(config));
+        initApp();
+        alert("डाटा फाइल सफलतापूर्वक लोड भयो !");
+    };
+    reader.readAsText(event.target.files[0]);
+}
 
-            const selectedIndex = yearOrder.indexOf(financialYear);
-            const landType = document.getElementById('land_type').value;
-            const landRate = landTypeRates[landType] || 1;
 
-            const chalu = 2700 * landRate * area;
-            let bakyauta = 0;
-            for (let i = 0; i < selectedIndex; i++) {
-                if (yearlyRates[yearOrder[i]]) bakyauta += yearlyRates[yearOrder[i]];
-            }
-            bakyauta = bakyauta * landRate * area;
-            const jarivana = 0.1 * bakyauta;
 
-            document.getElementById('chalu').innerText = Math.round(chalu).toLocaleString('ne-NP');
-            document.getElementById('bakyaota').innerText = Math.round(bakyauta).toLocaleString('ne-NP');
-            document.getElementById('jarivana').innerText = Math.round(jarivana).toLocaleString('ne-NP');
-            document.getElementById('jamma').innerText = "रु. " + (Math.round(chalu) + Math.round(bakyauta) + Math.round(jarivana)).toLocaleString('ne-NP');
-        }
+// क्षेत्र परिवर्तन हुँदा तहहरू फिल्टर गर्ने (एउटै दररेट भए ग्रुप गर्ने)
+// function onRegionChange() {
+//     const region = document.getElementById('regionSelect').value;
+//     localStorage.setItem('last_region', region);
+    
+//     const bodySelect = document.getElementById('bodySelect');
+//     const bts = config.regionBTs[region] || [];
+    
+//     // Grouping Logic: एउटै रेट भएकालाई समूह बनाउने
+//     const grouped = {};
+//     bts.forEach(bt => {
+//         const rateString = JSON.stringify(config.kutabaliData[region]?.[config.allLTs[0]]?.[bt]);
+//         if (!grouped[rateString]) grouped[rateString] = [];
+//         grouped[rateString].push(bt);
+//     });
 
-        function clearForm() {
-            ['ropani', 'aana', 'paisa', 'daam'].forEach(id => document.getElementById(id).value = '');
-            ['bakyaota', 'chalu', 'jarivana'].forEach(id => document.getElementById(id).innerText = '0');
-            document.getElementById('jamma').innerText = 'रु. ०';
-        }
+//     bodySelect.innerHTML = Object.values(grouped).map(group => {
+//         const label = group.join(' / ');
+//         const val = group[0]; // कुन चाहिँबाट रेट तान्ने भन्नेका लागि पहिलो लिने
+//         return `<option value="${val}">${label}</option>`;
+//     }).join('');
+    
+//     onBodyChange();
+// }
 
-        // Auto-calculate on input
-        ['ropani', 'aana', 'paisa', 'daam'].forEach(id => document.getElementById(id).addEventListener('input', calculateTax));
-        document.getElementById('financialYear').addEventListener('change', calculateTax);
-        document.getElementById('land_type').addEventListener('change', calculateTax);
-    </script>
+function onBodyChange() {
+    const body = document.getElementById('bodySelect').value;
+    localStorage.setItem('last_body', body);
+    calculateTax();
+}
+
+// मुख्य हिसाब गर्ने फङ्सन
+// १. पेज लोड हुँदा स्वतः JSON फाइल तान्ने
+window.onload = async () => {
+    try {
+        // तपाईँको फाइलको नाम र पाथ यहाँ लेख्नुहोस्
+        const response = await fetch('kutabali_data.json'); 
+        if (!response.ok) throw new Error('JSON फाइल भेटिएन');
+        
+        config = await response.json();
+        initApp(); // ड्रपडाउनहरू भर्ने
+        console.log("डाटा स्वतः लोड भयो");
+    } catch (error) {
+        console.error("Error loading JSON:", error);
+        document.getElementById('sub-header-text').innerText = "डाटा लोड हुन सकेन (kutabali_data.json फाइल पाथ चेक गर्नुहोस्)";
+    }
+};
+
+// २. क्याल्कुलेसन लजिकमा उपत्यकाको भ्यालु चेक गर्ने (Refined)
+// १. ड्रपडाउन र सुरुवाती सेटिङ
+function initApp() {
+    if (!config) return;
+    document.getElementById('selection-area').classList.remove('hidden');
+    document.getElementById('sub-header-text').innerText = `आ.व. ${config.activeFY} को दररेट अनुसार`;
+
+    // आर्थिक वर्ष: चालु आ.व. हटाउने र बाँकीलाई उल्टो क्रम (Descending) मा राख्ने
+    // युजरले '८२/८३' छान्नुको अर्थ '८२/८३ सम्म बुझाइसकेको' भन्ने हुन्छ
+    const fySelect = document.getElementById('financialYear');
+    const filteredFYs = config.allFYs.filter(fy => fy !== config.activeFY).reverse();
+    fySelect.innerHTML = filteredFYs.map(fy => `<option value="${fy}">${fy}</option>`).join('');
+
+    // क्षेत्र लोड गर्ने
+    const rSelect = document.getElementById('regionSelect');
+    rSelect.innerHTML = config.regions.map(r => `<option value="${r}">${r}</option>`).join('');
+
+    // सेभ भएको क्षेत्र लोड गर्ने
+    const savedR = localStorage.getItem('last_region');
+    if (savedR) { rSelect.value = savedR; }
+    onRegionChange();
+}
+
+// २. क्षेत्र परिवर्तन हुँदा जग्गाको किसिम र तह फिल्टर गर्ने
+function onRegionChange() {
+    const region = document.getElementById('regionSelect').value;
+    localStorage.setItem('last_region', region);
+    
+    // क. जग्गाको किसिम: यो क्षेत्रमा टिक लागेका मात्र देखाउने
+    const ltSelect = document.getElementById('land_type');
+    const availableLTs = config.regionLTs[region] || [];
+    ltSelect.innerHTML = availableLTs.map(lt => `<option value="${lt}">${lt}</option>`).join('');
+
+    // ख. स्थानीय तह: दररेट फरक हुँदा फरक नै देखिने
+    const bodySelect = document.getElementById('bodySelect');
+    const bts = config.regionBTs[region] || [];
+    
+    const grouped = {};
+    bts.forEach(bt => {
+        // यो तहको सबै जग्गाको दररेटको स्ट्रिङ बनाउने (तुलना गर्न)
+        const rates = JSON.stringify(config.kutabaliData[region]); 
+        // नोट: यदि एडमिनमा एउटै क्षेत्रभित्रका तहको रेट फरक-फरक इन्ट्री गरिएको छ भने यो अलग देखिन्छ
+        const rateKey = JSON.stringify(bts.map(b => config.kutabaliData[region]?.[availableLTs[0]]?.[bt]));
+        
+        if (!grouped[rateKey]) grouped[rateKey] = [];
+        grouped[rateKey].push(bt);
+    });
+
+    bodySelect.innerHTML = Object.values(grouped).map(group => {
+        return `<option value="${group[0]}">${group.join(' / ')}</option>`;
+    }).join('');
+    
+    calculateTax();
+}
+
+// ३. संशोधित हिसाब लजिक
+function calculateTax() {
+    if (!config) return;
+
+    const region = document.getElementById('regionSelect').value;
+    const bodyType = document.getElementById('bodySelect').value;
+    const landType = document.getElementById('land_type').value;
+    const selectedPaidFY = document.getElementById('financialYear').value; // युजरले बुझाइसकेको वर्ष
+
+    const ropni = parseFloat(document.getElementById('ropani').value) || 0;
+    const aana = parseFloat(document.getElementById('aana').value) || 0;
+    const paisa = parseFloat(document.getElementById('paisa').value) || 0;
+    const daam = parseFloat(document.getElementById('daam').value) || 0;
+    const area = ropni + (aana / 16) + (paisa / 64) + (daam / 256);
+
+    // मुरी प्रति रोपनी निकाल्ने
+    const kut = config.kutabaliData[region]?.[landType]?.[bodyType] || {muri:0, pathi:0, mana:0, muthi:0};
+    const muriPerRopani = (((((kut.muri * 20) + kut.pathi) * 8) + kut.mana) * 10 + kut.muthi) / 1600;
+
+    const isValley = config.valleyStatus && config.valleyStatus[region] === true;
+    const priceKey = isValley ? 'valley' : 'outside';
+
+    // --- हिसावको मुख्य लजिक ---
+    
+    // १. चालु (Chalu): यो सधैं activeFY (८३/८४) को दररेटमा हुन्छ
+    const chaluPrice = config.paddyPrices[config.activeFY]?.[priceKey] || 0;
+    const chaluAmount = area * muriPerRopani * chaluPrice;
+
+    // २. बक्यौता (Bakyaota): 
+    // यदि युजरले ८२/८३ सम्म बुझाएको छ भने, बक्यौता ० हुन्छ।
+    // यदि ८१/८२ सम्म बुझाएको छ भने, ८२/८३ को बक्यौता लाग्छ।
+    let bakyautaAmount = 0;
+    const paidIdx = config.allFYs.indexOf(selectedPaidFY);
+    const activeIdx = config.allFYs.indexOf(config.activeFY);
+
+    // paidIdx + 1 देखि activeIdx भन्दा एक वर्ष अगाडि सम्मको दररेट जोड्ने
+    for (let i = paidIdx + 1; i < activeIdx; i++) {
+        const year = config.allFYs[i];
+        const yearlyPrice = config.paddyPrices[year]?.[priceKey] || 0;
+        bakyautaAmount += area * muriPerRopani * yearlyPrice;
+    }
+
+    // ३. जरिवाना: बक्यौता रकमको मात्र १०% (चालुमा लाग्दैन)
+    const jarivana = 0.10 * bakyautaAmount;
+
+    // रिजल्ट अपडेट
+    document.getElementById('chalu').innerText = Math.round(chaluAmount).toLocaleString('ne-NP');
+    document.getElementById('bakyaota').innerText = Math.round(bakyautaAmount).toLocaleString('ne-NP');
+    document.getElementById('jarivana').innerText = Math.round(jarivana).toLocaleString('ne-NP');
+    
+    const jamma = Math.round(chaluAmount) + Math.round(bakyautaAmount) + Math.round(jarivana);
+    document.getElementById('jamma').innerText = "रु. " + jamma.toLocaleString('ne-NP');
+}
+// Clear Form
+function clearForm() {
+    ['ropani', 'aana', 'paisa', 'daam'].forEach(id => document.getElementById(id).value = '');
+    calculateTax();
+}
+
+// Events
+['ropani', 'aana', 'paisa', 'daam'].forEach(id => document.getElementById(id).addEventListener('input', calculateTax));
+document.getElementById('financialYear').addEventListener('change', calculateTax);
+document.getElementById('land_type').addEventListener('change', calculateTax);    </script>
     <script>
         // रोपनी एडरबाट आएको डाटा समात्ने र इनपुटमा भर्ने
 window.addEventListener("message", function(event) {
