@@ -360,23 +360,60 @@
                 </div>
 
                 <!-- साविक खरिद मुल्य सेक्सन -->
+<!-- साविक खरिद मुल्य सेक्सन -->
 <div class="input-group" style="background:#f0f9ff; border: 1px solid #0ea5e9; margin-top: 5px;">
-    <label style="color:#0369a1; font-size:13px;">
-        <input type="checkbox" id="chk_purchase_price" onchange="renderPurchaseUI(); update();"> साविक खरिद मुल्य प्रविष्ट गर्ने ?
-    </label>
+    <!-- यो Hidden Input अनिवार्य छ -->
+    <input type="hidden" id="total_purchase_manual" value="०">
     
-    <div id="purchase_inputs_container" style="display:none; margin-top:10px;">
-        <div style="background:#bae6fd; padding:8px; border-radius:5px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:bold;">जम्मा खरिद मुल्य:</span>
-            <input type="text" id="total_purchase_manual" placeholder="कुल थुप्रो मूल्य" class="input-box" style="width:150px; margin-bottom:0; font-weight:bold; color:#0369a1;" oninput="update()">
-        </div>
-        <div id="purchase_kitta_list"></div>
+    <button onclick="openPurchaseModal()" class="btn btn-blue" style="background:#0284c7; width: 100%;">💰 साविक खरिद मुल्य प्रविष्ट गर्नुहोस्</button>
+    <div style="font-size: 10px; color: #0369a1; text-align: center; margin-top: 4px;">
+        (साविक कायम मुल्य न्युनत्तम भन्दा बढी भएमा)
     </div>
 </div>
 
+<!-- साविक खरिद मुल्य मोडल -->
+<div id="purchaseModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1100;" onclick="closePurchaseModal()"></div>
+<div id="purchaseModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; z-index:1101; padding:20px; box-shadow:0 0 50px rgba(0,0,0,0.5); width:95%; max-width:900px; border-radius:10px; max-height:90vh; overflow-y:auto;">
+    <h3 style="margin:0 0 15px 0; border-bottom:1px solid #ddd; padding-bottom:10px;">💰 साविक खरिद मुल्य विवरण</h3>
+    <div style="background:#f0f9ff; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #7dd3fc; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+            <label style="color:#0369a1; font-size:13px;">कुल थैली अंक (सबैको एकैचोटी):</label>
+            <input type="text" id="modal_total_purchase_bulk" placeholder="कुल खरिद मूल्य" class="input-box" style="width:250px; margin-bottom:0;" oninput="updateBulkPurchase(this.value)">
+        </div>
+        <div style="text-align:right;">
+            <div style="font-size:11px;">जम्मा न्युनत्तम मुल्याङ्कन:</div>
+            <div id="modal_total_min_val" style="font-size:16px; font-weight:bold;">०।००</div>
+        </div>
+    </div>
+    <table class="doc-table">
+        <thead>
+            <tr style="background:#f8fafc;">
+                <th>साविक ठेगाना : कित्ता नं.</th>
+                <th>न्युनत्तम मुल्याङ्कन (हिस्सा समेत)</th>
+                <th>साविक कुल खरिद मुल्य</th>
+                <th>हकहिस्सा खरिद मुल्य (<span id="hissa_pc_label">१००</span>%)</th>
+                <th>कायम थैली (Max)</th>
+            </tr>
+        </thead>
+        <tbody id="purchase_body"></tbody>
+        <tfoot>
+            <tr style="background:#f0fdf4; font-weight:bold;">
+                <td colspan="4" style="text-align:right; padding-right:15px;">अन्तिम कुल थैली अङ्क:</td>
+                <td id="modal_final_grand_thaili">०।००</td>
+            </tr>
+        </tfoot>
+    </table>
+    <div style="margin-top:20px; text-align:right;">
+        <button onclick="closePurchaseModal()" class="btn btn-red" style="width:auto; padding:8px 40px;">बन्द गर्नुहोस्</button>
+    </div>
+</div>
+</div>
+<div>
+    <label for="in_extra">सनाखतपछिको व्यहोरा ('साथै' adjoint)</label>
                 <textarea id="in_extra" placeholder="थप विवरण (सनाखत पछिको)..." class="input-box"
                     oninput="update()"></textarea>
-                <div class="row-2">
+                <div class="row" style="display: flex; gap: 10px; font-size: 14px;">
+                    <label for="fee_s">सेवा शुल्क</label>
                     <input type="text" id="fee_s" value="३५००" class="input-box" oninput="update()">
                     <label style="display:flex; align-items:center;"><input type="checkbox" id="chk_late" checked
                             onchange="update()"> विलम्ब</label>
@@ -402,6 +439,21 @@
                     </label>
                     <div id="mohi_inputs"></div>
                 </div>
+                <!-- वर्गीकरण निर्णय -->
+<div class="input-group" style="background:#fefce8; border: 1px solid #facc15; margin-bottom:10px;">
+    <label><input type="checkbox" id="chk_vargikaran" onchange="renderVargikaranUI(); update();"> वर्गीकरण निर्णय थप ?</label>
+    <div id="vargikaran_inputs" style="display:none; margin-top:5px;">
+        <input type="text" id="varg_source" value="मोठ फाँटबाट प्राप्त विवरण बमोजिम" class="input-box">
+        <label>कित्ताहरू छान्नुहोस्:</label>
+        <div id="varg_kitta_list" style="max-height:100px; overflow-y:auto; background:white; border:1px solid #ddd; padding:5px;"></div>
+    </div>
+</div>
+
+<!-- थप निर्णय -->
+<div class="input-group">
+    <label>थप निर्णय (नामसारी पछि):</label>
+    <textarea id="in_extra_decision" placeholder="उदा: रोक्का यथावत राख्न..." class="input-box" oninput="update()"></textarea>
+</div>
 
             </div>
 
@@ -417,11 +469,23 @@
 <!-- २. मुख्य मोडल पपअप -->
 <div id="valModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; z-index:1001; padding:20px; box-shadow:0 0 50px rgba(0,0,0,0.5); width:95%; max-width:900px; border-radius:10px; max-height:90vh; overflow-y:auto;">
     <h3 style="margin:0 0 15px 0; border-bottom:1px solid #ddd; padding-bottom:10px;">🏠 घरबाटो मुल्याङ्कन विवरण</h3>
+
+    <div style="margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:5px; display:flex; flex-wrap:wrap; gap:15px; align-items:center;">
+    <label><input type="checkbox" id="chk_modal_hissa" onchange="toggleHissaUI(); update();"> हकहिस्सा ?</label>
+    <div id="global_hissa_div" style="display:none;">
+        <input type="text" id="global_hissa_pc" placeholder="प्रतिशत (उदा: ५०)" class="input-box" style="width:80px; margin-bottom:0;" oninput="applyGlobalHissa(this.value)"> %
+    </div>
+    <label><input type="checkbox" id="chk_show_table" onchange="update()"> टिप्पणीमा टेबल राख्ने ?</label>
+    <label><input type="checkbox" id="chk_reg_fant" onchange="update()"> रजिष्ट्रेशन फाँटबाट प्राप्त</label>
+
+</div>
+
     
     <div style="margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:5px; display:flex; gap:20px;">
-        <label><input type="checkbox" id="chk_show_table" onchange="update()"> टिप्पणीमा टेबल राख्ने ?</label>
-        <label><input type="checkbox" id="chk_reg_fant" onchange="update()"> रजिष्ट्रेशन फाँटबाट प्राप्त</label>
-        <label><input type="checkbox" id="chk_no_total" onchange="update()"> कुल मुल्य नराख्ने ?</label>
+        <!-- <label><input type="checkbox" id="chk_show_table" onchange="update()"> टिप्पणीमा टेबल राख्ने ?</label>
+        <label><input type="checkbox" id="chk_reg_fant" onchange="update()"> रजिष्ट्रेशन फाँटबाट प्राप्त</label> -->
+            <label><input type="checkbox" id="chk_no_total" onchange="update()"> कुल मुल्य नराख्ने ?</label>
+
     </div>
 
     <table class="doc-table">
@@ -454,7 +518,7 @@
     <datalist id="road_list">
         <option value="गोरेटो बाटो">
         <option value="नभएको">
-        <option value="अन्य बाटो">
+        <option value="कच्ची मोटर बाटो">
     </datalist>
     <datalist id="cat_list">
         <option value="कृषि">
@@ -528,7 +592,13 @@ function saveKittaPurchasePrice(el) {
     if (!state.purchasePrices) state.purchasePrices = {};
     state.purchasePrices[id] = el.value;
     update(); // टिप्पणी अपडेट गर्ने
+
 }
+
+
+
+
+
     // --- 1. FUNCTIONAL FIXES (Missing functions you called in HTML) ---
 
     function syncLandowner(val) {
@@ -643,6 +713,33 @@ function removeHaqGroup(index) {
     update();
 }
 
+// Add these to the beginning of your script
+function nepDateToDays(nepDate) {
+    if (!nepDate || nepDate.includes('...')) return 0;
+    // Convert Nepali numerals to English and split
+    let engDate = nepDate.replace(/[०-९]/g, d => "0123456789"["०१२३४५६७८९".indexOf(d)]);
+    let parts = engDate.split(/[।/.-]/);
+    if (parts.length !== 3) return 0;
+    let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
+    // Approximation: Total days to compare gaps
+    return (y * 365) + (m * 32) + d;
+}
+
+function checkBilamba() {
+    const regDay = nepDateToDays(document.getElementById('in_rd').value);
+    const deathDay = nepDateToDays(document.getElementById('m_dt').value);
+    
+    if (regDay > 0 && deathDay > 0) {
+        const gap = regDay - deathDay;
+        // If gap is less than 36 days, uncheck bilamba
+        if (gap < 36) {
+            document.getElementById('chk_late').checked = false;
+        } else {
+            document.getElementById('chk_late').checked = true;
+        }
+    }
+}
+
     // --- 2. PRESERVING YOUR ORIGINAL WORDING & LOGIC ---
 
     function toNep(num) {
@@ -654,12 +751,14 @@ function removeHaqGroup(index) {
     return num.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
 }
 
-    function n2e(str) {
-        if (!str) return 0;
-        let eng = str.toString().replace(/[०-९]/g, d => "0123456789"["०१२३४५६७८९".indexOf(d)]);
-        return parseFloat(eng) || 0;
-    }
-
+function n2e(str) {
+    if (str === null || str === undefined || str === "") return 0;
+    // नेपाली अंकलाई अंग्रेजीमा बदल्ने
+    let val = str.toString().replace(/[०-९]/g, d => "0123456789"["०१२३४५६७८९".indexOf(d)]);
+    // अंक र थोप्लो बाहेक अरु सबै हटाउने
+    val = val.replace(/[^0-9.]/g, '');
+    return parseFloat(val) || 0;
+}
     function nepJoin(arr) {
         let localArr = [...arr];
         if (!localArr.length) return "";
@@ -687,6 +786,20 @@ function removeHaqGroup(index) {
 
     // Prevent focus loss on area inputs while typing
 document.addEventListener('input', e => {
+
+    if (e.target.classList.contains('area-field') || 
+        e.target.classList.contains('modal-rate-input')) {
+        
+        let start = e.target.selectionStart;
+        let val = e.target.value.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+        if (e.target.value !== val) {
+            e.target.value = val;
+            e.target.setSelectionRange(start, start); // क्रसर जहाँ थियो त्यहीँ राख्ने
+        }
+        return; // बाँकी ग्लोबल अपडेट यहाँबाट रोक्ने
+    }
+
+
     // Area field वा Modal Rate Input मा फोकस नहटोस् भनेर क्लास चेक गर्ने
     if (e.target.classList.contains('area-field') || e.target.classList.contains('modal-rate-input')) {
         // यहाँ अंक मात्र कन्भर्ट गर्ने, थोप्लोलाई केही नगर्ने
@@ -768,6 +881,26 @@ document.addEventListener('input', e => {
             }
         }
 
+
+        function renderVargikaranUI() {
+    const cont = document.getElementById('vargikaran_inputs');
+    const isChecked = document.getElementById('chk_vargikaran').checked;
+    cont.style.display = isChecked ? 'block' : 'none';
+    
+    const listDiv = document.getElementById('varg_kitta_list');
+    let html = "";
+    state.lands.forEach(l => {
+        l.ks.forEach(k => {
+            html += `<label style="display:block; font-weight:normal;"><input type="checkbox" class="varg-chk" value="${k}" checked onchange="update()"> कि.नं. ${k}</label>`;
+        });
+    });
+    listDiv.innerHTML = html;
+}
+
+// Add event listeners to trigger Bilamba check automatically
+document.getElementById('in_rd').addEventListener('input', checkBilamba);
+document.getElementById('m_dt').addEventListener('input', checkBilamba);
+
         function toggleHouseRoad() {
             document.getElementById('hr_inputs').style.display = document.getElementById('chk_rec_house').checked ? 'block' : 'none';
             syncHR();
@@ -784,65 +917,238 @@ function closeValModal() {
     document.getElementById('modalOverlay').style.display = 'none';
 }
 
+// १. खरिद मुल्य मोडल खोल्ने र बन्द गर्ने
+function openPurchaseModal() {
+    document.getElementById('purchaseModal').style.display = 'block';
+    document.getElementById('purchaseModalOverlay').style.display = 'block';
+    renderPurchaseRows();
+}
+
+function closePurchaseModal() {
+    document.getElementById('purchaseModal').style.display = 'none';
+    document.getElementById('purchaseModalOverlay').style.display = 'none';
+}
+
+// २. मोडल भित्रका रोहरू बनाउने (हकहिस्सा समेत हिसाब गरेर)
+function renderPurchaseRows() {
+    const tbody = document.getElementById('purchase_body');
+    const isHissaChecked = document.getElementById('chk_modal_hissa')?.checked;
+
+    let html = "";
+    let totalMinVal = 0;
+
+    state.lands.forEach(l => {
+        l.ks.forEach(k => {
+            const id = `${l.vdc}_${l.ward}_${k}`;
+            const a = state.areas[id] || {};
+            const minVal = calculateSingleRowTotal(a);
+            totalMinVal += minVal;
+
+            const currentHissaPc = isHissaChecked ? (a.percent || "१००") : "१००";
+            const hissaRatio = n2e(currentHissaPc) / 100;
+            const enteredPrice = n2e(state.purchasePrices[id] || 0);
+            const hissaPurchasePrice = Math.ceil(enteredPrice * hissaRatio);
+            let rowThaili = Math.max(minVal, hissaPurchasePrice);
+
+            html += `<tr>
+                <td style="text-align:left; padding-left:10px;">${l.vdc} ${l.ward} - ${k}</td>
+                <td>${toNepNum(minVal)}</td>
+                <td>
+                    <input type="text" class="input-box modal-rate-input" style="margin:0; text-align:center;" 
+                        oninput="updateSinglePurchase('${id}', this.value)" value="${state.purchasePrices[id] || ''}">
+                </td>
+                <td id="hissa_val_${id}" style="color:#6366f1; font-weight:bold;">${toNepNum(hissaPurchasePrice)}</td>
+                <td id="kayam_val_${id}" style="font-weight:bold; background:#f8fafc;">${toNepNum(rowThaili)}</td>
+            </tr>`;
+        });
+    });
+
+    tbody.innerHTML = html;
+    document.getElementById('modal_total_min_val').innerText = toNep(totalMinVal);
+    updateModalGrandTotal(); // अन्तिम जोड मात्र अपडेट गर्ने
+}
+
+
+function updateSinglePurchase(id, val) {
+    // नेपाली अंक बनाउने र सेभ गर्ने
+    const nepVal = val.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    state.purchasePrices[id] = nepVal;
+
+    // यो कित्ताको लागि मात्र हिसाब गर्ने
+    const a = state.areas[id] || {};
+    const minVal = calculateSingleRowTotal(a);
+    const isHissaChecked = document.getElementById('chk_modal_hissa')?.checked;
+    const currentHissaPc = isHissaChecked ? (a.percent || "१००") : "१००";
+    const hissaRatio = n2e(currentHissaPc) / 100;
+    
+    const hissaPurchasePrice = Math.ceil(n2e(nepVal) * hissaRatio);
+    const rowThaili = Math.max(minVal, hissaPurchasePrice);
+
+    // कोठाहरूमा भ्यालु मात्र अपडेट गर्ने (इनपुट बक्स चलाउँदैन, त्यसैले फोकस रहिरहन्छ)
+    document.getElementById(`hissa_val_${id}`).innerText = toNepNum(hissaPurchasePrice);
+    document.getElementById(`kayam_val_${id}`).innerText = toNepNum(rowThaili);
+
+    updateModalGrandTotal(); // जम्मा जोड अपडेट
+    update(); // टिप्पणी अपडेट
+}
+
+// मुस्टैण्ड खरिद मूल्य अपडेट गर्दा पनि क्रसर नभाग्ने बनाउन
+function updateBulkPurchase(val) {
+    const nepVal = val.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    const hiddenInput = document.getElementById('total_purchase_manual');
+    if(hiddenInput) hiddenInput.value = nepVal;
+    
+    updateModalGrandTotal();
+    update();
+}
+
+// मोडलको अन्तिम कुल थैली मात्र अपडेट गर्ने सानो फङ्सन
+function updateModalGrandTotal() {
+    const bulkPurchase = n2e(document.getElementById('modal_total_purchase_bulk').value || 0);
+    let sumOfIndividualThaili = 0;
+
+    state.lands.forEach(l => {
+        l.ks.forEach(k => {
+            const id = `${l.vdc}_${l.ward}_${k}`;
+            const a = state.areas[id] || {};
+            const minVal = calculateSingleRowTotal(a);
+            const hissaPc = document.getElementById('chk_modal_hissa')?.checked ? n2e(a.percent || "100") : 100;
+            const hissaPurchase = Math.ceil(n2e(state.purchasePrices[id] || 0) * (hissaPc / 100));
+            sumOfIndividualThaili += Math.max(minVal, hissaPurchase);
+        });
+    });
+
+    const finalGrandThaili = Math.max(sumOfIndividualThaili, bulkPurchase);
+    document.getElementById('modal_final_grand_thaili').innerText = toNep(finalGrandThaili);
+}
+
+
+
+// ३. कित्ताको खरिद मूल्य परिवर्तन गर्दा तुरुन्तै हिसाब गर्ने
+function updateSingleKittaPurchase(id, val) {
+    const nepVal = val.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    state.purchasePrices[id] = nepVal;
+    renderPurchaseRows(); // मोडल भित्रको डाटा अपडेट
+    update(); // मुख्य टिप्पणी र राजस्व अपडेट
+}
+
+
+
+
+function calculateLiveTotal(id, field, value) {
+    // नेपाली अंकमा भ्यालु सेभ गर्ने
+    const nepValue = value.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    state.areas[id][field] = nepValue;
+    
+    // यो रोको नयाँ टोटल निकाल्ने
+    const singleTotal = calculateSingleRowTotal(state.areas[id]);
+    
+    // मोडलको "न्युनत्तम मुल्य" सेल अपडेट गर्ने
+    const rowTotalCell = document.getElementById(`row_total_${id}`);
+    if (rowTotalCell) {
+        rowTotalCell.innerText = toNep(singleTotal);
+    }
+    
+    // ग्राण्ड टोटल र मुख्य टिप्पणी पनि अपडेट गर्ने
+    updateGrandTotalDisp();
+    update(); 
+}
+
 function renderValRows() {
     const tbody = document.getElementById('val_body');
-    let html = "";
+    const isHissa = document.getElementById('chk_modal_hissa').checked;
     
+    const thead = document.querySelector('#valModal table thead tr');
+    thead.innerHTML = `
+        <th>गा.वि.स. - वडा : कि.नं.</th>
+        <th>क्षेत्रफल (R-A-P-D)</th>
+        <th>बाटोको प्रकार</th>
+        <th>वर्गिकरण</th>
+        <th>दररेट (प्रति रोपनी)</th>
+        ${isHissa ? '<th>हकहिस्सा %</th>' : ''}
+        <th>न्युनत्तम मुल्य</th>
+    `;
+
+    let html = "";
     state.lands.forEach(l => {
         l.ks.forEach(k => {
             const id = `${l.vdc}_${l.ward}_${k}`;
             const a = state.areas[id];
+            if (!a.percent) a.percent = "१००"; 
             
             let areaDisp = a.sqm ? toNep(a.sqm) + ' व.मि.' : `${toNep(a.r||'०')}-${toNep(a.a||'०')}-${toNep(a.p||'०')}-${toNep(a.d||'०')}`;
             
-            // row_total_${id} भन्ने एउटा ID राखिएको छ जसलाई हामी पछि सिधै अपडेट गर्छौं
             html += `<tr>
                 <td>${l.vdc} ${l.ward} - ${k}</td>
                 <td>${areaDisp}</td>
                 <td><input type="text" list="road_list" class="input-box" oninput="state.areas['${id}'].path=this.value; update()" value="${a.path||''}"></td>
                 <td><input type="text" list="cat_list" class="input-box" oninput="state.areas['${id}'].cat=this.value; update()" value="${a.cat||''}"></td>
-                <td><input type="text" class="input-box modal-rate-input" oninput="calculateLiveTotal('${id}', this.value)" value="${a.rate||''}"></td>
-                <td id="row_total_${id}" style="font-weight:bold;">${toNep(calculateSingleRowTotal(a))}</td>
+                <td><input type="text" class="input-box modal-rate-input" oninput="calculateLiveTotal('${id}', 'rate', this.value)" value="${a.rate||''}"></td>
+                ${isHissa ? `<td><input type="text" class="input-box modal-rate-input" style="width:60px" oninput="calculateLiveTotal('${id}', 'percent', this.value)" value="${a.percent}"></td>` : ''}
+                <td id="row_total_${id}" style="font-weight:bold; text-align:right;">${toNep(calculateSingleRowTotal(a))}</td>
             </tr>`;
         });
     });
     tbody.innerHTML = html;
     updateGrandTotalDisp();
 }
-// १. दररेट टाइप गर्दा सिधै त्यही लाइनको टोटल र ग्राण्ड टोटल मात्र अपडेट गर्ने (Focus नगुमाई)
-function calculateLiveTotal(id, rate) {
-    // पहिले अंकलाई नेपाली बनाउने
-    const nepRate = rate.replace(/\d/g, d => "०१२३४५६७८९"[d]);
-    state.areas[id].rate = nepRate;
-    
-    // यो लाइनको नयाँ टोटल निकाल्ने
-    const singleTotal = calculateSingleRowTotal(state.areas[id]);
-    
-    // केवल यो सेलको भ्यालु मात्र फेर्ने (यसो गर्दा इनपुट बक्स रि-रेन्डर हुँदैन र फोकस रहिरहन्छ)
-    document.getElementById(`row_total_${id}`).innerText = toNep(singleTotal);
-    
-    // कुल थैली (Grand Total) पनि अपडेट गर्ने
-    updateGrandTotalDisp();
-    update(); // मुख्य टिप्पणी पनि अपडेट गर्ने
-}
+
 
 // २. एउटा कित्ताको मात्र थैली निकाल्ने लजिक
+function toggleHissaUI() {
+    const isChecked = document.getElementById('chk_modal_hissa').checked;
+    document.getElementById('global_hissa_div').style.display = isChecked ? 'block' : 'none';
+    // Auto tick "Hissa matra?" at the bottom
+    document.getElementById('chk_hissa').checked = isChecked;
+}
+
+function applyGlobalHissa(val) {
+    const nepVal = val.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    for (let id in state.areas) {
+        state.areas[id].percent = nepVal;
+    }
+    renderValRows();
+    update();
+}
+
+// Update the Single Row Calculation to include percentage
 function calculateSingleRowTotal(a) {
+    if (!a) return 0;
     let decRopani = 0;
+    
+    // १. क्षेत्रफललाई रोपनीमा कन्भर्ट गर्ने
     if (a.sqm) {
         decRopani = n2e(a.sqm) / 508.72;
     } else {
         decRopani = n2e(a.r) + (n2e(a.a)/16) + (n2e(a.p)/64) + (n2e(a.d)/256);
     }
-    return Math.ceil(n2e(a.rate) * decRopani);
+    
+    // २. दररेट अनुसार १००% मूल्य निकाल्ने
+    let total = n2e(a.rate) * decRopani;
+    
+    // ३. हकहिस्सा टिक छ भने मात्र प्रतिशत काट्ने
+    const isHissaActive = document.getElementById('chk_modal_hissa')?.checked;
+    if (isHissaActive) {
+        let pcNum = n2e(a.percent || "१००"); 
+        if (pcNum > 0 && pcNum < 100) {
+            total = (total * pcNum) / 100;
+        }
+    }
+    
+    return Math.ceil(total);
 }
 
 // ३. मोडलको मुनि रहेको कुल थैली अङ्क मात्र अपडेट गर्ने
 function updateGrandTotalDisp() {
     let grandTotal = 0;
-    for (let key in state.areas) {
-        grandTotal += calculateSingleRowTotal(state.areas[key]);
-    }
+    state.lands.forEach(l => {
+        l.ks.forEach(k => {
+            const id = `${l.vdc}_${l.ward}_${k}`;
+            if (state.areas[id]) {
+                grandTotal += calculateSingleRowTotal(state.areas[id]);
+            }
+        });
+    });
     document.getElementById('total_thaili_disp').innerText = toNep(grandTotal);
 }
         // ३. डेटा थप्ने
@@ -891,6 +1197,7 @@ function addLand(mode) {
     renderAreaInputs(); 
     renderMohiUI();
     renderPurchaseUI();
+    renderVargikaranUI();
     update(); 
 }
 
@@ -927,22 +1234,10 @@ function renderAreaInputs() {
     fields.innerHTML = html;
 }
 
-function calculateSingleRowTotal(a) {
-    if (!a) return 0; // सुरक्षा थपिएको
-    let decRopani = 0;
-    if (a.sqm) {
-        decRopani = n2e(a.sqm) / 508.72;
-    } else {
-        decRopani = n2e(a.r) + (n2e(a.a)/16) + (n2e(a.p)/64) + (n2e(a.d)/256);
-    }
-    return Math.ceil(n2e(a.rate) * decRopani);
-}
-
 
         // ४. UPDATE (Main Preview Generator)
 function update() {
     // १. आधारभूत सेटिङ र डेटा
-    const v = (id) => document.getElementById(id)?.value || ".......";
     const settings = JSON.parse(localStorage.getItem('global_office_settings')) || { 
         gov: "नेपाल सरकार", ministry: "भूमि व्यवस्था, सहकारी, संघीय मामिला तथा सामान्य प्रशासन मन्त्रालय", dept: "भूमि व्यवस्थापन तथा अभिले विभाग", 
         office: "भूमि प्रशासन कार्यालय", addr: "चौतारा, सिन्धुपाल्चोक", def_dist: "सिन्धुपाल्चोक" 
@@ -953,64 +1248,58 @@ function update() {
     document.getElementById('list_mrtks').innerHTML = state.mrtks.map((x, i) => `<div class="item-list">${x.name}<span class="del-btn" onclick="state.mrtks.splice(${i},1);update();">×</span></div>`).join('');
     document.getElementById('list_lands').innerHTML = state.lands.map((x, i) => `<div class="item-list">${x.vdc}-${x.ward}: ${x.ks.join(',')}<span class="del-btn" onclick="state.lands.splice(${i},1);update();">×</span></div>`).join('');
 
-    // २. कुल थैली अंक हिसाब
-// --- १. अन्तिम थैली (Thaili) र विवरण (Prefix) निर्धारण ---
-    let minValTotal = 0;       // न्यूनतम सरकारी मुल्यांकनको जोड
-    let calculatedThaili = 0;  // खरिद मुल्य + बाँकी कित्ताको सरकारी मूल्य
-    let kitasWithPurchase = []; // खरिद मुल्य भरिएका कित्ताहरू
-    
+    const vSafe = (id) => document.getElementById(id) ? document.getElementById(id).value : "०";
+    const v = (id) => document.getElementById(id) ? document.getElementById(id).value : ".......";
+
+    // १. सबैभन्दा पहिला शुद्ध 'न्युनत्तम मुल्याङ्कन' र 'कुल थैली' निकाल्ने
+    let minValTotal = 0; 
+    let sumOfIndividualThaili = 0;
+    let kitasWithHighPurchase = [];
+
     state.lands.forEach(l => {
         l.ks.forEach(k => {
             const id = `${l.vdc}_${l.ward}_${k}`;
-            const minVal = calculateSingleRowTotal(state.areas[id]); // सरकारी न्यूनतम मूल्य
-            minValTotal += minVal;
+            const a = state.areas[id];
+            if (a) {
+                const rowMinVal = calculateSingleRowTotal(a);
+                minValTotal += rowMinVal;
 
-            const pPrice = n2e(state.purchasePrices ? state.purchasePrices[id] : 0); 
-            if (pPrice > 0) {
-                kitasWithPurchase.push(k);
-                calculatedThaili += pPrice;
-            } else {
-                calculatedThaili += minVal;
+                const hissaPc = document.getElementById('chk_modal_hissa')?.checked ? n2e(a.percent || "100") : 100;
+                const rawPurchase = n2e(state.purchasePrices[id] || 0);
+                const hissaPurchase = Math.ceil(rawPurchase * (hissaPc / 100));
+                
+                if (hissaPurchase > rowMinVal) {
+                    sumOfIndividualThaili += hissaPurchase;
+                    kitasWithHighPurchase.push(k);
+                } else {
+                    sumOfIndividualThaili += rowMinVal;
+                }
             }
         });
     });
 
-    // म्यानुअल कुल खरिद मूल्य (Top Manual Input Box)
-    const manualTotal = n2e(document.getElementById('total_purchase_manual')?.value || 0);
-    
-// --- १. दुई प्रकारका थैली निर्धारण ---
-    
-    state.lands.forEach(l => {
-        l.ks.forEach(k => {
-            const id = `${l.vdc}_${l.ward}_${k}`;
-            const minVal = calculateSingleRowTotal(state.areas[id]); 
-            minValTotal += minVal; // टेबलको लागि सरकारी रेट जोड्दै जाने
+    const bulkManual = n2e(vSafe('total_purchase_manual'));
+    let finalThaili = Math.max(sumOfIndividualThaili, bulkManual);
 
-            const pPrice = n2e(state.purchasePrices ? state.purchasePrices[id] : 0); 
-            if (pPrice > 0) {
-                kitasWithPurchase.push(k);
-                calculatedThaili += pPrice;
-            } else {
-                calculatedThaili += minVal;
-            }
-        });
-    });
-
-    
-    let finalThaili = 0; // राजस्व र व्यहोरामा प्रयोग हुने अन्तिम थैली
+    // व्यहोरा निर्धारण
+// व्यहोरा निर्धारण (thailiPrefix निर्माण गर्ने भाग)
     let thailiPrefix = "";
-
-    // लजिक: कुन ठुलो छ? (Manual vs Calculated vs Minimum)
-    if (manualTotal > minValTotal) {
-        finalThaili = manualTotal;
+    
+    if (bulkManual > sumOfIndividualThaili) {
+        // यदि मुस्टैण्ड (Bulk) मूल्य बढी भएमा
         thailiPrefix = `साविक जम्मा खरिद मुल्य समेतको आधारमा कायम भएको कुल थैली अंक रू. <b>${toNep(finalThaili)}</b> अक्षेरेपी <b>${numberToNepaliWords(finalThaili)}</b> रूपैयाँको `;
-    } else if (calculatedThaili > minValTotal) {
-        finalThaili = calculatedThaili;
-        thailiPrefix = `कि.नं. <b>${nepJoin(kitasWithPurchase)}</b> का जग्गाहरूको खरिद मुल्य समेतको आधारमा कायम भएको कुल थैली अंक रू. <b>${toNep(finalThaili)}</b> अक्षेरेपी <b>${numberToNepaliWords(finalThaili)}</b> रूपैयाँको `;
+    } else if (kitasWithHighPurchase.length > 0) {
+        // यहाँ तपाईँले खोज्नुभएको 'एकवचन' वा 'बहुवचन' लजिक छ
+        // १ भन्दा बढी कित्ता भए 'जग्गाहरूको', १ वटा मात्र भए 'जग्गाको'
+        let landWord = (kitasWithHighPurchase.length > 1) ? "का जग्गाहरूको" : "को जग्गाको";
+        
+        thailiPrefix = `कि.नं. <b>${nepJoin(kitasWithHighPurchase)}</b> ${landWord} खरिद मुल्य समेतको आधारमा कायम भएको कुल थैली अंक रू. <b>${toNep(finalThaili)}</b> अक्षेरेपी <b>${numberToNepaliWords(finalThaili)}</b> रूपैयाँको `;
     } else {
-        finalThaili = minValTotal;
+        // यदि न्युनत्तम मूल्य नै कायम भएमा
         thailiPrefix = `कुल थैली अंक रू. <b>${toNep(finalThaili)}</b> अक्षेरेपी <b>${numberToNepaliWords(finalThaili)}</b> रूपैयाँको `;
     }
+
+
 
     // --- २. राजस्व हिसाब (Based on finalThaili) ---
     let labhakarAmount = 0;
@@ -1104,19 +1393,116 @@ let regPhaatNote = document.getElementById('chk_reg_fant').checked
         const extraIn = document.getElementById('in_extra').value.trim();
     let extrainfo =  (extraIn ? ` साथै ${extraIn}` : "");
 
+
+// 1. Classification (Vargikaran) Text
+let vargText = "";
+    if (document.getElementById('chk_vargikaran').checked) {
+        const source = document.getElementById('varg_source').value;
+        const selectedKittas = Array.from(document.querySelectorAll('.varg-chk:checked')).map(el => el.value);
+        let sourcef = (source ? 'बमोजिम' : "")
+
+        if (selectedKittas.length > 0) {
+            // क्षेत्र अनुसार कित्ताहरूलाई ग्रुप गर्ने
+            let catMap = {};
+            selectedKittas.forEach(kNum => {
+                let cat = ".......";
+                for (let key in state.areas) {
+                    if (key.endsWith('_' + kNum)) {
+                        cat = state.areas[key].cat || ".......";
+                        break;
+                    }
+                }
+                if (!catMap[cat]) catMap[cat] = [];
+                catMap[cat].push(`<b>${toNep(kNum)}</b>`);
+            });
+
+            // "कि.नं. १२० र १२१ लाई आवासीय क्षेत्र" जस्तो फर्म्याट बनाउने
+            let vargParts = Object.keys(catMap).map(cat => {
+                return `कि.नं. ${nepJoin(catMap[cat])} लाई <b>${cat}</b> क्षेत्र`;
+            });
+
+            vargText = `र ${source} श्रेस्ता पुर्जामा ${nepJoin(vargParts)} जनाउन`;
+        }
+    }
+
+// 2. Extra Decision Text
+const extraDecision = document.getElementById('in_extra_decision').value.trim();
+let extraDecisionFinal = extraDecision ? ` साथै ${extraDecision}` : "";
+
+
     
 
     // ६. प्रिभ्यु टेबुल र बडी कन्टेन्ट
+// update() फङ्सन भित्रको टेवल जेनेरेसन भाग (hrTableHtml) यसरी बदल्नुहोस्:
+
     let hrTableHtml = "";
     if (document.getElementById('chk_show_table').checked) {
-        hrTableHtml = `${gharbato}को आधारमा देहाय बमोजिम न्युनत्तम मुल्याङ्कन कायम हुने ${regPhaatNote} ।<table class="doc-table"><tr><th>गा.वि.स.</th><th>कि.नं.</th><th>क्षेत्रफल</th><th>बाटोको प्रकार</th><th>वर्गिकरण</th><th>न्युनत्तम मुल्य</th></tr>`;
-        state.lands.forEach(l => l.ks.forEach(k => {
-            const a = state.areas[`${l.vdc}_${l.ward}_${k}`];
-            if (!a) return;
-            let fArea = a.sqm ? toNepNum(a.sqm) + " व.मि." : `${toNep(a.r||'०')}-${toNep(a.a||'०')}-${toNep(a.p||'०')}-${toNep(a.d||'०')}`;
-            hrTableHtml += `<tr><td>${l.vdc}-${l.ward}</td><td>${k}</td><td>${fArea}</td><td>${a.path || '-'}</td><td>${a.cat || '-'}</td><td>${toNepNum(calculateSingleRowTotal(a))}</td></tr>`;
-        }));
-        hrTableHtml += `<tr><td colspan="5" style="text-align:right; padding-right:10px;"><b>कुल न्युनत्तम मुल्याङ्कन</b></td><td><b>${toNep(minValTotal)}</b></td></tr></table>`;
+        const isHissaActive = document.getElementById('chk_modal_hissa')?.checked;
+
+        // १. ग्रुपिङ गर्ने (Normalization प्रयोग गरेर)
+        let groups = {};
+        state.lands.forEach(l => {
+            l.ks.forEach(k => {
+                const a = state.areas[`${l.vdc}_${l.ward}_${k}`];
+                if (!a) return;
+                
+                // प्रतिशतलाई Normalize गर्ने (Key जहिले अंग्रेजी अंकमा राख्ने)
+                let pcValue = isHissaActive ? (a.percent || "१००") : "१००";
+                let pcKey = n2e(pcValue).toString(); 
+                
+                if (!groups[pcKey]) {
+                    groups[pcKey] = {
+                        displayLabel: toNep(pcKey), // प्रदर्शन गर्दा नेपालीमा देखाउने
+                        items: []
+                    };
+                }
+                groups[pcKey].items.push({ vdc: l.vdc, ward: l.ward, kitta: k, area: a });
+            });
+        });
+
+        hrTableHtml = `${gharbato}को आधारमा देहाय बमोजिम न्युनत्तम मुल्याङ्कन कायम हुने ${regPhaatNote} ।<table class="doc-table">`;
+
+        let sn = 1;
+        // प्रतिशत धेरैबाट थोरैमा मिलाउने (Sort)
+        let sortedKeys = Object.keys(groups).sort((a, b) => parseFloat(b) - parseFloat(a));
+
+        sortedKeys.forEach(pcKey => {
+            let group = groups[pcKey];
+            let pcNum = parseFloat(pcKey);
+            
+            // हेडरको नाम: १००% भए सादा, नत्र ब्र्याकेटमा प्रतिशत
+            let headerVal = (isHissaActive && pcNum < 100) ? `न्युनत्तम मुल्य (${group.displayLabel}% जग्गाको)` : `न्युनत्तम मुल्य`;
+
+            // समूहको हेडिङ रो
+            hrTableHtml += `<tr style="background:#f2f2f2; font-weight:bold;">
+                <td style="width:40px;">क्र.सं.</td>
+                <td>गा.वि.स.</td>
+                <td>कि.नं.</td>
+                <td>क्षेत्रफल</td>
+                <td>बाटो / वर्गिकरण</td>
+                <td style="width:140px;">${headerVal}</td>
+            </tr>`;
+
+            group.items.forEach(item => {
+                const a = item.area;
+                let fArea = a.sqm ? toNepNum(a.sqm) + " व.मि." : `${toNep(a.r || '०')}-${toNep(a.a || '०')}-${toNep(a.p || '०')}-${toNep(a.d || '०')}`;
+                
+                hrTableHtml += `<tr>
+                    <td>${toNep(sn++)}</td>
+                    <td>${item.vdc}-${item.ward}</td>
+                    <td>${item.kitta}</td>
+                    <td>${fArea}</td>
+                    <td>${a.path || '-'}/${a.cat || '-'}</td>
+                    <td style="text-align:right; padding-right:5px;">${toNepNum(calculateSingleRowTotal(a))}</td>
+                </tr>`;
+            });
+        });
+
+        // अन्तिममा जम्मा टोटल
+        hrTableHtml += `<tr style="font-weight:bold; background:#fafafa;">
+            <td colspan="5" style="text-align:right; padding-right:10px;">कुल न्युनत्तम मुल्याङ्कन</td>
+            <td style="text-align:right; padding-right:5px;">${toNep(minValTotal)}</td>
+        </tr></table>`;
     }
 
     let headerHtml = `<table style="width: 100%; border-bottom: 2px double black; margin-bottom: 15px; border-collapse: collapse; border: none;"><tr>
@@ -1127,7 +1513,7 @@ let regPhaatNote = document.getElementById('chk_reg_fant').checked
 
     let tableHtml = `<table style="width:100%; border:none; border-collapse:collapse; margin-bottom:10px;"><tr><td style="width:65%; vertical-align:top; padding-right:10px;"><table class="doc-table">${sons.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>बाबुको नाम</th><th>बाजेको नाम</th></tr>` : ''}${sons.map((x, i) => `<tr><td>${toNep(i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}${wives.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>पतिको नाम</th><th>ससुराको नाम</th></tr>` : ''}${wives.map((x, i) => `<tr><td>${toNep(sons.length + i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}</table></td><td style="width:35%; vertical-align:top;"><table class="doc-table"><tr><th>मृतकको नाम</th><th>नाता</th><th>मृत्यु मिति</th></tr>${state.mrtks.map(m => `<tr><td>${m.name}</td><td>${m.rel}</td><td>${m.dt}</td></tr>`).join('')}</table></td></tr></table>`;
 
-    let bodyHtml = `<p style="text-indent:10px; margin:2px; padding:0px">श्रीमान्,</p><p style="text-indent:50px; margin:2px; padding:0px">${settings.def_dist} जिल्ला ${landFinal} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा निवेदकको ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${state.apps.length > 1 ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakKa} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन दिनुभएको ।</p><p style="text-indent:50px; margin:2px; padding:0px">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । ${hrTableHtml} माग दावी अनुसारका जग्गा निवेदकको नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै ${recText}, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, निवेदकको नागरिकता र सनाखत ${haqNote} ${extrainfo} समेतको आधारमा ${feeText} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको हकदार <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन आवश्यक निर्णयार्थ पेश ।</p>`;
+    let bodyHtml = `<p style="text-indent:10px; margin:2px; padding:0px">श्रीमान्,</p><p style="text-indent:50px; margin:2px; padding:0px">${settings.def_dist} जिल्ला ${landFinal} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा निवेदकको ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${state.apps.length > 1 ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakKa} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन दिनुभएको ।</p><p style="text-indent:50px; margin:2px; padding:0px">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । ${hrTableHtml} माग दावी अनुसारका जग्गा निवेदकको नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै ${recText}, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, निवेदकको नागरिकता र सनाखत ${haqNote} ${extrainfo} लगायतका प्रमाणहरूको आधारमा ${feeText} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको हकदार <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन ${vargText} ${extraDecisionFinal} आवश्यक निर्णयार्थ पेश ।</p>`;
 
     document.getElementById('preview').innerHTML = headerHtml + tableHtml + bodyHtml;
     saveState();
@@ -1230,7 +1616,7 @@ let regPhaatNote = document.getElementById('chk_reg_fant').checked
     update();             // प्रिभ्यू अपडेट गर्न
     renderMohiUI();
         renderHaqUI();
-        renderPurchaseUI()
+        renderPurchaseUI(); renderVargikaranUI();
 
 }
 
