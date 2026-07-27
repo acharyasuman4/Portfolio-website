@@ -463,7 +463,43 @@ function onRegionChange() {
 
 // ३. संशोधित हिसाब लजिक
 function calculateTax() {
+
     if (!config) return;
+
+    // १. क्षेत्रफल भ्यालिडेसन (Validation)
+    const inputs = [
+        { id: 'aana', max: 16 },
+        { id: 'paisa', max: 4 },
+        { id: 'daam', max: 4 }
+    ];
+
+    let isValid = true;
+    inputs.forEach(input => {
+        const field = document.getElementById(input.id);
+        const val = parseFloat(field.value) || 0;
+
+        if (val >= input.max) {
+            field.style.border = "2px solid #ef4444"; // रातो बोर्डर
+            field.style.backgroundColor = "#fee2e2"; // हल्का रातो पृष्ठभूमि
+            isValid = false;
+        } else {
+            field.style.border = ""; // रिसेट
+            field.style.backgroundColor = ""; 
+        }
+    });
+
+    if (!isValid) {
+        document.getElementById('jamma').innerText = "आना १६ भन्दा कम, पैसा र दाम ४ भन्दा कम हुनुपर्छ";
+        document.getElementById('jamma').style.fontSize = "24px";
+        document.getElementById('bakyaota').innerText = "0";
+        document.getElementById('chalu').innerText = "0";
+        document.getElementById('jarivana').innerText = "0";
+        return; // नियम नमिलेमा हिसाब नगर्ने
+    }
+
+    // २. यदि नियम मिलेको छ भने फन्ट रिसेट गर्ने र हिसाब सुरु गर्ने
+    document.getElementById('jamma').style.fontSize = ""; 
+
 
     const region = document.getElementById('regionSelect').value;
     const bodyType = document.getElementById('bodySelect').value;
@@ -507,11 +543,11 @@ function calculateTax() {
     const jarivana = 0.10 * bakyautaAmount;
 
     // रिजल्ट अपडेट
-    document.getElementById('chalu').innerText = Math.round(chaluAmount).toLocaleString('ne-NP');
-    document.getElementById('bakyaota').innerText = Math.round(bakyautaAmount).toLocaleString('ne-NP');
-    document.getElementById('jarivana').innerText = Math.round(jarivana).toLocaleString('ne-NP');
+    document.getElementById('chalu').innerText = Math.ceil(chaluAmount).toLocaleString('ne-NP');
+    document.getElementById('bakyaota').innerText = Math.ceil(bakyautaAmount).toLocaleString('ne-NP');
+    document.getElementById('jarivana').innerText = Math.ceil(jarivana).toLocaleString('ne-NP');
     
-    const jamma = Math.round(chaluAmount) + Math.round(bakyautaAmount) + Math.round(jarivana);
+    const jamma = Math.ceil(chaluAmount) + Math.ceil(bakyautaAmount) + Math.ceil(jarivana);
     document.getElementById('jamma').innerText = "रु. " + jamma.toLocaleString('ne-NP');
 }
 // Clear Form
@@ -524,7 +560,9 @@ function clearForm() {
 ['ropani', 'aana', 'paisa', 'daam'].forEach(id => document.getElementById(id).addEventListener('input', calculateTax));
 document.getElementById('financialYear').addEventListener('change', calculateTax);
 document.getElementById('land_type').addEventListener('change', calculateTax);    </script>
-    <script>
+   
+   
+   <script>
         // रोपनी एडरबाट आएको डाटा समात्ने र इनपुटमा भर्ने
 window.addEventListener("message", function(event) {
     if (event.data.source === 'ropani-adder') {

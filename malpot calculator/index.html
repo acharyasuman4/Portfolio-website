@@ -125,6 +125,9 @@
         <a href="/Registration" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="file-check" class="w-5 h-5"></i> न्युनत्तम मूल्याङ्कन
         </a>
+        <a href="/tool/advance_rajaswo_calculator.html" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
+            <i data-lucide="calculator" class="w-5 h-5"></i> राजस्व क्याल्कुलेटर (Advanced)
+        </a>
         <a href="/tippani/" onclick="toggleMenu()" class="flex items-center gap-3 p-3 text-slate-400 sidebar-link rounded-xl transition-all">
             <i data-lucide="file-text" class="w-5 h-5"></i> टिप्पणी फर्म्याट
         </a>
@@ -229,7 +232,7 @@
                         <div class="grid grid-cols-3 gap-4 text-center mb-6">
                             <div><p class="text-[10px] text-slate-400 uppercase">बक्यौता</p><p id="bakyaota" class="text-xl font-bold text-slate-800">0</p></div>
                             <div><p class="text-[10px] text-slate-400 uppercase">चालु</p><p id="chalu" class="text-xl font-bold text-slate-800">0</p></div>
-                            <div><p class="text-[10px] text-slate-400 uppercase">जरिवाना</p><p id="jarivana" class="text-xl font-bold text-red-600">0</p></div>
+                            <div><p class="text-[10px] text-slate-400 uppercase">जरिवाना/छुट</p><p id="jarivana" class="text-xl font-bold text-red-600">0</p></div>
                         </div>
                         <div class="bg-blue-600 p-4 rounded-2xl text-center text-white">
                             <p class="text-xs uppercase opacity-80">जम्मा बुझाउनु पर्ने तिरो</p>
@@ -357,6 +360,41 @@ function getRateData(region, fy, bt) {
 
 // ५. मुख्य क्याल्कुलेसन (Corrected Fine Logic)
 function calculateTax() {
+
+
+        if (!appConfig) return;
+
+    // 1. Validation Logic
+    const inputs = [
+        { id: 'aana', max: 16, label: 'आना' },
+        { id: 'paisa', max: 4, label: 'पैसा' },
+        { id: 'daam', max: 4, label: 'दाम' }
+    ];
+
+    let isValid = true;
+    inputs.forEach(input => {
+        const field = document.getElementById(input.id);
+        const val = parseFloat(field.value) || 0;
+
+        if (val >= input.max) {
+            field.style.border = "2px solid #ef4444"; // Red border
+            field.style.backgroundColor = "#fee2e2"; // Light red background
+            isValid = false;
+        } else {
+            field.style.border = ""; // Reset to default
+            field.style.backgroundColor = ""; 
+        }
+    });
+
+    if (!isValid) {
+        document.getElementById('jamma').innerText = "आना १६ भन्दा कम, पैसा र दाम ४ भन्दा कम हुनुपर्छ ।";
+        document.getElementById('jamma').style.fontSize = "20px";
+        return; // Stop calculation here
+    }
+
+    // 2. Continue with your existing calculation...
+    document.getElementById('jamma').style.fontSize = ""; // Reset font size if valid
+
     if (!appConfig) return;
 
     const region = document.getElementById('regionSelect').value;
@@ -405,11 +443,16 @@ function calculateTax() {
     const finalJarivana = baseJarivana + timingAdjustment;
 
     // रिजल्ट अपडेट गर्ने
-    document.getElementById('bakyaota').innerText = Math.round(totalBakyaota);
-    document.getElementById('chalu').innerText = Math.round(chaluTiro);
+// Round each part individually first to avoid decimal calculation errors in total
+    const displayBakyaota = Math.ceil(totalBakyaota);
+    const displayChalu = Math.ceil(chaluTiro);
+    const totalJamma = displayBakyaota + displayChalu + finalJarivana;
+
+    // Update the UI
+    document.getElementById('bakyaota').innerText = displayBakyaota;
+    document.getElementById('chalu').innerText = displayChalu;
     document.getElementById('jarivana').innerText = finalJarivana;
-    document.getElementById('jamma').innerText = "रु. " + Math.round(totalBakyaota + chaluTiro + finalJarivana);
-}
+    document.getElementById('jamma').innerText = "रु. " + totalJamma;}
 
 function autoSelectTiming() {
     if (!appConfig.dates.magh_end) return;
