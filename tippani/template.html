@@ -859,42 +859,66 @@ function isFuzzyMatch(str1, str2) {
     return clean(str1) === clean(str2);
 }
 
+// Helper function to check if a ward number exists in a string like "1-2,4,9"
+function isWardInTarget(inputWard, targetWardStr) {
+    if (!targetWardStr || !inputWard) return false;
+    
+    // Convert Nepali input to English for calculation
+    const wardNum = parseInt(nepToEng(inputWard));
+    
+    // Split by comma: "1-2,4,9" -> ["1-2", "4", "9"]
+    const parts = targetWardStr.toString().split(',');
+    
+    for (let part of parts) {
+        part = part.trim();
+        if (part.includes('-')) {
+            // Handle Range: "1-2"
+            const range = part.split('-').map(n => parseInt(nepToEng(n)));
+            if (wardNum >= range[0] && wardNum <= range[1]) return true;
+        } else {
+            // Handle Single Number: "4"
+            if (parseInt(nepToEng(part)) === wardNum) return true;
+        }
+    }
+    return false;
+}
+
+// Updated Price Matching Engine
 function checkPriceMemory() {
-    const vdc = document.getElementById('old_vdc').value;
-    const road = document.getElementById('road').value;
-    const category = document.getElementById('category').value;
+    const vdc = document.getElementById('old_vdc').value.trim();
+    const oldWardInput = document.getElementById('ward').value.trim(); 
+    const road = document.getElementById('road').value.trim();
+    const category = document.getElementById('category').value.trim();
 
     if (!valuationDb || !vdc || !road) return;
 
-    // Filter by Road first
+    // Filter by Road
     const roadValuations = valuationDb.valuations.filter(v => v.road === road);
 
-    // Filter by VDC Scope
+    // Filter by VDC and OLD Ward
     const possibleMatches = roadValuations.filter(v => {
         if (v.scope === "all") return true;
-        return v.targets.some(t => t.vdc === vdc);
+        
+        return v.targets.some(t => {
+            const vdcMatch = (t.vdc === vdc);
+            // Match input against 'oldWard' range (e.g., "1-2,4,9")
+            const wardMatch = oldWardInput ? isWardInTarget(oldWardInput, t.oldWard) : true;
+            return vdcMatch && wardMatch;
+        });
     });
 
-    let finalMatch = null;
-
-    // 1. Try to match Road + Category exactly
-    finalMatch = possibleMatches.find(v => v.classification === category);
-
-    // 2. Try Fuzzy Match (आवासीय vs आवासीय क्षेत्र)
-    if (!finalMatch) {
-        finalMatch = possibleMatches.find(v => isFuzzyMatch(v.classification, category));
-    }
-
-    // 3. Fallback to "सबै" classification
-    if (!finalMatch) {
-        finalMatch = possibleMatches.find(v => v.classification === "सबै" || !v.classification);
-    }
+    // Find best match based on category (residential, etc.)
+    let finalMatch = possibleMatches.find(v => v.classification === category) || 
+                     possibleMatches.find(v => isFuzzyMatch(v.classification, category)) ||
+                     possibleMatches.find(v => v.classification === "सबै") ||
+                     possibleMatches[0];
 
     if (finalMatch) {
         document.getElementById('pricePerRopani').value = engToNep(finalMatch.price);
     }
 }
-
+// Ensure the Ward input also triggers the price check
+document.getElementById('ward').addEventListener('input', checkPriceMemory);
 // Ensure event listeners are attached to inputs
 document.getElementById('road').addEventListener('input', checkPriceMemory);
 document.getElementById('category').addEventListener('input', checkPriceMemory);// --- Part 2: Autocomplete Setup ---
@@ -991,44 +1015,54 @@ document.getElementById('old_vdc').addEventListener('input', updateRoadOptions);
 
 // --- Part 4: Auto-fill Recommendation Details based on JSON Mapping ---
 
+// --- Part 4: Auto-fill Recommendation Details based on JSON Mapping (Corrected) ---
 function autoFillRecommendation() {
-    const selectedVdc = document.getElementById('old_vdc').value;
-    const settings = JSON.parse(localStorage.getItem('global_office_settings')) || {};
-    const defaultDist = settings.def_dist;
+    const selectedVdc = document.getElementById('old_vdc').value.trim();
+    const typedWard = document.getElementById('ward').value.trim(); // साविक वडा नं.
 
     if (!valuationDb || !selectedVdc) return;
 
-    // Find the district
-    const districtData = valuationDb.districts.find(d => d.name === defaultDist);
-    if (!districtData) return;
-
-    let foundMunicipality = "";
+    let foundLocalName = "";
     let foundCurrentWard = "";
 
-    // Search through locals and their mappings
-    for (const local of districtData.locals) {
-        for (const map of local.mapping) {
-            // Check if this mapping's links contain the selected Old VDC
-            const match = map.links.find(link => link.vdc === selectedVdc);
-            if (match) {
-                foundMunicipality = local.name;
-                foundCurrentWard = map.wardNo;
-                break;
+    // Mapping मा खोज्ने लजिक
+    for (const dist of valuationDb.districts) {
+        for (const local of dist.locals) {
+            for (const map of local.mapping) {
+                // यहाँ VDC नाम र पुरानो वडा दुबै मिल्नुपर्छ
+                const match = map.links.find(link => {
+                    const vdcMatch = (link.vdc === selectedVdc);
+                    
+                    // यदि वडा टाइप गरिएको छ भने, त्यो वडा यो रेन्ज (1-5, 7 आदि) भित्र पर्छ कि नाइँ हेर्ने
+                    // JSON मा wards वा oldWard जुनसुकै नाम भएपनि चेक गर्ने
+                    const targetWards = link.wards || link.oldWard || "";
+                    const wardMatch = typedWard ? isWardInTarget(typedWard, targetWards) : true;
+                    
+                    return vdcMatch && wardMatch;
+                });
+
+                if (match) {
+                    foundLocalName = local.name;
+                    foundCurrentWard = map.wardNo;
+                    break;
+                }
             }
+            if (foundLocalName) break;
         }
-        if (foundMunicipality) break;
     }
 
-    // Auto-fill the Recommendation Inputs (t1 and t2)
-    if (foundMunicipality) {
-        document.getElementById('t1').value = foundMunicipality;
+    // सिफारिस पत्रको फाँटहरू भर्ने
+    if (foundLocalName) {
+        document.getElementById('t1').value = foundLocalName;
     }
     if (foundCurrentWard) {
-        // Fill both the recommendation ward and the land details ward
         document.getElementById('t2').value = engToNep(foundCurrentWard);
     }
 }
 
+// वडा कोलममा टाइप गर्दा पनि सिफारिस अपडेट हुने बनाउन यो थप्नुहोस्
+document.getElementById('ward').addEventListener('input', autoFillRecommendation);
+document.getElementById('ward').addEventListener('change', autoFillRecommendation);
 // Attach this to the old_vdc input listener
 document.getElementById('old_vdc').addEventListener('change', autoFillRecommendation);
 // Also trigger on 'input' if you want it to fill as they type/select from list
@@ -1046,31 +1080,26 @@ function updateAll() {
     const isClassified = document.getElementById('is_classified').checked;
     
     // Logic for paragraph text
-    if(upperEntries.length > 0) {
-        let grouped = {}; 
-        upperEntries.forEach(e => { 
-            if(!grouped[e.t1]) grouped[e.t1] = {}; 
-            if(!grouped[e.t1][e.t2]) grouped[e.t1][e.t2] = []; 
-            grouped[e.t1][e.t2].push(`${e.t3} मिति ${e.t4}`); 
-        });
+if(upperEntries.length > 0) {
+    let parts = [];
+    upperEntries.forEach(e => {
+        // e.t1 is Municipality, e.t2 is Current Ward
+        // We can manually add Old VDC info if needed, or keep it clean:
+        parts.push(`${e.t1} वडा नं. ${e.t2} को च.नं. ${e.t3} मिति ${e.t4}`);
+    });
 
-        let parts = []; 
-        for(let l in grouped) { 
-            let wParts = []; 
-            for(let w in grouped[l]) { 
-                wParts.push(`${w} नं. वडा कार्यालयको च.नं. ${grouped[l][w].join(', ')}`); 
-            } 
-            parts.push(`${l}को ${wParts.join(' र ')} गतेको`); 
-        }
+    const isClassified = document.getElementById('is_classified').checked;
+    const classificationPart = isClassified ? " र जग्गाको वर्गिकरण समेत" : "";
+    
+    // Get values from Section 1 to show context
+    const oldVdc = document.getElementById('old_vdc').value;
+    const oldWard = document.getElementById('ward').value;
+    let contextStr = (oldVdc && oldWard) ? `(साविक ${oldVdc} वडा नं. ${oldWard}) ` : "";
 
-        // --- THE DYNAMIC TEXT LOGIC ---
-        const classificationPart = isClassified ? " र जग्गाको वर्गिकरण समेत" : "";
-        
-        document.getElementById('out_paragraph').innerText = 
-            parts.join(', ') + 
-            ` घरबाटो सिफारिस${classificationPart}को आधारमा तपशिलका कित्ता जग्गाहरूको आ.व. ${fy} को लागि न्युनतम मूल्याङ्कन तपशिल बमोजिम हुने देखिन्छ ।`;
-    }
-
+    document.getElementById('out_paragraph').innerText = 
+        parts.join(' र ') + 
+        ` को घरबाटो सिफारिस${classificationPart}को आधारमा ${contextStr}तपशिलका कित्ता जग्गाहरूको न्युनतम मूल्याङ्कन निम्न बमोजिम हुने देखिन्छ ।`;
+}
     
     // 2. Update Table and Totals
     let html = "", total = 0;
