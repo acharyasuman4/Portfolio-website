@@ -361,7 +361,6 @@
                     <button class="btn btn-dark" onclick="openValModal()">🏠 घरबाटो विवरण भर्नुहोस्</button>
                 </div>
 
-                <!-- साविक खरिद मुल्य सेक्सन -->
 <!-- साविक खरिद मुल्य सेक्सन -->
 <div class="input-group" style="background:#f0f9ff; border: 1px solid #0ea5e9; margin-top: 5px;">
     <!-- यो Hidden Input अनिवार्य छ -->
@@ -415,7 +414,7 @@
 
 <div>
     <label for="in_extra">सनाखतपछिको व्यहोरा ('साथै' adjoint)</label>
-                <textarea id="in_extra" placeholder="थप विवरण (सनाखत पछिको)..." class="input-box"
+                <textarea id="in_extra" placeholder="३५ दिने सार्वजानिक सुचनामा नपरेको हकदावी, सर्जमिन मुचुल्का,..." class="input-box"
                     oninput="update()"></textarea>
                 <div class="row" style="display: flex; gap: 10px; font-size: 14px;">
                     <label for="fee_s">सेवा शुल्क</label>
@@ -458,6 +457,16 @@
 <div class="input-group">
     <label>थप निर्णय (नामसारी पछि):</label>
     <textarea id="in_extra_decision" placeholder="उदा: रोक्का यथावत राख्न..." class="input-box" oninput="update()"></textarea>
+</div>
+<!-- नामसारी हुने कित्ताहरू फिल्टर गर्ने सेक्सन -->
+<div class="input-group" style="background:#f0f9ff; border: 1px solid #0ea5e9; margin-bottom:10px;">
+    <label style="color: #0369a1; font-weight: bold;">
+        <input type="checkbox" id="chk_filter_kitta" onchange="renderNamsariKittaUI(); update();"> नामसारी हुने कित्ताहरू छान्न?
+    </label>
+    <div id="filter_kitta_inputs" style="display:none; margin-top:5px;">
+        <label>नामसारी हुने कित्ताहरू मात्र टिक लगाउनुहोस्:</label>
+        <div id="filter_kitta_list" style="max-height:100px; overflow-y:auto; background:white; border:1px solid #ddd; padding:5px;"></div>
+    </div>
 </div>
 
             </div>
@@ -660,6 +669,25 @@ function saveKittaPurchasePrice(el) {
     state.purchasePrices[id] = el.value;
     update(); // टिप्पणी अपडेट गर्ने
 
+}
+
+function renderNamsariKittaUI() {
+    const cont = document.getElementById('filter_kitta_inputs');
+    const isChecked = document.getElementById('chk_filter_kitta').checked;
+    cont.style.display = isChecked ? 'block' : 'none';
+    
+    const listDiv = document.getElementById('filter_kitta_list');
+    let html = "";
+    state.lands.forEach(l => {
+        l.ks.forEach(k => {
+            html += `<label style="display:block; font-weight:normal;">
+                <input type="checkbox" class="namsari-kitta-chk" 
+                    data-vdc="${l.vdc}" data-ward="${l.ward}" value="${k}" checked onchange="update()"> 
+                ${l.vdc}-${l.ward}: कि.नं. ${k}
+            </label>`;
+        });
+    });
+    listDiv.innerHTML = html;
 }
 
 
@@ -968,10 +996,12 @@ function n2e(str) {
         const NUM_NE = ["", "एक", "दुई", "तीन", "चार", "पाँच", "छ", "सात", "आठ", "नौ", "दस", "एघार", "बाह्र", "तेह्र", "चौध", "पन्ध्र", "सोह्र", "सत्र", "अठार", "उन्नाइस", "बीस", "एक्काइस", "बाइस", "तेइस", "चौबीस", "पच्चीस", "छब्बीस", "सत्ताइस", "अठ्ठाइस", "उनन्तीस", "तीस", "एकतीस", "बत्तीस", "तेत्तीस", "चौँतीस", "पैंतीस", "छत्तीस", "सैंतीस", "अठतीस", "उनन्चालीस", "चालीस", "एकचालीस", "बयालीस", "त्रिचालीस", "चवालीस", "पैँतालीस", "छयालीस", "सत्चालीस", "अठचालीस", "उनन्चास", "पचास", "एकाउन्न", "बाउन्न", "त्रिपन्न", "चवन्न", "पचपन्न", "छपन्न", "सन्ताउन्न", "अन्ठाउन्न", "उनन्साठी", "साठी", "एकसट्ठी", "बैसट्ठी", "त्रिसट्ठी", "चौसट्ठी", "पैंसट्ठी", "छैंसट्ठी", "सडसट्ठी", "अठसट्ठी", "उनन्सत्तरी", "सत्तरी", "एकहत्तर", "बहत्तर", "त्रिहत्तर", "चौरहत्तर", "पचहत्तर", "छयहत्तर", "सतहत्तर", "अठहत्तर", "उनासी", "अस्सी", "एकासी", "बयासी", "त्रियासी", "चौरासी", "पचासी", "छयासी", "सतासी", "अठासी", "उनान्नब्बे", "नब्बे", "एकान्नब्बे", "बयान्नब्बे", "त्रियान्नब्बे", "चौरान्नब्बे", "पन्चान्नब्बे", "छयान्नब्बे", "सन्तानब्बे", "अन्ठान्नब्बे", "उनान्सय"];
         let n = Math.floor(num);
         let words = "";
+        const arba = Math.floor(n / 1000000000); n %= 1000000000;
         const crore = Math.floor(n / 10000000); n %= 10000000;
         const lakh = Math.floor(n / 100000); n %= 100000;
         const thousand = Math.floor(n / 1000); n %= 1000;
         const hundred = Math.floor(n / 100); n %= 100;
+        if (arba > 0) words += NUM_NE[arba] + " अर्ब ";
         if (crore > 0) words += NUM_NE[crore] + " करोड ";
         if (lakh > 0) words += NUM_NE[lakh] + " लाख ";
         if (thousand > 0) words += NUM_NE[thousand] + " हजार ";
@@ -1067,21 +1097,20 @@ document.addEventListener('input', e => {
             update();
         });
 
-        function syncHR() {
-            if (document.getElementById('chk_rec_house').checked) {
-                        const toNepVal = (val) => val.replace(/\d/g, d => "०१२३४५६७८९"[d]).replace(/\./g, "।");
-
-                document.getElementById('hr_loc').value = document.getElementById('in_loc').value;
-                document.getElementById('hr_ward').value = document.getElementById('in_lw').value;
-                document.getElementById('hr_sd').value = document.getElementById('in_sd').value;
-            }
-        }
-        function syncHR(isManualTyping = false) {
-    // यदि प्रयोगकर्ताले नामसारी फिल्डमा टाइप गरिरहेको छ भने मात्र कपी गर्ने
+// Use this single version. Remove the other two syncHR functions.
+function syncHR(isManualTyping = false) {
     if (document.getElementById('chk_rec_house').checked && isManualTyping) {
-        document.getElementById('hr_loc').value = document.getElementById('in_loc').value;
-        document.getElementById('hr_ward').value = document.getElementById('in_lw').value;
-        document.getElementById('hr_sd').value = document.getElementById('in_sd').value;
+        const sourceFields = {
+            'in_loc': 'hr_loc',
+            'in_lw': 'hr_ward',
+            'in_sd': 'hr_sd'
+        };
+
+        for (let src in sourceFields) {
+            let val = document.getElementById(src).value;
+            // Force conversion during sync
+            document.getElementById(sourceFields[src]).value = val.replace(/\d/g, d => "०१२३४५६७८९"[d]).replace(/\./g, "।");
+        }
         update();
     }
 }
@@ -1419,6 +1448,7 @@ const vdc = document.getElementById('l_vdc').value;
     renderMohiUI();
     renderPurchaseUI();
     renderVargikaranUI();
+    renderNamsariKittaUI();
     update(); 
 }
 
@@ -1550,8 +1580,6 @@ function update() {
     const bulkManual = n2e(vSafe('total_purchase_manual'));
     let finalThaili = Math.max(sumOfIndividualThaili, bulkManual);
 
-    // व्यहोरा निर्धारण
-// व्यहोरा निर्धारण (thailiPrefix निर्माण गर्ने भाग)
 // --- घरको मूल्य हिसाव र पाठ (Requirement 5 Logic) ---
     let houseValTotal = 0;
     let houseTextParts = [];
@@ -1633,7 +1661,7 @@ function update() {
 
     // --- ३. अन्तिम feeText निर्माण ---
 let feeParts = [];
-    feeParts.push(`${province} प्रदेश आर्थिक ऐन बमोजिमको सेवा शुल्क रू. <b>${v('fee_s')}</b>`);
+    feeParts.push(`${province}को आर्थिक ऐन बमोजिमको सेवा शुल्क रू. <b>${v('fee_s')}</b>`);
     if (document.getElementById('chk_late').checked) feeParts.push(`विलम्ब शुल्क रू. <b>${v('fee_l')}</b>`);
     if (labhakarAmount > 0) feeParts.push(`पुँजीगत लाभकर रू. <b>${toNep(labhakarAmount)}</b>`);
 
@@ -1646,9 +1674,34 @@ let feeParts = [];
     }
     // ५. जग्गा र अन्य विवरण तयार गर्ने
     const landFinal = nepJoin(state.lands.map(l => {
-        let kits = l.ks.map(k => `<b>${k}</b>`); 
-        return `साविक <b>${l.vdc}</b> वडा नं. <b>${l.ward}</b> को कि.नं. ${nepJoin(kits)}`;
+    let kits = l.ks.map(k => `<b>${k}</b>`); 
+    return `साविक <b>${l.vdc}</b> वडा नं. <b>${l.ward}</b> को कि.नं. ${nepJoin(kits)}`;
+}));
+
+// २. नयाँ: नामसारी हुने कित्ताहरू मात्र छानिएको भए सोही अनुसारको लिस्ट बनाउने
+let namsariLandFinal = "";
+if (document.getElementById('chk_filter_kitta').checked) {
+    const checkedEls = Array.from(document.querySelectorAll('.namsari-kitta-chk:checked'));
+    
+    // छानिएका कित्तालाई ग्रुपिङ गर्ने (VDC र Ward अनुसार)
+    let nGroup = {};
+    checkedEls.forEach(el => {
+        let vdc = el.getAttribute('data-vdc');
+        let ward = el.getAttribute('data-ward');
+        let k = el.value;
+        let key = `${vdc}_${ward}`;
+        if (!nGroup[key]) nGroup[key] = { vdc, ward, ks: [] };
+        nGroup[key].ks.push(`<b>${k}</b>`);
+    });
+
+    namsariLandFinal = nepJoin(Object.values(nGroup).map(g => {
+        return `साविक <b>${g.vdc}</b> वडा नं. <b>${g.ward}</b> को कि.नं. ${nepJoin(g.ks)}`;
     }));
+} else {
+    // टिक लागेको छैन भने साविककै landFinal प्रयोग गर्ने
+    namsariLandFinal = landFinal;
+}
+
 
     const gharbato = document.getElementById('chk_rec_house').checked ? 
     `<b>${v('hr_loc')} ${v('hr_ward')}</b> नं. वडा कार्यालयको च.नं. <b>${v('hr_sc')}</b> मिति <b>${v('hr_sd')}</b> को घरबाटो सिफारिस` : "";
@@ -1703,7 +1756,7 @@ let feeParts = [];
     let nijaText = state.mrtks.length > 1 ? "निजहरू" : "निज";
     let activeNamesOnly = nepJoin(activeApps.map(a => `<b>${a.name}</b>`));
     let nivedakKa = state.apps.length > 1 ? "निवेदकहरूको" : "निवेदकको";
-    let haqNote = (state.haq_groups || []).map(g => `, हकदारहरू मध्येका <b>${nepJoin(g.names)}</b> ले द.नं. <b>${g.reg}</b> मिति <b>${g.dt}</b> को निवेदनबाट दिएको मञ्जुरी`).join(' र ');
+    // let haqNote = (state.haq_groups || []).map(g => `, हकदारहरू मध्येका <b>${nepJoin(g.names)}</b> ले द.नं. <b>${g.reg}</b> मिति <b>${g.dt}</b> को निवेदनबाट दिएको मञ्जुरी`).join(' र ');
     let hissaText = (document.getElementById('chk_hissa')?.checked) ? " को हकहिस्सा मात्र" : "";
     let guthiText = (document.getElementById('chk_guthi')?.checked) ? " <b>गुठी यथावत कायम राखी</b> " : "";
 
@@ -1717,7 +1770,35 @@ let regPhaatNote = document.getElementById('chk_reg_fant').checked
     let extrainfo =  (extraIn ? ` साथै ${extraIn}` : "");
 
 
+// १. सबैभन्दा पहिले एउटै दर्ता नम्बर र मिति भएकाहरूलाई ग्रुप गर्ने
+let groupedHaq = {};
 
+(state.haq_groups || []).forEach(g => {
+    // दर्ता नम्बर र मितिको एउटा साँचो (Key) बनाउने
+    let key = `${g.reg}_${g.dt}`; 
+    if (!groupedHaq[key]) {
+        groupedHaq[key] = { reg: g.reg, dt: g.dt, names: [] };
+    }
+    // नामहरू थप्ने (Duplicate नहोस् भन्नका लागि)
+    g.names.forEach(n => {
+        if (!groupedHaq[key].names.includes(n)) {
+            groupedHaq[key].names.push(n);
+        }
+    });
+});
+
+// २. ग्रुप गरिएका डाटाहरूबाट व्यहोराका टुक्राहरू बनाउने
+let haqParts = Object.values(groupedHaq).map(item => {
+    let combinedNames = nepJoin(item.names.map(n => `${n}`));
+    return `<b>${combinedNames}ले द.नं. ${item.reg} मिति ${item.dt} को</b>`;
+});
+
+// ३. अन्तिम 'haqNote' तयार गर्ने
+let haqNote = "";
+if (haqParts.length > 0) {
+    // टुक्राहरूलाई 'र' र 'कमा' ले जोड्ने
+    haqNote = `, हकदारहरू मध्येका ${nepJoin(haqParts)} निवेदनबाट दिएको मञ्जुरी`;
+}
     
 
 // 1. Classification (Vargikaran) Text
@@ -1839,7 +1920,7 @@ let extraDecisionFinal = extraDecision ? ` साथै ${extraDecision}` : "";
 
     let tableHtml = `<table style="width:100%; border:none; border-collapse:collapse; margin-bottom:10px;"><tr><td style="width:65%; vertical-align:top; padding-right:10px;"><table class="doc-table">${sons.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>बाबुको नाम</th><th>बाजेको नाम</th></tr>` : ''}${sons.map((x, i) => `<tr><td>${toNep(i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}${wives.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>पतिको नाम</th><th>ससुराको नाम</th></tr>` : ''}${wives.map((x, i) => `<tr><td>${toNep(sons.length + i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}</table></td><td style="width:35%; vertical-align:top;"><table class="doc-table"><tr><th>मृतकको नाम</th><th>नाता</th><th>मृत्यु मिति</th></tr>${state.mrtks.map(m => `<tr><td>${m.name}</td><td>${m.rel}</td><td>${m.dt}</td></tr>`).join('')}</table></td></tr></table>`;
 
-    let bodyHtml = `<p style="text-indent:10px; margin:2px; padding:0px">श्रीमान्,</p><p style="text-indent:50px; margin:2px; padding:0px">${settings.def_dist} जिल्ला ${landFinal} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा निवेदकको ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${state.apps.length > 1 ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakKa} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन दिनुभएको ।</p><p style="text-indent:50px; margin:2px; padding:0px">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । ${hrTableHtml} माग दावी अनुसारका जग्गा निवेदकको नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै ${recText}, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, निवेदकको नागरिकता र सनाखत ${haqNote} ${extrainfo} लगायतका प्रमाणहरूको आधारमा ${feeText} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको हकदार <b>${activeNamesOnly}</b>को नाममा ${settings.def_dist} जिल्ला ${landFinal}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन ${vargText} ${extraDecisionFinal} आवश्यक निर्णयार्थ पेश ।</p>`;
+    let bodyHtml = `<p style="text-indent:10px; margin:2px; padding:0px">श्रीमान्,</p><p style="text-indent:50px; margin:2px; padding:0px">${settings.def_dist} जिल्ला ${landFinal} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा निवेदकको ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${state.apps.length > 1 ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakKa} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन दिनुभएको ।</p><p style="text-indent:50px; margin:2px; padding:0px">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । ${hrTableHtml} माग दावी अनुसारका जग्गा निवेदकको नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै ${recText}, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, निवेदकको नागरिकता र सनाखत ${haqNote} ${extrainfo} लगायतका प्रमाणहरूको आधारमा ${feeText} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको हकदार <b>${activeNamesOnly}</b>को नाममा ${namsariLandFinal}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन ${vargText} ${extraDecisionFinal} आवश्यक निर्णयार्थ पेश ।</p>`;
 
     document.getElementById('preview').innerHTML = headerHtml + tableHtml + bodyHtml;
     saveState();
@@ -1954,10 +2035,7 @@ let extraDecisionFinal = extraDecision ? ` साथै ${extraDecision}` : "";
         }
         function resetAll() { if (confirm("विवरण मेटाउने?")) { localStorage.removeItem('namsari_v3_storage'); location.reload(); } }
 // नम्बर टाइप गर्दा नेपाली बनाउने फङ्सन
-function nepalify(el) {
-    el.value = el.value.replace(/\d/g, d => "०१२३४५६७८९"[d]).replace(/\./g, "।");
-    update();
-}
+
 
 // फाइल एक्सपोर्ट फङ्सन (अन्तिमको हटाएर यो राख्नुहोस्)
 function exportWord() {

@@ -1,5 +1,5 @@
 // १. क्यासको नाम (भविष्यमा अपडेट गर्दा v3 लाई v4 बनाउनुहोस्)
-const CACHE_NAME = 'acharyasuman-portal-v5'; 
+const CACHE_NAME = 'acharyasuman-portal-v6'; 
 
 const ASSETS_TO_CACHE = [
   './',
