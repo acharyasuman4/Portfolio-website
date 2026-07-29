@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>न्युनत्तम मुल्याङ्कन रिपोर्ट - २०८३/८४</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
+        
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: white; padding: 0; margin: 0; }
+            .report-container { width: 100%; box-shadow: none; border: none; padding: 0; margin: 0; }
+            
+            .local-section { page-break-before: always; }
+            .local-section:first-child { page-break-before: avoid; }
+
+            table { width: 100%; border-collapse: collapse; }
+            thead { display: table-header-group; } 
+            tr { page-break-inside: avoid; }
+        }
+
+        .report-table th, .report-table td {
+            border: 1px solid #000;
+            padding: 5px 8px;
+            line-height: 1.2;
+            color: black;
+            font-size: 11pt;
+        }
+
+        .table-title-row {
+            text-align: left;
+            font-size: 11pt;
+            font-weight: bold;
+            background-color: #f8fafc !important;
+            white-space: nowrap;
+        }
+
+        .report-table th { background-color: #f3f4f6 !important; font-weight: 700; text-align: center; font-size: 10pt; }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- Control Panel -->
+    <div class="max-w-4xl mx-auto no-print mb-8">
+        <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200">
+            <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-file-contract text-blue-600"></i>
+                न्युनत्तम मुल्याङ्कन रिपोर्ट जनरेटर (२०८३/८४)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <select id="distSelect" onchange="loadLocals()" class="p-3 bg-slate-50 border rounded-xl font-bold outline-none focus:border-blue-500">
+                    <option value="">-- जिल्ला छान्नुहोस् --</option>
+                </select>
+                <select id="localSelect" class="p-3 bg-slate-50 border rounded-xl font-bold outline-none focus:border-blue-500">
+                    <option value="all">सबै स्थानीय तहहरू</option>
+                </select>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="generateReport()" class="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">रिपोर्ट लोड गर्नुहोस्</button>
+                <button onclick="window.print()" class="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 transition">प्रिन्ट / PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Area -->
+    <div id="reportArea" class="max-w-[210mm] mx-auto bg-white p-2 md:p-8 report-container min-h-[297mm]">
+        <div class="text-center py-20 text-slate-400">जिल्ला छानेर 'रिपोर्ट लोड गर्नुहोस्' मा क्लिक गर्नुहोस्।</div>
+    </div>
+
+    <script>
+        let landData = null;
+
+        window.onload = async () => {
+            try {
+                const response = await fetch('/registration/land_valuation_final.json');
+                landData = await response.json();
+                populateDistricts();
+            } catch (e) { console.error("JSON Error:", e); }
+        };
+
+        function populateDistricts() {
+            const select = document.getElementById('distSelect');
+            landData.districts.forEach(d => {
+                select.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+            });
+        }
+
+        function loadLocals() {
+            const distName = document.getElementById('distSelect').value;
+            const localSelect = document.getElementById('localSelect');
+            localSelect.innerHTML = '<option value="all">सबै स्थानीय तहहरू</option>';
+            const district = landData.districts.find(d => d.name === distName);
+            if (district) {
+                district.locals.forEach(l => {
+                    localSelect.innerHTML += `<option value="${l.name}">${l.name}</option>`;
+                });
+            }
+        }
+
+        function generateReport() {
+            const distName = document.getElementById('distSelect').value;
+            const localFilter = document.getElementById('localSelect').value;
+            if (!distName) return alert("जिल्ला छान्नुहोस्।");
+            
+            const district = landData.districts.find(d => d.name === distName);
+            const reportArea = document.getElementById('reportArea');
+            reportArea.innerHTML = '';
+
+            district.locals.forEach((local) => {
+                if (localFilter !== 'all' && localFilter !== local.name) return;
+
+                // --- शुद्ध फिल्टरिङ लजिक ---
+                let valuations = landData.valuations.filter(v => {
+                    // १. यदि यो रोडको Local ID (lId) यो स्थानीय तहसँग मिल्छ भने मात्र देखाउने
+                    if (v.lId === local.id) return true;
+
+                    // २. यदि scope specific छ भने VDC म्याच गर्ने (सुरक्षाको लागि थपिएको)
+                    if (v.scope === 'specific' && Array.isArray(v.targets)) {
+                        return v.targets.some(t => 
+                            local.mapping.some(m => m.links.some(link => link.vdc === t.vdc))
+                        );
+                    }
+                    return false;
+                });
+
+                // मूल्य अनुसार ठूलोबाट सानो (High to Low)
+                valuations.sort((a, b) => b.price - a.price);
+
+                if (valuations.length > 0) {
+                    const section = document.createElement('div');
+                    section.className = 'local-section';
+
+                    let tableHtml = `
+                        <div class="text-center mb-4">
+                            <h1 class="text-xl font-bold underline">${distName} जिल्लाको न्युनत्तम मुल्याङ्कन आ.व. ०८३/८४</h1>
+                        </div>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th colspan="4" class="table-title-row">स्थानीय तहको नाम: ${local.name}</th>
+                                </tr>
+                                <tr>
+                                    <th style="width: 8%;">क्र.सं.</th>
+                                    <th style="width: 45%;">सडकको नाम (वर्गीकरण)</th>
+                                    <th style="width: 32%;">साविक गा.वि.स. वडा नं.</th>
+                                    <th style="width: 15%;">न्युनत्तम मुल्याङ्कन</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    valuations.forEach((v, vIndex) => {
+                        let displayRoad = v.road;
+                        if (v.classification && !['सबै', 'नभएको', 'नभएको/अन्य'].includes(v.classification)) {
+                            displayRoad += ` (${v.classification})`;
+                        }
+
+                        // शब्दावली सुधार: "सबै पालिका/वडा" को सट्टा "सबै गा.वि.स."
+                        let areaText = (v.scope === 'all') ? 'सबै गा.वि.स.' : 
+                            v.targets.filter(t => local.mapping.some(m => m.links.some(l => l.vdc === t.vdc)))
+                                     .map(t => `${t.vdc} ${toNepDigit(t.oldWard || '')}`).join(', ');
+
+                        tableHtml += `
+                            <tr>
+                                <td class="text-center">${toNepDigit(vIndex + 1)}</td>
+                                <td>${displayRoad}</td>
+                                <td>${areaText}</td>
+                                <td class="text-right font-bold">रू. ${toNepaliFormat(v.price)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tableHtml += `</tbody></table><div class="mb-8"></div>`;
+                    section.innerHTML = tableHtml;
+                    reportArea.appendChild(section);
+                }
+            });
+        }
+
+        function toNepaliFormat(num) {
+            let n = Number(num).toLocaleString('en-IN');
+            return n.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+        }
+
+        function toNepDigit(str) {
+            return str.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
+        }
+    </script>
+</body>
+</html>

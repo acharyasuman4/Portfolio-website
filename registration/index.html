@@ -26,10 +26,15 @@
 
     <style>
         body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
-        .calc-input { width: 100%; padding: 0.6rem; background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 0.75rem; font-weight: 700; outline: none; transition: all 0.2s; }
+        .calc-input { width: 100%; padding: 0.4rem 0.6rem; background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 0.75rem; font-weight: 700; outline: none; transition: all 0.2s; }
         .calc-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1); }
         .sidebar-link:hover { background-color: #1e293b; color: #3b82f6; }
         .active-mode { color: #3b82f6; border-bottom: 2px solid #3b82f6; font-weight: bold; }
+       #resetbutton:hover {background-color: rgb(112, 12, 5); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    font-size: 17px;}
+    #resetbutton{
+        font-size: 16px; background-color: rgb(212, 85, 69); color: white;
+    }
 
         @media (max-width: 768px) {
     #sidebar-menu { 
@@ -144,7 +149,7 @@
 
 <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-200">
     <!-- १. JSON SELECTORS -->
-    <div id="json-selectors" class="hidden space-y-4 mb-4 border-b pb-4">
+    <div id="json-selectors" class="hidden space-y-4 mb-2 border-b pb-4">
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">जिल्ला</label>
@@ -160,13 +165,13 @@
     </div>
 
     <!-- २. वडा र कित्ता -->
-    <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-2 gap-4 mb-2">
         <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">वडा नं.</label><input type="number" id="wadaNo" class="calc-input calc-input-large"></div>
         <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-1">कित्ता नं.</label><input type="number" id="kittaNo" class="calc-input calc-input-large"></div>
     </div>
 
     <!-- ३. क्षेत्रफल इनपुट (ROPANI/SQM) -->
-    <div id="area-rapd" class="grid grid-cols-4 gap-2 mb-4">
+    <div id="area-rapd" class="grid grid-cols-4 gap-2 mb-2">
         <input type="number" id="ropani" class="calc-input text-center" placeholder="रोपनी">
         <input type="number" id="aana" class="calc-input text-center" placeholder="आना">
         <input type="number" id="paisa" class="calc-input text-center" placeholder="पैसा">
@@ -175,11 +180,10 @@
     <div id="area-sqm" class="hidden mb-4"><input type="number" id="sqmeter" class="calc-input" placeholder="Sq. Meter"></div>
 
     <!-- ४. बाटो र वर्गीकरण -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
         <div>
             <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">बाटोको प्रकार</label>
-            <input list="batoList" id="batoType" class="calc-input calc-input-large border-blue-200" onfocus="this.value=''" onchange="updateClassificationOptions()" onkeydown="handleTabAutocomplete(event, 'batoType', 'batoList')" placeholder="बाटोको नाम...">
-            <datalist id="batoList"></datalist>
+<input list="batoList" id="batoType" class="calc-input" onfocus="this.value=''" onchange="updateClassificationOptions()" placeholder="बाटोको नाम...">            <datalist id="batoList"></datalist>
         </div>
         <div>
             <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">वर्गीकरण</label>
@@ -188,7 +192,7 @@
             </select>
         </div>
     </div>
-
+<p>जग्गा वर्गीकरण भएपनि वर्गीकरणले न्युनत्तम मुल्य असर नगर्ने सडक भए वर्गीकरण छान्ने अप्सन नभएको/अन्य मात्र आउनसक्छ । </p>
     <!-- ५. न्युनत्तम मुल्य (यो फिल्ड थप्नुहोस्) -->
     <div class="mb-6">
         <label class="text-[10px] font-bold text-slate-400 uppercase ml-1">न्युनत्तम मुल्य (प्रति रोपनी)</label>
@@ -200,7 +204,7 @@
     </div>
 
     <!-- ६. ACTION BUTTONS -->
-    <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-3 mb-2">
         <div class="flex gap-2" id="action-buttons-container">
             <button onclick="calculate('same')" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition text-sm shadow-lg">
                 CALC & SAME VDC
@@ -209,9 +213,21 @@
                 CALC & NEW VDC
             </button>
         </div>
-        <button onclick="clearHistory()" class="w-full bg-red-50 text-red-600 py-2 rounded-xl font-bold text-xs">Reset History</button>
-    </div>
-</div>                                    <div style="color: rgb(99, 12, 213); background-color: bisque;"><a href="/tippani/template.html" target="_blank" rel="noopener noreferrer">कार्यलयको लेटरप्याडमा जानकारी दिन</a></div>
+    
+<div class="flex gap-3 mt-4 mb-2" >
+    <!-- १. डाउनलोड बटन (पहिलो) -->
+    <button onclick="location.href='/registration/valuation_report/'" class="flex-1 bg-emerald-600 text-white py-4 rounded-2xl font-bold hover:bg-emerald-700 transition text-sm shadow-lg flex items-center justify-center gap-2">
+        <i class="fa-solid fa-file-pdf"></i> न्युनत्तम मुल्याङ्कन दर डाउनलोड
+    </button>
+
+    <!-- २. रिसेट बटन (दोस्रो) -->
+    <button onclick="clearHistory()" id="resetbutton" 
+        class="flex-1 bg-red-50 text-red-600 py-4 rounded-2xl font-bold hover:bg-red-100 transition shadow-lg text-xs">
+        Reset History
+    </button>
+</div>
+</div></div>
+ <div style="color: rgb(99, 12, 213); background-color: bisque;"><a href="/tippani/template.html" target="_blank" rel="noopener noreferrer">कार्यलयको लेटरप्याडमा जानकारी दिन</a></div>
 
                 </div>
 
@@ -238,12 +254,136 @@ let historyData = JSON.parse(localStorage.getItem('min_val_history')) || [];
 
 const legacyClasses = ["नभएको", "आवासीय", "व्यवसायिक", "कृषि", "अन्य"];
 const classMap = {
-    "आवासीय क्षेत्र": "आवासीय", "आवासीय": "आवासीय",
-    "कृषि क्षेत्र": "कृषि", "कृषि": "कृषि",
-    "व्यावसायिक क्षेत्र": "व्यवसायिक", "व्यावसायिक": "व्यवसायिक",
-    "औद्योगिक क्षेत्र": "औद्योगिक", "औद्योगिक": "औद्योगिक",
+    "आवासीय क्षेत्र": "आवासीय", 
+    "आवासीय": "आवासीय",
+    "कृषि क्षेत्र": "कृषि", 
+    "कृषि": "कृषि",
+    "व्यावसायिक क्षेत्र": "व्यवसायिक", 
+    "व्यावसायिक": "व्यवसायिक",
+    "व्यवसायिक क्षेत्र": "व्यवसायिक",
+    "व्यवसायिक": "व्यवसायिक",
+    "औद्योगिक क्षेत्र": "औद्योगिक", 
+    "औद्योगिक": "औद्योगिक",
     "सबै": "नभएको/अन्य"
 };
+
+function clearAutoFields() {
+    // Only clear if we are in JSON mode to avoid annoying the user in Legacy mode
+    if (systemMode === 'json') {
+        document.getElementById('ratePerRopani').value = "";
+        document.getElementById('ratePerRopani').style.backgroundColor = "";
+        document.getElementById('ratePerRopani').style.borderColor = "";
+    }
+}
+
+// 2. Consolidated UI Mode Switcher
+function setMode(m) {
+    currentMode = m;
+    // Update Tabs UI
+    document.getElementById('t-rapd').className = m === 'rapd' ? 'active-mode pb-1 border-b-2 border-blue-600' : 'text-slate-400 pb-1';
+    document.getElementById('t-sqm').className = m === 'sqm' ? 'active-mode pb-1 border-b-2 border-blue-600' : 'text-slate-400 pb-1';
+    
+    // Toggle Visibility
+    document.getElementById('area-rapd').classList.toggle('hidden', m !== 'rapd');
+    document.getElementById('area-sqm').classList.toggle('hidden', m !== 'sqm');
+}
+
+// 3. Robust Menu Toggle
+function toggleMenu() {
+    const sidebar = document.getElementById('sidebar-menu');
+    if (sidebar) {
+        sidebar.classList.toggle('open');
+    }
+}
+
+// 4. Single Unified Initialization (Removes all duplicate window.onload)
+window.addEventListener('DOMContentLoaded', async () => {
+    // Load JSON Data first
+    await loadJsonData();
+    
+    // Set initial system mode
+    switchSystem(systemMode);
+    
+    // Render existing history
+    renderHistory();
+    
+    // Initialize Lucide Icons
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+
+    // Add Event Listeners for autocomplete
+    document.getElementById('wadaNo').addEventListener('input', checkAutoFill);
+    document.getElementById('kittaNo').addEventListener('input', checkAutoFill);
+    // Trigger road list update when Ward Number is changed
+document.getElementById('wadaNo').addEventListener('input', updateRoadsAndClassification);
+    
+    // Enter key support for calculation
+    document.addEventListener('keydown', (e) => { 
+        if(e.key === 'Enter' && e.target.tagName === 'INPUT') {
+            calculate('same');
+        } 
+    });
+});
+
+
+
+
+// १. नेपाली र अंग्रेजी दुवै अंक चिन्न र रेन्ज/लिस्ट म्याच गर्ने फङ्सन
+function isWardInTarget(inputWard, targetWardStr) {
+    if (!targetWardStr || !inputWard) return false;
+
+    // अंकलाई अंग्रेजीमा बदल्ने (Normalization)
+    const toEng = (s) => s.toString().replace(/[०-९]/g, d => "०१२३४५६७८९".indexOf(d));
+    
+    const wNum = parseInt(toEng(inputWard));
+    const normalizedTarget = toEng(targetWardStr);
+    
+    // कमा (,) ले छुट्याइएका भागहरूलाई अलग गर्ने
+    const parts = normalizedTarget.split(',');
+    
+    for (let part of parts) {
+        part = part.trim();
+        if (part.includes('-')) {
+            // रेन्ज चेक गर्ने (उदा: १-३)
+            const rangeParts = part.split('-');
+            const start = parseInt(rangeParts[0]);
+            const end = parseInt(rangeParts[1]);
+            if (wNum >= start && wNum <= end) return true;
+        } else {
+            // सिधै नम्बर चेक गर्ने (उदा: ५)
+            if (parseInt(part) === wNum) return true;
+        }
+    }
+    return false;
+}
+
+// २. दररेट तान्ने फङ्सन (तपाईंको JSON स्ट्रक्चर अनुसार मिलाइएको)
+
+// ३. वडा नम्बर टाइप गर्दा पनि स्वतः रेट अपडेट हुने बनाउन
+document.getElementById('wadaNo').addEventListener('input', autoFetchPrice);
+
+// २. परिमार्जित checkAutoFill फङ्सन
+function checkAutoFill() {
+    const w = document.getElementById('wadaNo').value;
+    const k = document.getElementById('kittaNo').value;
+    
+    if(!w || !k) { clearAutoFields(); return; }
+
+    // साविकको '==' को सट्टा 'isWardInTarget' फङ्सन प्रयोग गरिएको छ
+    const match = historyData.find(h => isWardInTarget(w, h.wada) && h.kitta == k);
+    
+    if(match) {
+        document.getElementById('ratePerRopani').value = match.rate;
+        document.getElementById('batoType').value = match.bato;
+        document.getElementById('vargikaran').value = match.vargikaran || 'आवासीय';
+        document.getElementById('ratePerRopani').style.backgroundColor = "#ecfdf5";
+        isMatchFound = true;
+    } else {
+        clearAutoFields();
+        isMatchFound = false;
+    }
+}
 
 
 // Initialization
@@ -316,98 +456,179 @@ function handleTabAutocomplete(event, inputId, listId) {
     }
 }
 
+// 1. Helper to find the Palika ID and Name for a selected VDC
+function getPalikaInfoForVDC(vdcName) {
+    const distName = document.getElementById('distSelect').value;
+    const district = landData.districts.find(d => d.name === distName);
+    if (!district) return null;
+
+    for (const local of district.locals) {
+        for (const map of local.mapping) {
+            for (const link of map.links) {
+                if (link.vdc === vdcName) {
+                    return { id: local.id, name: local.name };
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// 2. Main logic to filter Roads according to Ward, VDC, and Palika Boundary
 function updateRoadsAndClassification() {
     const vdcName = document.getElementById('vdcSelect').value;
+    const wardNo = document.getElementById('wadaNo').value;
     const roadList = document.getElementById('batoList');
-    const vdcValuations = landData.valuations.filter(v => 
-        v.scope === 'all' || (v.scope === 'specific' && v.targets.some(t => t.vdc === vdcName))
-    );
-    const uniqueRoads = [...new Set(vdcValuations.map(r => r.road))];
-    roadList.innerHTML = uniqueRoads.map(r => `<option value="${r}">`).join('');
+    
+    if (!vdcName || !landData) {
+        roadList.innerHTML = '';
+        return;
+    }
+
+    const palikaInfo = getPalikaInfoForVDC(vdcName);
+    if (!palikaInfo) return;
+
+    // 1. Filter valuations
+    const filteredValuations = landData.valuations.filter(v => {
+        if (v.scope === 'specific' && Array.isArray(v.targets)) {
+            return v.targets.some(t => t.vdc === vdcName && isWardInTarget(wardNo, t.oldWard));
+        }
+        if (v.scope === 'all' && v.lId === palikaInfo.id) {
+            return true;
+        }
+        return false;
+    });
+
+    // 2. Determine Maximum Price for each unique road to handle sorting
+    const roadPriceMap = {};
+    filteredValuations.forEach(v => {
+        const price = parseFloat(v.price);
+        if (!roadPriceMap[v.road] || price > roadPriceMap[v.road]) {
+            roadPriceMap[v.road] = price;
+        }
+    });
+
+    // 3. Sort road names by their max price (Descending)
+    const sortedRoads = Object.keys(roadPriceMap).sort((a, b) => {
+        return roadPriceMap[b] - roadPriceMap[a];
+    });
+
+    // 4. Update UI - The top of the autocomplete list will now be the most expensive roads
+    roadList.innerHTML = sortedRoads.map(r => `<option value="${r}">`).join('');
+    
     updateClassificationOptions();
 }
 
-// १. वर्गीकरण विकल्पहरू लोड गर्दा undefined हटाउन
-function updateClassificationOptions() {
-    const vargikaranDropdown = document.getElementById('vargikaran');
-    if (systemMode === 'legacy') {
-        vargikaranDropdown.innerHTML = legacyClasses.map(c => `<option value="${c}">${c}</option>`).join('');
-    } else {
-        const vdcName = document.getElementById('vdcSelect').value;
-        const roadName = document.getElementById('batoType').value;
-
-        if (!vdcName || !roadName) {
-            vargikaranDropdown.innerHTML = '<option value="">बाटो छान्नुहोस्</option>';
-            return;
-        }
-
-        const matches = landData.valuations.filter(v => 
-            v.road === roadName && 
-            (v.scope === 'all' || (v.scope === 'specific' && v.targets.some(t => t.vdc === vdcName)))
-        );
-
-        // JSON मा classification नभएमा त्यसलाई "सबै" मान्ने लजिक
-        const availableClasses = [...new Set(matches.map(v => {
-            const rawClass = v.classification || "सबै"; 
-            return classMap[rawClass] || rawClass;
-        }))];
-        
-        vargikaranDropdown.innerHTML = availableClasses.length ? 
-            availableClasses.map(c => `<option value="${c}">${c}</option>`).join('') : 
-            '<option value="नभएको/अन्य">नभएको/अन्य</option>';
-    }
-    autoFetchPrice();
-}
-
-// २. मूल्य खोज्दा classification नभएको डेटा पनि भेट्टाउन
+// 3. Logic to fetch the Price based on Road + Classification + Ward
 function autoFetchPrice() {
-    if (systemMode === 'legacy') return;
     const vdcName = document.getElementById('vdcSelect').value;
     const road = document.getElementById('batoType').value;
-    const uiClass = document.getElementById('vargikaran').value;
+    const uiClass = document.getElementById('vargikaran').value; // e.g., "आवासीय"
     const wardNo = document.getElementById('wadaNo').value;
     const rateField = document.getElementById('ratePerRopani');
 
     if (!vdcName || !road || !uiClass) return;
 
-    const searchTerms = reverseClassMap[uiClass] || [uiClass];
+    // Get Palika ID for this VDC to handle "all" scope roads
+    const palikaInfo = getPalikaInfoForVDC(vdcName);
+    
+    // Convert UI Label (e.g., "आवासीय") back to JSON labels (e.g., ["आवासीय", "आवासीय क्षेत्र"])
+    const validJsonClasses = reverseClassMap[uiClass] || [uiClass];
 
-    // Specific Match logic: classification छ भने म्याच गर्ने, छैन भने "सबै" टर्मसँग म्याच गर्ने
-    let match = landData.valuations.find(v => 
-        v.road === road && 
-        (searchTerms.includes(v.classification) || (!v.classification && searchTerms.includes("सबै"))) &&
-        v.scope === 'specific' &&
-        v.targets.some(t => t.vdc === vdcName && (wardNo ? t.currentWard == wardNo : true))
-    );
+    const match = landData.valuations.find(v => {
+        // 1. Must match the Road Name
+        if (v.road !== road) return false;
 
-    if (!match) {
-        match = landData.valuations.find(v => 
-            v.road === road && 
-            (searchTerms.includes(v.classification) || (!v.classification && searchTerms.includes("सबै"))) &&
-            v.scope === 'all'
-        );
-    }
+        // 2. Must match the Classification
+        const jsonClass = v.classification || "सबै";
+        if (!validJsonClasses.includes(jsonClass)) return false;
+
+        // 3. Must match the Boundary (Scope)
+        if (v.scope === 'specific') {
+            // Check if this VDC and Ward are in the targets
+            return v.targets.some(t => t.vdc === vdcName && isWardInTarget(wardNo, t.oldWard));
+        } else if (v.scope === 'all') {
+            // Check if it belongs to the same Palika
+            return palikaInfo && v.lId === palikaInfo.id;
+        }
+
+        return false;
+    });
 
     if (match) {
         rateField.value = match.price;
-        rateField.style.backgroundColor = "#dcfce7";
+        // Visual feedback that the price updated
+        rateField.style.backgroundColor = "#dcfce7"; 
+        rateField.style.border = "2px solid #22c55e";
+        
+        // Optional: Flash effect to show it changed
+        rateField.classList.add('transition-all');
+        setTimeout(() => { rateField.style.backgroundColor = "#f0fdf4"; }, 200);
     } else {
         rateField.value = "";
         rateField.style.backgroundColor = "";
+        rateField.style.border = "";
     }
 }
 
+function updateClassificationOptions() {
+    const vdcName = document.getElementById('vdcSelect').value;
+    const roadName = document.getElementById('batoType').value;
+    const wardNo = document.getElementById('wadaNo').value;
+    const vargikaranDropdown = document.getElementById('vargikaran');
+
+    if (!vdcName || !roadName) {
+        vargikaranDropdown.innerHTML = '<option value="">बाटो छान्नुहोस्</option>';
+        return;
+    }
+
+    const palikaInfo = getPalikaInfoForVDC(vdcName);
+
+    // 1. Get matching items
+    const matches = landData.valuations.filter(v => {
+        if (v.road !== roadName) return false;
+        if (v.scope === 'specific') {
+            return v.targets.some(t => t.vdc === vdcName && isWardInTarget(wardNo, t.oldWard));
+        }
+        return v.scope === 'all' && palikaInfo && v.lId === palikaInfo.id;
+    });
+
+    // 2. Map and Unique
+    const uniqueClassLabels = new Set();
+    const options = [];
+
+    matches.forEach(v => {
+        const rawClass = v.classification || "सबै";
+        const label = classMap[rawClass] || rawClass;
+        
+        if (!uniqueClassLabels.has(label)) {
+            uniqueClassLabels.add(label);
+            options.push({ label: label, price: parseFloat(v.price) });
+        }
+    });
+
+    // 3. SORT: Highest Price First
+    options.sort((a, b) => b.price - a.price);
+
+    // 4. Update UI
+    if (options.length > 0) {
+        vargikaranDropdown.innerHTML = options.map(opt => 
+            `<option value="${opt.label}">${opt.label} (रु. ${toNepali(opt.price)})</option>`
+        ).join('');
+    } else {
+        vargikaranDropdown.innerHTML = '<option value="नभएको/अन्य">नभएको/अन्य</option>';
+    }
+
+    autoFetchPrice();
+}
 // १. Mapping Fix (Ensuring UI names match JSON names exactly)
 const reverseClassMap = {
     "आवासीय": ["आवासीय", "आवासीय क्षेत्र"],
     "कृषि": ["कृषि", "कृषि क्षेत्र"],
     "व्यवसायिक": ["व्यवसायिक", "व्यावसायिक क्षेत्र", "व्यावसायिक", "व्यवसायिक क्षेत्र"],
     "औद्योगिक": ["औद्योगिक", "औद्योगिक क्षेत्र"],
-    "नभएको/अन्य": ["सबै"], 
-    "नभएको": ["सबै"],
-    "अन्य": ["सबै"]
+    "नभएको/अन्य": ["सबै"]
 };
-
 
 // MAIN CALCULATION FUNCTION
 function calculate(type = 'same') {

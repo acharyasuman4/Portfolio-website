@@ -305,9 +305,9 @@
                 <label>३. जग्गा विवरण</label>
                 <div class="row-2">
 <!-- ३. जग्गा विवरण भित्रको l_vdc इनपुट बक्स यसरी बदल्नुहोस् -->
-<input type="text" id="l_vdc" placeholder="साविक गा.वि.स." class="input-box" list="vdc_list" onkeydown="handleVdcTab(event)">
+<input type="text" id="l_vdc" placeholder="साविक गा.वि.स." class="input-box" list="vdc_list" onkeydown="handleVdcTab(event)" oninput="updateRoadDatalist(this.value)">
 <datalist id="vdc_list"></datalist>
-                    <input type="text" id="l_ward" placeholder="वडा" class="input-box">
+                    <input type="text" id="l_ward" placeholder="वडा" class="input-box" oninput="updateRoadDatalist(document.getElementById('l_vdc').value)">
                 </div>
                 <input type="text" id="l_kitta" placeholder="कि.नं." class="input-box">
                 <div class="row-2">
@@ -693,15 +693,18 @@ function renderNamsariKittaUI() {
 
 function isWardInTarget(inputWard, targetWardStr) {
     if (!targetWardStr || !inputWard) return false;
+    // inputWard र targetWardStr दुवैलाई अंग्रेजीमा बदल्ने
     const wNum = parseInt(n2e(inputWard));
-    const parts = targetWardStr.toString().split(',');
+    const normalizedTarget = targetWardStr.toString().replace(/[०-९]/g, d => "0123456789"["०१२३४५६७८९".indexOf(d)]);
+    
+    const parts = normalizedTarget.split(',');
     for (let p of parts) {
         p = p.trim();
         if (p.includes('-')) {
-            const range = p.split('-').map(n => parseInt(n2e(n)));
+            const range = p.split('-').map(n => parseInt(n));
             if (wNum >= range[0] && wNum <= range[1]) return true;
         } else {
-            if (parseInt(n2e(p)) === wNum) return true;
+            if (parseInt(p) === wNum) return true;
         }
     }
     return false;
@@ -805,25 +808,95 @@ function updateHouseData(id, field, val) {
     update(); // टिप्पणीको व्यहोरा र कुल थैली अपडेट गर्न
 }
 
-function updateRoadDatalist(vdcName) {
+// १. साविक गा.वि.स. र वडाको आधारमा हालको स्थानीय तह पत्ता लगाउने फङ्सन
+function findCurrentLocalBody(vdcName, wardNum) {
+    if (!valuationDb || !valuationDb.districts) return null;
+    
+    for (let district of valuationDb.districts) {
+        for (let local of district.locals) {
+            if (local.mapping) {
+                for (let map of local.mapping) {
+                    for (let link of map.links) {
+                        if (link.vdc === vdcName) {
+                            // यदि वडा तोकिएको छ भने वडा पनि चेक गर्ने
+                            if (!wardNum || isWardInTarget(wardNum, link.oldWard)) {
+                                return local.name; // जस्तै: "चौतारा साँगाचोकगढी नगरपालिका"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// १. साविक गा.वि.स. र वडाको आधारमा नगरपालिकाको ID (lId) पत्ता लगाउने
+function findLocalInfo(vdcName, wardNum) {
+    if (!valuationDb || !valuationDb.districts) return null;
+    for (let d of valuationDb.districts) {
+        for (let l of d.locals) {
+            if (l.mapping) {
+                for (let m of l.mapping) {
+                    for (let link of m.links) {
+                        if (link.vdc === vdcName && (!wardNum || isWardInTarget(wardNum, link.oldW))) {
+                            return { lId: l.id, localName: l.name };
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
+
+// २. सम्बन्धित कित्ताको लागि मात्र सडक फिल्टर गर्ने र मूल्य अनुसार मिलाउने
+function updateRoadDatalist(vdcName, wardNum) {
     if (!valuationDb || !vdcName) return;
 
-    // यो गा.वि.स. सँग सम्बन्धित सडकहरू फिल्टर गर्ने
-    const roads = valuationDb.valuations.filter(v => {
-        if (v.scope === "all") return true;
-        return v.targets && Array.isArray(v.targets) && v.targets.some(t => t.vdc === vdcName);
+    const roadPriceMap = {};
+    const info = findLocalInfo(vdcName, wardNum);
+    const localId = info ? info.lId : null;
+
+    valuationDb.valuations.forEach(v => {
+        let isMatch = false;
+
+        // नियम १: यदि यो सडक प्रयोगकर्ताले हालेको साविक गा.वि.स. र वडाको targets भित्र छ भने
+        if (v.targets && Array.isArray(v.targets)) {
+            isMatch = v.targets.some(t => {
+                const vdcMatch = (t.vdc === vdcName);
+                const wardMatch = wardNum ? isWardInTarget(wardNum, t.oldWard || t.currentWard) : true;
+                return vdcMatch && wardMatch;
+            });
+        }
+
+        // नियम २: यदि यो सडक सोही नगरपालिकाको (lId match) "all" स्कोपको बाटो हो भने
+        // यसले गर्दा चौतारा ५ हाल्दा चौतारा नगरपालिकाका सबै 'all' बाटाहरू पनि आउँछन्
+        if (!isMatch && localId && v.lId === localId && v.scope === "all") {
+            isMatch = true;
+        }
+
+        if (isMatch) {
+            const price = n2e(v.price);
+            if (!roadPriceMap[v.road] || price > roadPriceMap[v.road]) {
+                roadPriceMap[v.road] = price;
+            }
+        }
     });
 
-    // Unique सडकहरूको लिस्ट बनाउने र अङ्क अनुसार ठुलोबाट सानो मिलाउने
-    const roadList = [...new Set(roads.map(v => v.road))];
-    
+    // ३. मूल्यको आधारमा High to Low सर्ट गर्ने
+    const sortedRoads = Object.keys(roadPriceMap).sort((a, b) => roadPriceMap[b] - roadPriceMap[a]);
+
     const dl = document.getElementById('road_list');
     if (dl) {
-        dl.innerHTML = roadList.map(r => `<option value="${r}">`).join('');
+        if (sortedRoads.length > 0) {
+            dl.innerHTML = sortedRoads.map(r => `<option value="${r}">`).join('');
+        } else {
+            dl.innerHTML = '<option value="गोरेटो बाटो"><option value="नभएको"><option value="कच्ची मोटर बाटो">';
+        }
     }
 }
 
-    // --- 1. FUNCTIONAL FIXES (Missing functions you called in HTML) ---
 
     function syncLandowner(val) {
         document.getElementById('in_landowner').value = val;
@@ -1326,11 +1399,16 @@ function renderValRows() {
             
             let areaDisp = a.sqm ? toNep(a.sqm) + ' व.मि.' : `${toNep(a.r||'०')}-${toNep(a.a||'०')}-${toNep(a.p||'०')}-${toNep(a.d||'०')}`;
             
-            html += `<tr>
-                <td>${l.vdc} ${l.ward} - ${k}</td>
-                <td>${areaDisp}</td>
-<td><input type="text" list="road_list" class="input-box" oninput="state.areas['${id}'].path=this.value; fetchAndSetRate('${id}', '${l.vdc}', '${l.ward}')" value="${a.path||''}"></td>
-<td><input type="text" list="cat_list" class="input-box" oninput="state.areas['${id}'].cat=this.value; fetchAndSetRate('${id}', '${l.vdc}', '${l.ward}')" value="${a.cat||''}"></td>
+html += `<tr>
+    <td>${l.vdc} ${l.ward} - ${k}</td>
+    <td>${areaDisp}</td>
+    <td>
+        <input type="text" list="road_list" class="input-box" 
+            onfocus="updateRoadDatalist('${l.vdc}', '${l.ward}')" 
+            oninput="state.areas['${id}'].path=this.value; fetchAndSetRate('${id}', '${l.vdc}', '${l.ward}')" 
+            value="${a.path||''}">
+    </td>
+    <td><input type="text" list="cat_list" class="input-box" oninput="state.areas['${id}'].cat=this.value; fetchAndSetRate('${id}', '${l.vdc}', '${l.ward}')" value="${a.cat||''}"></td>
                 <td><input type="text" class="input-box modal-rate-input" oninput="calculateLiveTotal('${id}', 'rate', this.value)" value="${a.rate||''}"></td>
                 ${isHissa ? `<td><input type="text" class="input-box modal-rate-input" style="width:60px" oninput="calculateLiveTotal('${id}', 'percent', this.value)" value="${a.percent}"></td>` : ''}
                 <td id="row_total_${id}" style="font-weight:bold; text-align:right;">${toNep(calculateSingleRowTotal(a))}</td>
@@ -1422,7 +1500,8 @@ function addLand(mode) {
     const kitta = document.getElementById('l_kitta').value;
     
 const vdc = document.getElementById('l_vdc').value;
-    updateRoadDatalist(vdc);
+    updateRoadDatalist(vdc); 
+
 
     if (!kitta) return;
 
