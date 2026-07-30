@@ -96,76 +96,77 @@
                 </div>
             </div>
 
-            <!-- TAB 3: Entry Form -->
-            <div id="entry" class="tab-content">
-                <div class="bg-white p-8 rounded-xl shadow-lg border max-w-4xl mx-auto">
-                    <h3 class="text-2xl font-bold mb-6 text-slate-800 border-b pb-4 text-center">मूल्याङ्कन प्रविष्टि</h3>
-                    <input type="hidden" id="editValId">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase">जिल्ला:</label>
-                            <select id="mainDist" onchange="updateMainLocalSelect()" class="form-input mt-1 bg-gray-50"></select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase">स्थानीय तह:</label>
-                            <select id="mainLocal" onchange="renderMappingSelectorTable()" class="form-input mt-1 bg-gray-50"></select>
-                        </div>
-                    </div>
+<!-- TAB 3: Entry Form -->
+<div id="entry" class="tab-content">
+    <div class="bg-white p-8 rounded-xl shadow-lg border max-w-4xl mx-auto">
+        <h3 class="text-2xl font-bold mb-6 text-slate-800 border-b pb-4 text-center">मूल्याङ्कन प्रविष्टि</h3>
+        <input type="hidden" id="editValId">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase">जिल्ला:</label>
+                <select id="mainDist" onchange="updateMainLocalSelect()" class="form-input mt-1 bg-gray-50"></select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase">स्थानीय तह:</label>
+                <select id="mainLocal" onchange="renderMappingSelectorTable()" class="form-input mt-1 bg-gray-50"></select>
+            </div>
+        </div>
 
-                    <div class="bg-gray-50 p-6 rounded-xl border mb-6">
-                        <label class="block text-sm font-bold text-gray-700 mb-3">यो बाटोको मूल्याङ्कन कहाँ लागू हुन्छ?</label>
-                        <div class="flex gap-4 mb-6">
-                            <label class="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border shadow-sm cursor-pointer">
-                                <input type="radio" name="scope" value="all" checked onchange="toggleScopeView()"> पालिका भरि (सबै)
-                            </label>
-                            <label class="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border shadow-sm cursor-pointer">
-                                <input type="radio" name="scope" value="specific" onchange="toggleScopeView()"> केही वडा / साविक गा.वि.स.
-                            </label>
-                        </div>
-
-                        <div id="multiSelectionContainer" class="hidden bg-white p-4 border rounded-lg max-h-96 overflow-y-auto">
-                            <table class="w-full text-left text-sm border-collapse">
-                                <thead class="bg-gray-100 font-bold sticky top-0">
-                                    <tr>
-                                        <th class="p-2 border">छान्नुहोस्</th>
-                                        <th class="p-2 border">हालको वडा</th>
-                                        <th class="p-2 border">साविक गा.वि.स.</th>
-                                        <th class="p-2 border">साविक वडा</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="mappingSelectorTable" class="divide-y"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-4">
-                        <div>
-                            <label class="text-xs font-bold text-gray-500 uppercase">बाटोको प्रकार वा सडकको नाम:</label>
-                            <input type="text" id="roadType" class="form-input mt-1" placeholder="उदा: अरनिको राजमार्ग">
-                        </div>
-<div>
-    <label class="text-xs font-bold text-gray-500 uppercase">वर्गीकरण:</label>
-    <input type="text" id="classification" class="form-input mt-1" list="classOptions" value="सबै" placeholder="वर्गीकरण छान्नुहोस् वा लेख्नुहोस्">
-    <datalist id="classOptions">
-        <option value="सबै">
-        <option value="आवासीय क्षेत्र">
-        <option value="कृषि क्षेत्र">
-        <option value="व्यवसायिक क्षेत्र">
-    </datalist>
-</div>
-
-                        <div>
-                            <label class="text-xs font-bold text-green-700 uppercase">न्युनत्तम मुल्याङ्कन रकम (रु.):</label>
-                            <input type="number" id="price" class="form-input mt-1 text-2xl font-bold text-green-800" placeholder="0000">
-                        </div>
-                    </div>
-                    <button onclick="saveValuation()" class="w-full mt-8 bg-blue-700 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-800 shadow-lg">सुरक्षित गर्नुहोस्</button>
-                    <button onclick="resetValuationForm()" class="w-full mt-2 bg-gray-100 text-gray-600 py-2 rounded font-bold text-xs uppercase tracking-widest">नयाँ सुरु गर्नुहोस्</button>
-                </div>
+        <div class="bg-gray-50 p-6 rounded-xl border mb-6">
+            <label class="block text-sm font-bold text-gray-700 mb-3">यो बाटोको मूल्याङ्कन कहाँ लागू हुन्छ?</label>
+            <div class="flex gap-4 mb-6">
+                <label class="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border shadow-sm cursor-pointer">
+                    <input type="radio" name="scope" value="all" checked onchange="toggleScopeView()"> पालिका भरि (सबै)
+                </label>
+                <label class="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border shadow-sm cursor-pointer">
+                    <input type="radio" name="scope" value="specific" onchange="toggleScopeView()"> केही वडा / साविक गा.वि.स.
+                </label>
             </div>
 
-            <!-- TAB 4: Records -->
+            <div id="multiSelectionContainer" class="hidden bg-white p-4 border rounded-lg max-h-96 overflow-y-auto">
+                <table class="w-full text-left text-sm border-collapse">
+                    <thead class="bg-gray-100 font-bold sticky top-0">
+                        <tr>
+                            <th class="p-2 border">छान्नुहोस्</th>
+                            <th class="p-2 border">हालको वडा</th>
+                            <th class="p-2 border">साविक गा.वि.स.</th>
+                            <th class="p-2 border">साविक वडा</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mappingSelectorTable" class="divide-y"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Corrected Grid for Road, Classification and Price -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="md:col-span-2">
+                <label class="text-xs font-bold text-gray-500 uppercase">बाटोको प्रकार वा सडकको नाम:</label>
+                <input type="text" id="roadType" class="form-input mt-1" placeholder="उदा: अरनिको राजमार्ग; रिङ रोड">
+                <p class="text-[10px] text-gray-400 mt-1">* धेरै सडकहरू भएमा सेमिकोलन (;) ले छुट्याउनुहोस्।</p>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase">वर्गीकरण:</label>
+<input type="text" id="classification" class="form-input mt-1" list="classOptions" placeholder="वर्गीकरण छान्नुहोस् वा लेख्नुहोस्">                <datalist id="classOptions">
+                    <option value="सबै">
+                    <option value="आवासीय क्षेत्र">
+                    <option value="कृषि क्षेत्र">
+                    <option value="व्यवसायिक क्षेत्र">
+                </datalist>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-green-700 uppercase">न्युनत्तम मुल्याङ्कन रकम (रु.):</label>
+                <input type="number" id="price" class="form-input mt-1 text-2xl font-bold text-green-800" placeholder="0000">
+            </div>
+        </div>
+        
+        <button onclick="saveValuation()" class="w-full mt-8 bg-blue-700 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-800 shadow-lg">सुरक्षित गर्नुहोस्</button>
+        <button onclick="resetValuationForm()" class="w-full mt-2 bg-gray-100 text-gray-600 py-2 rounded font-bold text-xs uppercase tracking-widest">नयाँ सुरु गर्नुहोस्</button>
+    </div>
+</div>
+
+<!-- TAB 4: Records -->
             <div id="records" class="tab-content">
                 <div class="bg-white p-6 rounded-xl shadow border">
                     <div class="flex justify-between items-center mb-6">
@@ -202,6 +203,7 @@
     window.onload = () => {
         refreshAllDropdowns();
         restoreLastSelection();
+        searchTable()
         showTab('setup', document.querySelectorAll('.sidebar-link')[0]);
     };
 
@@ -440,49 +442,67 @@ function saveValuation() {
     const dId = document.getElementById('mainDist').value;
     const lId = document.getElementById('mainLocal').value;
     const scope = document.querySelector('input[name="scope"]:checked').value;
-    const road = document.getElementById('roadType').value.trim();
-    const classification = document.getElementById('classification').value.trim() || "सबै"; // Get classification
+    const roadInput = document.getElementById('roadType').value.trim();
+    
+    // FIX 1: Capture the classification value here
+    const classification = document.getElementById('classification').value.trim() || 'सबै'; 
+    
     const price = document.getElementById('price').value;
+    const editId = document.getElementById('editValId').value;
 
-    if(!lId || !road || !price) return alert("विवरण पुरा भर्नुहोस्।");
+    if (!lId || !roadInput || !price) return alert("विवरण पुरा भर्नुहोस्।");
 
     let targets = "सबै पालिका";
-    if(scope === 'specific') {
+    if (scope === 'specific') {
         targets = [];
         document.querySelectorAll('#mappingSelectorTable tr').forEach(row => {
             const cb = row.querySelector('.row-check');
-            if(cb.checked) {
+            if (cb.checked) {
                 const oldWardInput = row.querySelector('.row-old-ward').value;
-                targets.push({ 
-                    currentWard: cb.dataset.ward, 
-                    vdc: cb.dataset.vdc, 
-                    oldWard: oldWardInput 
+                targets.push({
+                    currentWard: cb.dataset.ward,
+                    vdc: cb.dataset.vdc,
+                    oldWard: oldWardInput
                 });
             }
         });
-        if(targets.length === 0) return alert("कृपया कम्तिमा एउटा क्षेत्र छान्नुहोस्।");
+        if (targets.length === 0) return alert("कृपया कम्तिमा एउटा क्षेत्र छान्नुहोस्।");
     }
 
-    const editId = document.getElementById('editValId').value;
-    // Add classification to the data object
-    const valData = { id: editId || Date.now().toString(), dId, lId, scope, targets, road, classification, price };
+    const roadList = roadInput.split(/[;\n]/).map(r => r.trim()).filter(r => r !== "");
 
-    if(editId) {
+    if (editId) {
         const idx = db.valuations.findIndex(v => v.id == editId);
-        db.valuations[idx] = valData;
+        // FIX 2: Include classification in the update
+        db.valuations[idx] = { 
+            ...db.valuations[idx], 
+            dId, lId, scope, targets, 
+            road: roadList[0], 
+            classification: classification, // Save here
+            price 
+        };
     } else {
-        db.valuations.push(valData);
+        roadList.forEach((roadName, index) => {
+            db.valuations.push({
+                id: (Date.now() + index).toString(),
+                dId, lId, scope, targets,
+                road: roadName,
+                classification: classification, // FIX 3: Save here for new entries
+                price
+            });
+        });
     }
 
     sync();
     resetValuationForm();
+    alert(editId ? "अपडेट भयो" : `${roadList.length} वटा सडक सुरक्षित भयो।`);
     showTab('records', document.querySelectorAll('.sidebar-link')[3]);
 }
 
 function editValuation(id) {
-
     const v = db.valuations.find(item => item.id == id);
     showTab('entry', document.querySelectorAll('.sidebar-link')[2]);
+    
     document.getElementById('editValId').value = v.id;
     document.getElementById('mainDist').value = v.dId;
     updateMainLocalSelect();
@@ -490,16 +510,18 @@ function editValuation(id) {
     
     document.querySelectorAll(`input[name="scope"][value="${v.scope}"]`)[0].checked = true;
     toggleScopeView();
-    
-    // यहाँ इडिट गर्दा पुराना छानिएका वडाहरू पठाउने
     renderMappingSelectorTable(v.scope === 'specific' ? v.targets : null);
     
     document.getElementById('roadType').value = v.road;
-        document.getElementById('classification').value = v.classification || 'सबै'; // Add this line
-
+    
+    // FIX 4: Load the saved classification or default to 'सबै'
+    document.getElementById('classification').value = v.classification || 'सबै'; 
+    
     document.getElementById('price').value = v.price;
 }
-    function renderValuationTable() {
+
+
+function renderValuationTable() {
         const tbody = document.getElementById('valuationTable');
         tbody.innerHTML = db.valuations.map(v => {
             const localName = db.districts.flatMap(d=>d.locals).find(l=>l.id==v.lId)?.name || 'N/A';
