@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     
     <style>
         body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; }
@@ -50,7 +51,7 @@
         <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-200">
             <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                 <i class="fa-solid fa-file-contract text-blue-600"></i>
-                न्युनत्तम मुल्याङ्कन रिपोर्ट जनरेटर (२०८३/८४)
+                न्युनत्तम मुल्याङ्कन (२०८३/८४)
             </h2>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"> <!-- Changed to 3 columns -->
     <select id="distSelect" onchange="loadLocals()" class="p-3 bg-slate-50 border rounded-xl font-bold outline-none focus:border-blue-500">
@@ -68,171 +69,243 @@
 <div class="flex gap-4">
                 <button onclick="generateReport()" class="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">रिपोर्ट लोड गर्नुहोस्</button>
                 <button onclick="window.print()" class="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 transition">प्रिन्ट / PDF</button>
+          <button onclick="exportToExcel()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition">Excel डाउनलोड</button>
             </div>
         </div>
     </div>
 
     <!-- Report Area -->
     <div id="reportArea" class="max-w-[210mm] mx-auto bg-white p-2 md:p-8 report-container min-h-[297mm]">
-        <div class="text-center py-20 text-slate-400">जिल्ला छानेर 'रिपोर्ट लोड गर्नुहोस्' मा क्लिक गर्नुहोस्।</div>
+        <div class="text-center py-20 text-slate-400">जिल्ला छानेर 'न्युनत्तम मुल्याङ्कन लोड गर्नुहोस्' मा क्लिक गर्नुहोस्।</div>
     </div>
 
-    <script>
-        let landData = null;
+<script>
+    let landData = null;
 
-        window.onload = async () => {
-            try {
-                const response = await fetch('/registration/land_valuation_final.json');
-                landData = await response.json();
-                populateDistricts();
-            } catch (e) { console.error("JSON Error:", e); }
-        };
+    // पेज लोड हुँदा डाटा तान्ने
+    window.onload = async () => {
+        try {
+            const response = await fetch('/registration/land_valuation_final.json');
+            landData = await response.json();
+            populateDistricts();
+        } catch (e) { console.error("JSON Error:", e); }
+    };
 
-        function populateDistricts() {
-            const select = document.getElementById('distSelect');
-            landData.districts.forEach(d => {
-                select.innerHTML += `<option value="${d.name}">${d.name}</option>`;
-            });
-        }
-
-        function loadLocals() {
-            const distName = document.getElementById('distSelect').value;
-            const localSelect = document.getElementById('localSelect');
-            localSelect.innerHTML = '<option value="all">सबै स्थानीय तहहरू</option>';
-            const district = landData.districts.find(d => d.name === distName);
-            if (district) {
-                district.locals.forEach(l => {
-                    localSelect.innerHTML += `<option value="${l.name}">${l.name}</option>`;
-                });
-            }
-        }
-        function loadVdcs() {
-    const distName = document.getElementById('distSelect').value;
-    const localName = document.getElementById('localSelect').value;
-    const vdcSelect = document.getElementById('vdcSelect');
-    vdcSelect.innerHTML = '<option value="all">सबै साविक गा.वि.स.हरू</option>';
-
-    if (localName === 'all') return;
-
-    const district = landData.districts.find(d => d.name === distName);
-    const local = district.locals.find(l => l.name === localName);
-
-    if (local && local.mapping) {
-        // Collect all unique VDC names from mapping
-        let vdcs = new Set();
-        local.mapping.forEach(m => {
-            m.links.forEach(link => vdcs.add(link.vdc));
-        });
-        
-        // Populate dropdown
-        Array.from(vdcs).sort().forEach(vdc => {
-            vdcSelect.innerHTML += `<option value="${vdc}">${vdc}</option>`;
+    function populateDistricts() {
+        const select = document.getElementById('distSelect');
+        landData.districts.forEach(d => {
+            select.innerHTML += `<option value="${d.name}">${d.name}</option>`;
         });
     }
+
+    function loadLocals() {
+        const distName = document.getElementById('distSelect').value;
+        const localSelect = document.getElementById('localSelect');
+        localSelect.innerHTML = '<option value="all">सबै स्थानीय तहहरू</option>';
+        const district = landData.districts.find(d => d.name === distName);
+        if (district) {
+            district.locals.forEach(l => {
+                localSelect.innerHTML += `<option value="${l.name}">${l.name}</option>`;
+            });
+        }
+        loadVdcs(); // Reset VDCs when district changes
+    }
+
+    function loadVdcs() {
+        const distName = document.getElementById('distSelect').value;
+        const localName = document.getElementById('localSelect').value;
+        const vdcSelect = document.getElementById('vdcSelect');
+        vdcSelect.innerHTML = '<option value="all">सबै साविक गा.वि.स.हरू</option>';
+
+        if (localName === 'all') return;
+
+        const district = landData.districts.find(d => d.name === distName);
+        const local = district.locals.find(l => l.name === localName);
+
+        if (local && local.mapping) {
+            let vdcs = new Set();
+            local.mapping.forEach(m => {
+                m.links.forEach(link => vdcs.add(link.vdc));
+            });
+            Array.from(vdcs).sort().forEach(vdc => {
+                vdcSelect.innerHTML += `<option value="${vdc}">${vdc}</option>`;
+            });
+        }
+    }
+
+    // वडाहरूलाई मिलाएर रेञ्ज (Range) निकाल्ने फसन
+    function getFormattedWards(targets, vdcFilter) {
+        const groups = {};
+        const nepToEngMap = { '०':0, '१':1, '२':2, '३':3, '४':4, '५':5, '६':6, '७':7, '८':8, '९':9 };
+
+targets.forEach(t => {
+    if (vdcFilter !== 'all' && t.vdc !== vdcFilter) return;
+    if (!groups[t.vdc]) groups[t.vdc] = [];
+    
+    if (t.oldWard) {
+        // १. नेपाली अङ्कलाई अंग्रेजीमा बदल्ने
+        let wardStr = t.oldWard.toString().replace(/[०-९]/g, d => nepToEngMap[d]);
+        
+        // २. पहिले कमा (,) ले टुक्राउने
+        let commaParts = wardStr.split(/[,/ ]+/); 
+        
+        commaParts.forEach(part => {
+            if (part.includes('-')) {
+                // ३. यदि ड्यास छ भने (जस्तै १-९) यसलाई १,२,३...९ मा बदल्ने
+                let rangeParts = part.split('-');
+                let start = parseInt(rangeParts[0]);
+                let end = parseInt(rangeParts[1]);
+                
+                if (!isNaN(start) && !isNaN(end)) {
+                    let min = Math.min(start, end);
+                    let max = Math.max(start, end);
+                    for (let w = min; w <= max; w++) {
+                        groups[t.vdc].push(w);
+                    }
+                }
+            } else {
+                // ४. ड्यास छैन भने सिधै अङ्क मात्र लिने
+                let w = parseInt(part.trim());
+                if (!isNaN(w)) groups[t.vdc].push(w);
+            }
+        });
+    }
+});       
+
+        return Object.keys(groups).map(vdc => {
+            // ३. डुप्लिकेट हटाउने र क्रमैसँग मिलाउने
+            const wards = [...new Set(groups[vdc])].sort((a, b) => a - b);
+            if (wards.length === 0) return vdc;
+
+            let resultRanges = [];
+            let i = 0;
+            
+// यो खण्डले १, २, ३ लाई १-३ बनाउँछ
+while (i < wards.length) {
+    let start = wards[i];
+    let end = start;
+    
+    // लगातार नम्बर भए सम्म 'end' बढाउँदै जाने
+    while (i + 1 < wards.length && wards[i + 1] === end + 1) {
+        end = wards[i + 1];
+        i++;
+    }
+    
+    // रेञ्ज बनेमा ड्यास (-) राख्ने, नत्र एउटा मात्र अङ्क राख्ने
+    if (start === end) {
+        resultRanges.push(start);
+    } else {
+        resultRanges.push(start + "-" + end); // यहाँ ड्यास प्रयोग भएको छ
+    }
+    i++;
 }
 
-function generateReport() {
-    const distName = document.getElementById('distSelect').value;
-    const localFilter = document.getElementById('localSelect').value;
-    const vdcFilter = document.getElementById('vdcSelect').value; // Added VDC filter value
-    
-    if (!distName) return alert("जिल्ला छान्नुहोस्।");
-    
-    const district = landData.districts.find(d => d.name === distName);
-    const reportArea = document.getElementById('reportArea');
-    reportArea.innerHTML = '';
+// अन्तिममा विभिन्न रेञ्जहरूलाई मात्र कमाले छुट्याउने (जस्तै: १-५, ७-९)
+return `${vdc} ${toNepDigit(resultRanges.join(', '))}`;            
+        }).join(', ');
+    }
 
-    district.locals.forEach((local) => {
-        if (localFilter !== 'all' && localFilter !== local.name) return;
+    function generateReport() {
+        const distName = document.getElementById('distSelect').value;
+        const localFilter = document.getElementById('localSelect').value;
+        const vdcFilter = document.getElementById('vdcSelect').value;
+        
+        if (!distName) return alert("जिल्ला छान्नुहोस्।");
+        
+        const district = landData.districts.find(d => d.name === distName);
+        const reportArea = document.getElementById('reportArea');
+        reportArea.innerHTML = '';
 
-        let valuations = landData.valuations.filter(v => {
-            // 1. Must match the Local ID
-            if (v.lId !== local.id) return false;
+        district.locals.forEach((local) => {
+            if (localFilter !== 'all' && localFilter !== local.name) return;
 
-            // 2. If VDC filter is 'all', show everything for this local
-            if (vdcFilter === 'all') return true;
-
-            // 3. If "Specific VDC" is selected:
-            // Show if road is applied to 'all' (it applies to the specific VDC too)
-            if (v.scope === 'all') return true;
-
-            // Show if road is 'specific' and the target VDC matches
-            if (v.scope === 'specific' && Array.isArray(v.targets)) {
-                return v.targets.some(t => t.vdc === vdcFilter);
-            }
-
-            return false;
-        });
-
-        // Sort by price descending
-        valuations.sort((a, b) => b.price - a.price);
-
-        if (valuations.length > 0) {
-            const section = document.createElement('div');
-            section.className = 'local-section';
-
-            // Update Header if VDC is filtered
-            let subTitle = vdcFilter === 'all' ? `स्थानीय तह: ${local.name}` : `स्थानीय तह: ${local.name} (साविक: ${vdcFilter})`;
-
-            let tableHtml = `
-                <div class="text-center mb-4">
-                    <h1 class="text-xl font-bold underline">${distName} जिल्लाको न्युनत्तम मुल्याङ्कन आ.व. ०८३/८४</h1>
-                </div>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th colspan="4" class="table-title-row">${subTitle}</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 8%;">क्र.सं.</th>
-                            <th style="width: 45%;">सडकको नाम (वर्गीकरण)</th>
-                            <th style="width: 32%;">साविक गा.वि.स. वडा नं.</th>
-                            <th style="width: 15%;">न्युनत्तम मुल्याङ्कन</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            valuations.forEach((v, vIndex) => {
-                let displayRoad = v.road;
-                if (v.classification && !['सबै', 'नभएको', 'नभएको/अन्य'].includes(v.classification)) {
-                    displayRoad += ` (${v.classification})`;
+            let valuations = landData.valuations.filter(v => {
+                if (v.lId !== local.id) return false;
+                if (vdcFilter === 'all') return true;
+                if (v.scope === 'all') return true;
+                if (v.scope === 'specific' && Array.isArray(v.targets)) {
+                    return v.targets.some(t => t.vdc === vdcFilter);
                 }
-
-                // Filter target display if a specific VDC is selected
-                let areaText = '';
-                if (v.scope === 'all') {
-                    areaText = 'सबै गा.वि.स.';
-                } else {
-                    areaText = v.targets
-                        .filter(t => vdcFilter === 'all' || t.vdc === vdcFilter) // Show only filtered VDC info if selected
-                        .map(t => `${t.vdc} ${toNepDigit(t.oldWard || '')}`).join(', ');
-                }
-
-                tableHtml += `
-                    <tr>
-                        <td class="text-center">${toNepDigit(vIndex + 1)}</td>
-                        <td>${displayRoad}</td>
-                        <td>${areaText}</td>
-                        <td class="text-right font-bold">रू. ${toNepaliFormat(v.price)}</td>
-                    </tr>
-                `;
+                return false;
             });
 
-            tableHtml += `</tbody></table><div class="mb-8"></div>`;
-            section.innerHTML = tableHtml;
-            reportArea.appendChild(section);
-        }
-    });
-}
-        function toNepaliFormat(num) {
-            let n = Number(num).toLocaleString('en-IN');
-            return n.replace(/\d/g, d => "०१२३४५६७८९"[d]);
-        }
+            valuations.sort((a, b) => b.price - a.price);
 
-        function toNepDigit(str) {
-            return str.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
-        }
-    </script>
+            if (valuations.length > 0) {
+                const section = document.createElement('div');
+                section.className = 'local-section';
+
+                let subTitle = vdcFilter === 'all' ? `स्थानीय तह: ${local.name}` : `स्थानीय तह: ${local.name} (साविक: ${vdcFilter})`;
+
+                let tableHtml = `
+                    <div class="text-center mb-4">
+                        <h1 class="text-xl font-bold underline">${distName} जिल्लाको न्युनत्तम मुल्याङ्कन आ.व. ०८३/८४</h1>
+                    </div>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th colspan="4" class="table-title-row">${subTitle}</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 8%;">क्र.सं.</th>
+                                <th style="width: 45%;">सडकको नाम (वर्गीकरण)</th>
+                                <th style="width: 32%;">साविक गा.वि.स. वडा नं.</th>
+                                <th style="width: 15%;">न्युनत्तम मुल्याङ्कन</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                valuations.forEach((v, vIndex) => {
+                    let displayRoad = v.road;
+                    if (v.classification && !['सबै', 'नभएको', 'नभएको/अन्य'].includes(v.classification)) {
+                        displayRoad += ` (${v.classification})`;
+                    }
+
+                    let areaText = (v.scope === 'all') ? 'सबै साविक गा.वि.स.' : getFormattedWards(v.targets, vdcFilter);
+
+                    tableHtml += `
+                        <tr>
+                            <td class="text-center">${toNepDigit(vIndex + 1)}</td>
+                            <td>${displayRoad}</td>
+                            <td>${areaText}</td>
+                            <td class="text-right font-bold">रू. ${toNepaliFormat(v.price)}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `</tbody></table><div class="mb-8"></div>`;
+                section.innerHTML = tableHtml;
+                reportArea.appendChild(section);
+            }
+        });
+    }
+
+    function exportToExcel() {
+        const tables = document.querySelectorAll('#reportArea table');
+        if (tables.length === 0) return alert("पहिले रिपोर्ट लोड गर्नुहोस्।");
+
+        const wb = XLSX.utils.book_new();
+        tables.forEach((table, index) => {
+            let sheetName = table.querySelector('.table-title-row')?.innerText || `Sheet${index + 1}`;
+            sheetName = sheetName.replace(/[\[\]\*\?\/\\]/g, "").substring(0, 30);
+            const ws = XLSX.utils.table_to_sheet(table);
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        });
+
+        const distName = document.getElementById('distSelect').value;
+        XLSX.writeFile(wb, `${distName}_Minimum_Valuation_2083_84.xlsx`);
+    }
+
+    function toNepaliFormat(num) {
+        let n = Number(num).toLocaleString('en-IN');
+        return n.replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    }
+
+    function toNepDigit(str) {
+        if (!str) return '';
+        return str.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    }
+</script>
 </body>
 </html>
