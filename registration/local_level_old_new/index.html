@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>भू-उपयोग म्यापिङ रिपोर्ट</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap');
+        body { font-family: 'Mukta', sans-serif; background-color: #f8fafc; }
+        @media print {
+            .no-print { display: none !important; }
+            .report-page { box-shadow: none; margin: 0; width: 100%; padding: 0; }
+            table { font-size: 10pt; width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid black !important; }
+        }
+        .report-table th, .report-table td { border: 1px solid #cbd5e1; padding: 6px 10px; }
+        .report-table th { background-color: #f1f5f9; text-align: center; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Header Controls -->
+    <div class="max-w-5xl mx-auto no-print bg-white p-6 rounded-2xl shadow-sm border mb-8">
+        <h2 class="text-xl font-bold mb-4 text-slate-800"><i class="fas fa-database mr-2 text-blue-600"></i>मुल्याङ्कन तथा म्यापिङ रिपोर्ट</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase">जिल्ला:</label>
+                <select id="distSelect" onchange="updateLocals()" class="w-full border p-2 rounded-lg mt-1 outline-none focus:ring-2 ring-blue-100">
+                    <option value="">-- छान्नुहोस् --</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase">स्थानीय तह:</label>
+                <select id="localSelect" onchange="updateWards()" class="w-full border p-2 rounded-lg mt-1 outline-none focus:ring-2 ring-blue-100">
+                    <option value="">सबै (All)</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-500 uppercase">हालको वडा:</label>
+                <select id="wardSelect" class="w-full border p-2 rounded-lg mt-1 outline-none focus:ring-2 ring-blue-100">
+                    <option value="">सबै (All)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <button onclick="handleGenerate()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition">
+                <i class="fas fa-sync mr-2"></i>रिपोर्ट लोड गर्नुहोस्
+            </button>
+            <button onclick="exportToExcel()" class="bg-emerald-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-emerald-700 transition">
+                <i class="fas fa-file-excel mr-2"></i>Excel Export
+            </button>
+            <button onclick="window.print()" class="bg-slate-800 text-white px-6 py-2 rounded-lg font-bold">
+                <i class="fas fa-print mr-2"></i>Print A4
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal for Pattern Selection -->
+    <div id="patternModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 no-print">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full">
+            <h3 class="text-xl font-bold mb-4">डाटा ढाँचा (Pattern) छान्नुहोस्</h3>
+            <div class="space-y-3">
+                <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-blue-50">
+                    <input type="radio" name="pattern" value="compact" checked class="w-5 h-5 mr-3">
+                    <div>
+                        <div class="font-bold">१. Compact (Grouped)</div>
+                        <div class="text-xs text-gray-500">स्थानीय तह अनुसार छुट्टाछुट्टै तालिका</div>
+                    </div>
+                </label>
+                <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-blue-50">
+                    <input type="radio" name="pattern" value="flat" class="w-5 h-5 mr-3">
+                    <div>
+                        <div class="font-bold">२. प्रत्येक रो मा स्थानीय तह</div>
+                        <div class="text-xs text-gray-500">Excel को लागि उपयुक्त फ्ल्याट डाटा</div>
+                    </div>
+                </label>
+                <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-blue-50">
+                    <input type="radio" name="pattern" value="savik_vdc" class="w-5 h-5 mr-3">
+                    <div>
+                        <div class="font-bold">३. साविक गा.वि.स. अनुसार</div>
+                        <div class="text-xs text-gray-500">गा.वि.स. लाई छुट्टै कोलममा राखेर</div>
+                    </div>
+                </label>
+                <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-blue-50">
+                    <input type="radio" name="pattern" value="savik_ward" class="w-5 h-5 mr-3">
+                    <div>
+                        <div class="font-bold">४. साविक वडा नं. अनुसार (Single Row)</div>
+                        <div class="text-xs text-gray-500">रेन्ज (१-९) लाई १, २, ३... गरी छुट्टाछुट्टै रो मा</div>
+                    </div>
+                </label>
+            </div>
+            <div class="mt-6 flex gap-3">
+                <button onclick="generateConfirmed()" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-bold">रिपोर्ट देखाउनुहोस्</button>
+                <button onclick="closeModal()" class="flex-1 bg-gray-100 py-3 rounded-xl font-bold">रद्द</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Printable Report Area -->
+    <div id="reportArea" class="max-w-[210mm] mx-auto bg-white p-8 report-page shadow-sm min-h-[297mm]">
+        <div class="text-center py-20 text-gray-400">जिल्ला छान्नुहोस् र रिपोर्ट लोड गर्नुहोस्।</div>
+    </div>
+
+<script>
+    let db = null;
+
+    // डेटा लोड गर्ने
+    window.onload = async () => {
+        try {
+            const response = await fetch('/registration/land_valuation_final.json');
+            db = await response.json();
+            populateDistricts();
+        } catch (e) {
+            console.error("Database loading failed:", e);
+            db = JSON.parse(localStorage.getItem('land_db_v6')) || { districts: [] };
+            populateDistricts();
+        }
+    };
+
+    // सहयोगी फङ्सनहरू
+    function toEngDigit(str) {
+        return str.toString().replace(/[०१२३४५६७८९]/g, d => "०१२३४५६७८९".indexOf(d));
+    }
+
+    function toNep(num) {
+        return num.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
+    }
+
+    function parseWardRange(rangeStr) {
+        if (!rangeStr) return [];
+        let engStr = toEngDigit(rangeStr);
+        let wards = [];
+        let parts = engStr.split(/[,;\s/]/);
+        parts.forEach(part => {
+            part = part.trim();
+            if (part.includes('-') || part.includes('–')) {
+                let rangeParts = part.split(/[-–]/);
+                let start = parseInt(rangeParts[0]);
+                let end = parseInt(rangeParts[1]);
+                if(!isNaN(start) && !isNaN(end)) {
+                    for (let i = Math.min(start, end); i <= Math.max(start, end); i++) wards.push(i);
+                }
+            } else {
+                let val = parseInt(part);
+                if(!isNaN(val)) wards.push(val);
+            }
+        });
+        return [...new Set(wards)].sort((a,b) => a - b);
+    }
+
+    function populateDistricts() {
+        const sel = document.getElementById('distSelect');
+        db.districts.forEach(d => sel.innerHTML += `<option value="${d.id}">${d.name}</option>`);
+    }
+
+    function updateLocals() {
+        const dId = document.getElementById('distSelect').value;
+        const localSel = document.getElementById('localSelect');
+        localSel.innerHTML = '<option value="">सबै (All)</option>';
+        const d = db.districts.find(item => item.id == dId);
+        if(d) d.locals.forEach(l => localSel.innerHTML += `<option value="${l.id}">${l.name}</option>`);
+        updateWards();
+    }
+
+    function updateWards() {
+        const dId = document.getElementById('distSelect').value;
+        const lId = document.getElementById('localSelect').value;
+        const wardSel = document.getElementById('wardSelect');
+        wardSel.innerHTML = '<option value="">सबै (All)</option>';
+        const district = db.districts.find(d => d.id == dId);
+        if(district) {
+            const local = district.locals.find(l => l.id == lId);
+            if(local) {
+                local.mapping.sort((a,b)=>a.wardNo - b.wardNo).forEach(m => {
+                    wardSel.innerHTML += `<option value="${m.wardNo}">${m.wardNo}</option>`;
+                });
+            }
+        }
+    }
+
+    function handleGenerate() {
+        const dId = document.getElementById('distSelect').value;
+        const lId = document.getElementById('localSelect').value;
+        if(!dId) return alert("कृपया जिल्ला छान्नुहोस्");
+        if(!lId) {
+            document.getElementById('patternModal').style.display = 'flex';
+        } else {
+            generateConfirmed('compact');
+        }
+    }
+
+    function closeModal() { document.getElementById('patternModal').style.display = 'none'; }
+
+    function generateConfirmed(forcedPattern = null) {
+        const pattern = forcedPattern || document.querySelector('input[name="pattern"]:checked').value;
+        const dId = document.getElementById('distSelect').value;
+        const lId = document.getElementById('localSelect').value;
+        const wNo = document.getElementById('wardSelect').value;
+        closeModal();
+        renderReport(dId, lId, wNo, pattern);
+    }
+
+    function renderReport(dId, lId, wNo, pattern) {
+        const district = db.districts.find(d => d.id == dId);
+        const reportArea = document.getElementById('reportArea');
+        reportArea.innerHTML = `<h1 class="text-2xl font-bold text-center underline mb-6">${district.name} जिल्लाको स्थानीय तह र साविक विवरण</h1>`;
+
+        let localsToProcess = lId ? district.locals.filter(l => l.id == lId) : district.locals;
+
+        if (pattern === 'compact') {
+            localsToProcess.forEach(local => {
+                let html = `<div class="mb-8">
+                    <h2 class="font-bold text-lg mb-2">स्थानीय तहको नाम: ${local.name}</h2>
+                    <table class="report-table w-full text-sm">
+                        <thead>
+                            <tr>
+                                <th class="w-16">क्र.सं.</th>
+                                <th class="w-24">हालको वडा</th>
+                                <th>साविक गा.वि.स. / वडा नं.</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                let wards = wNo ? local.mapping.filter(m => m.wardNo == wNo) : local.mapping;
+                wards.sort((a,b)=>a.wardNo - b.wardNo).forEach((m, idx) => {
+                    let savikDetails = m.links.map(ln => `${ln.vdc} (${ln.oldW})`).join(', ') || 'उपलब्ध छैन';
+                    html += `<tr>
+                        <td class="text-center">${toNep(idx+1)}</td>
+                        <td class="text-center font-bold">${toNep(m.wardNo)}</td>
+                        <td>${savikDetails}</td>
+                    </tr>`;
+                });
+                html += `</tbody></table></div>`;
+                reportArea.innerHTML += html;
+            });
+        } 
+        else {
+            // Patterns 2, 3, र 4 को लागि साझा तालिका संरचना
+            let tableHtml = `<table class="report-table w-full text-sm"><thead><tr>`;
+            if(pattern === 'flat') tableHtml += `<th class="w-12">क्र.सं.</th><th>स्थानीय तह</th><th>हालको वडा</th><th>साविक गा.वि.स. / वडा नं.</th>`;
+            if(pattern === 'savik_vdc') tableHtml += `<th class="w-12">क्र.सं.</th><th>स्थानीय तह</th><th>हालको वडा</th><th>साविक गा.वि.स.</th><th>साविक वडा नं.</th>`;
+            if(pattern === 'savik_ward') tableHtml += `<th class="w-12">क्र.सं.</th><th>स्थानीय तह</th><th>हालको वडा</th><th>साविक गा.वि.स.</th><th>साविक वडा (छुट्टाछुट्टै)</th>`;
+            tableHtml += `</tr></thead><tbody>`;
+
+            let globalIdx = 1;
+            localsToProcess.forEach(local => {
+                let wards = wNo ? local.mapping.filter(m => m.wardNo == wNo) : local.mapping;
+                wards.sort((a,b)=>a.wardNo - b.wardNo).forEach(m => {
+                    
+                    if(pattern === 'flat') {
+                        let savikDetails = m.links.map(ln => `${ln.vdc} (${ln.oldW})`).join(', ');
+                        tableHtml += `<tr><td class="text-center">${toNep(globalIdx++)}</td><td>${local.name}</td><td class="text-center">${toNep(m.wardNo)}</td><td>${savikDetails}</td></tr>`;
+                    } 
+                    else if(pattern === 'savik_vdc') {
+                        m.links.forEach(ln => {
+                            tableHtml += `<tr><td class="text-center">${toNep(globalIdx++)}</td><td>${local.name}</td><td class="text-center">${toNep(m.wardNo)}</td><td>${ln.vdc}</td><td>${toNep(ln.oldW)}</td></tr>`;
+                        });
+                    }
+                    else if(pattern === 'savik_ward') {
+                        m.links.forEach(ln => {
+                            let individualWards = parseWardRange(ln.oldW);
+                            if(individualWards.length > 0) {
+                                individualWards.forEach(sw => {
+                                    tableHtml += `<tr>
+                                        <td class="text-center">${toNep(globalIdx++)}</td>
+                                        <td>${local.name}</td>
+                                        <td class="text-center">${toNep(m.wardNo)}</td>
+                                        <td>${ln.vdc}</td>
+                                        <td class="text-center font-bold text-blue-700">${toNep(sw)}</td>
+                                    </tr>`;
+                                });
+                            } else {
+                                // यदि खाली छ वा पार्स भएन भने मूल विवरण नै देखाउने
+                                tableHtml += `<tr><td class="text-center">${toNep(globalIdx++)}</td><td>${local.name}</td><td class="text-center">${toNep(m.wardNo)}</td><td>${ln.vdc}</td><td>${toNep(ln.oldW)}</td></tr>`;
+                            }
+                        });
+                    }
+                });
+            });
+            tableHtml += `</tbody></table>`;
+            reportArea.innerHTML += tableHtml;
+        }
+    }
+
+    function exportToExcel() {
+        const table = document.querySelector("#reportArea table");
+        if(!table) return alert("पहिले रिपोर्ट लोड गर्नुहोस्");
+        const wb = XLSX.utils.table_to_book(table, {sheet: "LandMapping"});
+        XLSX.writeFile(wb, "Land_Valuation_Report.xlsx");
+    }
+</script></body>
+</html>
