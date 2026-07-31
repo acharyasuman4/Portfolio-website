@@ -563,6 +563,7 @@
                         <option value="आवासीय">
                         <option value="कृषि">
                         <option value="व्यवसायिक">
+                        <option value="नभएको">
                     </datalist>
                 </div>
 
@@ -706,6 +707,13 @@ window.addEventListener('load', () => {
         renderUpperList();
         updateAll();
     }
+    ['old_vdc', 'road', 'category'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('focus', () => el.select());
+    // Tab थिच्दा पहिलो म्याच हुने नाम भर्ने (तपाईंले मागेको फिचर)
+    el.addEventListener('keydown', (e) => handleTabComplete(e, id === 'old_vdc' ? 'vdcOptions' : 'roadOptions'));
+});
+
 });
 
 // --- Part 1: Dynamic Header Logic ---
@@ -863,21 +871,18 @@ function isFuzzyMatch(str1, str2) {
 function isWardInTarget(inputWard, targetWardStr) {
     if (!targetWardStr || !inputWard) return false;
     
-    // Convert Nepali input to English for calculation
     const wardNum = parseInt(nepToEng(inputWard));
+    const normalizedTarget = targetWardStr.toString().replace(/[०-९]/g, d => "0123456789"["०१२३४५६७८९".indexOf(d)]);
     
-    // Split by comma: "1-2,4,9" -> ["1-2", "4", "9"]
-    const parts = targetWardStr.toString().split(',');
-    
+    // कमाले छुट्याइएका भागहरू (जस्तै १-२ र ७) लाई पालैपालो हेर्ने
+    const parts = normalizedTarget.split(',');
     for (let part of parts) {
         part = part.trim();
         if (part.includes('-')) {
-            // Handle Range: "1-2"
-            const range = part.split('-').map(n => parseInt(nepToEng(n)));
+            const range = part.split('-').map(n => parseInt(n));
             if (wardNum >= range[0] && wardNum <= range[1]) return true;
         } else {
-            // Handle Single Number: "4"
-            if (parseInt(nepToEng(part)) === wardNum) return true;
+            if (parseInt(part) === wardNum) return true;
         }
     }
     return false;
@@ -923,48 +928,123 @@ document.getElementById('ward').addEventListener('input', checkPriceMemory);
 document.getElementById('road').addEventListener('input', checkPriceMemory);
 document.getElementById('category').addEventListener('input', checkPriceMemory);// --- Part 2: Autocomplete Setup ---
 
+// १. साविक गा.वि.स. को लिस्ट वर्णानुक्रममा मिलाएर सेट गर्ने फङ्सन
 function checkDistrictAndSetup() {
     const settings = JSON.parse(localStorage.getItem('global_office_settings')) || {};
     const defaultDist = settings.def_dist;
     
-    // Find district in JSON
+    // JSON बाट सम्बन्धित जिल्ला खोज्ने
     const districtData = valuationDb.districts.find(d => d.name === defaultDist);
     if (!districtData) return;
 
-    // 1. Collect all VDCs for this district from the mapping
-    let vdcList = [];
+    let vdcSet = new Set();
+    
+    // सबै mapping र links बाट unique VDC नामहरू निकाल्ने
     districtData.locals.forEach(local => {
         local.mapping.forEach(m => {
-            m.links.forEach(l => { if(l.vdc) vdcList.push(l.vdc); });
+            m.links.forEach(l => { 
+                if (l.vdc) vdcSet.add(l.vdc.trim()); 
+            });
         });
     });
-    vdcList = [...new Set(vdcList)].sort(); // Unique & Alphabetical
 
-    // 2. Setup VDC Datalist
-    setupDatalist("vdcOptions", vdcList);
-    document.getElementById('old_vdc').setAttribute('list', 'vdcOptions');
+    // २. वर्णानुक्रम (Alphabetical Order) मा सर्ट गर्ने
+    const sortedVdcList = Array.from(vdcSet).sort((a, b) => a.localeCompare(b, 'ne'));
+
+    // ३. Datalist (vdcOptions) मा लिस्ट भर्ने
+    setupDatalist("vdcOptions", sortedVdcList);
+    
+    // input बक्समा list attribute जोड्ने (Autocomplete को लागि)
+    const vdcInput = document.getElementById('old_vdc');
+    vdcInput.setAttribute('list', 'vdcOptions');
 }
+
+// ४. साविक गा.वि.स. को नाम टाइप गर्दा वा सेलेक्ट गर्दा बाटोको लिस्ट स्वतः आउने बनाउन यो थप्नुहोस्
+document.getElementById('old_vdc').addEventListener('input', function() {
+    if (this.value.length >= 1) {
+        updateRoadOptions(); // यो तपाईंको बाटो फिल्टर गर्ने फङ्सन हो
+        autoFillRecommendation(); // यो स्थानीय तह भर्ने फङ्सन हो
+    }
+});
 
 // Triggered when VDC is selected
 function updateRoadOptions() {
-    const vdc = document.getElementById('old_vdc').value;
+    const vdc = document.getElementById('old_vdc').value.trim();
+    const ward = document.getElementById('ward').value.trim();
     if (!vdc || !valuationDb) return;
 
-    // Filter roads for this VDC (including scope="all")
-    const relevantValuations = valuationDb.valuations.filter(v => {
-        if (v.scope === "all") return true;
-        if (v.scope === "specific") {
-            return v.targets.some(t => t.vdc === vdc);
-        }
-        return false;
+    // १. यो VDC र वडा कुन स्थानीय तहमा पर्छ पत्ता लगाउने
+    let localId = null;
+    valuationDb.districts.forEach(dist => {
+        dist.locals.forEach(local => {
+            local.mapping.forEach(map => {
+                if (map.links.some(link => link.vdc === vdc && (ward ? isWardInTarget(ward, link.oldW) : true))) {
+                    localId = local.id;
+                }
+            });
+        });
     });
 
-    // Sort by price descending (High to Low)
-    relevantValuations.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    // २. सडकहरू फिल्टर गर्ने
+    const roadPriceMap = {};
+    valuationDb.valuations.forEach(v => {
+        let isMatch = false;
 
-    const roadList = [...new Set(relevantValuations.map(v => v.road))];
-    setupDatalist("roadOptions", roadList);
+        // नियम: सोही नगरपालिकाको 'all' सडक वा सोही VDC/Ward को 'specific' सडक
+        if (v.scope === "all" && v.lId === localId) {
+            isMatch = true;
+        } else if (v.scope === "specific" && v.targets) {
+            isMatch = v.targets.some(t => {
+                const vdcMatch = (t.vdc === vdc);
+                const wardMatch = ward ? isWardInTarget(ward, t.oldWard || t.currentWard) : true;
+                return vdcMatch && wardMatch;
+            });
+        }
+
+        if (isMatch) {
+            const price = parseFloat(nepToEng(v.price));
+            if (!roadPriceMap[v.road] || price > roadPriceMap[v.road]) {
+                roadPriceMap[v.road] = price;
+            }
+        }
+    });
+
+    // ३. High to Low Sort
+    const sortedRoadNames = Object.keys(roadPriceMap).sort((a, b) => roadPriceMap[b] - roadPriceMap[a]);
+    setupDatalist("roadOptions", sortedRoadNames);
 }
+
+// वडा कोलममा oninput थप्नुहोस्
+document.getElementById('ward').addEventListener('input', updateRoadOptions);
+
+// Tab थिच्दा पहिलो म्याच हुने नाम स्वतः भर्ने फङ्सन
+function handleTabComplete(e, datalistId) {
+    if (e.key === 'Tab') {
+        const input = e.target;
+        const val = input.value.trim();
+        if (!val) return;
+
+        const dl = document.getElementById(datalistId);
+        const options = Array.from(dl.options).map(o => o.value);
+        
+        // टाइप गरेको अक्षरबाट सुरु हुने पहिलो नाम खोज्ने
+        const match = options.find(opt => opt.startsWith(val));
+        
+        if (match) {
+            input.value = match;
+            // साविक गा.वि.स. हो भने अरु विवरण पनि अपडेट गर्ने
+            if (input.id === 'old_vdc') {
+                updateRoadOptions();
+                autoFillRecommendation();
+            }
+        }
+    }
+}
+
+// HTML मा यी Listener हरू थप्नुहोस् (window.onload मा वा सिधै ट्यागमा)
+document.getElementById('old_vdc').addEventListener('keydown', (e) => handleTabComplete(e, 'vdcOptions'));
+document.getElementById('road').addEventListener('keydown', (e) => handleTabComplete(e, 'roadOptions'));
+
 
 function setupDatalist(id, items) {
     let dl = document.getElementById(id);
@@ -1015,30 +1095,21 @@ document.getElementById('old_vdc').addEventListener('input', updateRoadOptions);
 
 // --- Part 4: Auto-fill Recommendation Details based on JSON Mapping ---
 
-// --- Part 4: Auto-fill Recommendation Details based on JSON Mapping (Corrected) ---
 function autoFillRecommendation() {
     const selectedVdc = document.getElementById('old_vdc').value.trim();
     const typedWard = document.getElementById('ward').value.trim(); // साविक वडा नं.
 
-    if (!valuationDb || !selectedVdc) return;
+    if (!valuationDb || !selectedVdc || !typedWard) return;
 
     let foundLocalName = "";
     let foundCurrentWard = "";
 
-    // Mapping मा खोज्ने लजिक
     for (const dist of valuationDb.districts) {
         for (const local of dist.locals) {
             for (const map of local.mapping) {
-                // यहाँ VDC नाम र पुरानो वडा दुबै मिल्नुपर्छ
+                // म्यापिङ भित्रको links मा VDC नाम र वडाको रेन्ज दुबै चेक गर्ने
                 const match = map.links.find(link => {
-                    const vdcMatch = (link.vdc === selectedVdc);
-                    
-                    // यदि वडा टाइप गरिएको छ भने, त्यो वडा यो रेन्ज (1-5, 7 आदि) भित्र पर्छ कि नाइँ हेर्ने
-                    // JSON मा wards वा oldWard जुनसुकै नाम भएपनि चेक गर्ने
-                    const targetWards = link.wards || link.oldWard || "";
-                    const wardMatch = typedWard ? isWardInTarget(typedWard, targetWards) : true;
-                    
-                    return vdcMatch && wardMatch;
+                    return link.vdc === selectedVdc && isWardInTarget(typedWard, link.oldW);
                 });
 
                 if (match) {
@@ -1051,15 +1122,12 @@ function autoFillRecommendation() {
         }
     }
 
-    // सिफारिस पत्रको फाँटहरू भर्ने
-    if (foundLocalName) {
-        document.getElementById('t1').value = foundLocalName;
-    }
-    if (foundCurrentWard) {
-        document.getElementById('t2').value = engToNep(foundCurrentWard);
-    }
+    if (foundLocalName) document.getElementById('t1').value = foundLocalName;
+    if (foundCurrentWard) document.getElementById('t2').value = engToNep(foundCurrentWard);
 }
 
+// वडा कोलममा listener
+document.getElementById('ward').addEventListener('input', autoFillRecommendation);
 // वडा कोलममा टाइप गर्दा पनि सिफारिस अपडेट हुने बनाउन यो थप्नुहोस्
 document.getElementById('ward').addEventListener('input', autoFillRecommendation);
 document.getElementById('ward').addEventListener('change', autoFillRecommendation);
@@ -1069,11 +1137,19 @@ document.getElementById('old_vdc').addEventListener('change', autoFillRecommenda
 document.getElementById('old_vdc').addEventListener('input', autoFillRecommendation);
 
 
-        function toggleAreaInput() {
-            const type = document.querySelector('input[name="areaType"]:checked').value;
-            document.getElementById('traditionalArea').classList.toggle('hidden', type !== 'traditional');
-            document.getElementById('sqmArea').classList.toggle('hidden', type !== 'sqm');
-        }
+function toggleAreaInput() {
+    const type = document.querySelector('input[name="areaType"]:checked').value;
+    const trad = document.getElementById('traditionalArea');
+    const sqm = document.getElementById('sqmArea');
+    
+    if (type === 'traditional') {
+        trad.style.display = 'grid'; // रोपनी-आना देखिने
+        sqm.style.display = 'none';  // वर्ग मि. लुक्ने
+    } else {
+        trad.style.display = 'none'; // रोपनी-आना लुक्ने
+        sqm.style.display = 'block'; // वर्ग मि. देखिने
+    }
+}
 
 function updateAll() {
     const fy = document.getElementById('fy').value;
