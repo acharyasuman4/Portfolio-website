@@ -20,10 +20,10 @@
     <meta property="og:description" content="कर्मचारी र सेवाग्राहीका लागि उपयोगी अनलाइन टुलहरू।">
     <meta property="og:url" content="https://acharyasuman4.com.np">
 
-    <script src="/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="/lucide.min.js"></script>
+
+<link rel="stylesheet" href="css/all.min.css">
     <link rel="manifest" href="./manifest.json">
 
     <style>
@@ -65,9 +65,31 @@
     }
 }
     [v-cloak] { display: none; }
-    body { visibility: hidden; } /* पेज लोड नहुन्जेल लुकाउने */
+    /* body { visibility: hidden; } */
+     /* पेज लोड नहुन्जेल लुकाउने */
 
+/* 1. Define the Regular font (Weight 400) */
+@font-face {
+    font-family: 'Mukta';
+    src: url('/Mukta-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap; /* Helps with loading speed */
+}
 
+/* 2. Define the Bold font (Weight 700) */
+@font-face {
+    font-family: 'Mukta';
+    src: url('/Mukta-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 3. Apply it to the site */
+body {
+    font-family: 'Mukta', sans-serif;
+}
     </style>
 </head>
 
@@ -610,6 +632,9 @@ if ('serviceWorker' in navigator) {
     </script>
       <script>  lucide.createIcons();</script>
 
+    <script src="/tailwind.min.js"></script>
+
+    <script src="/lucide.min.js"></script>
 
 </body>
 
