@@ -583,12 +583,12 @@ function autoUpdateTotalBuyers() {
         function showDropdown() { document.getElementById('dropdownList').classList.remove('hidden'); }
         function filterTitles(val) { renderDropdownList(masterData.titles.filter(t => t.includes(val))); }
 
-        function selectTitle(t) {
-            document.getElementById('karobarInput').value = t;
-            document.getElementById('dropdownList').classList.add('hidden');
-             addedExemptions = []; 
+function selectTitle(t) {
+    document.getElementById('karobarInput').value = t;
+    document.getElementById('dropdownList').classList.add('hidden');
+    addedExemptions = []; 
 
-                 // दर्ताफारी चेक
+    // दर्ताफारी चेक
     const isDartaPhari = t.includes("दर्ताफारी");
     const dpSection = document.getElementById('dartaPhariSection');
     if (isDartaPhari) {
@@ -598,13 +598,25 @@ function autoUpdateTotalBuyers() {
         dpSection.classList.add('hide');
     }
 
+    // --- Add this block to fix the discount section ---
+    const discWrapper = document.getElementById('discountWrapper');
+    const hasExemptions = masterData.exemptions?.some(ex => ex.titles.includes(t));
 
-             handleVilambaUI(t) 
+    if (hasExemptions) {
+        discWrapper.classList.remove('hide');
+    } else {
+        discWrapper.classList.add('hide');
+        document.getElementById('hasDiscount').checked = false;
+        document.getElementById('discountInputs').className = 'hide';
+    }
+    // --------------------------------------------------
+
+    handleVilambaUI(t);
     renderExemptionRows();
-            updateThailiVisibility();
-            calculate();
-            handleVilambaUI();
-        }
+    updateThailiVisibility();
+    calculate();
+    handleVilambaUI();
+}
 
 function toggleDiscountUI() {
     const isChecked = document.getElementById('hasDiscount').checked;
