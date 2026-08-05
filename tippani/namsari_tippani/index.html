@@ -164,58 +164,75 @@
             margin-left: 10px;
         }
 
-        @media print {
-            /* 3. FIX: Defined @page margin to 0 so the A4 dimensions are precise */
+@media print {
+            /* 1. PAPER MARGINS */
             @page {
                 size: A4 portrait;
-                margin: 0;
+                margin-bottom: 1.27cm; /* 0.5" Bottom Margin (all pages) */
+                margin-top: 1.27cm;    /* 0.5" Top Margin (applies to page 2+) */
+                margin-left: 0;
+                margin-right: 0;
             }
 
-            .no-print {
-                display: none !important;
+            /* Removes physical top margin for page 1 so it can start higher */
+            @page :first {
+                margin-top: 0; 
             }
 
-            body,
-            html {
+            /* 2. RESET LAYOUT (Fixes scrollbar & one-page issue) */
+            body, html {
                 overflow: visible !important;
                 height: auto !important;
-                background: white !important;
+                width: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important; /* Disables Flexbox */
+            }
+
+            .main-layout {
+                display: block !important; /* Disables Flexbox */
+                height: auto !important;
+            }
+
+            .input-panel, .no-print {
+                display: none !important; /* Hide Sidebar */
             }
 
             .preview-container {
                 display: block !important;
+                overflow: visible !important;
+                height: auto !important;
                 padding: 0 !important;
                 margin: 0 !important;
-                background: white !important;
-                overflow: visible !important;
             }
 
-            /* 4. FIX: Changed width from 100% back to 210mm to stop it from stretching */
+            /* 3. CONTENT POSITIONING */
             .preview-page {
                 box-shadow: none !important;
                 border: none !important;
                 width: 210mm !important; 
-                min-height: 297mm;
                 margin: 0 auto !important;
-                padding: 1.5cm 1.27cm 1.5cm 2.54cm !important;
-                page-break-after: avoid !important;
-                page-break-before: avoid !important;
+                /* Padding: Top, Right, Bottom, Left */
+                /* Top 0.5cm here makes the 1st page start high */
+                padding: 0.5cm 1.27cm 0.5cm 2.54cm !important;
+                page-break-after: auto !important;
+                display: block !important;
             }
 
             .preview-page p {
-                margin-top: 0 !important;
-                margin-bottom: 0 !important;
-                padding: 0;
-                text-indent: 0px; 
-                line-height: 1.6;
+                orphans: 3;
+                widows: 3;
                 text-align: justify;
+                line-height: 1.6;
             }
 
             .doc-table {
-                margin: 3px 0;
+                page-break-inside: auto;
             }
+            tr { page-break-inside: avoid; page-break-after: auto; }
         }
-    </style>
+        
+        </style>
 </head>
 
 <body>

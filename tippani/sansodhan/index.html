@@ -112,7 +112,7 @@
     /* 3. PRINT FIX: Ensures document stays exactly A4 and doesn't stretch */
     @media print {
         @page { 
-            margin: 0; 
+                margin: 0.5in 0.5in 0.5in 1.25in;
             size: A4 portrait; 
         }
         body { background: white; padding: 0; margin: 0; overflow: visible; height: auto; }
@@ -127,12 +127,71 @@
         /* FIX: Strict 210mm width prevents the "taking more than A4" issue */
         .preview-page { 
             box-shadow: none; 
-            margin: 0 auto; 
+            margin: 0 ; 
             width: 210mm; 
-            padding: 2.54cm; 
-            min-height: 297mm; 
+            padding: 100%; 
+            min-height: auto; 
         }
+        /* इन्पुट फन्ट साइज वृद्धि र टेक्सएरिया रिसाइज कन्ट्रोल */
+.input-box, select, textarea { font-size: 18px !important; padding: 8px !important; }
+textarea.input-box { resize: vertical; min-height: 60px; }
+
+/* मोडल (Modal) स्टायल */
+.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+.office-table { width: 100%; border-collapse: collapse; background: white; }
+.office-table th, .office-table td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; }
+.office-table th { background: #1e293b; color: white; }
+.btn-save { background: #16a34a; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; border:none; font-weight:bold; }
+
+
+
+/* मोडल भित्रको टेबल र फन्ट */
+.office-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+.office-table th { background: #1e293b; color: white; position: sticky; top: 0; }
+/* मोबाइल वा सानो स्क्रिनमा पनि राम्रो देखिन */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 100%;
+        margin: 0;
+        height: 100%;
+        border-radius: 0;
     }
+}
+
+
+    }
+    /* इन्पुट फन्ट साइज र टेक्सएरिया */
+.input-box, select, textarea { font-size: 18px !important; padding: 8px !important; }
+textarea.input-box { resize: vertical; min-height: 70px; width: 100%; }
+
+/* Dialog Box Style - सधैं काम गर्ने गरि */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 999999; 
+    left: 0; top: 0; 
+    width: 100%; height: 100%; 
+    background-color: rgba(0,0,0,0.7); 
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #ffffff;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 25px;
+    border-radius: 15px;
+    width: 95%;
+    max-width: 1300px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
 </style></head>
 
 <body>
@@ -237,8 +296,31 @@
                     </div>
                 </div>
             </div>
+            <!-- संशोधनका लागि थप व्यहोराहरू -->
+<div class="input-group bg-orange">
+    <div class="row-2">
+        <!-- <div><label>उपदफा/दफा:</label><input type="text" id="in_upadafa" oninput="scheduleUpdate()" value="१" class="input-box"></div> -->
+    </div>
+    <label style="margin-top:10px;"><b>आदेशको अन्तिम व्यहोरा:</b></label>
+    <textarea id="in_aadesh_final" oninput="scheduleUpdate()" class="input-box">थप प्रमाण बुझ्नुपर्ने देखियो । अतः उल्लिखित कित्ता जग्गाको हकभोग कसले गरेको छ ? निवेदकको माग बमोजिम संशोधन गरिदिँदा कोही कसैको हकभोगमा प्रतिकूल असर पर्छ/पर्दैन? लगायतका उल्लिखित सम्पूर्ण व्यहोरा खुलाई हकदावी सम्बन्धमा ३५ दिने सार्वजानिक सूचना राष्ट्रिय दैनिकमा समेत प्रकाशित गर्नू । सूचनाको म्यादभित्र दावि परे मिसिल सामेल गरि र नपरे म्याद भुक्तान भएपछि सूचना प्रकाशित भएको पत्रिका र सूचना टाँसको जानकारी समेत मिसिल सामेल गरी पेश गर्नू ।</textarea>
+    
+    <label style="margin-top:10px;"><b>सूचनाको अन्तिम व्यहोरा:</b></label>
+    <textarea id="in_suchana_final" oninput="scheduleUpdate()" class="input-box">यो सूचना प्रकाशित गरिएको छ । उल्लिखित जग्गाको अन्य कोही कानुनी हकवाला भए वा उल्लिखित व्यहोरा झुट्टा भए यो सूचना प्रकाशित भएको मितिले ३५ दिनभित्र आफूसँग भएको सबुत प्रमाणहरू संलग्न राखी आफैं वा वारेस मार्फत दावी/उजुरी गर्न आउनुहोला/हकदावी गर्नुहोला । म्याद नाघी आएको दावी/उजुरी उपर कुनै कार्यवाही नहुने र नियमानुसार भई जाने व्यहोरा समेत यसै सूचनाद्वारा जानकारी गराइन्छ ।</textarea>
+</div>
+
+<!-- पत्र पठाउने कार्यालय व्यवस्थापन -->
+<div class="input-group bg-sky">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <label style="font-size:14px; color:#0369a1;"><b>४. चिठ्ठी पठाउने कार्यालयहरू</b></label>
+<button onclick="openOfficeModal()" class="btn btn-dark">⚙️ कार्यालयहरू मिलाउनुहोस्</button>    </div>
+    <!-- छानिएका कार्यालयहरूको लिष्ट यहाँ देखिन्छ -->
+    <div id="selected-office-summary" style="font-size:13px; color:#475569; margin-top:8px; padding-top:5px; border-top:1px dashed #cbd5e1; line-height:1.4;">
+        <span style="color:#94a3b8;">लोड हुँदैछ...</span>
+    </div>
+</div>
 
             <div style="margin-top:15px; display:grid; gap:8px;">
+
                 <button onclick="window.print()" class="btn btn-blue">🖨️ सिधै प्रिन्ट (Print)</button>
                 <button onclick="exportAllToWord()" class="btn btn-dark">📄 वर्डमा डाउनलोड (Word)</button>
             </div>
@@ -258,6 +340,30 @@
                         <!-- CONTENT HERE -->
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div id="officeModal" class="modal no-print">
+        <div class="modal-content">
+            <!-- हेडर अब भित्र छ -->
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; background:#f1f5f9; padding:15px 20px; border-bottom:2px solid #e2e8f0; border-radius:12px 12px 0 0; margin:-25px -25px 20px -25px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:1.5rem;">🏢</span>
+                    <h2 style="margin:0; font-size:1.3rem; color:#1e3a8a;">कार्यालय व्यवस्थापन</h2>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="addNewOffice()" class="btn btn-blue" style="width:auto; margin:0;">+ नयाँ थप्नुहोस्</button>
+                    <button onclick="closeOfficeModal()" class="btn-save" style="background:#166534; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:bold;">सेभ गरी बन्द गर्नुहोस्</button>
+                </div>
+            </div>
+            
+            <div style="overflow-x:auto;">
+                <table class="office-table">
+                    <thead>
+                        <tr><th>टिक</th><th>क्रम</th><th>प्रकार</th><th>कार्यालयको नाम</th><th>ठेगाना</th><th>विवरण (व्यहोरा)</th><th>हटाउने</th></tr>
+                    </thead>
+                    <tbody id="modal-office-list"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -404,6 +510,9 @@
                 
                 tn: document.getElementById('in_t_n').value || ".......",
                 ta: document.getElementById('in_t_a').value || ".......",
+                    aadeshFinal: document.getElementById('in_aadesh_final').value || "",
+    suchanaFinal: document.getElementById('in_suchana_final').value || "",
+
                 
                 // नयाँ: इनपुटबाट सिधै लिने
                 local: local,
@@ -470,107 +579,203 @@ function applyGlobalSettings() {
 window.addEventListener('load', applyGlobalSettings);
 
         // --- UPDATE UI ---
-        function updateAll() {
-            try {
-                const d = getData();
-                const t = generateTexts(d);
-
-const gData = JSON.parse(localStorage.getItem('global_office_settings')) || {};
-const phone = gData.phone ? `फोन: ${toNepali(gData.phone)}` : "";
-const email = gData.email ? `Email: ${gData.email}` : "";
-
-const letterhead = `
-    <div style="position:relative; border-bottom: 2px double black; margin-bottom: 15px; padding-bottom:10px;">
-        <table style="width: 100%; border-collapse: collapse; border: none;">
-            <tr>
-                <td style="width: 15%; text-align: left; vertical-align: middle; border: none;">
-                    <img id="nisan_img" style="width:90px" src="data:image/jpeg;base64,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">
-                </td>
-                <td style="text-align: center; color: red; vertical-align: middle; border: none; line-height: 1.2;">
-                    <div style="font-size: 10pt; font-weight: bold;">${gData.gov || 'नेपाल सरकार'}</div>
-                    <div style="font-size: 11pt; font-weight: bold;">${gData.ministry || ''}</div>
-                    <div style="font-size: 12pt; font-weight: bold;">${gData.dept || ''}</div>
-                    <div style="font-size: 16pt; font-weight: bold;">${gData.office || ''}</div>
-                    <div style="font-size: 11pt; font-weight: bold;">${gData.addr || ''}</div>
-                </td>
-                <td style="width: 15%; border: none;"></td>
-            </tr>
-        </table>
-        <div style="position:absolute; right:0; bottom:5px; text-align:right; font-size:9pt; color:black; font-weight:normal;">
-            <div>${phone}</div>
-            <div>${email}</div>
-        </div>
-    </div>`;
-                const aadeshBody = `यसमा ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${d.ownerName}को नाममा दर्ता रहेको ${t.globalDist} जिल्ला ${t.landText} ${t.landGrammar} ${d.shortDesc} संसोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc} थप प्रमाण बुझ्नुपर्ने देखियो । अतः उल्लिखित कित्ता जग्गाको हकभोग कसले गरेको छ ? ${t.applicantLabel}को माग बमोजिम संशोधन गरिदिँदा कोही कसैको हकभोगमा प्रतिकूल असर पर्छ/पर्दैन? लगायतका उल्लिखित सम्पूर्ण व्यहोरा खुलाई हकदावी सम्बन्धमा ३५ दिने सार्वजानिक सूचना ${d.papr}मा समेत प्रकाशित गर्नू । सूचनाको म्यादभित्र दावि परे मिसिल सामेल गरि र नपरे म्याद भुक्तान भएपछि सूचना प्रकाशित भएको पत्रिका र सूचना टाँसको जानकारी समेत मिसिल सामेल गरी पेश गर्नू ।`;
-
-                const suchanaBody = `यसमा ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${d.ownerName}को नाममा दर्ता रहेको ${t.globalDist} जिल्ला ${t.landText} ${t.landGrammar} ${d.shortDesc} संसोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc} यो सूचना प्रकाशित गरिएको छ । उल्लिखित जग्गाको अन्य कोही कानुनी हकवाला भए वा उल्लिखित व्यहोरा झुट्टा भए यो सूचना प्रकाशित भएको मितिले ३५ दिनभित्र आफूसँग भएको सबुत प्रमाणहरू संलग्न राखी आफैं वा वारेस मार्फत दावी/उजुरी गर्न आउनुहोला/हकदावी गर्नुहोला । म्याद नाघी आएको दावी/उजुरी उपर कुनै कार्यवाही नहुने र नियमानुसार भई जाने व्यहोरा समेत यसै सूचनाद्वारा जानकारी गराइन्छ ।`;
-
-                let bodyHtml = "";
-
-                if (currentView === 'aadesh') {
-                    bodyHtml = `
-                    ${letterhead}
-                    <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:18pt; margin-bottom:5px; margin-top:5px;">${d.off}बाट जारी भएको हकदावी सम्बन्धी आदेश</div>
-                    <table class="aadesh-table">
-                        <tr>
-                            <td style="width: 25%; font-size: 16pt;"><b>${t.applicantLabel}:</b><br>${t.applicantNamesOnly}<br><b>मिति:</b> ${d.dt}<br><b>मि.नं.:</b> ${d.mis}</td>
-                            <td style="font-size: 16pt; text-align: justify;">${aadeshBody}</td>
-                        </tr>
-                    </table>`;
-                } else if (currentView === 'suchana') {
-                    bodyHtml = `
-                    ${letterhead}
-                    <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:18pt; margin-bottom:5px; margin-top:20px;">हकदावी सम्बन्धी ३५ दिने सार्वजनिक सूचना</div>
-                    <div style="text-align:center; font-weight:bold; font-size:16pt; margin-bottom:15px;">मिति: ${d.dt}</div>
-                    <div style="font-size: 16pt; text-indent: 50px;">${suchanaBody}</div>`;
-                } else {
-                    const wardAddress = `श्री ${d.local} ${d.ward} नं. वडा कार्यालय, ${t.globalDist}`;
-                    const localAddress = `श्री ${d.local}, ${t.globalDist}`;
-
-                    bodyHtml = `
-                    ${letterhead}
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:16pt;"><div>पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</div><div style="padding-top:20px;">मिति: ${d.dt}</div></div>
-                    <div style="text-align:center; font-weight:bold; margin-bottom:15px; font-size:16pt;">विषय: सूचना टाँस गरी जानकारी पठाइदिने सम्बन्धमा ।</div>
-                    <div style="font-weight:bold; margin-bottom:10px; font-size:16pt;">${d.tn}<br>${d.ta}</div>
-                    <p style="text-indent: 50px; font-size: 16pt; margin-bottom: 10px; text-align: justify;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संसोधन गर्ने सम्बन्धमा प्रकाशित दिन ३५ (पैंतीस) को हकदावी/उजुरी सम्बन्धी सार्वजनीक सूचना थान-१ (एक) यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
-                    <table width="100%" cellpadding="0" cellspacing="0" style="font-size:16pt; border:none;">
-                    <tr><td style="width:65%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;"><b><u>बोधार्थ:</u></b><br>१. श्री जिल्ला समन्वय समितीको कार्यालय, ${t.globalDist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br></td><td style="width:35%; vertical-align:top; text-align:right; border:none;"><table align="right" cellpadding="0" cellspacing="0" style="width:220px;"><tr><td style="font-weight:bold; text-align:center;">.........................<br>${d.off}</td></tr></table></td></tr>
-                    <tr><td colspan="2" style="text-align:left; line-height:1.5; border:none;">२. श्री जिल्ला नापी कार्यालय, ${t.globalDist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>३. ${wardAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>४. ${localAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>५. श्री ............ राष्ट्रिय दैनिक पत्रिका: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।</td></tr>
-                    </table>`;
-                }
-                document.getElementById('dynamic_body').innerHTML = bodyHtml;
-            } catch (e) {
-                console.error(e);
-            }
-            applyGlobalSettings();
-        }
-
-        // --- WORD EXPORT ---
-async function exportAllToWord() {
+ function updateAll() {
     try {
-        // 1. Get data and generated texts
         const d = getData();
         const t = generateTexts(d);
+        
+        // १. इन्पुटहरूबाट डाटा लिने
+        const paperInput = document.getElementById('in_paper').value || "राष्ट्रिय दैनिक";
+        const aadeshTemplate = document.getElementById('in_aadesh_final').value;
+        const suchanaFinal = document.getElementById('in_suchana_final').value;
+
+        // २. आदेशको व्यहोरामा 'राष्ट्रिय दैनिक' सिङ्क गर्ने
+        const processedAadeshFinal = aadeshTemplate.replace(/राष्ट्रिय दैनिक/g, paperInput);
+
+        // ३. ग्लोबल सेटिङ र लेटरहेड
         const gData = JSON.parse(localStorage.getItem('global_office_settings')) || {};
-        
-        // Ensure image exists
-        const nisanBase64 = document.getElementById('nisan_img').src;
-        
         const phone = gData.phone ? `फोन: ${toNepali(gData.phone)}` : "";
         const email = gData.email ? `Email: ${gData.email}` : "";
 
-        // 2. Define Ward Office and Local Office properly to avoid "is not defined" error
-        const wardNoNepali = toNepali(d.ward);
-        const formattedWardOffice = `श्री ${d.local} वडा नं. ${wardNoNepali} को वडा कार्यालय, ${t.globalDist}`;
-        const formattedLocalOffice = `श्री ${d.local} को कार्यालय, ${t.globalDist}`;
+        const letterhead = `
+            <div style="position:relative; border-bottom: 2px double black; margin-bottom: 15px; padding-bottom:10px;">
+                <table style="width: 100%; border-collapse: collapse; border: none;">
+                    <tr>
+                        <td style="width: 15%; text-align: left; vertical-align: middle; border: none;">
+<img id="nisan_img" style="width:90px"
+                        
+                        src="data:image/jpeg;base64,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">
+                        </td>
+                        <td style="text-align: center; color: red; vertical-align: middle; border: none; line-height: 1.2;">
+                            <div style="font-size: 10pt; font-weight: bold;">${gData.gov || 'नेपाल सरकार'}</div>
+                            <div style="font-size: 11pt; font-weight: bold;">${gData.ministry || ''}</div>
+                            <div style="font-size: 12pt; font-weight: bold;">${gData.dept || ''}</div>
+                            <div style="font-size: 16pt; font-weight: bold;">${gData.office || ''}</div>
+                            <div style="font-size: 11pt; font-weight: bold;">${gData.addr || ''}</div>
+                        </td>
+                        <td style="width: 15%; border: none;"></td>
+                    </tr>
+                </table>
+                <div style="position:absolute; right:0; bottom:5px; text-align:right; font-size:9pt; color:black; font-weight:normal;">
+                    <div>${phone}</div>
+                    <div>${email}</div>
+                </div>
+            </div>`;
 
-        // 3. Repeating Header for Word
+        const commonBody = `यसमा ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${d.ownerName}को नाममा दर्ता रहेको ${t.globalDist} जिल्ला ${t.landText} ${t.landGrammar} ${d.shortDesc} संशोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc}`;
+
+        // ४. चिठ्ठी/बोधार्थ लजिक
+        const mainOffice = offices.find(o => o.type === 'main' && o.checked) || { name: '.......', addr: '.......' };
+        const ccOffices = offices.filter(o => o.type === 'cc' && o.checked).sort((a, b) => a.sn - b.sn);
+
+        const processedCC = ccOffices.map(o => {
+            let finalName = o.name;
+            if (o.name.includes("स्थानीय तह") || o.name.includes("पालिका")) finalName = `श्री ${d.local},`;
+            if (o.name.includes("वडा कार्यालय")) finalName = `श्री ${d.local} वडा नं. ${toNepali(d.ward)} को वडा कार्यालय,`;
+            
+            // पत्रिका सिङ्क लजिक
+            if (o.name.includes("पत्रिका")) {
+                if (o.name === "पत्रिका" || o.name === "राष्ट्रिय दैनिक पत्रिका") {
+                    finalName = (paperInput === "राष्ट्रिय दैनिक") ? "श्री ............................ राष्ट्रिय दैनिक," : `श्री ${paperInput},`;
+                } else { finalName = `श्री ${o.name},`; }
+            }
+            const separator = o.desc ? ': ' : '';
+            return `${finalName} ${o.addr}${separator}${o.desc}`;
+        });
+
+        const ccItem1 = processedCC.length > 0 ? `१. ${processedCC[0]}` : "";
+        const ccRemaining = processedCC.slice(1).map((text, i) => `${toNepali(i + 2)}. ${text}<br>`).join('');
+
+        let bodyHtml = "";
+        if (currentView === 'aadesh') {
+            bodyHtml = `${letterhead}
+                <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:18pt; margin:10px 0;">${d.off}बाट जारी भएको आदेश</div>
+                <table class="aadesh-table">
+                    <tr>
+                        <td style="width: 25%; font-size: 16pt;"><b>${t.applicantLabel}:</b><br>${t.applicantNamesOnly}<br><b>मिति:</b> ${d.dt}<br><b>मि.नं.:</b> ${d.mis}</td>
+                        <td style="font-size: 16pt; text-align: justify;">${commonBody} ${processedAadeshFinal}</td>
+                    </tr>
+                </table>`;
+        } else if (currentView === 'suchana') {
+            bodyHtml = `${letterhead}
+                <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:18pt; margin:20px 0;">हकदावी सम्बन्धी ३५ दिने सार्वजनिक सूचना</div>
+                <div style="text-align:center; font-weight:bold; font-size:16pt; margin-bottom:15px;">मिति: ${d.dt}</div>
+                <div style="font-size: 16pt; text-indent: 50px; text-align: justify;">${commonBody} ${suchanaFinal}</div>`;
+        } else {
+            bodyHtml = `${letterhead}
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:16pt;">
+                    <div>पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</div>
+                    <div style="padding-top:20px;">मिति: ${d.dt}</div>
+                </div>
+                <div style="text-align:center; font-weight:bold; margin-bottom:15px; font-size:16pt;">विषय: सूचना टाँस गरी जानकारी पठाइदिने सम्बन्धमा ।</div>
+                <div style="font-weight:bold; margin-bottom:15px; font-size:16pt;">${mainOffice.name}<br>${mainOffice.addr}</div>
+                <p style="text-indent: 50px; font-size: 16pt; text-align: justify;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संशोधन गर्ने सम्बन्धमा प्रकाशित ३५ दिने सूचना थान-१ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी जानकारी पठाइदिनुहुन अनुरोध छ ।</p>
+                <table width="100%" style="font-size:16pt; border:none; border-collapse:collapse;">
+                    <tr>
+                        <td style="width:63%; vertical-align:top; border:none; line-height:1.5;"><b><u>बोधार्थ:</u></b><br>${ccItem1}</td>
+                        <td style="width:37%; vertical-align:top; text-align:center; border:none; padding-top:1em;">...................................<br><b>${d.off}</b></td>
+                    </tr>
+                </table>
+                <div style="font-size:16pt; line-height:1.6; text-align:justify; margin-top:5px;">${ccRemaining}</div>`;
+        }
+        document.getElementById('dynamic_body').innerHTML = bodyHtml;
+    } catch (e) { console.error(e); }
+}
+
+function renderModalOffices() {
+    const html = offices.sort((a, b) => a.sn - b.sn).map(o => `
+        <tr>
+            <td align="center"><input type="checkbox" ${o.checked ? 'checked' : ''} onchange="updateOfficeData(${o.id}, 'checked', this.checked)"></td>
+            <td><input type="number" class="input-box" value="${o.sn}" style="width:60px;" onchange="changeOfficeSn(${o.id}, this.value)"></td>
+            <td>
+                <select class="input-box" onchange="updateOfficeData(${o.id}, 'type', this.value)">
+                    <option value="main" ${o.type === 'main' ? 'selected' : ''}>मुख्य पत्र</option>
+                    <option value="cc" ${o.type === 'cc' ? 'selected' : ''}>बोधार्थ</option>
+                </select>
+            </td>
+            <td><input type="text" class="input-box" value="${o.name}" style="width:100%;" oninput="updateOfficeData(${o.id}, 'name', this.value)"></td>
+            <td><input type="text" class="input-box" value="${o.addr}" style="width:100%;" oninput="updateOfficeData(${o.id}, 'addr', this.value)"></td>
+            <td><textarea class="input-box" oninput="updateOfficeData(${o.id}, 'desc', this.value)">${o.desc}</textarea></td>
+            <td align="center"><button onclick="deleteOffice(${o.id})" style="color:red; cursor:pointer; background:none; border:none;">✕</button></td>
+        </tr>
+    `).join('');
+    document.getElementById('modal-office-list').innerHTML = html;
+}
+
+function openOfficeModal() {
+    document.getElementById('officeModal').style.display = 'block';
+    renderModalOffices(); // मोडल खुल्दा विवरण भर्ने
+}
+
+function addNewOffice() {
+    const nextSn = offices.length > 0 ? Math.max(...offices.map(o => o.sn)) + 1 : 1;
+    offices.push({ id: Date.now(), sn: nextSn, type: 'cc', name: 'नयाँ कार्यालय', addr: getSettings().def_dist, desc: 'सूचना टाँस गरी जानकारी पठाइदिनुहुन ।', checked: true });
+    renderModalOffices();
+}
+
+function deleteOffice(id) {
+    if (confirm("के हटाउन चाहनुहुन्छ?")) { offices = offices.filter(o => o.id !== id); renderModalOffices(); }
+}
+
+function updateOfficeData(id, field, val) { const off = offices.find(o => o.id === id); if (off) off[field] = val; }
+
+function changeOfficeSn(id, newSn) {
+    newSn = parseInt(newSn);
+    let oldSn = offices.find(o => o.id === id).sn;
+    offices.forEach(o => {
+        if (o.id === id) o.sn = newSn;
+        else if (oldSn < newSn && o.sn > oldSn && o.sn <= newSn) o.sn--;
+        else if (oldSn > newSn && o.sn >= newSn && o.sn < oldSn) o.sn++;
+    });
+    renderModalOffices();
+}
+async function exportAllToWord() {
+    try {
+        const d = getData();
+        const t = generateTexts(d);
+        
+        // १. फाइलको नाम निवेदकको नामबाट बनाउने
+        const applicantName = d.applicants.length > 0 ? d.applicants[0].name : "विवरण";
+        const fileName = `संशोधन_सूचना_${applicantName}.doc`;
+
+        const gData = JSON.parse(localStorage.getItem('global_office_settings')) || {};
+        const nisanBase64 = document.getElementById('nisan_img').src;
+        const phone = gData.phone ? `फोन: ${toNepali(gData.phone)}` : "";
+        const email = gData.email ? `Email: ${gData.email}` : "";
+
+        // २. आदेश र पत्रिका सिङ्क लजिक
+        const processedAadeshFinal = d.aadeshFinal.replace(/राष्ट्रिय दैनिक/g, d.papr);
+        const commonBody = `यसमा ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${d.ownerName}को नाममा दर्ता रहेको ${t.globalDist} जिल्ला ${t.landText} ${t.landGrammar} ${d.shortDesc} संशोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc}`;
+
+        // ३. चिठ्ठीका लागि बोधार्थ व्यवस्थापन
+        const mainOffice = offices.find(o => o.type === 'main' && o.checked) || { name: '.......', addr: '.......' };
+        const ccOffices = offices.filter(o => o.type === 'cc' && o.checked).sort((a, b) => a.sn - b.sn);
+
+        const ccProcessed = ccOffices.map(o => {
+            let name = o.name;
+            if (o.name.includes("स्थानीय तह") || o.name.includes("पालिका")) name = `श्री ${d.local},`;
+            if (o.name.includes("वडा कार्यालय")) name = `श्री ${d.local} वडा नं. ${toNepali(d.ward)} को वडा कार्यालय,`;
+            if (o.name.includes("पत्रिका")) {
+                name = (o.name === "पत्रिका" || o.name === "राष्ट्रिय दैनिक पत्रिका") 
+                    ? (d.papr === "राष्ट्रिय दैनिक" ? `श्री ............................ राष्ट्रिय दैनिक,` : `श्री ${d.papr},`)
+                    : `श्री ${o.name},`;
+            }
+            return `${name} ${o.addr}${o.desc ? ': ' : ''}${o.desc}`;
+        });
+
+        const ccItem1 = ccProcessed.length > 0 ? `१. ${ccProcessed[0]}` : "";
+        const ccRemaining = ccProcessed.slice(1).map((text, i) => `${toNepali(i + 2)}. ${text}<br>`).join('');
+
+        // ४. वर्ड हेडर (Repeating Header)
         const wordHeader = `
             <div style='mso-element:header' id="h1">
                 <table style="width:100%; border-collapse:collapse; border:none;">
                     <tr>
-                        <td width="15%" style="border:none; vertical-align:middle;"><img src="${nisanBase64}" width="80" height="80"></td>
-                        <td width="70%" style="text-align:center; border:none; color:red; font-family:'Mukta';">
+                        <td width="15%" style="border:none; vertical-align:middle;">
+                            <img 
+                        src="data:image/jpeg;base64,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">
+                            </td>
+                        <td width="70%" style="text-align:center; border:none; color:red;">
                             <div style="font-size:10pt; font-weight:bold;">${gData.gov || 'नेपाल सरकार'}</div>
                             <div style="font-size:11pt; font-weight:bold;">${gData.ministry || ''}</div>
                             <div style="font-size:12pt; font-weight:bold;">${gData.dept || ''}</div>
@@ -585,118 +790,171 @@ async function exportAllToWord() {
                 <div style="border-bottom:2.5pt double black; margin-top:5px;"></div>
             </div>`;
 
-        // 4. Content Parts
-        
-        // Page 1: Aadesh (Order)
+        // ५. पेजहरूको सामग्री
         const partAadesh = `
-            <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin:20px 0;">${d.off}बाट जारी भएको हकदावी सम्बन्धी आदेश</div>
-            <table border="1" cellspacing="0" cellpadding="10" style="width:100%; border-collapse:collapse;">
+            <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin:20px 0;">${d.off}बाट जारी भएको आदेश</div>
+            <table border="1" cellspacing="0" cellpadding="10" style="width:100%; border-collapse:collapse; font-size:14pt;">
                 <tr>
-                    <td width="25%" style="vertical-align:top; border:1pt solid black; font-size:14pt;"><b>${t.applicantLabel}:</b><br>${t.applicantNamesOnly}<br><br><b>मिति:</b> ${d.dt}<br><b>मि.नं.:</b> ${d.mis}</td>
-                    <td style="text-align: justify; border:1pt solid black; line-height:1.6; font-size:14pt;">यसमा ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${d.ownerName}को नाममा दर्ता रहेको ${t.globalDist} जिल्ला ${t.landText} ${t.landGrammar} ${d.shortDesc} संसोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc} थप प्रमाण बुझ्नुपर्ने देखियो । अतः उल्लिखित कित्ता जग्गाको हकभोग कसले गरेको छ ? ${t.applicantLabel}को माग बमोजिम संशोधन गरिदिँदा कोही कसैको हकभोगमा प्रतिकूल असर पर्छ/पर्दैन? लगायतका सम्पूर्ण व्यहोरा खुलाई हकदावी सम्बन्धमा ३५ दिने सार्वजानिक सूचना ${d.papr}मा समेत प्रकाशित गर्नू । सूचनाको म्यादभित्र दावि परे मिसिल सामेल गरि र नपरे म्याद भुक्तान भएपछि सूचना प्रकाशित भएको पत्रिका र सूचना टाँसको जानकारी समेत मिसिल सामेल गरी पेश गर्नू ।</td>
+                    <td width="25%" style="vertical-align:top;"><b>${t.applicantLabel}:</b><br>${t.applicantNamesOnly}<br><br><b>मिति:</b> ${d.dt}<br><b>मि.नं.:</b> ${d.mis}</td>
+                    <td style="text-align: justify; line-height:1.6;">${commonBody} ${processedAadeshFinal}</td>
                 </tr>
             </table>`;
 
-        // Page 2: Suchana (Notice)
         const partSuchana = `
             <div style="text-align:center; font-weight:bold; text-decoration:underline; font-size:16pt; margin:20px 0;">हकदावी सम्बन्धी ३५ दिने सार्वजनिक सूचना</div>
             <div style="text-align:center; font-weight:bold; font-size:14pt; margin-bottom:15px;">मिति: ${d.dt}</div>
-            <p style="text-indent: 50pt; font-size: 14pt; text-align: justify; line-height:1.6;">यसमा ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantFullDesc}ले ${d.ownerName}को नाममा दर्ता रहेको ${t.globalDist} जिल्ला ${t.landText} ${t.landGrammar} ${d.shortDesc} संसोधन गर्न निवेदन दिनुभएकोमा ${d.fullDesc} यो सूचना प्रकाशित गरिएको छ । उल्लिखित जग्गाको अन्य कोही कानुनी हकवाला भए वा उल्लिखित व्यहोरा झुट्टा भए यो सूचना प्रकाशित भएको मितिले ३५ दिनभित्र आफूसँग भएको सबुत प्रमाणहरू संलग्न राखी आफैं वा वारेस मार्फत दावी/उजुरी गर्न आउनुहोला/हकदावी गर्नुहोला । म्याद नाघी आएको दावी/उजुरी उपर कुनै कार्यवाही नहुने र नियमानुसार भई जाने व्यहोरा समेत यसै सूचनाद्वारा जानकारी गराइन्छ ।</p>`;
+            <p style="text-indent: 50pt; font-size: 14pt; text-align: justify; line-height:1.6;">${commonBody} ${d.suchanaFinal}</p>`;
 
-        // Page 3: Chithi (Letter)
-// १. पहिले यी दुई ठेगानाहरूलाई डिफाइन गर्नुहोस् (Error आउन नदिन)
-const wardAddress = `श्री ${d.local} वडा नं. ${toNepali(d.ward)} को वडा कार्यालय, ${t.globalDist}`;
-const localAddress = `श्री ${d.local} को कार्यालय, ${t.globalDist}`;
+        const partChithi = `
+            <table width="100%" style="border:none; margin-top:10pt; font-size:14pt;">
+                <tr><td style="border:none;">पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</td><td style="border:none; text-align:right;">मिति: ${d.dt}</td></tr>
+            </table>
+            <div style="text-align:center; font-weight:bold; margin:20px 0; font-size:16pt;">विषय: सूचना टाँस गरी जानकारी पठाइदिने सम्बन्धमा ।</div>
+            <div style="font-weight:bold; margin-bottom:15px; font-size:14pt;">${mainOffice.name}<br>${mainOffice.addr}</div>
+            <p style="text-indent: 50pt; font-size: 14pt; text-align: justify; line-height:1.5;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संशोधन गर्ने सम्बन्धमा प्रकाशित ३५ दिने सूचना थान-१ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी जानकारी पठाइदिनुहुन अनुरोध छ ।</p>
+            <table width="100%" style="font-size:14pt; border:none; border-collapse:collapse;">
+                <tr>
+                    <td style="width:65%; vertical-align:top; border:none; line-height:1.5;"><b><u>बोधार्थ:</u></b><br>${ccItem1}</td>
+                    <td style="width:35%; vertical-align:top; text-align:center; border:none; padding-top:20px;">.........................<br><b>${d.off}</b></td>
+                </tr>
+            </table>
+            <div style="font-size:14pt; line-height:1.6; text-align:justify; margin-top:5px;">${ccRemaining}</div>`;
 
-// २. अब यो चिठ्ठीको नयाँ टेबल कोड
-const partChithi = `
-    <table width="100%" style="border:none; margin-top:10pt;">
-        <tr><td style="border:none; font-size:14pt;">पत्र सङ्ख्या: ${d.ps}<br>चलानी नं: ${d.cn}</td><td style="border:none; text-align:right; font-size:14pt;">मिति: ${d.dt}</td></tr>
-    </table>
-    <div style="text-align:center; font-weight:bold; margin:20px 0; font-size:16pt;">विषय: सूचना टाँस गरी जानकारी पठाइदिनुहुन सम्बन्धमा ।</div>
-    <div style="font-weight:bold; margin-bottom:15px; font-size:14pt;">${d.tn}<br>${d.ta}</div>
-    <p style="text-indent: 50pt; font-size: 14pt; text-align: justify; line-height:1.5;">प्रस्तुत विषयमा यस कार्यालयबाट प्रकाशित ${t.appDist} जिल्ला ${t.address} बस्ने ${t.applicantNamesOnly}ले ज.ध. ${d.ownerName}को नाममा रहेको जग्गामा ${d.shortDesc} संसोधन गर्ने सम्बन्धमा प्रकाशित ३५ दिने हकदावी सम्बन्धी सूचना थान-१ यसैसाथ संलग्न छ । उक्त सूचना तहाँ कार्यालयको सूचना पाटीमा टाँस गरी सोको जानकारी पठाइदिनुहुन अनुरोध गरिन्छ ।</p>
-
-    <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14pt; border:none; border-collapse:collapse; margin-top:2px;">
-        <tr>
-            <td style="width:65%; vertical-align:top; text-align:justify; line-height:1.5; padding-right:15px; border:none;">
-                <b><u>बोधार्थ:</u></b><br>
-                १. श्री जिल्ला समन्वय समितीको कार्यालय, ${t.globalDist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।
-            </td>
-            <td style="width:35%; vertical-align:top; text-align:right; border:none; top:0; position:relative;">
-                <table align="right" cellpadding="0" cellspacing="0" style="width:220px; border:none;">
-                    <tr>
-                        <td style="font-weight:bold; text-align:center; border:none;">
-                            <br><br>.........................<br>${d.off}
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align:left; line-height:1.5; border:none; padding-top:1px;">
-                २. श्री जिल्ला नापी कार्यालय, ${t.globalDist}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>
-                ३. ${wardAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>
-                ४. ${localAddress}: सूचना टाँस गरि जानकारी पठाइदिनुहुन ।<br>
-                ५. श्री ...... ${d.papr} पत्रिका: सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरि दुई थान पत्रिका पठाइदिनुहुन ।
-            </td>
-        </tr>
-    </table>`;
-        // 5. Assembly
         const pageBreak = "<br clear=all style='mso-special-character:line-break; page-break-before:always'>";
 
         const finalDoc = `
             <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-            <head><meta charset='utf-8'>
-                <style>
-                    @page Section1 { size: 595.3pt 841.9pt; margin: 1.5in 0.5in 0.5in 1.25in; mso-header-margin: 0.5in; mso-header: h1; }
-                    div.Section1 { page: Section1; }
-                    body { font-family:'Mukta', 'Arial Unicode MS', sans-serif; font-size:14pt; }
-                </style>
-            </head>
-            <body>
-                <div class="Section1">
-                    ${wordHeader}
-                    ${partAadesh}
-                    ${pageBreak}
-                    ${partSuchana}
-                    ${pageBreak}
-                    ${partChithi}
-                </div>
-            </body></html>`;
+            <head><meta charset='utf-8'><style>
+                @page Section1 { size: 8.5in 11in; margin: 1in 0.5in 0.5in 1in; mso-header-margin: 0.5in; mso-header: h1; }
+                div.Section1 { page: Section1; }
+                body { font-family:'Mukta', sans-serif; }
+            </style></head>
+            <body><div class="Section1">
+                ${wordHeader}
+                ${partAadesh} ${pageBreak}
+                ${partSuchana} ${pageBreak}
+                ${partChithi}
+            </div></body></html>`;
 
         const blob = new Blob(['\ufeff', finalDoc], { type: 'application/msword' });
         const link = document.createElement("a");
-        const applicantName = d.applicants.length > 0 ? d.applicants[0].name.split(' ')[0] : "संसोधन";
         link.href = URL.createObjectURL(blob);
-        link.download = `संसोधन_मिसिल_${applicantName}.doc`;
+        link.download = fileName;
         link.click();
-    } catch (e) { 
-        alert("वर्ड फाइल बनाउन सकिएन। त्रुटि: " + e.message); 
+    } catch (e) {
+        alert("वर्ड फाइल बनाउन सकिएन। त्रुटि: " + e.message);
     }
-}
-        // --- LOCAL STORAGE ---
+}        // --- LOCAL STORAGE ---
         function saveToLocal() { 
             const inputs = Array.from(document.querySelectorAll('input, select, textarea')).map(i => ({ id: i.id, val: i.value })); 
             localStorage.setItem('sanshodhan_final_v1', JSON.stringify({ lands, applicants, inputs })); 
         }
-        function loadFromLocal() {
-            const raw = localStorage.getItem('sanshodhan_final_v1');
-            if (raw) {
-                const d = JSON.parse(raw);
-                lands = d.lands || [];
-                applicants = d.applicants || [];
-                if (d.inputs) d.inputs.forEach(item => { if (document.getElementById(item.id)) document.getElementById(item.id).value = item.val; });
-                renderLandUI(); renderApplicantUI(); updateAll();
-            } else { updateAll(); }
-        }
-        function resetData() { 
-            if (confirm("सबै डाटा मेटाउन चाहनुहुन्छ?")) { 
-                localStorage.removeItem('sanshodhan_final_v1'); 
-                location.reload(); 
-            } 
-        }
+function loadFromLocal() {
+    const raw = localStorage.getItem('sanshodhan_final_v1');
+    if (raw) {
+        const d = JSON.parse(raw);
+        lands = d.lands || [];
+        applicants = d.applicants || [];
+        if (d.inputs) d.inputs.forEach(item => { if (document.getElementById(item.id)) document.getElementById(item.id).value = item.val; });
+        renderLandUI(); renderApplicantUI(); 
+    }
+    updateOfficeSummary(); // यो अनिवार्य छ
+    updateAll();
+}
 
+
+// १. मिति र अंक परिवर्तन
+const toNepaliDate = (d) => {
+    if (!d) return "";
+    const n = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+    return d.toString().replace(/[0-9]/g, s => n[s]).replace(/\./g, '।').replace(/\//g, '।').replace(/-/g, '।');
+};
+
+const getSettings = () => JSON.parse(localStorage.getItem('global_office_settings')) || { addr: "चौतारा, सिन्धुपाल्चोक", def_dist: "सिन्धुपाल्चोक" };
+
+// २. अफिस लिस्ट इनिसियलाइजेसन
+let offices = JSON.parse(localStorage.getItem('sanshodhan_offices')) || [
+    { id: 1, sn: 1, type: 'main', name: 'श्री जिल्ला प्रशासन कार्यालय,', addr: getSettings().addr, desc: 'सूचना टाँस गरी जानकारी पठाइदिनुहुन ।', checked: true },
+    { id: 2, sn: 2, type: 'cc', name: 'श्री जिल्ला समन्वय समितीको कार्यालय,', addr: getSettings().def_dist, desc: 'सूचना टाँस गरी जानकारी पठाइदिनुहुन ।', checked: true },
+    { id: 3, sn: 3, type: 'cc', name: 'श्री नापी कार्यालय,', addr: getSettings().def_dist, desc: 'सूचना टाँस गरी जानकारी पठाइदिनुहुन ।', checked: true },
+    { id: 4, sn: 4, type: 'cc', name: 'श्री स्थानीय तह (पालिका),', addr: getSettings().def_dist, desc: 'सूचना टाँस गरी जानकारी पठाइदिनुहुन ।', checked: true },
+    { id: 5, sn: 5, type: 'cc', name: 'श्री वडा कार्यालय,', addr: getSettings().def_dist, desc: 'सूचना टाँस गरी जानकारी पठाइदिनुहुन ।', checked: true },
+    { id: 6, sn: 6, type: 'cc', name: 'पत्रिका', addr: '', desc: 'सेवा शुल्क पत्र बाहकसँग असुल गरी सूचना प्रकाशित गरी दुई थान पत्रिका पठाइदिनुहुन ।', checked: true }
+];
+
+// मोडलका फंक्सनहरू (addNewOffice, deleteOffice, changeOfficeSn, renderModalOffices जस्ता फंक्सनहरू अघिल्लो फाइलकै जस्तै राख्नुहोस्)
+
+// १. मोडल भित्र नयाँ कार्यालय थप्ने
+function addNewOffice() {
+    const nextSn = offices.length > 0 ? Math.max(...offices.map(o => o.sn)) + 1 : 1;
+    offices.push({ 
+        id: Date.now(), 
+        sn: nextSn, 
+        type: 'cc', 
+        name: 'नयाँ कार्यालय', 
+        addr: getSettings().def_dist, 
+        desc: 'सूचना टाँस गरी जानकारी पठाइदिनुहुन ।', 
+        checked: true 
+    });
+    renderModalOffices();
+}
+
+// २. कार्यालय हटाउने
+function deleteOffice(id) {
+    if (confirm("के तपाइँ यो कार्यालय हटाउन चाहनुहुन्छ?")) {
+        offices = offices.filter(o => o.id !== id);
+        renderModalOffices();
+    }
+}
+
+// ३. डेटा अपडेट गर्ने (Checkbox, Text, Type)
+function updateOfficeData(id, field, val) {
+    const off = offices.find(o => o.id === id);
+    if (off) off[field] = val;
+    // नोट: यहाँ updateAll() कल नगर्नुहोस्, closeOfficeModal मा मात्र गर्नुहोस्
+}
+
+// ४. क्रम (SN) परिवर्तन गर्ने लजिक
+function changeOfficeSn(id, newSn) {
+    newSn = parseInt(newSn);
+    let oldSn = offices.find(o => o.id === id).sn;
+    offices.forEach(o => {
+        if (o.id === id) o.sn = newSn;
+        else if (oldSn < newSn && o.sn > oldSn && o.sn <= newSn) o.sn--;
+        else if (oldSn > newSn && o.sn >= newSn && o.sn < oldSn) o.sn++;
+    });
+    renderModalOffices();
+}
+
+// ५. इन्पुट प्यानलमा कुन कुन कार्यालय छानिएका छन् भनेर देखाउने
+function updateOfficeSummary() {
+    const selected = offices.filter(o => o.checked).map(o => o.name.replace('श्री ', '').replace(',', '')).join(', ');
+    const summaryDiv = document.getElementById('selected-office-summary');
+    if(summaryDiv) {
+        summaryDiv.innerHTML = selected ? `<b>छानिएका:</b> <span style="color:#1e40af;">${selected}</span>` : `<span style="color:red;">कुनै कार्यालय छानिएको छैन !</span>`;
+    }
+}
+
+// ६. मोडल बन्द गर्दा सेभ र अपडेट गर्ने (परिमार्जित)
+function closeOfficeModal() {
+    document.getElementById('officeModal').style.display = 'none';
+    offices.sort((a, b) => a.sn - b.sn);
+    localStorage.setItem('sanshodhan_offices', JSON.stringify(offices));
+    updateOfficeSummary(); // बाहिरको विवरण अपडेट गर्न
+    updateAll(); // प्रिभ्यु अपडेट गर्न
+}
+
+function resetData() {
+    if (confirm("के तपाइँ सबै विवरण रिसेट गर्न चाहनुहुन्छ? (जिल्ला प्रशासनको ठेगाना सुरक्षित रहनेछ)")) {
+        const dao = offices.find(o => o.name.includes("जिल्ला प्रशासन कार्यालय"));
+        const savedDaoAddr = dao ? dao.addr : getSettings().addr;
+        localStorage.removeItem('sanshodhan_final_v1');
+        // Offices लाई पनि डिफ्ल्टमा लैजाने तर ठेगाना जोगाउने
+        offices[0].addr = savedDaoAddr; 
+        localStorage.setItem('sanshodhan_offices', JSON.stringify(offices));
+        location.reload();
+    }
+}
         window.onload = loadFromLocal;
 
         // यो कोड सबै पेज (Malpot, Kutabali, Tippani आदि) मा राख्नुहोस्
@@ -722,6 +980,7 @@ if ('serviceWorker' in navigator) {
     });
 }
     </script>
+
 </body>
 
 </html>
