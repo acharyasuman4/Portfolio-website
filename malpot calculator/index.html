@@ -425,35 +425,42 @@ function calculateTax() {
     }
 
     // ३. जरिवाना हिसाव
+// ३. जरिवाना र छुट हिसाव (Precise Rounding Logic)
     const selectedFYData = getRateData(region, fySelected, bodyType);
     const baseFinePercent = selectedFYData.penaltyPercent || 0;
     
-    // बक्यौतामा लाग्ने जरिवाना (Roundup)
+    // पुराना वर्षहरूको बक्यौतामा लाग्ने जरिवाना (नियम अनुसार Round Up)
     let baseJarivana = Math.ceil(totalBakyaota * (baseFinePercent / 100));
 
     // समय अनुसारको ५% थपघट (चालु तिरोमा मात्र लाग्ने)
     let timing = document.querySelector('input[name="timing"]:checked').value;
     let timingAdjustment = 0;
+
     if (timing === 'magh') {
-        timingAdjustment = Math.floor(-(chaluTiro * 0.05));
+        // ५% छुट (Discount) -> Round Down (दशमलवलाई तल झार्ने)
+        // जस्तै: ५.९ छ भने ५ मात्र छुट दिने
+        timingAdjustment = -Math.floor(chaluTiro * 0.05);
     } else if (timing === 'asar') {
+        // ५% थप जरिवाना (Penalty) -> Round Up (दशमलवलाई माथि चढाउने)
+        // जस्तै: ५.१ छ भने ६ जरिवाना लाग्ने
         timingAdjustment = Math.ceil(chaluTiro * 0.05);
     }
 
+    // जम्मा जरिवाना वा छुट (बक्यौता जरिवाना + समयको थपघट)
     const finalJarivana = baseJarivana + timingAdjustment;
 
-    // रिजल्ट अपडेट गर्ने
-// Round each part individually first to avoid decimal calculation errors in total
+    // ४. नतिजा प्रदर्शन (Rounding individual parts for official look)
     const displayBakyaota = Math.ceil(totalBakyaota);
     const displayChalu = Math.ceil(chaluTiro);
     const totalJamma = displayBakyaota + displayChalu + finalJarivana;
 
-    // Update the UI
+    // UI अपडेट
     document.getElementById('bakyaota').innerText = displayBakyaota;
     document.getElementById('chalu').innerText = displayChalu;
-    document.getElementById('jarivana').innerText = finalJarivana;
+    document.getElementById('jarivana').innerText = finalJarivana; // यो माइनसमा आए छुट देखिन्छ
     document.getElementById('jamma').innerText = "रु. " + totalJamma;}
 
+    
 function autoSelectTiming() {
     if (!appConfig.dates.magh_end) return;
     const today = new Date().toISOString().split('T')[0];

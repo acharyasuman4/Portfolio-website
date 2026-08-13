@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="ne">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>भूमि प्रशासन / व्यवस्थापन सहयोगी - प्रविधीमैत्री भूमि प्रशासन</title>
-
+    <title>भूमि प्रशासन सहयोगी - प्रविधीमैत्री भूमि प्रशासन</title>
     <!-- २. वर्णन (Description) - गुगल सर्चमा देखिने छोटो बिवरण -->
     <meta name="description"
         content="नामसारी, गुठीको तिरो हिसाव, दाखिला खारेज, रजिष्ट्रेशन जस्ता कार्य गर्न भूमि प्रशासन कार्यालय, गुठी संस्थान र पालिकाका कर्मचारीहरूको लागि उपयोगी तिरो, कुतबाली क्याल्कुलेटर, राजस्व क्याल्कुलेटर र तयारी टिप्पणीहरू।">
@@ -19,249 +17,163 @@
     <meta property="og:title" content="भूमी प्रशासन सहायक">
     <meta property="og:description" content="कर्मचारी र सेवाग्राहीका लागि उपयोगी अनलाइन टुलहरू।">
     <meta property="og:url" content="https://acharyasuman4.com.np">
-
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-<link rel="stylesheet" href="css/all.min.css">
+    <!-- स्थानीय फाइलहरू (Local Assets) -->
+    <link rel="stylesheet" href="css/all.min.css">
     <link rel="manifest" href="./manifest.json">
+    <!-- Google Fonts अफलाइनको लागि Mukta Font डाउनलोड गरेर CSS मा राख्नु राम्रो हुन्छ -->
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body {
-            font-family: 'Mukta', sans-serif;
-            background-color: #f1f5f9;
-        }
-
-        .hero-bg {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        }
-
-        .card-box {
-            transition: all 0.3s ease;
-            border: 1px solid #e2e8f0;
-            border-radius: 24px;
-            background: white;
-        }
-
-        .card-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-            border-color: #3b82f6;
-        }
-
-        #readerModal {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-    html {
-        font-size: 18px; /* Increases base size for mobile */
-    }
-    .card-box {
-        padding: 1.5rem !important; /* Larger touch area */
-    }
-    input[type="text"] {
-        font-size: 16px !important; /* Prevents iOS zoom on focus */
-    }
-}
-    [v-cloak] { display: none; }
-    /* body { visibility: hidden; } */
-     /* पेज लोड नहुन्जेल लुकाउने */
-
-/* 1. Define the Regular font (Weight 400) */
-@font-face {
-    font-family: 'Mukta';
-    src: url('/Mukta-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap; /* Helps with loading speed */
-}
-
-/* 2. Define the Bold font (Weight 700) */
-@font-face {
-    font-family: 'Mukta';
-    src: url('/Mukta-Bold.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* 3. Apply it to the site */
-body {
-    font-family: 'Mukta', sans-serif;
-}
+        body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; visibility: hidden; }
+        .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .card-box { transition: all 0.3s ease; border: 1px solid #e2e8f0; border-radius: 24px; background: white; height: 100%; display: flex; flex-direction: column; }
+        .card-box:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); border-color: #3b82f6; }
+        [v-cloak] { display: none; }
+        #readerModal { display: none; }
     </style>
+
+    <script src="tailwind.min.js"></script>
+    <script src="lucide.min.js"></script>
 </head>
 
 <body class="text-slate-800">
 
     <!-- TOP MINI NAV -->
     <div class="fixed top-0 right-0 z-[100] p-4">
-        <a href="index.html"
-            class="bg-white/90 backdrop-blur p-2 rounded-full shadow-lg text-blue-600 hover:scale-110 transition flex items-center gap-2 px-4"
-            title="गृहपृष्ठ">
+        <a href="index.html" class="bg-white/90 backdrop-blur p-2 rounded-full shadow-lg text-blue-600 flex items-center gap-2 px-4 border border-blue-100">
             <i data-lucide="home" class="w-4"></i> <span class="text-xs font-bold">Home</span>
         </a>
     </div>
 
     <div class="min-h-screen flex flex-col md:flex-row">
-<!-- १. मोबाइलको लागि मात्र देखिने हेडर (Laptop मा लुक्छ) -->
-<div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110]">
-    <h2 class="text-lg font-bold text-blue-400">Land Administration Tools</h2>
-    <button onclick="document.getElementById('side-menu').classList.toggle('-translate-x-full')" class="p-2 bg-slate-800 rounded-lg">
-        <i data-lucide="menu"></i>
-    </button>
-</div>
-
-<div class="flex min-h-screen">
-<!-- २. साइडबार: मोबाइल र ल्यापटप दुबैका लागि सुधारिएको -->
-<aside id="side-menu" class="fixed inset-y-0 left-0 z-[120] w-64 bg-slate-900 text-white flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-screen md:sticky md:top-0 border-r border-slate-800">
-    
-    <!-- Header Section -->
-    <div class="p-6">
-        <button onclick="document.getElementById('side-menu').classList.add('-translate-x-full')" class="md:hidden absolute top-4 right-4 text-slate-400">
-            <i class="fas fa-times"></i>
-        </button>
-
-        <div class="mb-8 border-b border-slate-800 pb-6">
-            <h2 class="text-xl font-bold text-blue-400">Land Administration</h2>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">by: सुमन आचार्य 'समीर'</p>
+        <!-- MOBILE HEADER -->
+        <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-[110]">
+            <h2 class="text-lg font-bold text-blue-400">Land Administration Tools</h2>
+            <button onclick="toggleSidebar()" class="p-2 bg-slate-800 rounded-lg"><i data-lucide="menu"></i></button>
         </div>
 
-        <!-- Main Navigation -->
-        <nav class="space-y-2">
-            <a href="/" class="flex items-center gap-3 p-3 bg-blue-600 rounded-xl text-sm font-medium shadow-lg">
-                <i class="fas fa-th-large w-4"></i> मुख्य पोर्टल
-            </a>
-            <a href="#laws" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
+        <!-- SIDEBAR -->
+        <aside id="side-menu" class="fixed inset-y-0 left-0 z-[120] w-64 bg-slate-900 text-white flex flex-col transform -translate-x-full transition-transform duration-300 md:translate-x-0 md:static md:h-screen md:sticky md:top-0 border-r border-slate-800">
+            <div class="p-6">
+                <div class="mb-8 border-b border-slate-800 pb-6">
+                    <h2 class="text-xl font-bold text-blue-400">Land Administration</h2>
+                    <p class="text-[10px] text-slate-500 uppercase mt-1">सुमन आचार्य 'समीर'</p>
+                </div>
+                <nav class="space-y-2">
+                    <a href="/" class="flex items-center gap-3 p-3 bg-blue-600 rounded-xl text-sm font-medium shadow-lg"><i data-lucide="layout-grid" class="w-4"></i> मुख्य पोर्टल</a>
+
+                                <a href="#laws" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
                 <i class="fas fa-book-open w-4"></i> ऐन/निर्देशिका
             </a>
             <a href="#feedback" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl text-sm text-slate-400 transition">
                 <i class="fas fa-comment-alt w-4"></i> सल्लाह सुझाव
             </a>
 
-            <!-- Install Button: Now styled to be more visible -->
-            <button id="pwa-install-btn" style="display: none;" class="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 p-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all border border-emerald-500/50 shadow-lg shadow-emerald-900/20">
-                <i class="fas fa-download"></i> एप इन्स्टल गर्नुहोस्
-            </button>
-        </nav>
-    </div>
+                    
+                    <!-- PWA INSTALL / OFFLINE DOWNLOAD BUTTON -->
+                    <button id="pwa-install-btn" style="display:none;" class="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 p-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all border border-emerald-500/50 shadow-lg">
+                        <i data-lucide="download-cloud"></i> अफलाइन डाउनलोड गर्नुहोस्
+                    </button>
 
-    <!-- Social Media Section: This stays at the bottom -->
-    <div class="mt-auto p-6 bg-slate-950/50 border-t border-slate-800">
-        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-4 text-center">सम्पर्कको लागि</p>
-        <div class="flex justify-between items-center px-2">
-            <a href="https://facebook.com/acharyasuman874" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-blue-500 hover:bg-blue-600 hover:text-white transition-all shadow-lg">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="https://youtube.com/@04.sumanac" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-red-500 hover:bg-red-600 hover:text-white transition-all shadow-lg">
-                <i class="fab fa-youtube"></i>
-            </a>
-            <a href="mailto:acharyasuman874@gmail.com" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-orange-400 hover:bg-orange-500 hover:text-white transition-all shadow-lg">
-                <i class="fas fa-envelope"></i>
-            </a>
-        </div>
-    </div>
-</aside>
+                    <!-- UPDATE BUTTON (Show only when new code is found) -->
+                    <button id="update-app-btn" style="display:none;" onclick="updateApp()" class="w-full mt-2 bg-orange-600 hover:bg-orange-700 p-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 animate-pulse shadow-lg">
+                        <i data-lucide="refresh-cw"></i> नयाँ अपडेट उपलब्ध छ
+                    </button>
 
-    <!-- ३. मुख्य भाग (Main Content): ल्यापटपमा साइडबारको ठाउँ छोडेर बस्छ -->
-    <div class="flex-1 w-full overflow-x-hidden">
-<header class="hero-bg text-white py-10 md:py-20 px-4 text-center">
-    <h1 class="text-4xl md:text-5xl font-bold mb-6 font-mukta leading-tight">भूमि प्रशासन सहयोगी पोर्टल</h1>
-<div class="relative max-w-2xl mx-auto mt-8 px-4">
-    <!-- सर्च इनपुट बक्स -->
-    <div class="flex items-center bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-        <span class="pl-4 text-slate-400">
-            <i data-lucide="search" class="w-5 h-5"></i>
-        </span>
-        <input type="text" id="searchInput" onkeyup="handleSearch()"
-            placeholder="नामसारी, संशोधन, रोपनी एडर खोज्नुहोस्..."
-            class="w-full p-4 text-slate-900 outline-none text-lg font-mukta">
-    </div>
+                </nav>
+            </div>
+            
+<!-- Social Media Section: Side-menu को तल बस्नेछ -->
+<div class="mt-auto p-6 bg-slate-950/50 border-t border-slate-800">
+    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-4 text-center">सम्पर्कको लागि</p>
+    <div class="flex justify-between items-center px-2">
+        <!-- Facebook -->
+        <a href="https://facebook.com/acharyasuman874" target="_blank" 
+           class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-blue-500 hover:bg-blue-600 hover:text-white transition-all shadow-lg" 
+           title="Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+        </a>
 
-    <!-- सर्च सुझाव बक्स (Floating Results) -->
-    <div id="searchSuggestions"
-        class="absolute left-4 right-4 bg-white mt-2 rounded-2xl shadow-2xl text-slate-900 text-left z-[150] hidden border border-slate-100 overflow-hidden max-h-[350px] overflow-y-auto">
-        <!-- नतिजाहरू यहाँ भरिनेछन् -->
+        <!-- YouTube -->
+        <a href="https://youtube.com/@04.sumanac" target="_blank" 
+           class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-red-500 hover:bg-red-600 hover:text-white transition-all shadow-lg" 
+           title="YouTube">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+            </svg>
+        </a>
+        <!-- Mail -->
+        <a href="mailto:acharyasuman874@gmail.com" 
+           class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 text-orange-400 hover:bg-orange-500 hover:text-white transition-all shadow-lg">
+            <i data-lucide="mail" class="w-5 h-5"></i>
+        </a>
     </div>
-</div>
+</div>        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="flex-1 w-full overflow-x-hidden">
+            <header class="hero-bg text-white py-10 md:py-20 px-4 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">भूमि प्रशासन सहयोगी पोर्टल</h1>
+                <div class="relative max-w-2xl mx-auto mt-8 px-4">
+                    <div class="flex items-center bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+                        <span class="pl-4 text-slate-400"><i data-lucide="search" class="w-5 h-5"></i></span>
+                        <input type="text" id="searchInput" onkeyup="handleFuzzySearch()" placeholder="खोज्नुहोस् (उदा: नामसारी, संशोधन...)" class="w-full p-4 text-slate-900 outline-none text-lg">
+                    </div>
+                    <div id="searchSuggestions" class="absolute left-4 right-4 bg-white mt-2 rounded-2xl shadow-2xl text-slate-900 text-left z-[150] hidden border border-slate-100 overflow-y-auto max-h-[350px]"></div>
+                </div>
             </header>
 
-<div class="p-4 md:p-12 max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-
-                    <!-- Registration Card -->
+            <div class="p-4 md:p-12 max-w-7xl mx-auto">
+                <!-- ALL 6 CARDS RESTORED -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                    
                     <a href="registration/" class="card-box p-6 group">
-                        <div
-                            class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                            <i data-lucide="file-check"></i>
-                        </div>
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors"><i data-lucide="file-check"></i></div>
                         <h3 class="text-2xl font-bold mb-2">रजिष्ट्रेशन</h3>
-                        <p class="text-sm md:text-xs text-slate-500">न्युनत्तम मुल्याङ्कन हिसाव गर्नुहोस</p>
+                        <p class="text-sm text-slate-500">न्युनत्तम मुल्याङ्कन हिसाव गर्नुहोस</p>
                     </a>
 
-                    <!-- Guthi Card (Two links) -->
                     <div class="card-box p-6">
-                        <div
-                            class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
-                            <i data-lucide="landmark"></i>
-                        </div>
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4"><i data-lucide="landmark"></i></div>
                         <h3 class="text-xl font-bold mb-3">गुठी तिरो क्याल्कुलेटर</h3>
                         <div class="space-y-2 text-sm">
-                            <a href="malpot calculator/"
-                                class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition"><i
-                                    data-lucide="chevron-right" class="w-3"></i> मालपोत असुली क्याल्कुलेटर</a>
-                            <a href="kutabali calculator/"
-                                class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition"><i
-                                    data-lucide="chevron-right" class="w-3"></i> कुतबाली असुली क्याल्कुलेटर</a>
+                            <a href="malpot calculator/" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition"><i data-lucide="chevron-right" class="w-3"></i> मालपोत असुली क्याल्कुलेटर</a>
+                            <a href="kutabali calculator/" class="flex items-center gap-2 text-slate-600 hover:text-blue-600 transition"><i data-lucide="chevron-right" class="w-3"></i> कुतबाली असुली क्याल्कुलेटर</a>
                         </div>
                     </div>
 
-                    <!-- Tippani Card (Full clickable) -->
-                    <a href="tippani/" class="card-box p-6 group border-orange-100">
-                        <div
-                            class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-orange-600 group-hover:text-white transition-colors">
-                            <i data-lucide="clipboard-edit"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-1">टिप्पणी, सूचना र आदेशहरू तयार गरि प्रिन्ट गर्न सहयोगी टुल
-                        </h3>
-                        <!-- <p class="text-xs text-slate-500 italic">नमुना ड्राफ्टहरू हेर्नुहोस्</p> -->
+                    <a href="tippani/" class="card-box p-6 group">
+                        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-orange-600 group-hover:text-white transition-colors"><i data-lucide="clipboard-edit"></i></div>
+                        <h3 class="text-xl font-bold mb-1">टिप्पणी र आदेशहरू</h3>
+                        <p class="text-xs text-slate-500">तयारी ड्राफ्ट र प्रिन्ट गर्न सहयोगी</p>
                     </a>
 
-                    <!-- Ropani Adder -->
-                    <a href="ropani adder/" class="card-box p-6 group border-indigo-100 bg-indigo-50/10">
-                        <div
-                            class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                            <i data-lucide="plus-circle"></i>
-                        </div>
+                    <a href="ropani adder/" class="card-box p-6 group bg-indigo-50/10">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors"><i data-lucide="plus-circle"></i></div>
                         <h3 class="text-xl font-bold mb-1">रोपनी एडर</h3>
-                        <p class="text-xs text-slate-500">वर्ग मि. र रोपनी आना पैसा दामको क्षेत्रफल जोड्न तथा कन्भर्ट
-                            गर्न सहयोगी टुल</p>
+                        <p class="text-xs text-slate-500">क्षेत्रफल जोड्न तथा कन्भर्ट गर्ने टुल</p>
                     </a>
-                    <a href="ropani divider/index.html" class="card-box p-6 group border-indigo-100 bg-indigo-50/10">
-                        <div
-                            class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                            <i data-lucide="circle-divide"></i>
-                        </div>
+
+                    <a href="ropani divider/index.html" class="card-box p-6 group bg-indigo-50/10 border-indigo-100">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors"><i data-lucide="circle-divide"></i></div>
                         <h3 class="text-xl font-bold mb-1">क्षेत्रफल बाँडफाँड</h3>
-                        <p class="text-xs text-slate-500">वर्ग मि. र रोपनी आना पैसा दाममा रहेको क्षेत्रफललाई बराबर वा अनुपात अनुसार भाग लगाउन सहयोगी टुल</p>
+                        <p class="text-xs text-slate-500">क्षेत्रफललाई अनुपात अनुसार भाग लगाउने</p>
                     </a>
-                    <a href="tool/" class="card-box p-6 group border-indigo-100 bg-indigo-50/10">
-                        <div
-                            class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                            <i data-lucide="sun-snow"></i>
-                        </div>
-                        <h3 class="text-xl font-bold mb-1">अन्य क्याल्कुलेटर तथा सहयोगी टुलहरू</h3>
-                        <p class="text-xs text-slate-500">राजस्व क्याल्कुलेटर, लाभकर क्याल्कुलेटर सहयोगी टुल</p>
+
+                    <a href="tool/" class="card-box p-6 group bg-indigo-50/10 border-indigo-100">
+                        <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors"><i data-lucide="sun-snow"></i></div>
+                        <h3 class="text-xl font-bold mb-1">अन्य सहयोगी टुलहरू</h3>
+                        <p class="text-xs text-slate-500">राजस्व र लाभकर क्याल्कुलेटरहरू</p>
                     </a>
                 </div>
 
-                <!-- LAWS SECTION with READER -->
+                <!-- LAWS SECTION -->
                 <div id="laws" class="mb-20">
-                    <h2 class="text-2xl font-bold mb-8 flex items-center gap-3"><i data-lucide="shield-check"
-                            class="text-blue-600"></i> ऐन तथा निर्देशिकाहरू</h2>
-                    <div class="bg-white rounded-[2rem] border overflow-hidden shadow-sm">
-                        <div class="grid grid-cols-1 divide-y">
+                    <h2 class="text-2xl font-bold mb-8 flex items-center gap-3"><i data-lucide="shield-check" class="text-blue-600"></i> ऐन तथा निर्देशिकाहरू</h2>
+                    <div class="bg-white rounded-[2rem] border overflow-hidden shadow-sm divide-y">
                             <!-- Law Row -->
                             <div
                                 class="p-6 flex flex-col md:flex-row justify-between items-center gap-4 hover:bg-slate-50 transition">
@@ -312,49 +224,29 @@ body {
                                 </div>
                             </div>
 
-                        </div>
                     </div>
                 </div>
 
                 <!-- FEEDBACK FORM -->
                 <div id="feedback" class="bg-slate-900 rounded-[3rem] p-10 md:p-16 text-white text-center">
                     <h2 class="text-3xl font-bold mb-4">सल्लाह सुझाव दिनुहोस्</h2>
-                    <p class="text-slate-400 mb-8 max-w-md mx-auto">तपाईंको सुझावको सदैव अपेक्षारत छु।</p>
-                    <form action="https://formspree.io/f/mredlqwg" method="POST"
-                        class="max-w-xl mx-auto space-y-4 text-left">
-                        <input type="text" name="Name" placeholder="तपाईंको नाम"
-                            class="w-full p-4 rounded-2xl bg-slate-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
-                            required>
-                        <textarea name="Message" rows="4" placeholder="सुझाव यहाँ लेख्नुहोस्..."
-                            class="w-full p-4 rounded-2xl bg-slate-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
-                            required></textarea>
-                        <button
-                            class="w-full py-4 bg-blue-600 rounded-2xl font-bold shadow-xl shadow-blue-900/50 hover:bg-blue-700 transition">पठाउनुहोस्</button>
+                    <form action="https://formspree.io/f/mredlqwg" method="POST" class="max-w-xl mx-auto space-y-4 text-left">
+                        <input type="text" name="Name" placeholder="तपाईंको नाम" class="w-full p-4 rounded-2xl bg-slate-800 border-none outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <textarea name="Message" rows="4" placeholder="सुझाव यहाँ लेख्नुहोस्..." class="w-full p-4 rounded-2xl bg-slate-800 border-none outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                        <button class="w-full py-4 bg-blue-600 rounded-2xl font-bold shadow-xl hover:bg-blue-700 transition">पठाउनुहोस्</button>
                     </form>
                 </div>
             </div>
 
-            <!-- FAT FOOTER SECTION -->
+            <!-- FOOTER WITH ALL LINKS -->
             <footer class="bg-slate-900 text-slate-300 pt-20 pb-10 px-6 border-t border-slate-800 mt-20">
                 <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-
-                    <!-- Column 1: About & Logo -->
                     <div class="space-y-6">
-                        <div class="flex items-center gap-2">
-                            <div
-                                class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">
-                                LA</div>
-                            <h3 class="text-xl font-bold text-white font-mukta">भूमी प्रशासन तथा व्यवस्थापन</h3>
-                        </div>
-                        <p class="text-sm leading-relaxed text-slate-400">
-                            प्रविधिमैत्री मालपोत तथा भूमि प्रशासन
-                        </p>
+                        <h3 class="text-xl font-bold text-white font-mukta">भूमी प्रशासन तथा व्यवस्थापन</h3>
+                        <p class="text-sm leading-relaxed text-slate-400">प्रविधिमैत्री मालपोत तथा भूमि प्रशासन</p>
                     </div>
-
-                    <!-- Column 2: Font Downloads -->
                     <div>
-                        <h4 class="text-white font-bold mb-6 flex items-center gap-2"><i data-lucide="type"
-                                class="w-4 h-4 text-blue-500"></i> आवश्यक फन्टहरू</h4>
+                        <h4 class="text-white font-bold mb-6">आवश्यक फन्टहरू</h4>
                         <ul class="space-y-4 text-sm">
                             <li><a href="/Mukta.zip" target="_blank"
                                     class="hover:text-blue-400 transition flex items-center gap-2"><i
@@ -370,25 +262,18 @@ body {
                                         data-lucide="download" class="w-3"></i> Kalimati</a></li>
                         </ul>
                     </div>
-
-                    <!-- Column 3: Important Links -->
                     <div>
-                        <h4 class="text-white font-bold mb-6 flex items-center gap-2"><i data-lucide="link"
-                                class="w-4 h-4 text-emerald-500"></i> महत्वपूर्ण लिङ्कहरू</h4>
-                        <ul class="space-y-4 text-sm font-mukta">
-                            <li><a href="http://dolma.gov.np/" target="_blank"
-                                    class="hover:text-emerald-400 transition">भूमि व्यवस्थापन तथा अभिलेख विभाग</a></li>
-                            <li><a href="https://lawcommission.gov.np/" target="_blank"
-                                    class="hover:text-emerald-400 transition">नेपाल कानून आयोग</a></li>
-                            <li><a href="https://molcpa.gov.np/" target="_blank"
+                        <h4 class="text-white font-bold mb-6">महत्वपूर्ण लिङ्कहरू</h4>
+                        <ul class="space-y-4 text-sm">
+                            <li><a href="http://dolma.gov.np/" target="_blank" class="hover:text-emerald-400 transition">भूमि व्यवस्थापन तथा अभिलेख विभाग</a></li>
+                            <li><a href="https://lawcommission.gov.np/" target="_blank" class="hover:text-emerald-400 transition">नेपाल कानून आयोग</a></li>
+                                                        <li><a href="https://molcpa.gov.np/" target="_blank"
                                     class="hover:text-emerald-400 transition">भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय</a></li>
+
                         </ul>
                     </div>
-
-                    <!-- Column 4: Most Used Tools -->
                     <div>
-                        <h4 class="text-white font-bold mb-6 flex items-center gap-2"><i data-lucide="star"
-                                class="w-4 h-4 text-amber-500"></i> धेरै खोजिएका सामग्री</h4>
+                        <h4 class="text-white font-bold mb-6">धेरै खोजिएका</h4>
                         <div class="flex flex-wrap gap-2">
                             <a href="tippani/namsari_tippani/"
                                 class="bg-slate-800 hover:bg-blue-600 px-3 py-1.5 rounded-lg text-xs transition">नामसारी
@@ -413,110 +298,26 @@ body {
                         </div>
                     </div>
                 </div>
-
-                <!-- Attribution Footer -->
-                <div
-                    class="max-w-7xl mx-auto mt-20 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-widest text-slate-500">
+                <div class="max-w-7xl mx-auto mt-20 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] uppercase tracking-widest text-slate-500">
                     <p>© 2024 Suman Acharya. All rights reserved.</p>
-                    <p>Designed by : <span class="text-slate-300 font-bold">Suman Acharya Sameer</span> (Using AI)</p>
+                    <p>Designed by : <span class="text-slate-300 font-bold">Suman Acharya Sameer</span></p>
                 </div>
             </footer>
         </div>
     </div>
 
-<!-- INTERNAL READER MODAL - FULL SCREEN UPDATE -->
-<div id="readerModal" class="fixed inset-0 z-[200] bg-black flex items-center justify-center">
-    <div class="bg-white w-full h-full flex flex-col relative">
-        <div class="flex justify-between items-center bg-slate-100 p-3 border-b shadow-sm">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider px-2">
-                <i data-lucide="book-open" class="w-3 h-3 inline mr-1"></i> Reading Mode
-            </span>
-            <button onclick="closeReader()"
-                class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition flex items-center gap-1 px-4 text-sm font-bold">
-                Close <i data-lucide="x" class="w-4"></i>
-            </button>
+    <!-- INTERNAL READER MODAL -->
+    <div id="readerModal" class="fixed inset-0 z-[200] bg-black flex items-center justify-center">
+        <div class="bg-white w-full h-full flex flex-col relative">
+            <div class="flex justify-between items-center bg-slate-100 p-3 border-b shadow-sm">
+                <span class="text-xs font-bold text-slate-500 px-2">Reading Mode</span>
+                <button onclick="closeReader()" class="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition flex items-center gap-1 px-4 text-sm font-bold">Close <i data-lucide="x" class="w-4"></i></button>
+            </div>
+            <iframe id="readerFrame" src="" class="w-full h-full border-none"></iframe>
         </div>
-        <iframe id="readerFrame" src="" class="w-full h-full border-none"></iframe>
     </div>
-</div>
+
     <script>
-
-        let deferredPrompt;
-        const installBtn = document.getElementById('pwa-install-btn');
-
-        // ब्राउजरले PWA इन्स्टल गर्न मिल्ने भएको पत्ता लगाउँदा यो इभेन्ट चल्छ
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // क्रोमको आफ्नै डिफल्ट पप-अपलाई रोक्ने
-            e.preventDefault();
-            // इभेन्टलाई सेभ गर्ने
-            deferredPrompt = e;
-            // हाम्रो आफ्नै इन्स्टल बटनलाई स्क्रिनमा देखाउने
-            installBtn.style.display = 'inline-block';
-
-            // बटनमा क्लिक गर्दा के गर्ने?
-            installBtn.addEventListener('click', () => {
-                // बटन लुकाउने
-                installBtn.style.display = 'none';
-                // इन्स्टल गर्ने प्रम्प्ट (Prompt) देखाउने
-                deferredPrompt.prompt();
-                // प्रयोगकर्ताको प्रतिक्रिया पर्खने
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('प्रयोगकर्ताले एप इन्स्टल गर्नुभयो।');
-                    } else {
-                        console.log('प्रयोगकर्ताले इन्स्टल रद्द गर्नुभयो।');
-                    }
-                    deferredPrompt = null;
-                });
-            });
-        });
-
-        // एप सफलतापूर्वक इन्स्टल भएपछि बटन पूर्ण रूपमा हटाउने
-        window.addEventListener('appinstalled', () => {
-            console.log('PWA सफलतापूर्वक इन्स्टल भयो।');
-            installBtn.style.display = 'none';
-        });
-
-
-        // let searchIndex = [];
-
-        // १. वेबसाइट खुल्ने बित्तिकै ब्याकग्राउन्डमा साइटम्यापबाट डाटा इन्डेक्स गर्ने
-        // async function loadAutomaticNepaliIndex() {
-        //     try {
-        //         console.log("साइटम्याप लोड हुँदैछ...");
-        //         const response = await fetch('/sitemap.xml');
-        //         const data = await response.text();
-        //         const xml = new DOMParser().parseFromString(data, "application/xml");
-        //         const urls = Array.from(xml.querySelectorAll("loc")).map(el => el.textContent);
-
-        //         // २. हरेक पेजको नेपाली टाइटल तान्ने
-        //         for (let url of urls) {
-        //             try {
-        //                 // पेजको नामबाटै नेपालीमा बुझिने गरी नाम निकाल्ने (URL fallback)
-        //                 let folderName = url.split('/').filter(Boolean).pop() || "Home";
-        //                 folderName = folderName.replace(/-/g, ' ');
-
-        //                 // ब्याकग्राउन्डमा पेजको टाइटल तान्ने प्रयास गर्ने
-        //                 const pageRes = await fetch(url);
-        //                 const pageHtml = await pageRes.text();
-        //                 const doc = new DOMParser().parseFromString(pageHtml, "text/html");
-        //                 const pageTitle = doc.querySelector("title") ? doc.querySelector("title").innerText : folderName;
-
-        //                 searchIndex.push({
-        //                     name: pageTitle, // यो नेपाली टाइटल हो
-        //                     link: url
-        //                 });
-        //             } catch (e) {
-        //                 console.log("इन्डेक्सिङमा समस्या:", url);
-        //             }
-        //         }
-        //         console.log("सर्च इन्डेक्स तयार भयो!");
-        //     } catch (e) {
-        //         console.error("सर्च इन्डेक्स लोड हुन सकेन।");
-        //     }
-        // }
-
-        // पुरानो loadAutomaticNepaliIndex हटाउनुहोस् र यो राख्नुहोस्
 const searchIndex = [
     { name: "मालपोत असुली क्याल्कुलेटर", link: "/malpot calculator/" },
     { name: "कुतबाली असुली क्याल्कुलेटर", link: "/kutabali calculator/" },
@@ -533,109 +334,106 @@ const searchIndex = [
     { name: "राजस्व क्याल्कुलेटर", link: "/tool/rajaswo_calculator.html" },
     { name: "राजस्व क्याल्कुलेटर Advance", link: "/tool/advance_rajaswo_calculator.html" },
     { name: "स्थानीय तह - साविक गा.वि.स. विवरण", link: "/registration/local_level_old_new/" },
+    { name: "न्युनत्तम मुल्याङ्कन डाउनलोड", link: "/registration/valuation_report/" },
     // अरु पेजहरू यहाँ थप्दै जानुहोस्
 ];
-
-// विन्डो लोड हुँदा केही पनि डाउनलोड नगर्ने
-window.onload = () => {
-    console.log("Portal Ready Offline!");
-};
-
-        // ३. नेपाली सर्च फङ्सन
-function handleSearch() {
-    const query = document.getElementById('searchInput').value.trim();
+function handleFuzzySearch() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
     const box = document.getElementById('searchSuggestions');
     box.innerHTML = '';
+    if (query.length < 1) { box.classList.add('hidden'); return; }
 
-    if (query.length < 1) {
-        box.classList.add('hidden');
-        return;
-    }
-
-    // इन्डेक्सबाट खोज्ने (नेपाली र अंग्रेजी दुवै)
-    const results = searchIndex.filter(p =>
-        p.name.includes(query) ||
-        p.link.toLowerCase().includes(query.toLowerCase())
-    );
+    const results = searchIndex.filter(item => {
+        const target = item.name.toLowerCase();
+        let i = 0, j = 0;
+        while (i < query.length && j < target.length) {
+            if (query[i] === target[j]) i++;
+            j++;
+        }
+        return i === query.length || target.includes(query);
+    });
 
     if (results.length > 0) {
         box.classList.remove('hidden');
         results.forEach(r => {
             const d = document.createElement('div');
-            // 'भद्दा' नदेखिने गरी डिजाइन गरिएको पङ्क्ति
-            d.className = "p-4 border-b border-slate-50 hover:bg-blue-50 cursor-pointer transition-all flex items-center gap-3 group";
-            d.innerHTML = `
-                <div class="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                    <i data-lucide="file-text" class="w-4 h-4"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="font-bold text-slate-800 text-sm leading-tight">${r.name}</p>
-                    <p class="text-[10px] text-slate-400 uppercase tracking-tighter">${r.link.split('/').filter(Boolean).pop()}</p>
-                </div>
-                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:text-blue-600"></i>
-            `;
+            d.className = "p-4 border-b hover:bg-blue-50 cursor-pointer flex items-center gap-3 transition-all";
+            d.innerHTML = `<i data-lucide="file-text" class="w-4 h-4 text-blue-500"></i><p class="font-bold text-sm">${r.name}</p>`;
             d.onclick = () => window.location.href = r.link;
             box.appendChild(d);
         });
-        
-        // आइकनहरू रि-लोड गर्ने
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+        lucide.createIcons();
     } else {
-        // यदि केही भेटिएन भने
         box.classList.remove('hidden');
-        box.innerHTML = `<div class="p-8 text-center text-slate-400 text-sm italic">माफ गर्नुहोस्, "<b>${query}</b>" सँग सम्बन्धित केही भेटिएन।</div>`;
+        box.innerHTML = `<div class="p-4 text-center text-slate-400 text-sm italic">भेटिएन</div>`;
     }
 }
-        // विन्डो लोड हुने बित्तिकै सुरु गर्ने
-        window.onload = loadAutomaticNepaliIndex;
 
-        // ऐन नियमहरू पढ्ने विन्डो खोल्ने/बन्द गर्ने
+
+        // 2. PWA & UPDATE LOGIC (Works Online and Offline)
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwa-install-btn');
+        const updateBtn = document.getElementById('update-app-btn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex'; // Show download button
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') installBtn.style.display = 'none';
+                deferredPrompt = null;
+            }
+        });
+
+        // SERVICE WORKER REGISTRATION & AUTO-UPDATE CHECK
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    // Check for updates
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New update found! Show the pulsate update button
+                                updateBtn.style.display = 'flex';
+                            }
+                        });
+                    });
+                });
+            });
+        }
+
+        function updateApp() {
+            if (window.location.reload) window.location.reload(true);
+        }
+
+        // 3. UI HELPERS
+        function toggleSidebar() {
+            document.getElementById('side-menu').classList.toggle('-translate-x-full');
+        }
+
         function openReader(url) {
             document.getElementById('readerFrame').src = url;
             document.getElementById('readerModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
+
         function closeReader() {
             document.getElementById('readerModal').style.display = 'none';
             document.getElementById('readerFrame').src = '';
             document.body.style.overflow = 'auto';
         }
 
-        // Lucide Icons सुरु गर्ने
-        document.addEventListener("DOMContentLoaded", function () {
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            document.body.style.visibility = "visible";
         });
-
     </script>
-    <script>
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => {
-                // Check for updates automatically
-                reg.onupdatefound = () => {
-                    const installingWorker = reg.installing;
-                    installingWorker.onstatechange = () => {
-                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('नयाँ अपडेट उपलब्ध छ! कृपया पेज रिलोड गर्नुहोस्।');
-                            // Optional: alert("नयाँ अपडेट उपलब्ध छ! कृपया पेज रिलोड गर्नुहोस्।");
-                        }
-                    };
-                };
-            })
-            .catch(err => console.log('Service Worker Failed:', err));
-    });
-}
-         document.addEventListener("DOMContentLoaded", function() {
-        document.body.style.visibility = "visible"; // लोड भएपछि देखाउने
-    });
-    </script>
-      <script>  lucide.createIcons();</script>
-
-    <script src="/tailwind.min.js"></script>
-
-    <script src="/lucide.min.js"></script>
 
 </body>
-
 </html>
