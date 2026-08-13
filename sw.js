@@ -1,5 +1,5 @@
 // १. क्यासको नाम (भविष्यमा अपडेट गर्दा v7 लाई v8 बनाउनुहोस्)
-const CACHE_NAME = 'acharyasuman-portal-v7'; 
+const CACHE_NAME = 'land-admin-v9';
 
 
 const ASSETS_TO_CACHE = [
@@ -39,55 +39,41 @@ const ASSETS_TO_CACHE = [
 ];
 
 
-// २. Install Event: फाइलहरू क्यास गर्ने
+
 self.addEventListener('install', (event) => {
-  // नयाँ Service Worker भेटिने बित्तिकै सुचारु हुन तयार हुने
-  self.skipWaiting(); 
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('Caching essential assets...');
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
-});
-
-// ३. Activate Event: पुराना क्यासहरू सफा गर्ने
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('Deleting old cache:', cache);
-            return caches.delete(cache);
-          }
-        })
+      // एउटा-एउटा गर्दै क्यास गर्ने ताकि एउटा बिग्रिए अरु नरोकियुन्
+      return Promise.allSettled(
+        ASSETS_TO_CACHE.map(url => cache.add(url))
       );
     })
   );
-  // तुरुन्तै कन्ट्रोल लिने
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) => Promise.all(
+      keys.map(key => { if(key !== CACHE_NAME) return caches.delete(key); })
+    ))
+  );
   self.clients.claim();
 });
 
-// ४. Fetch Event: Stale-While-Revalidate रणनीति
+// Cache-First Strategy: अफलाइनको लागि सबैभन्दा भरपर्दो
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return networkResponse;
-      }).catch(() => {
-        // अफलाइनमा हुँदा केही नभेटिए यहाँ fallback दिन सकिन्छ
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request).then((networkResponse) => {
+        return caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, networkResponse.clone());
+          return networkResponse;
+        });
       });
-
-      return cachedResponse || fetchPromise;
+    }).catch(() => {
+      // यदि अफलाइन छ र क्यासमा पनि छैन भने
+      return new Response("Offline resource not found");
     })
   );
 });

@@ -80,6 +80,8 @@
                         <i data-lucide="refresh-cw"></i> नयाँ अपडेट उपलब्ध छ
                     </button>
 
+                    
+
                 </nav>
             </div>
             
@@ -112,6 +114,16 @@
         </a>
     </div>
 </div>        </aside>
+
+<!-- Downloading Overlay -->
+<div id="download-overlay" class="fixed inset-0 bg-slate-900/90 z-[300] hidden flex-col items-center justify-center text-white">
+    <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+    <h2 class="text-xl font-bold mb-2">डाटा अफलाइन डाउनलोड हुँदैछ...</h2>
+    <p class="text-slate-400 text-sm">कृपया केही क्षण पर्खनुहोस्, यो एकपटक मात्र हुनेछ।</p>
+    <div class="w-64 bg-slate-700 h-2 rounded-full mt-4 overflow-hidden">
+        <div id="download-progress" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+    </div>
+</div>
 
         <!-- MAIN CONTENT -->
         <div class="flex-1 w-full overflow-x-hidden">
@@ -318,6 +330,56 @@
     </div>
 
     <script>
+
+async function startOfflineDownload() {
+    const overlay = document.getElementById('download-overlay');
+    const progress = document.getElementById('download-progress');
+    overlay.classList.remove('hidden');
+
+    try {
+        if ('serviceWorker' in navigator) {
+            const registration = await navigator.serviceWorker.ready;
+            const cache = await caches.open('land-admin-v9');
+            
+            let downloaded = 0;
+            const total = searchIndex.length + 10; // Assets + Search items
+
+            // सबै जरुरी लिङ्कहरू लुप लगाएर डाउनलोड गर्ने
+            for (const item of searchIndex) {
+                await cache.add(item.link);
+                downloaded++;
+                progress.style.width = (downloaded / total * 100) + '%';
+            }
+
+            // PWA Prompt देखाउने
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            }
+
+            overlay.innerHTML = `
+                <i data-lucide="check-circle" class="w-16 h-16 text-emerald-500 mb-4"></i>
+                <h2 class="text-xl font-bold">डाउनलोड सफल!</h2>
+                <p class="mb-4">अब यो एप इन्टरनेट बिना पनि चल्नेछ।</p>
+                <button onclick="location.reload()" class="bg-blue-600 px-6 py-2 rounded-lg">एप खोल्नुहोस्</button>
+            `;
+            lucide.createIcons();
+        }
+    } catch (err) {
+        console.error("Download failed", err);
+        overlay.classList.add('hidden');
+        alert("डाउनलोडमा समस्या आयो। कृपया इन्टरनेट चेक गर्नुहोस्।");
+    }
+}
+
+// हजुरको पुरानो installBtn.addEventListener लाई यसरी अपडेट गर्नुहोस्:
+const installBtn = document.getElementById('pwa-install-btn');
+if(installBtn) {
+    installBtn.addEventListener('click', startOfflineDownload);
+}
+
+
 const searchIndex = [
     { name: "मालपोत असुली क्याल्कुलेटर", link: "/malpot calculator/" },
     { name: "कुतबाली असुली क्याल्कुलेटर", link: "/kutabali calculator/" },
@@ -372,7 +434,6 @@ function handleFuzzySearch() {
 
         // 2. PWA & UPDATE LOGIC (Works Online and Offline)
         let deferredPrompt;
-        const installBtn = document.getElementById('pwa-install-btn');
         const updateBtn = document.getElementById('update-app-btn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -433,6 +494,8 @@ function handleFuzzySearch() {
             lucide.createIcons();
             document.body.style.visibility = "visible";
         });
+
+    
     </script>
 
 </body>
