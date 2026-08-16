@@ -583,30 +583,35 @@
                 </div>
             </section>
 
-            <!-- २. सिफारिस पत्र -->
-            <section class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 space-y-3">
-                <h3 class="font-bold text-indigo-800">२. सिफारिस पत्रको विवरण</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <input type="text" id="t1" placeholder="स्थानीय तह" class="border p-2 rounded">
-                    <input type="text" id="t2" placeholder="वडा नं." class="border p-2 rounded nep-digit">
-                    <input type="text" id="t3" placeholder="च.नं." class="border p-2 rounded nep-digit">
-                    <input type="text" id="t4" placeholder="मिति (२०८१.०१.०१)" class="border p-2 rounded nep-digit">
-                </div>
-                <button onclick="addUpperEntry()"
-                    class="w-full bg-indigo-600 text-white py-2 rounded font-bold shadow hover:bg-indigo-700">+ विवरण
-                    थप्नुहोस्</button>
-                <div id="upper-list-ui" class="space-y-1"></div>
-
-                <!-- Update the header of the first blue section -->
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-    <label style="font-size:16px; font-weight:bold; cursor:pointer; color:#043a3f; display:flex; align-items:center; gap:5px;">
-        वर्गीकरण भएको छ ? 
-        <input type="checkbox" id="is_classified" onchange="updateAll()" style="width:16px; height:16px; cursor:pointer;">
-    </label>
-</div>
-            </section>
-
-
+<!-- २. सिफारिस पत्र (Dynamic Input Section) -->
+<section class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 space-y-3">
+    <h3 class="font-bold text-indigo-800">२. सिफारिस पत्रको विवरणहरू</h3>
+    
+    <div class="overflow-x-auto">
+        <table class="w-full text-xs border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+            <thead>
+                <tr class="bg-indigo-600 text-white text-left">
+                    <th class="p-2 border border-indigo-300">स्थानीय तह</th>
+                    <th class="p-2 border border-indigo-300 w-16">हालको वडा</th>
+                    <th class="p-2 border border-indigo-300">च.नं.</th>
+                    <th class="p-2 border border-indigo-300">मिति</th>
+                    <th class="p-2 border border-indigo-300 w-8 text-center">X</th>
+                </tr>
+            </thead>
+            <tbody id="dynamic_rec_inputs">
+                <!-- यहाँ इन्पुटहरू आफैं थपिनेछन् -->
+            </tbody>
+        </table>
+        <p id="no-rec-msg" class="text-gray-500 text-center p-2 italic">साविक र वडा भरेपछि यहाँ विवरण थपिनेछ...</p>
+    </div>
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+        <label style="font-size:16px; font-weight:bold; cursor:pointer; color:#043a3f; display:flex; align-items:center; gap:5px;">
+            वर्गीकरण भएको छ ? 
+            <input type="checkbox" id="is_classified" onchange="updateAll()" style="width:16px; height:16px; cursor:pointer;">
+        </label>
+    </div>
+</section>
 
             <div class="grid grid-cols-2 gap-4 bottom-0 bg-white pt-4">
                 <button onclick="window.print()"
@@ -687,61 +692,41 @@
             input.addEventListener('blur', (e) => { e.target.value = engToNep(e.target.value); });
         });
 
-        // --- Format Date Input: Convert '.' to '।' ---
-document.getElementById('t4').addEventListener('input', (e) => {
-    // Convert to Nepali digits
-    let val = engToNep(e.target.value);
-    // Replace all english dots (.) with nepali danda (।)
-    e.target.value = val.replace(/\./g, '।');
-});
 
-// --- 1. Load Data on Page Load ---
-window.addEventListener('load', () => {
-    const savedData = localStorage.getItem('valuation_persistence');
-    if (savedData) {
-        const parsed = JSON.parse(savedData);
-        upperEntries = parsed.upper || [];
-        lowerEntries = parsed.lower || [];
-        if(parsed.fy) document.getElementById('fy').value = parsed.fy;
-        
-        renderUpperList();
-        updateAll();
-    }
-    ['old_vdc', 'road', 'category'].forEach(id => {
-    const el = document.getElementById(id);
-    el.addEventListener('focus', () => el.select());
-    // Tab थिच्दा पहिलो म्याच हुने नाम भर्ने (तपाईंले मागेको फिचर)
-    el.addEventListener('keydown', (e) => handleTabComplete(e, id === 'old_vdc' ? 'vdcOptions' : 'roadOptions'));
-});
 
-});
 
 // --- Part 1: Dynamic Header Logic ---
 let valuationDb = null;
 
 // --- Part 1: Load Data & Apply Letterhead ---
 window.addEventListener('load', async () => {
-    // 1. Apply Letterhead from Global Settings
     applyOfficeSettings();
 
-    // 2. Fetch the Valuation JSON
     try {
         const response = await fetch('/registration/land_valuation_final.json');
         valuationDb = await response.json();
-        console.log("Valuation Database Loaded");
-        checkDistrictAndSetup(); // Start setup if district matches
+        if (typeof checkDistrictAndSetup === "function") checkDistrictAndSetup(); 
     } catch (err) {
         console.error("Error loading JSON:", err);
     }
 
-    // 3. Existing persistence logic
-    const savedData = localStorage.getItem('valuation_persistence');
-    if (savedData) {
-        const parsed = JSON.parse(savedData);
+    const saved = localStorage.getItem('valuation_persistence');
+    if (saved) {
+        const parsed = JSON.parse(saved);
+        
+        // डाटा पुन: लोड गर्ने
+        activeRecs = parsed.activeRecs || [];
         upperEntries = parsed.upper || [];
         lowerEntries = parsed.lower || [];
         if(parsed.fy) document.getElementById('fy').value = parsed.fy;
-        renderUpperList();
+
+        // स्क्रिनमा देखाउने (Render)
+        if (activeRecs.length > 0) {
+            renderDynamicInputs();
+            document.getElementById('no-rec-msg').style.display = 'none';
+        }
+        
+        // रिपोर्ट र टेबल अपडेट गर्ने
         updateAll();
     }
 });
@@ -795,6 +780,8 @@ window.addEventListener('DOMContentLoaded', applyOfficeSettings);
 // --- 2. Save Data Function ---
 function saveToLocal() {
     const data = {
+                activeRecs: activeRecs, // यो थपिएको
+
         upper: upperEntries,
         lower: lowerEntries,
         fy: document.getElementById('fy').value
@@ -818,45 +805,45 @@ function resetData() {
 
 
         // ----------------- LOGIC -----------------
-        function addUpperEntry() {
-            const t1 = document.getElementById('t1').value, t2 = document.getElementById('t2').value, t3 = document.getElementById('t3').value, t4 = document.getElementById('t4').value;
-            if (!t1 || !t2 || !t3 || !t4) return alert("सबै विवरण भर्नुहोस्");
-            upperEntries.push({ t1, t2: engToNep(t2), t3: engToNep(t3), t4: engToNep(t4) });
-            document.getElementById('t3').value = ''; document.getElementById('t3').focus();
-            renderUpperList(); updateAll(); saveToLocal();
-        }
+        // function addUpperEntry() {
+        //     const t1 = document.getElementById('t1').value, t2 = document.getElementById('t2').value, t3 = document.getElementById('t3').value, t4 = document.getElementById('t4').value;
+        //     if (!t1 || !t2 || !t3 || !t4) return alert("सबै विवरण भर्नुहोस्");
+        //     upperEntries.push({ t1, t2: engToNep(t2), t3: engToNep(t3), t4: engToNep(t4) });
+        //     document.getElementById('t3').value = ''; document.getElementById('t3').focus();
+        //     renderUpperList(); updateAll(); saveToLocal();
+        // }
 
-        function renderUpperList() {
-            document.getElementById('upper-list-ui').innerHTML = upperEntries.map((e, i) => `
-                <div class="flex justify-between bg-white border p-1 rounded text-[10px] shadow-sm">
-                    <span><b>${e.t1} (${e.t2})</b> - च.नं. ${e.t3} (${e.t4})</span>
-                    <button onclick="upperEntries.splice(${i},1); renderUpperList(); updateAll();" class="text-red-500 font-bold px-2">✕</button>
-                </div>`).join('');
-        }
+        // function renderUpperList() {
+        //     document.getElementById('upper-list-ui').innerHTML = upperEntries.map((e, i) => `
+        //         <div class="flex justify-between bg-white border p-1 rounded text-[10px] shadow-sm">
+        //             <span><b>${e.t1} (${e.t2})</b> - च.नं. ${e.t3} (${e.t4})</span>
+        //             <button onclick="upperEntries.splice(${i},1); renderUpperList(); updateAll();" class="text-red-500 font-bold px-2">✕</button>
+        //         </div>`).join('');
+        // }
 
-        function generateParagraph() {
-            if (upperEntries.length === 0) return "सिफारिस पत्रको विवरण भर्नुहोस्...";
-            let grouped = {};
-            upperEntries.forEach(e => {
-                if (!grouped[e.t1]) grouped[e.t1] = {};
-                if (!grouped[e.t1][e.t2]) grouped[e.t1][e.t2] = {};
-                if (!grouped[e.t1][e.t2][e.t4]) grouped[e.t1][e.t2][e.t4] = [];
-                grouped[e.t1][e.t2][e.t4].push(e.t3);
-            });
-            let localParts = [];
-            for (let local in grouped) {
-                let wardParts = [];
-                for (let ward in grouped[local]) {
-                    let dateParts = [];
-                    for (let date in grouped[local][ward]) {
-                        dateParts.push(`च.नं. ${nepaliJoin(grouped[local][ward][date])} मिति ${date}`);
-                    }
-                    wardParts.push(`${ward} नं. वडा कार्यालयको ${nepaliJoin(dateParts)}`);
-                }
-                localParts.push(`${local}को ${nepaliJoin(wardParts)} गतेको`);
-            }
-            return nepaliJoin(localParts) + ` घरबाटो सिफारिस र जग्गाको वर्गिकरण समेतको आधारमा तपशिलका कित्ता जग्गाहरूको आ.व. ${document.getElementById('fy').value} को लागि तपशिल बमोजिम न्युनतम मूल्याङ्कन हुने देखिन्छ ।`;
-        }
+        // function generateParagraph() {
+        //     if (upperEntries.length === 0) return "सिफारिस पत्रको विवरण भर्नुहोस्...";
+        //     let grouped = {};
+        //     upperEntries.forEach(e => {
+        //         if (!grouped[e.t1]) grouped[e.t1] = {};
+        //         if (!grouped[e.t1][e.t2]) grouped[e.t1][e.t2] = {};
+        //         if (!grouped[e.t1][e.t2][e.t4]) grouped[e.t1][e.t2][e.t4] = [];
+        //         grouped[e.t1][e.t2][e.t4].push(e.t3);
+        //     });
+        //     let localParts = [];
+        //     for (let local in grouped) {
+        //         let wardParts = [];
+        //         for (let ward in grouped[local]) {
+        //             let dateParts = [];
+        //             for (let date in grouped[local][ward]) {
+        //                 dateParts.push(`च.नं. ${nepaliJoin(grouped[local][ward][date])} मिति ${date}`);
+        //             }
+        //             wardParts.push(`${ward} नं. वडा कार्यालयको ${nepaliJoin(dateParts)}`);
+        //         }
+        //         localParts.push(`${local}को ${nepaliJoin(wardParts)} गतेको`);
+        //     }
+        //     return nepaliJoin(localParts) + ` घरबाटो सिफारिस र जग्गाको वर्गिकरण समेतको आधारमा तपशिलका कित्ता जग्गाहरूको आ.व. ${document.getElementById('fy').value} को लागि तपशिल बमोजिम न्युनतम मूल्याङ्कन हुने देखिन्छ ।`;
+        // }
 
 // --- Part 3: Price Match Engine ---
 
@@ -1126,15 +1113,6 @@ function autoFillRecommendation() {
     if (foundCurrentWard) document.getElementById('t2').value = engToNep(foundCurrentWard);
 }
 
-// वडा कोलममा listener
-document.getElementById('ward').addEventListener('input', autoFillRecommendation);
-// वडा कोलममा टाइप गर्दा पनि सिफारिस अपडेट हुने बनाउन यो थप्नुहोस्
-document.getElementById('ward').addEventListener('input', autoFillRecommendation);
-document.getElementById('ward').addEventListener('change', autoFillRecommendation);
-// Attach this to the old_vdc input listener
-document.getElementById('old_vdc').addEventListener('change', autoFillRecommendation);
-// Also trigger on 'input' if you want it to fill as they type/select from list
-document.getElementById('old_vdc').addEventListener('input', autoFillRecommendation);
 
 
 function toggleAreaInput() {
@@ -1156,26 +1134,19 @@ function updateAll() {
     const isClassified = document.getElementById('is_classified').checked;
     
     // Logic for paragraph text
-if(upperEntries.length > 0) {
-    let parts = [];
-    upperEntries.forEach(e => {
-        // e.t1 is Municipality, e.t2 is Current Ward
-        // We can manually add Old VDC info if needed, or keep it clean:
-        parts.push(`${e.t1} वडा नं. ${e.t2} को च.नं. ${e.t3} मिति ${e.t4}`);
-    });
+    if(upperEntries.length > 0) {
+        let parts = upperEntries.map(e => `${e.t1} वडा नं. ${e.t2} को च.नं. ${e.t3} मिति ${e.t4}`);
+        const classificationPart = isClassified ? " र जग्गाको वर्गिकरण समेत" : "";
+        
+        const oldVdc = document.getElementById('old_vdc').value;
+        const oldWard = document.getElementById('ward').value;
+        let contextStr = (oldVdc && oldWard) ? `(साविक ${oldVdc} वडा नं. ${oldWard}) ` : "";
 
-    const isClassified = document.getElementById('is_classified').checked;
-    const classificationPart = isClassified ? " र जग्गाको वर्गिकरण समेत" : "";
-    
-    // Get values from Section 1 to show context
-    const oldVdc = document.getElementById('old_vdc').value;
-    const oldWard = document.getElementById('ward').value;
-    let contextStr = (oldVdc && oldWard) ? `(साविक ${oldVdc} वडा नं. ${oldWard}) ` : "";
+        document.getElementById('out_paragraph').innerText = 
+            parts.join(' र ') + 
+            ` को घरबाटो सिफारिस${classificationPart}को आधारमा तपशिलका कित्ता जग्गाहरूको न्युनतम मूल्याङ्कन निम्न बमोजिम हुने देखिन्छ ।`;
+    }
 
-    document.getElementById('out_paragraph').innerText = 
-        parts.join(' र ') + 
-        ` को घरबाटो सिफारिस${classificationPart}को आधारमा ${contextStr}तपशिलका कित्ता जग्गाहरूको न्युनतम मूल्याङ्कन निम्न बमोजिम हुने देखिन्छ ।`;
-}
     
     // 2. Update Table and Totals
     let html = "", total = 0;
@@ -1233,6 +1204,103 @@ if(upperEntries.length > 0) {
             if (dec > 0) final += " " + NUM_NE[dec] + " पैसा";
             return final + " मात्र";
         }
+
+let activeRecs = []; // सिफारिसका नयाँ इन्पुटहरू राख्न
+
+// १. जग्गाको विवरण भरेपछि सिफारिसको नयाँ कोठा थप्ने मुख्य फङ्सन
+function syncRecommendationInputs() {
+    const selectedVdc = document.getElementById('old_vdc').value.trim();
+    const typedWard = document.getElementById('ward').value.trim();
+
+    if (!valuationDb || !selectedVdc || !typedWard) return;
+
+    let foundLocalName = "";
+    let foundCurrentWard = "";
+
+    // JSON म्यापिङबाट स्थानीय तह खोज्ने
+    for (const dist of valuationDb.districts) {
+        for (const local of dist.locals) {
+            for (const map of local.mapping) {
+                const match = map.links.find(link => link.vdc === selectedVdc && isWardInTarget(typedWard, link.oldW));
+                if (match) { 
+                    foundLocalName = local.name; 
+                    foundCurrentWard = map.wardNo; 
+                    break; 
+                }
+            }
+            if (foundLocalName) break;
+        }
+    }
+
+    if (foundLocalName) {
+        const id = `${foundLocalName}-${foundCurrentWard}`;
+        const exists = activeRecs.find(r => r.id === id);
+        
+        if (!exists) {
+            activeRecs.push({
+                id: id,
+                local: foundLocalName,
+                ward: engToNep(foundCurrentWard),
+                chalaani: '',
+                date: ''
+            });
+            renderDynamicInputs();
+        }
+        document.getElementById('no-rec-msg').style.display = 'none';
+    }
+}
+
+// २. इन्पुट टेबल बनाउने
+function renderDynamicInputs() {
+    const tbody = document.getElementById('dynamic_rec_inputs');
+    tbody.innerHTML = activeRecs.map((rec, index) => `
+        <tr class="border-b">
+            <td class="p-1 border"><input type="text" value="${rec.local}" disabled class="bg-gray-100 p-2 w-full font-bold text-slate-800"></td>
+            <td class="p-1 border"><input type="text" value="${rec.ward}" disabled class="bg-gray-100 p-2 w-full text-center font-bold text-slate-800"></td>
+            <td class="p-1 border"><input type="text" oninput="updateRecData(${index}, 'chalaani', this.value)" value="${rec.chalaani}" placeholder="च.नं." class="p-2 w-full border-blue-400 focus:bg-yellow-50 font-bold"></td>
+            <td class="p-1 border"><input type="text" oninput="updateRecData(${index}, 'date', this.value)" value="${rec.date}" placeholder="मिति" class="p-2 w-full border-blue-400 focus:bg-yellow-50 font-bold"></td>
+            <td class="p-1 border text-center"><button onclick="removeRec(${index})" class="text-red-500 font-bold p-2">✕</button></td>
+        </tr>
+    `).join('');
+}
+
+// ३. इन्पुटमा टाइप गर्दा डाटा सेभ गर्ने र मिति मिलाउने
+function updateRecData(index, field, value) {
+    let formattedValue = engToNep(value);
+    if (field === 'date') {
+        formattedValue = formattedValue.replace(/\./g, '।');
+    }
+    
+    activeRecs[index][field] = formattedValue;
+    
+    // रिपोर्टको ब्यहोराको लागि upperEntries अपडेट गर्ने
+    upperEntries = activeRecs.filter(r => r.chalaani && r.date).map(r => ({
+        t1: r.local, t2: r.ward, t3: r.chalaani, t4: r.date
+    }));
+    
+    updateAll(); 
+    saveToLocal();
+}
+
+function removeRec(index) {
+    activeRecs.splice(index, 1);
+    if(activeRecs.length === 0) document.getElementById('no-rec-msg').style.display = 'block';
+    renderDynamicInputs();
+    updateAll();
+}
+
+// ४. साविक गा.वि.स. को Autocomplete र मूल्य खोज्नका लागि पुरानो फङ्सनहरूलाई यहाँ जोड्नुहोस्
+document.getElementById('old_vdc').addEventListener('input', () => {
+    if (typeof checkDistrictAndSetup === "function") checkDistrictAndSetup(); 
+    if (typeof updateRoadOptions === "function") updateRoadOptions();
+    if (typeof checkPriceMemory === "function") checkPriceMemory();
+    syncRecommendationInputs();
+});
+
+document.getElementById('ward').addEventListener('input', () => {
+    syncRecommendationInputs();
+    if (typeof updateRoadOptions === "function") updateRoadOptions();
+});        
 
 async function exportToWord() {
     const emblemImg = document.getElementById('nisan_img').src;
