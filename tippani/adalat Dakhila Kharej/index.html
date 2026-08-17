@@ -553,6 +553,22 @@
                 </div>
             </section>
 
+            <!-- ६. वर्गीकरण गर्ने सेक्सन -->
+<section class="bg-indigo-50 p-4 rounded-lg border border-indigo-200 mt-4">
+    <label class="flex items-center gap-2 font-bold text-indigo-800 text-xs cursor-pointer">
+        <input type="checkbox" id="class_update_enable" onchange="saveAndUpdate(); renderClassificationUI();">
+        वर्गीकरण गर्ने ?
+    </label>
+    <div id="class_update_ui" class="hidden mt-2 space-y-2">
+        <input type="text" id="class_update_basis" oninput="saveAndUpdate()" 
+            value="मोठ फाँटबाट भिडीआए बमोजिम" class="w-full border p-2 rounded text-xs font-bold bg-white">
+        
+        <div id="class_kitta_list" class="flex flex-wrap gap-2 p-2 bg-white rounded border">
+            <!-- यहाँ कित्ताका चेकबक्सहरू आउनेछन् -->
+        </div>
+    </div>
+</section>
+
             <div class="grid grid-cols-2 gap-4 sticky bottom-0 bg-white pt-4">
 
                 <button onclick="window.print()"
@@ -783,10 +799,18 @@ function syncRecommendations() {
             }
 
 function saveAndUpdate() {
+    
     const dataToSave = {
         applicants, owners, lands, haalKittas, houseEntries, recommendations,
         rokkaEntries, courtEntries, otherDocs, expenses,
         post_rokka: postTransferRokka,
+
+                classification_update: {
+            enabled: document.getElementById('class_update_enable').checked,
+            basis: document.getElementById('class_update_basis').value,
+            selectedKittas: classificationSettings.selectedKittas
+        },
+
         
         // Input values
         danum: document.getElementById('in_danum').value,
@@ -798,6 +822,7 @@ function saveAndUpdate() {
         trans_title: document.getElementById('in_trans_title').value,
         case_type: document.getElementById('case_type_input').value,
         decision_extra: document.getElementById('decision_extra').value,
+        
         
         // Checkboxes & Radios
         has_kk: document.getElementById('has_kk').checked,
@@ -819,6 +844,10 @@ function saveAndUpdate() {
     };
     localStorage.setItem('court_dakha_v1', JSON.stringify(dataToSave));
     updateAll();
+    // Inside saveAndUpdate function, add this line:
+postTransferRokka.purpose = document.getElementById('post_rokka_purpose').value;
+
+
 }
 
 function loadFromLocal() {
@@ -835,6 +864,12 @@ function loadFromLocal() {
     courtEntries = data.courtEntries || [];
     otherDocs = data.otherDocs || [];
     postTransferRokka = data.post_rokka || { enabled: false, kittas: [], purpose: "" };
+    if (data.classification_update) {
+    classificationSettings = data.classification_update;
+    document.getElementById('class_update_enable').checked = classificationSettings.enabled;
+    document.getElementById('class_update_basis').value = classificationSettings.basis;
+    renderClassificationUI();
+}
 
     document.getElementById('in_danum').value = data.danum || "";
     document.getElementById('in_dadate').value = data.dadate || "";
@@ -1092,38 +1127,73 @@ if (topicData.labhakar && topicData.labhakar.length > 0) {
     saveAndUpdate();
 }
 
-function calculateLateFeeAuto() {
-    const regDate = document.getElementById('in_dadate').value;
-    // पहिलो अदालतको पत्रको मिति
-    const courtDateRaw = courtEntries[0] ? courtEntries[0].dt : null;
-
-    if (!regDate || !courtDateRaw) return;
-
-    const d1 = bsToDays(courtDateRaw);
-    const d2 = bsToDays(regDate);
-    const diff = d2 - d1;
-
-    if (diff > 21) {
-        document.getElementById('late_fee_applicable').checked = true;
-        // वर्ष गणना (२१ दिन कटाएर ३६५ दिनको १ वर्ष)
-        const years = Math.floor((diff - 21) / 365) + 1;
-        document.getElementById('late_fee_years').value = toNepali(years);
-        document.getElementById('late_fee_years').disabled = false;
-    } else {
-        document.getElementById('late_fee_applicable').checked = false;
-        document.getElementById('late_fee_years').value = "";
-        document.getElementById('late_fee_years').disabled = true;
-    }
-}
-
-// ३. सहयोगी: BS मितिलाई दिनमा बदल्ने (सरलीकृत)
+// १. BS मितिलाई दिनमा बदल्ने (Approximation for BS calculation)
 function bsToDays(bsDate) {
     if (!bsDate) return 0;
-    // २०८०।०१।०१ जस्ता ढाँचालाई टुक्राउने
+    // मितिको ढाँचालाई टुक्राउने (उदा: २०८०।०१।०१)
     const parts = bsDate.split(/[\।\.\/-]/).map(p => parseInt(toEnglish(p)));
     if (parts.length !== 3) return 0;
-    // एउटा औसत गणना (Year*365 + Month*30 + Day)
+    
+    // वर्षलाई ३६५ र महिनालाई ३० ले गुणन गरी दिनमा बदल्ने
     return (parts[0] * 365) + (parts[1] * 30) + parts[2];
+}
+
+// २. विलम्व शुल्क स्वचालित गणना गर्ने फङ्सन
+function calculateLateFeeAuto() {
+    const regDateInput = document.getElementById('in_dadate').value;
+    const courtDateRaw = courtEntries[0] ? courtEntries[0].dt : null;
+
+    if (!regDateInput || !courtDateRaw) return;
+
+    // मितिलाई [Y, M, D] मा टुक्राउने र अंकमा बदल्ने
+    const p1 = courtDateRaw.split(/[\।\.\/-]/).map(p => parseInt(toEnglish(p)));
+    const p2 = regDateInput.split(/[\।\.\/-]/).map(p => parseInt(toEnglish(p)));
+
+    if (p1.length !== 3 || p2.length !== 3) return;
+
+    let y1 = p1[0], m1 = p1[1], d1 = p1[2];
+    let y2 = p2[0], m2 = p2[1], d2 = p2[2];
+
+    // --- मिति घटाउने ३०/१२ को लजिक ---
+    let diffD = d2 - d1;
+    let diffM = m2 - m1;
+    let diffY = y2 - y1;
+
+    // दिन सानो भए महिनाबाट ३० दिन पैँचो लिने
+    if (diffD < 0) {
+        diffD += 30;
+        diffM -= 1;
+    }
+    // महिना सानो भए वर्षबाट १२ महिना पैँचो लिने
+    if (diffM < 0) {
+        diffM += 12;
+        diffY -= 1;
+    }
+
+    // कुल दिनको फरक (२१ दिन चेक गर्न)
+    const totalDaysGap = (diffY * 360) + (diffM * 30) + diffD;
+
+    const lateFeeCheckbox = document.getElementById('late_fee_applicable');
+    const lateFeeYearInput = document.getElementById('late_fee_years');
+
+    if (totalDaysGap > 21) {
+        lateFeeCheckbox.checked = true;
+        
+        // --- वर्ष गणना गर्ने लजिक ---
+        // यदि महिना वा दिनमा केही पनि बाँकी छ भने वर्षमा १ थप गर्ने
+        // उदा: १ वर्ष ० महिना १ दिन = २ वर्ष
+        let finalYear = diffY;
+        if (diffM > 0 || diffD > 0) {
+            finalYear += 1;
+        }
+
+        lateFeeYearInput.value = toNepali(finalYear);
+        lateFeeYearInput.disabled = false;
+    } else {
+        lateFeeCheckbox.checked = false;
+        lateFeeYearInput.value = "";
+        lateFeeYearInput.disabled = true;
+    }
 }
 
 
@@ -1152,6 +1222,41 @@ document.addEventListener('DOMContentLoaded', () => {
             // });
             // // Init
             // document.addEventListener('DOMContentLoaded', loadFromLocal);
+
+
+
+            let classificationSettings = { enabled: false, basis: "मोठ फाँटबाट भिडीआए बमोजिम", selectedKittas: [] };
+
+function renderClassificationUI() {
+    const ui = document.getElementById('class_update_ui');
+    const isEnabled = document.getElementById('class_update_enable').checked;
+    ui.classList.toggle('hidden', !isEnabled);
+    
+    if (!isEnabled) return;
+
+    const container = document.getElementById('class_kitta_list');
+    // साविक कित्ताहरूको लिस्ट देखाउने
+    container.innerHTML = lands.map(l => {
+        // यदि पहिले छानिएको छैन भने सबैलाई डिफल्टमा टिक गर्ने
+        if (!classificationSettings.selectedKittas.includes(l.kitta)) {
+            classificationSettings.selectedKittas.push(l.kitta);
+        }
+        
+        return `
+        <label class="bg-slate-100 border px-2 py-1 rounded text-[10px] cursor-pointer flex items-center gap-1">
+            <input type="checkbox" onchange="toggleClsK('${l.kitta}')" 
+                ${classificationSettings.selectedKittas.includes(l.kitta) ? 'checked' : ''}> 
+            ${toNepali(l.kitta)}
+        </label>`;
+    }).join('');
+}
+
+function toggleClsK(k) {
+    const idx = classificationSettings.selectedKittas.indexOf(k);
+    if (idx > -1) classificationSettings.selectedKittas.splice(idx, 1);
+    else classificationSettings.selectedKittas.push(k);
+    saveAndUpdate();
+}
 
 
 
@@ -1831,33 +1936,33 @@ function renderValuationTable() {
     const content = document.getElementById('modal-content');
     const hasKKChecked = document.getElementById('has_kk').checked;
 
-        syncRecommendations();
+    syncRecommendations();
+    
 
-    // १. घरबाटो सिफारिस सेक्सन (Top Section)
     let html = `
-    <div class="bg-slate-800 p-4 rounded-xl border-2 border-slate-600 mb-6 text-white">
+    <div class="bg-slate-800 p-4 rounded-xl border-2 border-slate-600 mb-6 text-white shadow-inner">
         <div class="flex justify-between items-center mb-3">
             <h3 class="font-bold text-yellow-400">📄 घरबाटो सिफारिसको विवरण</h3>
-            <button onclick="recommendations.push({localName:'', newWard:'', chanum:'', date:''}); renderValuationTable();" class="bg-emerald-600 text-white px-3 py-1 rounded text-xs">+ थप्नुहोस्</button>
+            <button onclick="recommendations.push({localName:'', newWard:'', chanum:'', date:''}); renderValuationTable();" class="bg-emerald-600 text-white px-3 py-1 rounded text-xs hover:bg-emerald-700">+ थप्नुहोस्</button>
         </div>
         <div class="space-y-2">
             ${recommendations.map((r, i) => `
                 <div class="grid grid-cols-12 gap-2 items-center bg-slate-700 p-2 rounded border border-slate-500">
                     <div class="col-span-4">
                         <label class="text-[9px] text-slate-300">स्थानीय तह</label>
-                        <input type="text" value="${r.localName}" oninput="recommendations[${i}].localName=this.value; saveAndUpdate();" class="w-full p-1 text-black text-xs rounded font-bold">
+                        <input type="text" value="${r.localName}" oninput="recommendations[${i}].localName=this.value; saveAndUpdate();" class="w-full p-1 text-black text-xs rounded font-bold border border-slate-400 focus:border-indigo-600 outline-none">
                     </div>
                     <div class="col-span-2">
                         <label class="text-[9px] text-slate-300">वडा नं.</label>
-                        <input type="text" value="${toNepali(r.newWard)}" oninput="recommendations[${i}].newWard=this.value; saveAndUpdate();" class="w-full p-1 text-black text-xs rounded text-center">
+                        <input type="text" value="${toNepali(r.newWard)}" oninput="recommendations[${i}].newWard=this.value; saveAndUpdate();" class="w-full p-1 text-black text-xs rounded text-center border border-slate-400 focus:border-indigo-600 outline-none">
                     </div>
                     <div class="col-span-2">
                         <label class="text-[9px] text-slate-300">च.नं.</label>
-                        <input type="text" value="${toNepali(r.chanum)}" oninput="recommendations[${i}].chanum=this.value; saveAndUpdate();" class="w-full p-1 text-black text-xs rounded text-center">
+                        <input type="text" value="${toNepali(r.chanum)}" oninput="recommendations[${i}].chanum=this.value; saveAndUpdate();" class="w-full p-1 text-black text-xs rounded text-center border border-slate-400 focus:border-indigo-600 outline-none">
                     </div>
                     <div class="col-span-3">
                         <label class="text-[9px] text-slate-300">मिति</label>
-                        <input type="text" value="${toNepaliDate(r.date)}" oninput="recommendations[${i}].date=this.value; saveAndUpdate();" class="w-full p-1 text-black text-xs rounded text-center">
+                        <input type="text" value="${toNepaliDate(r.date)}" oninput="recommendations[${i}].date=this.value; saveAndUpdate();" class="w-full p-1 text-black text-xs rounded text-center border border-slate-400 focus:border-indigo-600 outline-none">
                     </div>
                     <div class="col-span-1 pt-3">
                         <button onclick="recommendations.splice(${i},1); renderValuationTable(); saveAndUpdate();" class="text-red-400 hover:text-red-600">✕</button>
@@ -1868,21 +1973,20 @@ function renderValuationTable() {
     </div>
     `;
 
-
-
-     html += `<datalist id="class_list_standard">
+         html += `<datalist id="class_list_standard">
         <option value="आवासीय"><option value="कृषि"><option value="व्यवसायिक">
     </datalist>`;
 
+
     html += `<div class="overflow-x-auto mb-6">
-        <table class="w-full text-[11px] border-collapse bg-white shadow-sm mb-4">
+        <table class="w-full text-[11px] border-collapse bg-white shadow-md mb-4 border border-slate-300">
             <thead>
                 <tr class="bg-slate-200 text-slate-700">
-                    <th class="border p-2">साविक</th><th class="border p-2">हाल कायम</th>
-                    <th class="border p-2">क्षेत्रफल</th><th class="border p-2">बाटोको प्रकार (Road)</th>
-                    <th class="border p-2">वर्गीकरण</th>
-                    <th class="border p-2" style="width:100px;">दर (Rate)</th>
-                    <th class="border p-2" style="width:120px;">कुल थैली</th>
+                    <th class="border border-slate-300 p-2">साविक</th><th class="border border-slate-300 p-2">हाल कायम</th>
+                    <th class="border border-slate-300 p-2">क्षेत्रफल</th><th class="border border-slate-300 p-2">बाटोको प्रकार (Road)</th>
+                    <th class="border border-slate-300 p-2">वर्गीकरण</th>
+                    <th class="border border-slate-300 p-2" style="width:100px;">दर (Rate)</th>
+                    <th class="border border-slate-300 p-2" style="width:120px;">कुल थैली</th>
                 </tr>
             </thead>
             <tbody>`;
@@ -1898,26 +2002,22 @@ function renderValuationTable() {
 
         activeRows.forEach((item, idx) => {
             html += `<tr>
-                <td class="border p-1 text-center text-slate-400 font-bold">${toNepali(l.kitta)}</td>
-                <td class="border p-1 text-center font-bold text-blue-700">${toNepali(item.kitta || l.kitta)}</td>
-                <td class="border p-1 text-center">${getFormattedArea(item)}</td>
-                <td class="border p-1">
-                    <input type="text" list="${datalistId}" class="w-full border p-1 rounded text-[10px]" value="${item.road || ''}" oninput="updateValuationEntry(${l.id}, ${idx}, 'road', this.value, ${isActuallyKK})">
+                <td class="border border-slate-300 p-1 text-center text-slate-400 font-bold">${toNepali(l.kitta)}</td>
+                <td class="border border-slate-300 p-1 text-center font-bold text-blue-700">${toNepali(item.kitta || l.kitta)}</td>
+                <td class="border border-slate-300 p-1 text-center">${getFormattedArea(item)}</td>
+                <td class="border border-slate-300 p-1">
+                    <input type="text" list="${datalistId}" class="w-full border border-slate-400 p-1 rounded text-[10px] focus:border-indigo-600 outline-none" value="${item.road || ''}" oninput="updateValuationEntry(${l.id}, ${idx}, 'road', this.value, ${isActuallyKK})">
                 </td>
-                <td class="border p-1">
-                    <input type="text" list="class_list_standard" class="w-full border p-1 rounded text-[10px] bg-blue-50" value="${item.class || ''}" oninput="updateValuationEntry(${l.id}, ${idx}, 'class', this.value, ${isActuallyKK})">
+                <td class="border border-slate-300 p-1">
+                    <input type="text" list="class_list_standard" class="w-full border border-slate-400 p-1 rounded text-[10px] bg-blue-50 focus:bg-white focus:border-indigo-600 outline-none" value="${item.class || ''}" oninput="updateValuationEntry(${l.id}, ${idx}, 'class', this.value, ${isActuallyKK})">
                 </td>
-                
-                <!-- दर (Rate) भर्ने कोलम -->
-                <td class="border p-1">
-                    <input type="text" id="rate_${l.id}_${idx}" class="w-full border p-1 text-center font-bold text-blue-600" 
+                <td class="border border-slate-300 p-1">
+                    <input type="text" id="rate_${l.id}_${idx}" class="w-full border border-slate-400 p-1 text-center font-bold text-blue-600 focus:border-indigo-600 outline-none" 
                     value="${item.rate ? toNepali(item.rate) : ''}" 
                     oninput="manualRateEntry(${l.id}, ${idx}, this.value, ${isActuallyKK})">
                 </td>
-
-                <!-- कुल थैली (Valuation) देखिने कोलम -->
-                <td class="border p-1">
-                    <input type="text" id="val_${l.id}_${idx}" class="w-full bg-amber-50 p-1 text-center font-bold text-red-700" 
+                <td class="border border-slate-300 p-1">
+                    <input type="text" id="val_${l.id}_${idx}" class="w-full bg-amber-50 border border-slate-300 p-1 text-center font-bold text-red-700" 
                     value="${item.valuation ? toNepali(item.valuation) : ''}" readonly>
                 </td>
             </tr>`;
@@ -1925,32 +2025,83 @@ function renderValuationTable() {
     });
 
     html += `</tbody></table></div>`;
-
-    
-    // घरको मुल्याङ्कन खण्ड (पुरानै कोड राख्नुहोस्)
     content.innerHTML = html + renderHouseValuationPart(); 
+
 }
 
-// सहयोगी फङ्सन (House valuation part render गर्न)
+function getCombinedKittas() {
+    let list = [];
+    lands.forEach(l => {
+        // १. साविक कित्ता थप्ने
+        if (l.kitta) list.push(l.kitta);
+        
+        // २. यदि कित्ताकाट भएको छ भने हालका कित्ताहरू पनि थप्ने
+        if (haalKittas[l.id] && haalKittas[l.id].length > 0) {
+            haalKittas[l.id].forEach(h => {
+                if (h.kitta) list.push(h.kitta);
+            });
+        }
+    });
+    // दोहोरिएका कित्ता हटाउने (Unique values only)
+    return [...new Set(list)];
+}
+
 function renderHouseValuationPart() {
-    let hHtml = `<div class="bg-indigo-50 p-4 rounded-xl border-2 border-indigo-200">
+    let hHtml = `<div class="bg-indigo-50 p-4 rounded-xl border-2 border-indigo-300 shadow-md mt-4">
         <div class="flex justify-between items-center mb-3">
             <h3 class="font-bold text-indigo-800">🏠 घरको मुल्याङ्कन विवरण</h3>
-            <button onclick="addHouseRow()" class="bg-indigo-600 text-white px-4 py-1 rounded-lg text-xs font-bold">+ घर थप्नुहोस्</button>
+            <button onclick="addHouseRow()" class="bg-indigo-600 text-white px-4 py-1 rounded-lg text-xs font-bold hover:bg-indigo-700 transition shadow-sm">+ घर थप्नुहोस्</button>
         </div>
-        <table class="w-full text-xs border-collapse bg-white">
-            <thead><tr class="bg-indigo-100"><th class="border p-2">हाल कायम कित्ता विवरण</th><th class="border p-2">घरको संख्या</th><th class="border p-2">मुल्य (रू.)</th><th class="border p-2">#</th></tr></thead><tbody>`;
+        <table class="w-full text-xs border-collapse bg-white border border-slate-300">
+            <thead>
+                <tr class="bg-indigo-100 text-indigo-900">
+                    <th class="border border-slate-300 p-2 text-left">कित्ता विवरण (साविक वा हाल)</th>
+                    <th class="border border-slate-300 p-2" style="width:80px;">घर संख्या</th>
+                    <th class="border border-slate-300 p-2" style="width:150px;">मुल्य (रू.)</th>
+                    <th class="border border-slate-300 p-2" style="width:40px;">#</th>
+                </tr>
+            </thead>
+            <tbody>`;
+            
+    const allAvailableKittas = getCombinedKittas(); // साविक र हाल सबै कित्ताको लिस्ट
+
     houseEntries.forEach((h, i) => {
         hHtml += `<tr>
-            <td class="border p-1"><select onchange="houseEntries[${i}].kitta=this.value; saveAndUpdate()" class="w-full p-1 border">${getAllCurrentKittas().map(k => `<option value="${k}" ${h.kitta == k ? 'selected' : ''}>कि.नं. ${toNepali(k)}</option>`).join('')}</select></td>
-            <td class="border p-1"><input type="text" value="${h.count || '१'}" oninput="houseEntries[${i}].count=this.value; saveAndUpdate()" class="w-full p-1 border text-center"></td>
-            <td class="border p-1"><input type="text" value="${h.price || ''}" oninput="houseEntries[${i}].price=this.value; saveAndUpdate()" class="w-full p-1 border text-right font-bold" placeholder="0.00"></td>
-            <td class="border p-1 text-center"><button onclick="houseEntries.splice(${i},1); renderValuationTable(); saveAndUpdate()" class="text-red-500">✕</button></td>
+            <td class="border border-slate-300 p-1">
+                <select onchange="houseEntries[${i}].kitta=this.value; saveAndUpdate()" 
+                    class="w-full p-1.5 border border-slate-500 rounded font-bold text-slate-800 bg-white focus:border-indigo-600 outline-none">
+                    <option value="">-- कित्ता छान्नुहोस् --</option>
+                    ${allAvailableKittas.map(k => `
+                        <option value="${k}" ${h.kitta == k ? 'selected' : ''}>
+                            कि.नं. ${toNepali(k)}
+                        </option>
+                    `).join('')}
+                </select>
+            </td>
+            <td class="border border-slate-300 p-1">
+                <input type="text" value="${h.count || '१'}" 
+                    oninput="houseEntries[${i}].count=this.value; saveAndUpdate()" 
+                    class="w-full p-1.5 border border-slate-500 rounded text-center font-bold focus:border-indigo-600 outline-none">
+            </td>
+            <td class="border border-slate-300 p-1">
+                <input type="text" value="${h.price || ''}" 
+                    oninput="houseEntries[${i}].price=this.value; saveAndUpdate()" 
+                    class="w-full p-1.5 border border-slate-500 rounded text-right font-bold text-indigo-700 focus:border-indigo-600 outline-none" 
+                    placeholder="0.00">
+            </td>
+            <td class="border border-slate-300 p-1 text-center">
+                <button onclick="houseEntries.splice(${i},1); renderValuationTable(); saveAndUpdate()" 
+                    class="text-red-600 hover:text-red-800 font-bold p-1">✕</button>
+            </td>
         </tr>`;
     });
+    
+    if (houseEntries.length === 0) {
+        hHtml += `<tr><td colspan="4" class="p-4 text-center text-slate-400 italic">कुनै घर थपिएको छैन ।</td></tr>`;
+    }
+
     return hHtml + `</tbody></table></div>`;
 }
-
 
 
 // Helper to get all kittas currently in the valuation (Sabik or Haal)
@@ -3128,15 +3279,55 @@ function generateDecision() {
 
     d += nepaliJoin(finalActions);
 
-    // ७. नयाँ रोक्का (वचन व्याकरण सुधार)
-    if (document.getElementById('post_rokka_enable').checked) {
-        const pKittas = postTransferRokka.kittas.map(k => toNepali(k));
-        if (pKittas.length > 0) {
-            const suffix = pKittas.length > 1 ? " का जग्गाहरू " : " को जग्गा ";
-            d += ` तथा कि.नं. ${nepaliJoin(pKittas)}${suffix}${postTransferRokka.purpose || ""} रोक्का राख्न`;
-        }
+// ७. नयाँ रोक्का (वचन व्याकरण सुधार)
+if (document.getElementById('post_rokka_enable').checked) {
+    const pKittas = postTransferRokka.kittas.map(k => toNepali(k));
+    // Get the purpose directly from the input field
+    const pPurpose = document.getElementById('post_rokka_purpose').value.trim(); 
+    
+    if (pKittas.length > 0) {
+        const suffix = pKittas.length > 1 ? " का जग्गाहरू " : " को जग्गा ";
+        // Use pPurpose here instead of postTransferRokka.purpose
+        d += ` तथा कि.नं. ${nepaliJoin(pKittas)}${suffix}${pPurpose} रोक्का राख्न`;
     }
+}
 
+// ८. वर्गीकरण सम्बन्धी निर्णय (निर्णयार्थ पेश भन्दा अगाडि)
+if (document.getElementById('class_update_enable').checked) {
+    const basis = document.getElementById('class_update_basis').value;
+    const selectedK = classificationSettings.selectedKittas;
+    
+    // १. कित्ताहरूलाई तिनको वर्गीकरण (class) अनुसार ग्रुप गर्ने
+    const classGroups = {};
+    
+    lands.forEach(l => {
+        if (selectedK.includes(l.kitta)) {
+            // न्युनत्तम मुल्याङ्कन मोडलमा भरिएको class लिने
+            // यदि कित्ताकाट भएको छ भने पहिलो हाल कायम कित्ताको वर्ग लिने, नभए साविकको
+            let clsName = "";
+            if (haalKittas[l.id] && haalKittas[l.id].length > 0) {
+                clsName = haalKittas[l.id][0].class; 
+            } else {
+                clsName = l.class;
+            }
+            
+            if (clsName) {
+                if (!classGroups[clsName]) classGroups[clsName] = [];
+                classGroups[clsName].push(toNepali(l.kitta));
+            }
+        }
+    });
+
+    const clsKeys = Object.keys(classGroups);
+    if (clsKeys.length > 0) {
+        const clsParts = clsKeys.map(key => {
+            const kittas = nepaliJoin(classGroups[key]);
+            return `कि.नं. ${kittas} लाई ${key} क्षेत्र`;
+        });
+        
+        d += ` साथै ${basis} अनुसार ${nepaliJoin(clsParts)} जनाउन`;
+    }
+}
     d += " आवश्यक निर्णयार्थ पेश ।";
     document.getElementById('out_decision').innerText = d;
 }

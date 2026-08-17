@@ -18,12 +18,28 @@
     <meta property="og:description" content="कर्मचारी र सेवाग्राहीका लागि उपयोगी अनलाइन टुलहरू।">
     <meta property="og:url" content="https://acharyasuman4.com.np">
     <!-- स्थानीय फाइलहरू (Local Assets) -->
-    <link rel="stylesheet" href="css/all.min.css">
-    <link rel="manifest" href="./manifest.json">
+<!-- Replace the local link with this CDN in your <head> -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- LOCAL ASSETS (Now pointing to root) -->
+    <link rel="stylesheet" href="all.min.css">
     <!-- Google Fonts अफलाइनको लागि Mukta Font डाउनलोड गरेर CSS मा राख्नु राम्रो हुन्छ -->
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&display=swap" rel="stylesheet">
+     
 
     <style>
+                @font-face {
+            font-family: 'Mukta';
+            src: url('Mukta-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Mukta';
+            src: url('Mukta-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
         body { font-family: 'Mukta', sans-serif; background-color: #f1f5f9; visibility: hidden; }
         .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
         .card-box { transition: all 0.3s ease; border: 1px solid #e2e8f0; border-radius: 24px; background: white; height: 100%; display: flex; flex-direction: column; }
@@ -331,95 +347,98 @@
 
     <script>
 
+const searchIndex = [
+    { name: "मालपोत असुली क्याल्कुलेटर", link: "malpot calculator/index.html" },
+    { name: "कुतबाली असुली क्याल्कुलेटर", link: "kutabali calculator/index.html" },
+    { name: "क्षेत्रफल (रोपनी) एडर / कन्भर्टर टुल", link: "ropani adder/index.html" },
+    { name: "क्षेत्रफल (रोपनी) बाँडफाँड (divider)", link: "ropani divider/index.html" },
+    { name: "न्युनत्तम मूल्याङ्कन", link: "registration/index.html" },
+    { name: "नामसारी टिप्पणी", link: "tippani/namsari_tippani/index.html" },
+    { name: "नामसारी सूचना, आदेश र पत्र", link: "tippani/namsari suchana aades/index.html" },
+    { name: "अदालतको दाखिला खारेज टिप्पणी", link: "tippani/adalat Dakhila Kharej/index.html" },
+    { name: "शेषपछिको बकसपत्र दाखिला खारेज टिप्पणी", link: "tippani/seba dakhila kharej/index.html" },
+    { name: "जग्गादर्ता सिफारिस फाराम", link: "tippani/jagga darta sifaris/index.html" },
+    { name: "संशोधन टिप्पणी", link: "tippani/sansodhan_tippani/index.html" },
+    { name: "संशोधन सुचना, आदेश र पत्र", link: "tippani/sansodhan/index.html" },
+    { name: "राजस्व क्याल्कुलेटर", link: "tool/rajaswo_calculator.html" },
+    { name: "राजस्व क्याल्कुलेटर Advance", link: "tool/advance_rajaswo_calculator.html" },
+    { name: "स्थानीय तह विवरण", link: "registration/local_level_old_new/index.html" },
+    { name: "न्युनत्तम मुल्याङ्कन रिपोर्ट", link: "registration/valuation_report/index.html" }
+];
+
+// Function to download all pages for Offline use
 async function startOfflineDownload() {
     const overlay = document.getElementById('download-overlay');
     const progress = document.getElementById('download-progress');
     overlay.classList.remove('hidden');
 
     try {
-        if ('serviceWorker' in navigator) {
-            const registration = await navigator.serviceWorker.ready;
-            const cache = await caches.open('land-admin-v9');
-            
-            let downloaded = 0;
-            const total = searchIndex.length + 10; // Assets + Search items
-
-            // सबै जरुरी लिङ्कहरू लुप लगाएर डाउनलोड गर्ने
-            for (const item of searchIndex) {
+        const cache = await caches.open('land-admin-v12');
+        let downloaded = 0;
+        
+        // Loop through all items and add them to cache
+        for (const item of searchIndex) {
+            try {
                 await cache.add(item.link);
-                downloaded++;
-                progress.style.width = (downloaded / total * 100) + '%';
+            } catch (err) {
+                console.warn("Skipped: " + item.link);
             }
-
-            // PWA Prompt देखाउने
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-            }
-
-            overlay.innerHTML = `
-                <i data-lucide="check-circle" class="w-16 h-16 text-emerald-500 mb-4"></i>
-                <h2 class="text-xl font-bold">डाउनलोड सफल!</h2>
-                <p class="mb-4">अब यो एप इन्टरनेट बिना पनि चल्नेछ।</p>
-                <button onclick="location.reload()" class="bg-blue-600 px-6 py-2 rounded-lg">एप खोल्नुहोस्</button>
-            `;
-            lucide.createIcons();
+            downloaded++;
+            progress.style.width = (downloaded / searchIndex.length * 100) + '%';
         }
+
+        overlay.innerHTML = `
+            <div class="text-center p-8">
+                <i data-lucide="check-circle" class="w-16 h-16 text-emerald-500 mx-auto mb-4"></i>
+                <h2 class="text-xl font-bold">डाउनलोड सफल!</h2>
+                <p class="mb-4">सबै पेजहरू अब अफलाइन उपलब्ध छन्।</p>
+                <button onclick="location.reload()" class="bg-blue-600 px-8 py-3 rounded-xl font-bold">एप खोल्नुहोस्</button>
+            </div>`;
+        lucide.createIcons();
     } catch (err) {
-        console.error("Download failed", err);
+        alert("डाउनलोडमा समस्या आयो। कृपया पुन: प्रयास गर्नुहोस्।");
         overlay.classList.add('hidden');
-        alert("डाउनलोडमा समस्या आयो। कृपया इन्टरनेट चेक गर्नुहोस्।");
     }
 }
 
-// हजुरको पुरानो installBtn.addEventListener लाई यसरी अपडेट गर्नुहोस्:
-const installBtn = document.getElementById('pwa-install-btn');
-if(installBtn) {
-    installBtn.addEventListener('click', startOfflineDownload);
+// Update Check Logic
+let newWorker;
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+        reg.addEventListener('updatefound', () => {
+            newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New update found! Show the pulsate update button
+                    document.getElementById('update-app-btn').style.display = 'flex';
+                }
+            });
+        });
+    });
 }
 
+function updateApp() {
+    // Force reload to get new version
+    navigator.serviceWorker.getRegistrations().then(regs => {
+        for(let reg of regs) reg.unregister();
+        window.location.reload(true);
+    });
+}
 
-const searchIndex = [
-    { name: "मालपोत असुली क्याल्कुलेटर", link: "/malpot calculator/" },
-    { name: "कुतबाली असुली क्याल्कुलेटर", link: "/kutabali calculator/" },
-    { name: "क्षेत्रफल (रोपनी) एडर / कन्भर्टर टुल", link: "/ropani adder/" },
-    { name: "क्षेत्रफल (रोपनी) बाँडफाँड (divider)", link: "/ropani divider/index.html" },
-    { name: "न्युनत्तम मूल्याङ्कन", link: "/registration/" },
-    { name: "नामसारी टिप्पणी", link: "/tippani/namsari_tippani/" },
-    { name: "नामसारी सूचना, आदेश र पत्र", link: "/tippani/namsari suchana aades/" },
-    { name: "अदालतको दाखिला खारेज टिप्पणी", link: "/tippani/adalat Dakhila Kharej/" },
-    { name: "शेषपछिको बकसपत्र दाखिला खारेज टिप्पणी", link: "/tippani/seba dakhila kharej/" },
-    { name: "जग्गादर्ता सिफारिस फाराम", link: "/tippani/jagga darta sifaris/" },
-    { name: "संशोधन टिप्पणी", link: "/tippani/sansodhan_tippani/" },
-    { name: "संशोधन सुचना, आदेश र पत्र", link: "/tippani/sansodhan/" },
-    { name: "राजस्व क्याल्कुलेटर", link: "/tool/rajaswo_calculator.html" },
-    { name: "राजस्व क्याल्कुलेटर Advance", link: "/tool/advance_rajaswo_calculator.html" },
-    { name: "स्थानीय तह - साविक गा.वि.स. विवरण", link: "/registration/local_level_old_new/" },
-    { name: "न्युनत्तम मुल्याङ्कन डाउनलोड", link: "/registration/valuation_report/" },
-    // अरु पेजहरू यहाँ थप्दै जानुहोस्
-];
+// Search UI Functionality
 function handleFuzzySearch() {
     const query = document.getElementById('searchInput').value.toLowerCase().trim();
     const box = document.getElementById('searchSuggestions');
     box.innerHTML = '';
     if (query.length < 1) { box.classList.add('hidden'); return; }
 
-    const results = searchIndex.filter(item => {
-        const target = item.name.toLowerCase();
-        let i = 0, j = 0;
-        while (i < query.length && j < target.length) {
-            if (query[i] === target[j]) i++;
-            j++;
-        }
-        return i === query.length || target.includes(query);
-    });
+    const results = searchIndex.filter(item => item.name.toLowerCase().includes(query));
 
     if (results.length > 0) {
         box.classList.remove('hidden');
         results.forEach(r => {
             const d = document.createElement('div');
-            d.className = "p-4 border-b hover:bg-blue-50 cursor-pointer flex items-center gap-3 transition-all";
+            d.className = "p-4 border-b hover:bg-blue-50 cursor-pointer flex items-center gap-3";
             d.innerHTML = `<i data-lucide="file-text" class="w-4 h-4 text-blue-500"></i><p class="font-bold text-sm">${r.name}</p>`;
             d.onclick = () => window.location.href = r.link;
             box.appendChild(d);
@@ -427,14 +446,14 @@ function handleFuzzySearch() {
         lucide.createIcons();
     } else {
         box.classList.remove('hidden');
-        box.innerHTML = `<div class="p-4 text-center text-slate-400 text-sm italic">भेटिएन</div>`;
+        box.innerHTML = `<div class="p-4 text-center text-slate-400 text-sm">भेटिएन</div>`;
     }
 }
-
-
         // 2. PWA & UPDATE LOGIC (Works Online and Offline)
         let deferredPrompt;
         const updateBtn = document.getElementById('update-app-btn');
+        const installBtn = document.getElementById('pwa-install-btn'); // ADD THIS LINE
+
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -442,36 +461,21 @@ function handleFuzzySearch() {
             installBtn.style.display = 'flex'; // Show download button
         });
 
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') installBtn.style.display = 'none';
-                deferredPrompt = null;
-            }
-        });
+        if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+        // 1. Trigger the background caching of all sub-pages
+        startOfflineDownload(); 
 
-        // SERVICE WORKER REGISTRATION & AUTO-UPDATE CHECK
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(reg => {
-                    // Check for updates
-                    reg.addEventListener('updatefound', () => {
-                        const newWorker = reg.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                // New update found! Show the pulsate update button
-                                updateBtn.style.display = 'flex';
-                            }
-                        });
-                    });
-                });
-            });
+        // 2. Trigger the PWA Install prompt
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') installBtn.style.display = 'none';
+            deferredPrompt = null;
         }
+    });
+}
 
-        function updateApp() {
-            if (window.location.reload) window.location.reload(true);
-        }
 
         // 3. UI HELPERS
         function toggleSidebar() {
