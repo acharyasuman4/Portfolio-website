@@ -300,82 +300,103 @@
         /* --- Missing Menu Logic --- */
 
 /* The Slide Menu initial state (hidden to the left) */
+/* --- Enhanced Slide Menu --- */
 .slide-menu {
     position: fixed;
     top: 0;
-    left: -300px; /* Start hidden */
-    width: 280px;
+    left: -300px;
+    width: 290px;
     height: 100%;
-    background: var(--white);
-    z-index: 1100;
+    background: #ffffff;
+    z-index: 2100;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
-    display: block !important; /* Ensure it's not display:none */
+    box-shadow: 15px 0 35px rgba(0,0,0,0.15);
+    display: block !important;
+    overflow-y: auto;
 }
 
-/* When the menu is active (Slide it in) */
 .slide-menu.active {
     left: 0;
 }
 
-/* The Close Button (X) inside the menu */
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 30px;
-    cursor: pointer;
-    color: var(--text-muted);
-    transition: color 0.3s;
+/* Menu Header Area */
+.menu-header {
+    padding: 25px 20px;
+    background: #1e3a8a;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.close-btn:hover {
-    color: var(--error);
+.menu-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
-/* The Overlay (dark background when menu is open) */
+/* List Styling */
+.slide-menu ul {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.slide-menu li {
+    margin: 4px 0;
+}
+
+.slide-menu li a {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    color: #334155;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.05rem;
+    transition: all 0.25s ease;
+    border-left: 4px solid transparent; /* The indicator */
+}
+
+/* --- THE HOVER EFFECT --- */
+.slide-menu li a:hover {
+    background-color: #f1f5f9; /* Soft gray-blue background */
+    color: #1e40af;            /* Darker blue text */
+    padding-left: 30px;        /* Slight "slide-right" movement */
+    border-left: 4px solid #f59e0b; /* Amber colored line on the left */
+}
+
+/* Icon Container */
+.menu-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.slide-menu li a:hover .menu-icon {
+    transform: scale(1.2); /* Icon grows slightly on hover */
+}
+
+/* Simple Overlay Styling */
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(2px);
-    display: none; /* Hidden by default */
-    z-index: 1050;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(3px); /* Makes the background look premium */
+    display: none;
+    z-index: 2050;
 }
 
-/* Show overlay when menu is open */
 .overlay.active {
     display: block;
-}
-
-/* Style the links inside the menu */
-.slide-menu ul {
-    list-style: none;
-    padding: 80px 0 0 0; /* Space for the close button */
-    margin: 0;
-}
-
-.slide-menu li a {
-    display: block;
-    padding: 15px 30px;
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    border-bottom: 1px solid #f1f5f9;
-    transition: all 0.2s;
-}
-
-.slide-menu li a:hover {
-    background: #f1f5f9;
-    padding-left: 40px; /* Nice slide-in effect on hover */
-    color: var(--primary-light);
-}
-
-        /* Hide for print */
+}        /* Hide for print */
         @media print {
             header, .settings-banner, footer, .font-download-box {
                 display: none !important;
@@ -395,33 +416,32 @@
 
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-    <header>
-        <button class="menu-btn" onclick="toggleMenu()">☰</button>
-        <div class="header-title">भूमि प्रशासन सहयोगी</div>
-        
+<header>
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    <div class="header-title">भूमि प्रशासन सहयोगी</div>
+</header>
+
+<!-- Move the Nav HERE, outside the header -->
 <nav class="slide-menu" id="slideMenu">
-    <!-- Close button inside the menu -->
-    <div class="close-btn" onclick="toggleMenu()">&times;</div>
-    
+    <div class="close-btn" onclick="toggleMenu()" style="position:absolute; right:20px; top:15px; cursor:pointer; font-size:30px;">&times;</div>
     <ul>
-        <li><a href="/">मुख्य पृष्ठ</a></li>
-                <li><a href="/malpot calculator/">मालपोत असुली</a></li>
-                <li><a href="/kutabali calculator/">कुतबाली असुली</a></li>
-                <li><a href="/ropani adder/">रोपनी जोड्न</a></li>
-                <li><a href="/ropani divider/">क्षेत्रफल भाग लगाउन</a></li>
-                <li><a href="/registration/">न्युनत्तम मूल्याङ्कन</a></li>
-                <li><a href="/tool/advance_rajaswo_calculator.html">राजस्व क्याल्कुलेटर advanced</a></li>
-                <li><a href="/tippani/">टिप्पणी फर्म्याटहरू</a></li>
-                <li><a href="/index.html#feedback">सम्पर्क</a></li>
+        <li><a href="index.html">मुख्य पृष्ठ</a></li>
+        <li><a href="malpot calculator/index.html">मालपोत असुली</a></li>
+        <li><a href="kutabali calculator/index.html">कुतबाली असुली</a></li>
+        <li><a href="ropani adder/index.html">रोपनी जोड्न</a></li>
+        <li><a href="tool/advance_rajaswo_calculator.html">राजस्व क्याल्कुलेटर</a></li>
+        <li><a href="tippani/index.html">टिप्पणी फर्म्याटहरू</a></li>
     </ul>
 </nav>
-    </header>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
 
     <div class="settings-banner no-print">
         <button onclick="openSettings()" class="btn-settings-top">
-            <span style="font-size: 1.2rem;">⚙️</span> कार्यालय विवरण मिलाउनुहोस्
+            <span style="font-size: 1.2rem;">⚙️</span> कार्यलयको नाम भर्नुहोस् (लेटरहेड सेट गर्न)
         </button>
-        <p style="margin:0; font-size: 0.9rem; color: #0369a1; font-weight: 500;" class="mobile-hide">टिप्पणीको लेटरहेड सेटिङ गर्न यहाँ क्लिक गर्नुहोस् ।</p>
+        <p style="margin:0; font-size: 0.9rem; color: #0369a1; font-weight: 500;" class="mobile-hide"></p>
     </div>
 
     <main>
@@ -482,7 +502,7 @@
             <p style="opacity: 0.9;">
                 सबै डकुमेन्टहरू शुद्ध नेपालीमा देख्न र प्रिन्ट गर्दा फर्म्याट नबिग्रिनको लागि यो फन्ट अनिवार्य छ ।
             </p>
-            <a href="https://fonts.google.com/download?family=Mukta" class="btn-font">फन्ट डाउनलोड गर्नुहोस्</a>
+            <a href="/Mukta.zip" class="btn-font">फन्ट डाउनलोड गर्नुहोस्</a>
         </div>
     </main>
 
