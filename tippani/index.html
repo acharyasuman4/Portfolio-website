@@ -1,313 +1,410 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>टिप्पणीहरू | Tippani Formats - acharyasuman4</title>
-            <!-- २. वर्णन (Description) - गुगल सर्चमा देखिने छोटो बिवरण -->
-    <meta name="description"
-        content=" भूमि प्रशासनमा आवश्यक विभिन्न टिप्पणी, सूचना, आदेश र पत्रहरू ।">
-
-    <!-- ३. कीवर्डहरू (Keywords) -->
-    <meta name="keywords"
-        content="acharyasuman, acharyasuman4, मालपोत,भूमि प्रशासन कार्यालय, भूमि प्रशासन, जग्गा प्रशासन, टिप्पणी, जग्गाको टिप्पणी, सार्वजानिक सूचना, ३५ दिने सार्वजानिक सूचना, पत्र ";>
-
-    <!-- ४. सामाजिक सञ्जालका लागि (Open Graph Tags) - फेसबुकमा लिङ्क सेयर गर्दा राम्रो देखिनका लागि -->
-    <meta property="og:title" content="टिप्पणी, सूचना, आदेश र पत्र ">
-    <meta property="og:description" content="भूमि प्रशासन कार्यलयको लागि टिप्पणी, सूचना र आदेस तयार गर्ने टुल">
-    <meta property="og:url" content="https://acharyasuman4.com.np/tippani/">
-
-
-    <!-- Google Fonts for beautiful Nepali and English text -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --bg-color: #f4f7f6;
-            --text-color: #333;
-            --white: #ffffff;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --primary: #1e3a8a;       /* Deep Navy Blue */
+            --primary-light: #3b82f6; /* Modern Blue */
+            --accent: #f59e0b;        /* Amber */
+            --bg: #f8fafc;            /* Off White / Light Gray */
+            --card-bg: #ffffff;
+            --text-main: #1e293b;     /* Slate Dark */
+            --text-muted: #64748b;    /* Slate Light */
+            --success: #10b981;
+            --error: #ef4444;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
         body {
             font-family: 'Mukta', 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
         }
 
-        /* --- Header & Navigation CSS --- */
+        /* --- Modern Header --- */
         header {
-            background-color: var(--primary-color);
-            color: var(--white);
-            padding: 15px 20px;
+            background: rgba(30, 58, 138, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 0 5%;
+            height: 70px;
             display: flex;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .menu-btn {
             font-size: 28px;
             cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .menu-btn:hover {
-            transform: scale(1.1);
-            color: var(--secondary-color);
+            transition: color 0.3s;
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
         }
 
         .header-title {
             margin-left: 20px;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        /* Overlay for menu */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 998;
-        }
-
-        .overlay.active {
-            display: block;
-        }
-
-        /* Slide Menu */
-        .slide-menu {
-            position: fixed;
-            top: 0;
-            left: -280px;
-            /* Hidden by default */
-            width: 280px;
-            height: 100%;
-            background-color: var(--white);
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            transition: left 0.3s ease-in-out;
-            z-index: 999;
-            padding-top: 60px;
-        }
-
-        .slide-menu.active {
-            left: 0;
-        }
-
-        .slide-menu ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .slide-menu li {
-            border-bottom: 1px solid #eee;
-        }
-
-        .slide-menu li a {
-            display: block;
-            padding: 15px 25px;
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: background 0.2s, padding-left 0.2s;
-        }
-
-        .slide-menu li a:hover {
-            background-color: #f0f4f8;
-            color: var(--secondary-color);
-            padding-left: 30px;
-            border-left: 5px solid var(--secondary-color);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 30px;
-            cursor: pointer;
-            color: var(--primary-color);
-        }
-
-        /* --- Main Content CSS --- */
-        main {
-            flex: 1;
-            /* Pushes footer down */
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-            width: 90%;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 30px;
+            font-size: 1.4rem;
             font-weight: 700;
-            border-bottom: 3px solid var(--secondary-color);
-            display: inline-block;
-            padding-bottom: 10px;
+            letter-spacing: 0.5px;
         }
 
-        h1::after {
-            content: '';
-            display: block;
-            margin: 0 auto;
+        /* --- Settings Sticky Banner --- */
+        .settings-banner {
+            background: #e0f2fe;
+            border-bottom: 2px solid #bae6fd;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            animation: slideDown 0.5s ease-out;
         }
 
-        .container {
-            text-align: center;
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
         }
 
-        .subjects {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 12px;
+        .btn-settings-top {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
             box-shadow: var(--shadow);
         }
 
-        .subjects label {
-            display: block;
-            font-size: 1.4rem;
-            color: var(--secondary-color);
-            margin-bottom: 20px;
-            font-weight: 600;
-            text-align: left;
-            border-left: 4px solid var(--secondary-color);
-            padding-left: 10px;
+        .btn-settings-top:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
         }
 
-        .subjects ul {
-            list-style-type: none;
-            padding: 0;
+        /* --- Main Layout --- */
+        main {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
         }
 
-        /* Link Cards */
-        .subjects li a {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #f8f9fa;
-            border: 1px solid #e1e4e8;
-            padding: 15px 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: var(--text-color);
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
-
-        .subjects li a::after {
-            content: '➜';
-            color: var(--secondary-color);
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
-        }
-
-        .subjects li a:hover {
-            background-color: var(--secondary-color);
-            color: var(--white);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-            border-color: var(--secondary-color);
-        }
-
-        .subjects li a:hover::after {
-            color: var(--white);
-            transform: translateX(5px);
-        }
-
-        /* --- Footer CSS --- */
-        footer {
-            background-color: var(--primary-color);
-            color: #ecf0f1;
-            padding: 30px 20px;
+        .section-title {
+            font-size: 2rem;
             text-align: center;
-            margin-top: auto;
-            border-top: 5px solid var(--secondary-color);
+            margin-bottom: 40px;
+            position: relative;
+            color: var(--primary);
         }
 
-        .footer-content {
+        .section-title::after {
+            content: '';
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        /* --- Modern Grid Cards --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+        }
+
+        .subject-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-decoration: none;
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.03);
         }
 
-        .footer-text {
-            font-size: 0.95rem;
-            opacity: 0.9;
+        .subject-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-light);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            background: #f1f5f9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .subject-card:hover .card-icon {
+            background: #dbeafe;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .card-arrow {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Font Download Area --- */
+        .font-download-box {
+            margin-top: 60px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            border-radius: 24px;
+            padding: 40px;
+            color: white;
+            text-align: center;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-font {
+            background: var(--accent);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 700;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-font:hover {
+            background: #d97706;
+            transform: scale(1.05);
+        }
+
+        /* --- Modern Modal --- */
+        #settingsModal {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 20px;
+        }
+
+        .modal-content-styled {
+            background: white;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group-full { grid-column: span 2; }
+
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #f1f5f9;
+            border-radius: 10px;
+            font-family: 'Mukta';
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary-light);
+            outline: none;
+        }
+
+        /* --- Slide Menu --- */
+        .slide-menu {
+            background: white;
+            width: 280px;
+            color: var(--text-main);
+        }
+
+        .slide-menu li a {
+            padding: 15px 25px;
+            border-radius: 0 50px 50px 0;
+            margin-right: 15px;
+            font-size: 1.1rem;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #f1f5f9;
+            padding: 40px 0;
+            margin-top: 80px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
         }
 
         .contact-link {
             display: inline-flex;
             align-items: center;
-            color: var(--secondary-color);
+            gap: 10px;
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 16px;
-            border-radius: 50px;
-            transition: background 0.3s ease;
+            margin-top: 10px;
+        }
+        /* --- Missing Menu Logic --- */
+
+/* The Slide Menu initial state (hidden to the left) */
+.slide-menu {
+    position: fixed;
+    top: 0;
+    left: -300px; /* Start hidden */
+    width: 280px;
+    height: 100%;
+    background: var(--white);
+    z-index: 1100;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    display: block !important; /* Ensure it's not display:none */
+}
+
+/* When the menu is active (Slide it in) */
+.slide-menu.active {
+    left: 0;
+}
+
+/* The Close Button (X) inside the menu */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: var(--error);
+}
+
+/* The Overlay (dark background when menu is open) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(2px);
+    display: none; /* Hidden by default */
+    z-index: 1050;
+}
+
+/* Show overlay when menu is open */
+.overlay.active {
+    display: block;
+}
+
+/* Style the links inside the menu */
+.slide-menu ul {
+    list-style: none;
+    padding: 80px 0 0 0; /* Space for the close button */
+    margin: 0;
+}
+
+.slide-menu li a {
+    display: block;
+    padding: 15px 30px;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.2s;
+}
+
+.slide-menu li a:hover {
+    background: #f1f5f9;
+    padding-left: 40px; /* Nice slide-in effect on hover */
+    color: var(--primary-light);
+}
+
+        /* Hide for print */
+        @media print {
+            header, .settings-banner, footer, .font-download-box {
+                display: none !important;
+            }
         }
 
-        .contact-link:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: var(--white);
-        }
-
-        .contact-link svg {
-            margin-right: 8px;
-            fill: currentColor;
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Responsive */
+        /* Mobile Adjustments */
         @media (max-width: 600px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .subjects li a {
-                font-size: 1rem;
-            }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group-full { grid-column: span 1; }
+            .header-title { font-size: 1.1rem; }
+            .card-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- Overlay for closing menu -->
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-    <!-- Header & Navigation -->
     <header>
-        <div class="menu-btn" onclick="toggleMenu()">☰</div>
-        <div class="header-title">भूमि प्रशासन</div> <!-- Optional Site Title -->
-
-        <nav class="slide-menu" id="slideMenu">
-            <div class="close-btn" onclick="toggleMenu()">&times;</div>
-            <ul>
-                <li><a href="/">Home</a></li>
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+        <div class="header-title">भूमि प्रशासन सहयोगी</div>
+        
+<nav class="slide-menu" id="slideMenu">
+    <!-- Close button inside the menu -->
+    <div class="close-btn" onclick="toggleMenu()">&times;</div>
+    
+    <ul>
+        <li><a href="/">मुख्य पृष्ठ</a></li>
                 <li><a href="/malpot calculator/">मालपोत असुली</a></li>
                 <li><a href="/kutabali calculator/">कुतबाली असुली</a></li>
                 <li><a href="/ropani adder/">रोपनी जोड्न</a></li>
@@ -316,18 +413,80 @@
                 <li><a href="/tool/advance_rajaswo_calculator.html">राजस्व क्याल्कुलेटर advanced</a></li>
                 <li><a href="/tippani/">टिप्पणी फर्म्याटहरू</a></li>
                 <li><a href="/index.html#feedback">सम्पर्क</a></li>
-            </ul>
-        </nav>
+    </ul>
+</nav>
     </header>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Settings Button -->
-<div style="text-align: right; padding: 10px 20px;" class="no-print">
-    <button onclick="openSettings()" style="background:#2c3e50; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-family:'Mukta';">⚙️ कार्यालयको लेटर हेडिङ सेटिङ</button>
-</div>
+    <div class="settings-banner no-print">
+        <button onclick="openSettings()" class="btn-settings-top">
+            <span style="font-size: 1.2rem;">⚙️</span> कार्यालय विवरण मिलाउनुहोस्
+        </button>
+        <p style="margin:0; font-size: 0.9rem; color: #0369a1; font-weight: 500;" class="mobile-hide">टिप्पणीको लेटरहेड सेटिङ गर्न यहाँ क्लिक गर्नुहोस् ।</p>
+    </div>
 
-<!-- Settings Modal -->
+    <main>
+        <h2 class="section-title">उपलब्ध टिप्पणी फर्म्याटहरू</h2>
+
+        <div class="card-grid">
+            <a href="/tippani/adalat Dakhila Kharej/" class="subject-card">
+                <div class="card-icon">⚖️</div>
+                <div class="card-title">अदालतको दाखिला खारेज</div>
+                <div class="card-arrow">खोल्नुहोस् ➜</div>
+            </a>
+
+            <a href="/tippani/seba dakhila kharej/" class="subject-card">
+                <div class="card-icon">📄</div>
+                <div class="card-title">शे.ब. दाखिला खारेज</div>
+                <div class="card-arrow">खोल्नुहोस् ➜</div>
+            </a>
+
+            <a href="/tippani/namsari suchana aades/" class="subject-card">
+                <div class="card-icon">📢</div>
+                <div class="card-title">नामसारीको सूचना र आदेश</div>
+                <div class="card-arrow">खोल्नुहोस् ➜</div>
+            </a>
+
+            <a href="/tippani/namsari_tippani/" class="subject-card">
+                <div class="card-icon">✍️</div>
+                <div class="card-title">नामसारीको टिप्पणी</div>
+                <div class="card-arrow">खोल्नुहोस् ➜</div>
+            </a>
+
+            <a href="/tippani/sansodhan/" class="subject-card">
+                <div class="card-icon">🛠️</div>
+                <div class="card-title">संसोधनको सूचना र आदेश</div>
+                <div class="card-arrow">खोल्नुहोस् ➜</div>
+            </a>
+
+            <a href="/tippani/sansodhan_tippani/" class="subject-card">
+                <div class="card-icon">📝</div>
+                <div class="card-title">संसोधनको टिप्पणी</div>
+                <div class="card-arrow">खोल्नुहोस् ➜</div>
+            </a>
+
+            <a href="/tippani/pratilipi_purja/" class="subject-card">
+                <div class="card-icon">📋</div>
+                <div class="card-title">प्रतिलिपी पुर्जा</div>
+                <div class="card-arrow">खोल्नुहोस् ➜</div>
+            </a>
+
+            <a href="/tippani/jagga darta sifaris/" class="subject-card">
+                <div class="card-icon">🏔️</div>
+                <div class="card-title">जग्गा दर्ता सिफारिस</div>
+                <div class="card-arrow">खोल्नुहोस् ➜</div>
+            </a>
+        </div>
+
+        <div class="font-download-box">
+            <h3 style="margin-top:0; font-size: 1.5rem;">📥 फन्ट डाउनलोड (Mukta Font)</h3>
+            <p style="opacity: 0.9;">
+                सबै डकुमेन्टहरू शुद्ध नेपालीमा देख्न र प्रिन्ट गर्दा फर्म्याट नबिग्रिनको लागि यो फन्ट अनिवार्य छ ।
+            </p>
+            <a href="https://fonts.google.com/download?family=Mukta" class="btn-font">फन्ट डाउनलोड गर्नुहोस्</a>
+        </div>
+    </main>
+
+    <!-- Modal Styled -->
 <div id="settingsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:2000; overflow-y:auto;">
     <div style="background:white; max-width:500px; margin:50px auto; padding:30px; border-radius:15px; font-family:'Mukta';">
         <h2 style="border-bottom:2px solid #3498db; padding-bottom:10px;">कार्यालयको विवरण सेट गर्नुहोस्</h2>
@@ -371,123 +530,63 @@
     </div>
 </div>
 
-
-
-        <div class="container">
-            <h1>टिप्पणीका र आदेशका फर्म्याटहरू</h1>
-
-            <div class="subjects" id="subjects">
-                <label for="subjects">विषयहरू</label>
-                <ul>
-                    <li>
-                        <a href="/tippani/adalat Dakhila Kharej/" target="_blank">
-                            अदालतको दाखिला खारेज
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/tippani/seba dakhila kharej/" target="_blank">
-                            शे.ब. दाखिला खारेज
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/tippani/namsari suchana aades/" target="_blank">
-                            नामसारीको सुचना र आदेश
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/tippani/namsari_tippani/" target="_blank">
-                            नामसारीको टिप्पणी
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/tippani/sansodhan/" target="_blank">
-                            संसोधनको सुचना र आदेश
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/tippani/sansodhan_tippani/" target="_blank">
-                            संसोधनको टिप्पणी
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/tippani/pratilipi_purja/" target="_blank">
-                            प्रतिलिपी पुर्जा
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/tippani/jagga darta sifaris/" target="_blank">
-                            जग्गा दर्ता सिफारिस
-                        </a>
-                    </li>
-                    <li>
-                        <!-- Add this below the Word Download button -->
-                        <a href="https://fonts.google.com/download?family=Mukta" class="btn"
-                            style="background-color:#475569; text-decoration:none; text-align:center; display:block; margin-top:5px;">
-                            📥 फन्ट डाउनलोड (Mukta Font)
-                        </a>
-                        <p style="font-size:10px; color:red; text-align:center; margin-top:2px;">
-                            * टिप्पणीमा प्रयोग भएको यो फन्ट डाउनलोड गरि इन्टल गरे वर्डमा फर्मेट बिग्रिदैँन है ।
-                        </p>
-                    </li>
-                    <!-- Example of adding more items neatly -->
-                    <!-- <li><a href="#">मोही लगत कट्टा</a></li> -->
-                </ul>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-text">
-                Designed by: <strong>Suman Acharya Sameer</strong> (Using AI)
-            </div>
-
-            <a href="mailto:acharyasuma874@gmail.com" class="contact-link">
-                <!-- SVG Email Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                        d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                </svg>
-                सम्पर्क: acharyasuma874@gmail.com
-            </a>
-        </div>
+        <p>Designed by: <strong>Suman Acharya Sameer</strong></p>
+        <a href="mailto:acharyasuma874@gmail.com" class="contact-link">📧 सम्पर्क: acharyasuma874@gmail.com</a>
     </footer>
 
-    <!-- Script for Menu Toggle -->
     <script>
-        function toggleMenu() {
-            var menu = document.getElementById("slideMenu");
-            var overlay = document.getElementById("overlay");
+function toggleMenu() {
+    var menu = document.getElementById("slideMenu");
+    var overlay = document.getElementById("overlay");
 
-            // Toggle active class
-            if (menu.classList.contains('active')) {
-                menu.classList.remove('active');
-                overlay.classList.remove('active');
-            } else {
-                menu.classList.add('active');
-                overlay.classList.add('active');
-            }
-        }
+    // This toggles the 'active' class on both elements
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
+
+// Close menu if user clicks outside on the overlay
+document.getElementById("overlay").onclick = function() {
+    toggleMenu();
+};
 
 function openSettings() {
-    const data = JSON.parse(localStorage.getItem('global_office_settings')) || {};
+    // 1. Try to get saved data from LocalStorage
+    const savedData = localStorage.getItem('global_office_settings');
+    let data = {};
+
+    if (savedData) {
+        // If data exists, use it
+        data = JSON.parse(savedData);
+    } else {
+        // 2. SET YOUR DEFAULTS HERE (If no data is saved yet)
+        data = {
+            gov: "नेपाल सरकार",
+            ministry: "भूमि व्यवस्था, सहकारी, सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय",
+            dept: "भूमि व्यवस्थापन तथा अभिलेख विभाग",
+            office: "भूमि प्रशासन कार्यालय",
+            addr: "चौतारा, सिन्धुपाल्चोक",
+            def_dist: "सिन्धुपाल्चोक",
+            phone: "०११-६२०१२०",
+            email: "shindhupalchowk@dolma.gov.np",
+            footer: "निजामती प्रशासन: विकास समृद्धि र सुशासन"
+        };
+    }
+
+    // 3. Fill the Modal input fields with the data
     document.getElementById('set_gov').value = data.gov || "नेपाल सरकार";
     document.getElementById('set_ministry').value = data.ministry || "";
     document.getElementById('set_dept').value = data.dept || "";
     document.getElementById('set_office').value = data.office || "";
     document.getElementById('set_addr').value = data.addr || "";
-    document.getElementById('set_def_dist').value = data.def_dist || "सिन्धुपाल्चोक";
+    document.getElementById('set_def_dist').value = data.def_dist || "";
     document.getElementById('set_phone').value = data.phone || "";
     document.getElementById('set_email').value = data.email || "";
     document.getElementById('set_footer').value = data.footer || "";
+
+    // 4. Show the Modal
     document.getElementById('settingsModal').style.display = 'block';
 }
-window.onload = function() {
-    console.log("Settings loaded from: ", window.location.origin);
-};
-
-function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
 
 function saveSettings() {
     const settings = {
@@ -504,33 +603,9 @@ function saveSettings() {
     localStorage.setItem('global_office_settings', JSON.stringify(settings));
     alert("विवरण सुरक्षित भयो! अब सबै टिप्पणीहरूमा यो लागू हुनेछ।");
     closeSettings();
-
 }
-
-// यो कोड सबै पेज (Malpot, Kutabali, Tippani आदि) मा राख्नुहोस्
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        // यहाँ './sw.js' को सट्टा '/sw.js' (Root Path) प्रयोग गर्नुहोला 
-        // जसले गर्दा फोल्डर भित्रबाट पनि यसले मेन फाइल भेट्छ
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => {
-                console.log('Service Worker Registered for this page!');
-                
-                // नयाँ अपडेट चेक गर्ने लजिक
-                reg.onupdatefound = () => {
-                    const installingWorker = reg.installing;
-                    installingWorker.onstatechange = () => {
-                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('नयाँ अपडेट उपलब्ध छ! कृपया पेज रिलोड गर्नुहोस्।');
-                        }
-                    };
-                };
-            })
-            .catch(err => console.log('Service Worker Registration Failed:', err));
-    });
-}
+        function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
 
     </script>
 </body>
-
 </html>
