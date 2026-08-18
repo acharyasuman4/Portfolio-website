@@ -23,6 +23,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+                        @font-face {
+            font-family: 'Mukta';
+            src: url('Mukta-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Mukta';
+            src: url('Mukta-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+
         body {
             font-family: 'Mukta', sans-serif;
             background-color: #f1f5f9;
@@ -463,7 +476,7 @@
                         <!-- 1. Muchulka Value (Full Width) -->
                         <div class="space-y-1">
                             <label class="text-[10px] text-slate-400">मुचुल्कामा भएको थैली:</label>
-                            <input type="text" id="v_muchulka" oninput="saveAndUpdate()"
+                            <input type="text" id="v_muchulka" oninput=" saveAndUpdate();"
                                 placeholder="मुचुल्कामा भएको थैली"
                                 class="w-full p-2 rounded text-black font-bold border-2 border-amber-500">
                         </div>
@@ -808,6 +821,7 @@ function saveAndUpdate() {
                 classification_update: {
             enabled: document.getElementById('class_update_enable').checked,
             basis: document.getElementById('class_update_basis').value,
+            
             selectedKittas: classificationSettings.selectedKittas
         },
 
@@ -843,9 +857,11 @@ function saveAndUpdate() {
         ownership_period: document.getElementById('ownership_period').value
     };
     localStorage.setItem('court_dakha_v1', JSON.stringify(dataToSave));
-    updateAll();
+     syncLabhakarWithThreshold(); calculateLateFeeAuto();
     // Inside saveAndUpdate function, add this line:
 postTransferRokka.purpose = document.getElementById('post_rokka_purpose').value;
+
+updateAll();
 
 
 }
@@ -1124,6 +1140,7 @@ if (topicData.labhakar && topicData.labhakar.length > 0) {
     document.getElementById('profit_tax_perc').value = "";
 }    }
     calculateLateFeeAuto();
+    syncLabhakarWithThreshold();
     saveAndUpdate();
 }
 
@@ -1141,58 +1158,57 @@ function bsToDays(bsDate) {
 // २. विलम्व शुल्क स्वचालित गणना गर्ने फङ्सन
 function calculateLateFeeAuto() {
     const regDateInput = document.getElementById('in_dadate').value;
-    const courtDateRaw = courtEntries[0] ? courtEntries[0].dt : null;
-
-    if (!regDateInput || !courtDateRaw) return;
-
-    // मितिलाई [Y, M, D] मा टुक्राउने र अंकमा बदल्ने
-    const p1 = courtDateRaw.split(/[\।\.\/-]/).map(p => parseInt(toEnglish(p)));
-    const p2 = regDateInput.split(/[\।\.\/-]/).map(p => parseInt(toEnglish(p)));
-
-    if (p1.length !== 3 || p2.length !== 3) return;
-
-    let y1 = p1[0], m1 = p1[1], d1 = p1[2];
-    let y2 = p2[0], m2 = p2[1], d2 = p2[2];
-
-    // --- मिति घटाउने ३०/१२ को लजिक ---
-    let diffD = d2 - d1;
-    let diffM = m2 - m1;
-    let diffY = y2 - y1;
-
-    // दिन सानो भए महिनाबाट ३० दिन पैँचो लिने
-    if (diffD < 0) {
-        diffD += 30;
-        diffM -= 1;
-    }
-    // महिना सानो भए वर्षबाट १२ महिना पैँचो लिने
-    if (diffM < 0) {
-        diffM += 12;
-        diffY -= 1;
-    }
-
-    // कुल दिनको फरक (२१ दिन चेक गर्न)
-    const totalDaysGap = (diffY * 360) + (diffM * 30) + diffD;
+    // अदालतको विवरण खण्डमा भरिएको पहिलो पत्रको मिति लिने
+    const courtDateRaw = courtEntries.length > 0 ? courtEntries[0].dt : null;
 
     const lateFeeCheckbox = document.getElementById('late_fee_applicable');
     const lateFeeYearInput = document.getElementById('late_fee_years');
 
-    if (totalDaysGap > 21) {
-        lateFeeCheckbox.checked = true;
-        
-        // --- वर्ष गणना गर्ने लजिक ---
-        // यदि महिना वा दिनमा केही पनि बाँकी छ भने वर्षमा १ थप गर्ने
-        // उदा: १ वर्ष ० महिना १ दिन = २ वर्ष
-        let finalYear = diffY;
-        if (diffM > 0 || diffD > 0) {
-            finalYear += 1;
-        }
-
-        lateFeeYearInput.value = toNepali(finalYear);
-        lateFeeYearInput.disabled = false;
-    } else {
+    // १. यदि कुनै पनि मिति खाली छ भने तुरुन्तै टिक हटाउने र रोक्ने
+    if (!regDateInput || !courtDateRaw) {
         lateFeeCheckbox.checked = false;
         lateFeeYearInput.value = "";
         lateFeeYearInput.disabled = true;
+        return;
+    }
+
+    // २. मितिलाई टुक्राउने
+    const p1 = courtDateRaw.split(/[\।\.\/-]/).map(p => parseInt(toEnglish(p.trim())));
+    const p2 = regDateInput.split(/[\।\.\/-]/).map(p => parseInt(toEnglish(p.trim())));
+
+    // ३. यदि मिति पूर्ण छैन भने हिसाब नगर्ने
+    if (p1.length !== 3 || p2.length !== 3 || p1.some(isNaN) || p2.some(isNaN)) return;
+
+    let y1 = p1[0], m1 = p1[1], d1 = p1[2];
+    let y2 = p2[0], m2 = p2[1], d2 = p2[2];
+
+    // ४. दिनको फरक निकाल्ने (Borrowing Logic)
+    let diffD = d2 - d1;
+    let diffM = m2 - m1;
+    let diffY = y2 - y1;
+
+    if (diffD < 0) { diffD += 30; diffM -= 1; }
+    if (diffM < 0) { diffM += 12; diffY -= 1; }
+
+    const totalDaysGap = (diffY * 360) + (diffM * 30) + diffD;
+
+    if (totalDaysGap > 21) {
+        const lateFeeCheckbox = document.getElementById('late_fee_applicable');
+        const lateFeeYearInput = document.getElementById('late_fee_years');
+        
+        lateFeeCheckbox.checked = true;
+        lateFeeYearInput.disabled = false;
+        
+        let finalYear = diffY;
+        if (diffM > 0 || diffD > 0) finalYear += 1;
+        if (finalYear === 0) finalYear = 1;
+
+        // यहाँ नेपाली फन्टको सट्टा सिधै अंक राख्नुहोस् (ताकि पछि हिसाब गर्दा सजिलो होस्)
+        // प्रिभ्युमा जाँदा यसलाई आफै नेपाली बनाइन्छ
+        lateFeeYearInput.value = finalYear; 
+    } else {
+        document.getElementById('late_fee_applicable').checked = false;
+        document.getElementById('late_fee_years').value = "";
     }
 }
 
@@ -1802,8 +1818,41 @@ function pushApplicant() {
                 }
             }
 
+function syncLabhakarWithThreshold() {
+    let totalValuation = 0;
+    
+    // १. कुल थैली निकाल्ने (जग्गा + घर)
+    lands.forEach(l => {
+        const rows = (haalKittas[l.id] && haalKittas[l.id].length > 0) ? haalKittas[l.id] : [l];
+        rows.forEach(item => totalValuation += parseFloat(item.valuation) || 0);
+    });
+    houseEntries.forEach(h => totalValuation += parseFloat(toEnglish(h.price)) || 0);
 
+    const muchulkaVal = parseFloat(toEnglish(document.getElementById('v_muchulka').value)) || 0;
+    const finalThaili = Math.max(totalValuation, muchulkaVal);
 
+    const profitTaxCheckbox = document.getElementById('has_profit_tax');
+    const selectedTitle = document.getElementById('in_trans_title').value;
+    const selectedProvince = document.getElementById('in_province').value.replace("बाग्मती", "बागमती");
+
+    // २. JSON बाट यो टपिकमा लाभकर लाग्छ कि नाइँ भनेर पहिले नै चेक गर्ने
+    let labhakarSupported = false;
+    if (landRevenueMaster && landRevenueMaster.rates && landRevenueMaster.rates[selectedProvince]) {
+        const topicData = landRevenueMaster.rates[selectedProvince][selectedTitle];
+        if (topicData && topicData.labhakar && topicData.labhakar.length > 0) {
+            labhakarSupported = true;
+        }
+    }
+
+    // ३. थ्रेसहोल्ड र JSON दुवै चेक गरेर टिक लगाउने/हटाउने
+    if (finalThaili >= 1000000 && labhakarSupported) {
+        // १० लाख पनि काट्यो र टपिकले लाभकर सपोर्ट पनि गर्छ भने टिक लगाइदिने
+        profitTaxCheckbox.checked = true;
+    } else {
+        // दुई मध्ये एउटा मात्र नमिले पनि टिक हटाइदिने
+        profitTaxCheckbox.checked = false;
+    }
+}
 
             // रोड छान्नसाथ रेट अटो-सेट गर्ने फङ्सन
             function autoSetPrice(landId, idx, roadVal, type, isKK) {
@@ -2247,6 +2296,7 @@ function calcThaili(rate, landId, idx, isKK) {
     if (valField) {
         valField.value = toNepali(totalVal);
     }
+    syncLabhakarWithThreshold();
 }
 
 
@@ -2539,6 +2589,7 @@ function addCourt() {
         document.getElementById('c_ch').value = '';
         document.getElementById('c_dt').value = '';
         renderCourts();
+        calculateLateFeeAuto();
         saveAndUpdate();
     } else {
         alert("अदालत, च.नं. र मिति भर्नुहोस्");

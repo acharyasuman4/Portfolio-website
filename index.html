@@ -402,14 +402,18 @@ async function startOfflineDownload() {
 }
 
 // Update Check Logic
-let newWorker;
+let registration;
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').then(reg => {
+        registration = reg;
+        
+        // Check for updates when the page loads
         reg.addEventListener('updatefound', () => {
-            newWorker = reg.installing;
+            const newWorker = reg.installing;
             newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    // New update found! Show the pulsate update button
+                    // New update is sitting in the background, show the button
                     document.getElementById('update-app-btn').style.display = 'flex';
                 }
             });
@@ -417,14 +421,25 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-function updateApp() {
-    // Force reload to get new version
-    navigator.serviceWorker.getRegistrations().then(regs => {
-        for(let reg of regs) reg.unregister();
-        window.location.reload(true);
-    });
+// THE UPDATE FUNCTION
+async function updateApp() {
+    if (registration && registration.waiting) {
+        // 1. Tell the waiting service worker to take over
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        
+        // 2. Wait for the new worker to become active and reload
+        registration.waiting.addEventListener('statechange', (e) => {
+            if (e.target.state === 'activated') {
+                // This reload will happen with the NEW cache
+                // LocalStorage/User data remains untouched by default
+                window.location.reload();
+            }
+        });
+    } else {
+        // If no waiting worker, just check if we are online and refresh
+        window.location.reload();
+    }
 }
-
 // Search UI Functionality
 function handleFuzzySearch() {
     const query = document.getElementById('searchInput').value.toLowerCase().trim();
