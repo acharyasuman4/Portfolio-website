@@ -258,15 +258,16 @@
 
             <!-- १. निवेदक र धनी -->
 <!-- १. निवेदक र धनी -->
-<section class="grid grid-cols-2 gap-4">
+<section class="grid grid-cols gap-4">
 <!-- १. निवेदकहरू खण्ड -->
 <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
     <div class="flex justify-between mb-2 font-bold text-indigo-800 text-xs">निवेदकहरू</div>
     
     <!-- Permanent Input Form (Now in HTML, not JS) -->
     <div id="applicant-form-container" class="space-y-2 mb-3 bg-indigo-100 p-2 rounded border border-indigo-300">
-        <input type="text" id="temp_app_name" placeholder="निवेदकको नाम" class="w-full border p-2 font-bold text-sm bg-white focus:ring-2 focus:ring-indigo-400 outline-none">
         <div class="flex gap-4 px-1">
+
+        <input type="text" id="temp_app_name" placeholder="निवेदकको नाम" class="w-full border p-2 font-bold text-sm bg-white focus:ring-2 focus:ring-indigo-400 outline-none">
             <label class="text-[10px] font-bold cursor-pointer"><input type="radio" name="rel_temp" value="father" checked onchange="currentAppInput.rel_type='father'"> बाबु/बाजे</label>
             <label class="text-[10px] font-bold cursor-pointer"><input type="radio" name="rel_temp" value="husband" onchange="currentAppInput.rel_type='husband'"> पति/ससुरा</label>
         </div>
@@ -283,12 +284,13 @@
     <div id="applicant-list-items" class="max-h-48 overflow-y-auto pt-1"></div>
 </div>
 
+</section>
 <div class="bg-rose-50 p-3 rounded-lg border border-rose-100">
         <div class="flex justify-between mb-2 font-bold text-rose-800 text-xs">जग्गाधनीहरू <button
                 onclick="addOwner()" class="bg-rose-600 text-white px-2 rounded">+ थप्नुहोस्</button></div>
         <div id="owner-list" class="flex flex-wrap gap-2"></div>
     </div>
-</section>
+
 
 
 <!-- २. जग्गाको विवरण खण्ड -->
@@ -638,7 +640,7 @@
 
                 <p style="margin: 1px;">श्रीमान्,</p>
                 <div id="main_content">
-                    <p>
+                    <p>उल्लिखित निवेदकले 
                         <span id="out_owners" class="font-bold">.......</span>को
                         नाममा जग्गाधनी श्रेस्ता कायम रहेको
                         <span class="global-dist">सिन्धुपाल्चोक</span> जिल्ला <span id="out_land_details"
@@ -1770,7 +1772,9 @@ function pushApplicant() {
     currentAppInput.name = ''; 
     renderApplicants();
     saveAndUpdate();
-    document.getElementById('temp_app_name').focus();
+    document.getElementById('temp_app_name').value = ''; // नाम खाली गर्ने
+document.getElementById('temp_app_name').focus();    // कर्सर नामको बक्समा लाने
+
 }
             function populateVdcDatalist() {
                 const settings = JSON.parse(localStorage.getItem('global_office_settings')) || { def_dist: "सिन्धुपाल्चोक" };
@@ -2396,6 +2400,38 @@ function calcThaili(rate, landId, idx, isKK) {
                 document.getElementById('kkModal').classList.add('hidden');
                 renderLandUI();
             }
+
+            // Function used in your Modal Table input
+async function onRoadInputChange(landId, idx, inputVal, isKK) {
+    const l = lands.find(x => x.id == landId);
+    const item = isKK ? haalKittas[landId][idx] : l;
+    
+    // Save current typed value
+    item.road = inputVal;
+
+    // "SMART SELECTION" LOGIC:
+    // Check if the input exactly matches an option in the datalist
+    const availableRoads = LandValuationEngine.getRoads(l.vdc, l.ward);
+    const selectedMatch = availableRoads.find(r => r.name === inputVal);
+
+    if (selectedMatch) {
+        // User SELECTED an item or typed an EXACT match -> Update Rate
+        const newRate = LandValuationEngine.getRate(l.vdc, l.ward, inputVal, item.class);
+        item.rate = newRate;
+        
+        // Update the Rate input field visually
+        const rateField = document.getElementById(`rate_${landId}_${idx}`);
+        if (rateField) rateField.value = toNepali(newRate);
+        
+        // Recalculate total
+        calcThaili(newRate, landId, idx, isKK);
+    } else {
+        // User is typing something custom -> DO NOT overwrite the rate automatically
+        // This allows manual rate entry to persist while typing descriptive road names
+        console.log("Manual override active: Keeping current rate.");
+    }
+    saveAndUpdate();
+}
 
 function renderKKInputs(focusId = null) {
     let html = "";
@@ -3393,23 +3429,36 @@ function getUniqueNepaliJoin(nameArray) {
 
 
 
-            function exportToWord() {
-                let applicantName = "";
-                if (applicants.length > 0 && applicants[0].name) {
-                    applicantName = applicants[0].name.trim().replace(/\s+/g, '_') + "_";
-                }
+function exportToWord() {
+    let applicantName = "";
+    if (applicants.length > 0 && applicants[0].name) {
+        applicantName = applicants[0].name.trim().replace(/\s+/g, '_') + "_";
+    }
 
-                const logoSrc = document.querySelector('.office-header img').src;
-                const headerTitle = document.querySelector('.header-text-container').innerHTML;
+    const logoSrc = document.querySelector('.office-header img').src;
+    const headerTitle = document.querySelector('.header-text-container').innerHTML;
+    
+    // 1. File Number and Date - NO BORDERS
+    const miNum = toNepali(document.getElementById('in_misnum').value) || ".......";
+    const miDate = toNepaliDate(document.getElementById('in_misdate').value) || ".......";
+    const miNoHeaderHtml = `
+        <table style="width:100%; border:none; border-collapse:collapse; margin-bottom:5pt;">
+            <tr>
+                <td style="text-align:left; border:none; font-weight:bold; font-size:14pt;">मि.नं. ${miNum}</td>
+                <td style="text-align:right; border:none; font-weight:bold; font-size:14pt;">मितिः ${miDate}</td>
+            </tr>
+        </table>`;
 
-                // मुख्य सामग्री लिने
-                let mainContentHtml = document.getElementById('main_content').innerHTML;
+    // 2. Applicant Table - NEEDS BORDERS
+    let applicantTableHtml = document.getElementById('applicant_table_area').innerHTML;
+    // Inject border attribute specifically for Applicant Table
+    applicantTableHtml = applicantTableHtml.replace(/<table/g, '<table border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse; width:100%; margin-bottom:10pt;"');
 
-                // Word को लागि टेबल बोर्डर फिक्स: 
-                // यहाँ हामी 'table-output' क्लास भएको टेबलमा बोर्डर एट्रिब्युट थप्छौं
-                mainContentHtml = mainContentHtml.replace(/<table class="table-output/g, '<table border="1" cellspacing="0" cellpadding="4" class="table-output" style="border-collapse:collapse; width:100%;"');
+    // 3. Main Narrative and Land Tables - NEEDS BORDERS
+    let mainContentHtml = document.getElementById('main_content').innerHTML;
+    mainContentHtml = mainContentHtml.replace(/<table/g, '<table border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse; width:100%; margin-bottom:10pt;"');
 
-                const wordHeaderLayout = `
+    const wordHeaderLayout = `
         <table style="width:100%; border:none; margin:0; border-bottom: 2pt double black; border-collapse:collapse;">
             <tr>
                 <td style="width:15%; border:none; padding:0; vertical-align:middle; text-align:left;">
@@ -3421,66 +3470,41 @@ function getUniqueNepaliJoin(nameArray) {
                     </div>
                 </td>
             </tr>
-        </table>
-    `;
+        </table>`;
 
-                const remainingContent = `
-        <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin:5pt 0 1pt 0; font-size:18pt;">टिप्पणी र आदेश</h3>
-        <p style="margin:0; padding:0;">श्रीमान्,</p>
-        <div style="text-align:justify; line-height:1; margin-top:5pt;">
-            ${mainContentHtml}
-        </div>
-    `;
-
-                const header = `
-        <html xmlns:o='urn:schemas-microsoft-com:office:office' 
-              xmlns:w='urn:schemas-microsoft-com:office:word' 
-              xmlns='http://www.w3.org/TR/REC-html40'>
+    const fullHtml = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
         <head>
             <meta charset='utf-8'>
             <style>
-                @page Section1 {
-                    size: 595.3pt 841.9pt;
-                    margin: 0.5in 0.5in 0.5in 1.2in;
-                }
+                @page Section1 { size: 595.3pt 841.9pt; margin: 0.5in 0.5in 0.5in 1.2in; }
                 div.Section1 { page: Section1; }
-                body { font-family: 'Mukta', sans-serif; font-size: 14pt; }
-                
-                /* टेबललाई कम्प्याक्ट बनाउन र बोर्डर हाल्न */
-                table.table-output { 
-                    border-collapse: collapse; 
-                    width: 100%;
-                    mso-table-lspace: 0pt; 
-                    mso-table-rspace: 0pt;
-                }
-                .table-output th, .table-output td { 
-                    border: 0.5pt solid black; 
-                    mso-border-alt: 0.5pt solid windowtext;
-                    padding: 2pt 4pt; /* प्याडिङ कम गरियो */
-                    text-align: center; 
-                    font-size: 13pt; /* फन्ट अलिकति सानो ताकि कोठा नफैलियोस् */
-                    line-height: 1.1;  /* लाइन ग्याप कम गरियो */
-                }
+                body { font-family: 'Mukta', 'Arial Unicode MS', sans-serif; font-size: 14pt; }
+                th, td { border: 1pt solid black; text-align: center; }
+                p { margin-bottom: 5pt; text-align: justify; line-height: 1.3; }
                 .font-bold { font-weight: bold; }
-                p { margin-bottom: 5pt; }
             </style>
         </head>
         <body>
             <div class="Section1">
                 ${wordHeaderLayout}
-                ${remainingContent}
+                <h3 style="text-align:center; font-weight:bold; text-decoration:underline; margin:10pt 0; font-size:18pt;">टिप्पणी र आदेश</h3>
+                ${miNoHeaderHtml}
+                ${applicantTableHtml}
+                <p style="margin-top:10pt;">श्रीमान्,</p>
+                ${mainContentHtml}
             </div>
         </body></html>`;
 
-                const blob = new Blob(['\ufeff', header], { type: 'application/msword' });
-                const url = URL.createObjectURL(blob);
-                const fileLink = document.createElement("a");
-                fileLink.href = url;
-                fileLink.download = applicantName + 'Dakhaa_Tippani.doc';
-                document.body.appendChild(fileLink);
-                fileLink.click();
-                document.body.removeChild(fileLink);
-            }
+    const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const fileLink = document.createElement("a");
+    fileLink.href = url;
+    fileLink.download = applicantName + 'Dakhaa_Tippani.doc';
+    document.body.appendChild(fileLink);
+    fileLink.click();
+    document.body.removeChild(fileLink);
+}
 
             function applyGlobalSettings() {
                 const data = JSON.parse(localStorage.getItem('global_office_settings'));

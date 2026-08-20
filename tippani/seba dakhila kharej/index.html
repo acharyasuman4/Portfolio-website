@@ -20,18 +20,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-                        @font-face {
-            font-family: 'Mukta';
-            src: url('Mukta-Regular.woff2') format('woff2');
-            font-weight: 400;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'Mukta';
-            src: url('Mukta-Bold.woff2') format('woff2');
-            font-weight: 700;
-            font-style: normal;
-        }
 
         body { font-family: 'Mukta', sans-serif; background-color: #f0fdfa; height: 100%; overflow: hidden; }
         .main-grid-container { height: calc(100vh - 20px); }
@@ -164,6 +152,9 @@
 
 
     </style>
+<script src="/reuse/letterhead.js"></script>
+<script src="/reuse/vdcload.js"></script>
+<script src="/reuse/valuation.js"></script>
 </head>
 
 <body class="p-2 md:p-4 text-base">
@@ -195,14 +186,15 @@
                 </div>
             </section>
 
-            <section class="grid grid-cols-2 gap-4">
+            <section class="grid grid-cols gap-4">
 <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
     <div class="flex justify-between mb-2 font-bold text-indigo-800 text-xs">निवेदकहरू</div>
     
     <!-- Permanent Input Form (Matches Adalat) -->
     <div id="applicant-form-container" class="space-y-2 mb-3 bg-indigo-100 p-2 rounded border border-indigo-300">
+                <div class="flex gap-4 px-1">
+
         <input type="text" id="temp_app_name" placeholder="निवेदकको नाम" class="w-full border p-2 font-bold text-sm bg-white outline-none">
-        <div class="flex gap-4 px-1">
             <label class="text-[10px] font-bold cursor-pointer"><input type="radio" name="rel_temp" value="father" checked> बाबु/बाजे</label>
             <label class="text-[10px] font-bold cursor-pointer"><input type="radio" name="rel_temp" value="husband"> पति/ससुरा</label>
         </div>
@@ -219,7 +211,8 @@
     <div id="applicant-list-items" class="max-h-48 overflow-y-auto pt-1"></div>
 </div>
 
-<div class="bg-rose-50 p-3 rounded-lg border border-rose-100">
+            </section>
+    <div class="bg-rose-50 p-3 rounded-lg border border-rose-100">
                     <div class="flex justify-between mb-2 font-bold text-rose-800 ">जग्गाधनीहरू <button onclick="addOwner()" class="bg-rose-600 text-white px-2 rounded">+ थप्नुहोस्</button></div>
                     <div id="owner-list" class="flex flex-wrap gap-2 mb-2"></div>
                     
@@ -229,7 +222,7 @@
                         <input type="text" id="death_date" oninput="updateAll()" placeholder="मृत्यु मिति" class="border p-1 w-full">
                     </div>
                 </div>
-            </section>
+
 
 <section class="bg-green-50 p-4 rounded-lg border border-green-200">
     <h3 class="font-bold text-green-800 mb-2">जग्गाको विवरण</h3>
@@ -239,6 +232,8 @@
         <input type="text" id="l_ward" placeholder="वडा" class="border p-1 rounded text-sm">
         <input type="text" id="l_kitta" placeholder="कि.नं." class="border p-1 rounded text-sm">
     </div>
+    <datalist id="vdc_list"></datalist>
+
 
     <div class="grid grid-cols-2 gap-2 mb-3">
         <button id="btn_same" onclick="addNewLandEntry('same')" class="bg-teal-600 text-white py-2 rounded-lg font-bold shadow-md hover:bg-teal-700">+ Same</button>
@@ -256,31 +251,51 @@
 
     <!-- जग्गा कार्डहरूको सूची यहाँ देखिनेछ -->
     <div id="land-list-ui" class="space-y-2 mb-4"></div>
+
+<div class="grid grid-cols-1 mt-3">
+    <button onclick="openValuationModal()" class="bg-amber-600 text-white py-2 rounded-lg font-bold text-sm shadow-md hover:bg-amber-700">
+        ⚖️ न्युनत्तम मुल्याङ्कन र घरबाटो विवरण
+    </button>
+</div>
 </section>
 
-            <!-- रोक्का सेक्सन सधैं देखिने गरि राखियो ताकि भुल्न नपरोस् -->
-            <section class="bg-orange-50 p-4 rounded-lg border border-orange-200 space-y-2">
-                <h3 class="font-bold text-orange-800 ">रोक्का व्यवस्थापन</h3>
-                <div id="rokka-kitta-selector" class="flex flex-wrap gap-1"></div>
-                <div class="bg-white p-2 rounded border space-y-2">
-                    <div class="flex gap-4 text-[10px] font-bold">
-                        <label><input type="radio" name="r_status" value="no" checked onclick="toggleRFields()"> छैन</label>
-                        <label class="text-red-600"><input type="radio" name="r_status" value="yes" onclick="toggleRFields()"> छ</label>
-                    </div>
-                    <div id="r_fields" class="hidden space-y-1">
-                        <input type="text" id="r_auth" placeholder="निकाय" class="w-full border p-1 rounded text-[10px]">
-                        <div class="grid grid-cols-2 gap-1">
-                            <input type="text" id="r_chanum" placeholder="च.नं." class="border p-1 rounded text-[10px]">
-                            <input type="text" id="r_date" placeholder="मिति" class="border p-1 rounded text-[10px]">
-                        </div>
-                    </div>
-                    <button onclick="addRokka()" class="w-full bg-orange-600 text-white py-1 rounded text-[10px]">सुरक्षित गर्नुहोस्</button>
-                </div>
-                <div id="rokka-summary" class="space-y-1"></div>
-            </section>
+<!-- रोक्का र फुकुवा व्यवस्थापन सेक्सन -->
+<section class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+    <h3 class="font-bold text-orange-800 border-b mb-2 text-sm">रोक्का र फुकुवा व्यवस्थापन</h3>
+    
+    <!-- कित्ता छान्ने ठाउँ (Adalat Style Cards) -->
+    <div id="rokka-kitta-selector" class="flex flex-wrap gap-2 mb-3"></div>
+
+    <div class="bg-white p-3 rounded border border-orange-200 space-y-2">
+        <div class="flex gap-4 font-bold text-xs">
+            <label class="cursor-pointer"><input type="radio" name="r_status" value="no" checked onclick="toggleRFields()"> रोक्का छैन</label>
+            <label class="text-red-600 cursor-pointer"><input type="radio" name="r_status" value="yes" onclick="toggleRFields()"> रोक्का छ</label>
+        </div>
+
+        <div id="r_fields" class="hidden space-y-2">
+            <input type="text" id="r_auth" placeholder="निकाय (उदा: बैंक वा अदालत)" class="w-full border p-2 rounded text-xs bg-orange-50">
+            <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="r_chanum" placeholder="च.नं." class="border p-2 rounded text-xs bg-orange-50">
+                <input type="text" id="r_date" placeholder="मिति" class="border p-2 rounded text-xs bg-orange-50">
+            </div>
+            <button onclick="addRokka()" class="w-full bg-orange-600 text-white py-2 rounded text-xs font-bold shadow-md hover:bg-orange-700 transition">रोक्का सुरक्षित गर्नुहोस्</button>
+        </div>
+    </div>
+
+    <!-- सुरक्षित गरिएका रोक्काहरूको सूची -->
+    <div id="rokka-summary" class="mt-2 space-y-1"></div>
+
+    <!-- फुकुवा अप्सन (Decision Part को लागि) -->
+    <div class="mt-2 border-t pt-2">
+        <label class="flex items-center gap-2 font-bold text-blue-800 text-xs cursor-pointer">
+            <input type="checkbox" id="need_fukuwa" onchange="updateAll()"> फुकुवा आवश्यक छ ? (Decision मा आउनेछ)
+        </label>
+        <div id="fukuwa_options" class="pl-5 space-y-1 mt-1"></div>
+    </div>
+</section>
+
 
             <section class="bg-slate-800 text-white p-5 rounded-xl space-y-4">
-                <div id="base-valuation-list" class="space-y-1"></div>
                 <div class="grid grid-cols-1 gap-3 ">
                     <label class="flex items-center gap-2 cursor-pointer bg-slate-700 p-2 rounded">
                         <input type="checkbox" id="is_3_gen" onchange="toggleRevenueFields(); updateAll()"> <span>तिन पुस्ता बाहिर ?</span>
@@ -313,7 +328,7 @@
         <!-- दायाँ भाग: प्रिभ्यु -->
         <div class="scrollable-column">
             <div id="tippani-preview" class="preview-content shadow-sm border border-slate-300">
-                <div class="office-header">
+                <!-- <div class="office-header">
                     <img id="nisan_img" style="width:90px"  src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCABYAF0DASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KK8++Kvx08F/Bqw+0+KdcgsJXjMkNkvz3M4H/POMcn+VTKUYLmk7I6KGHrYqoqNCDlJ7JK7+5HZa5run+G9LuNR1S+ttOsLdd81zdSiOOMepY8CvKfjP8AtQ+EvhP8OYPFMF9YeIXvQp02xtL+NXvQTgtGecqOpOOPrX5+ftD/ABj8S/tRavBqVlaWUOlWFre3NvolldPLdxWsA3vPdpwgJUZAH0+sn7LP7PHiL40W2p/ZodFi0V7q1sNVutQQS31jbDFwxt1YZRpV2oGGOGJ7V40sdUqzdOhHR7P9T71ZDlmW4SGLzPEfvotOVDSM3Hms4q7Uua15bJW2dnzH0j+zX+3lffFL4mQeD/FGhWdjJqs0i2F1p7ttiwm5YpFbJYkK3zgjnHHeuf8Ahn+1t4u8DapeW2t3dt8SNMk1e+gTSNK3y6/psMc7LvdAm2SIDgbjngfN2r0n4A/sc/8ACnfjHrfi+OS1/s1ry+isbCRPNaO0k8t7eSNzzG6/vY2B6rg/XzvX/wBnX42RWum6ZoVv4N0C807W7vVdP1yzvXh1KYSSyOFkOzkYfDDkEAA8V24dYiFO1V3d/Lb5hHFZBmWIqOlQVCDilab0Uk3dprmaWy033aaun9C/E/8Aae0PwF8FZfiFaWN1qdu80drBYXEUlnMZnONkiyLuTHJPB6cZzXhX7Pf/AAUHfxp4wg0Dx1p+laHDfSv9m1iO68iCIdUjkD5BJ4AYMAc17prHgHxn8YfgRqXhHx7Bo+leJL2JbWW/s/8ATLfG5c3CIwXbJt3YXoGwc4r5vf8AYA1rw74JifRzosuuSX+pW19HrSiaFtMnOyCTcR8s0KosgKgcu47cxiliVVUqL91dO55GAxmS0MHUwWMwzlWk3aonpHZR6rRO7lo7rvol9jaf8ZPBWq+L5/C9r4o0qfXoIxK9il0pk2nGMdm6jgEkZGa7MEEV+G+heCtZuP7S1G3thHYaNHbX8+ptG3lRQyXHkx3AGNzxlwTkD7uTX6C/Av8Aby0G/ll8MfELVNLsdVtH8m31/TFcaZfx4G1huAaJucEEY4PTpWGHx/O+WuuXselmnDVBRVTIazxcVfn5Vflasr+7dWd9FvZNrmSbX2JRUNrdRXtvHPBIssMih0dDkMpGQQfQipq9g/Pyrqdw1rY3EyBGeONnUSvsQkAkbm/hHv2r8q/2grHxj8V/iTHa6r460Dxb4jtbW9uJNM0VGSw0eKJd/kidgPMkbG0YBJbHqK+iP25viH471vwv4p8NaT4JktfBGlxRzap4s1WUW8bsCCEtgWXfgkAsN2TkAV+fX9galB4ki0M2L6fqztEkcN0RbtG0ih4yWbAAKkNkkDBzXz2Y15SfslBtad9fI/WOCcDhFF5m8fGjVvKEU+Wy927clJq6sna1tvi3R9Uf8E7fhi3iT4havqmsTNb266DzpE8BA1C0uwU37ujRjYwPfdxxiv0Q8GeA9B8A6Zb2OiWEVpHBawWXmKMyyRQrsiDv1fapwCa+Mr79sTw58G/AXh7wn4B0ey1vW9L02Kxn1TDCwicKDII24eZfM3HqF9zXz148/aL+JXxLEy6z4pvjZkZey0//AEW3UHplY8ZH+8TX6HlPCWLnSTmlTW/vb6+X+dj8ez3iyeYYr22MmqtWKUbxSUbLz897+fTZfe3xr/bD8GfCidtKtrsa7r+7ZJa2GJVtP9qVgQM/7AOT3wOa+LPGXx98Z/GXxgIrK7vLS3mby4rO2R5JSoIKsxhUvv3AcIAo6DjJPJ/DP4E+MfihcwDSNEvU06aOWVNTe1c2zbM7lDgYLEggDPLcZFVPENl4i+HqWqWt5q+j2d8jBYzcfZ58oxV1mjjbMZyc7H5wwPev0LAZTgMFJ06TU6vd2/Lps/M+ExWOxWJXPNOMPL/Pr+R7bpn7QHxJ+DOnaVqGqeNI9dW8icSeGrtlmu7C5R8GG5STEsa7cZZTkFhgEDn7G+Bfx+8N/H3w3JPp5+zalAoXUNHuCDJBnjP+3GecMPocHivyblle6nMk0rPJIw3TTuWJPTJJya9Kl8S6F8J9Y0bVPhn4n1a78QWhZrjVJrUW8D/MQYfKLHdGQAfmHOecdBjmOQ0MVBKCtVd7NRsvSVtPK+/rqaYPNKtCV5O8Ozevyv8Alsfob8cPgx4d134W/ECK2MPhmfVdJSK71S3izsgtVLxIUGP3agMNq44Y1+SSeFb61kvm1aZdFaC1tL9IL0eXdTQzuArRR5GSEPmYJB21+ov7Pv7Xfhv40wwaDraQ6H4qddjWMxH2e9OOTCzdc8/IefTNfIn/AAUV8Fz6J8bv7eF3a3kes2KSJYw83NutugV2dB0XGCHPHX0r8QzzLa2FlarBqS0+T6+evbuf0HwHxAqNZUHjI0cNdzldR96SVuW8lpda7N+7pq9fq/8AY2+IOoeIfDl1p2ofEjR/iBaxhG02YRm21aKMZDR3UDcnGBhwSSOp6V9L1+SH7MWhfE3w58S7W58Dtodr4ruNEi1W20rXJEH9rWUnO2JsdcDnaylcc+lfqx4S1HUdW8NabeavpjaLqk0Cvdae0qy/Z5MfMm9eGAPQjqMU8FVlVp2nGzR89xBhcBg8e6eXYj21OSUr3vZy15W0rXXZbX1PhD/goz8ZPDfiyz0LwVoniGDUL/TdSNxqem26+ZEsirhFlkB27lJb5MHk84xg/Eusa5e67e3VzqV/Lf3EpV5HuXLPIV4Xk8/L0HoOBX2h+0N8F/A/hn4ieF/hz4Z8L6Z4Z8OwiPXvFnjG/Z5JYLUyMoi8+Rid0m1gBnLMy4HU18c+PrLSLDx94lTwxeJe+Gf7RlfTpcPl7bcdgG4AjCkDn0rw8Y6sazqcyT6Wb/r+rH6NwhmGBqZXLB/2VKvL3vbNRg0+X3ormly8z2SjunrG59EeFPgp4M8Qav4c0eHxg+t63qkccjaZokYnuAWQMVbaGSBVzhpJG+XngnivQ9Q/Y/8AGni34bS6tp0Fr4VWETS23gzyWe4mMZIBlnLDzJWxkEjbyMACut/4Jo+AFsvCXiXxnPaKJNSuRY2k5YEmKMZk+XGVy59fmwOOK+1cA9hX6XheJ8zrQjVqyV91p0/LXvuultT+eHlFFOUalNwd2uV3utdnfW6/4dH5e6x+0343+H/hfR/Auiw3XgiDQbGTTry2nx9pmlflpmyoMbAlmXB/i7145beJI9a8Rx6l4guLnXVdwLySednnkj6Ehyc7gORnjIA6V+rXxo/Z+8I/G3QL611nTLZNXlgMVtrUcI+1WzjJRg45IB/hPBGR3r4E/aK/Yu1/4HaBpOuaFd3fiuxEZGq3MdqFFlIMYYIpJ8tskZOcY5PNdkuKp4OspUcLFU38bT99tvVp/O6vf1R5GJyyva7nzJbeVvL/ACKN1otp8Dm1K61Dw7Z+LdL1mzkGgeIrqP8A49ZcYxJCTsWVc4eNhlTypI68D4S+HuteMbN76xhRNMjuYrE39yWET3EhxHCm0MXkP91QcDk4FZfgP4l6t8NPFVpq40qw1NoAXGm67aGW3YMuN2wkYYg8OOxr3i+/4KEeIE0GDTdD+H/hTQXhk8+KRI2ljhl5/exxYVQ3J5ya6Z8d4Okn7GMpSdrt6beWttPRXu7dDijg6dT+LLlS2SV/x/z1t1O48Bfsu+AfC/iHUNJ8WeJF8TeONLsG1QaDYzNa2qbFLYeYDcMFQCxKYLDivC/2ovj5pnxM8RWcPhXSP+Ee0W10/wCxyXDLi6vgzB3SQ5J8vd/CSS3Vs8Aefz/F3xXcXfi65OpBJ/FilNXeOBEM6mQSEDA+UEgZxjI46Vw12ZJZF2PtbktIa+HzviGnmlFwTm5O2srJLvaKvu9utu99P03gGcaOd0fZ4J1463jFJtX0jJuXu+7fVycYpvdW1674W+PD8P8A4j+FPFM13dRR6RerK0kKrLKkeCJAisQuCCRg4HNfsX8Lfi34V+MXhSHxB4R1SPVtNdtjFAVkhcAZSRDyrDI4P4ZFflz8N/DWkRfCfw3rvgi60zVfi5oGq3Gp33hu9tvMk1OyJA8lEkG2ZlVSwVfmAZiOVFfpv8LPh34Q0LRv7d8M+GrbwtJ4hggvryCyjMAZym5QyDADLvI4Arx8thKCdpJxf9f8Oj7PjPNf7SxlL2mCeHrKP7zmSTk29LNL3krWUnuvS7+YP2v9e+M/jK08Z6dpWg2nhH4Y6XAwvta1SeKGXVAvUqWJ/d5OFXAJ9eQK/P3VtOv9DfSvt1pJYi/sU1G0aYYSW3YsFkU+h2nrX6F/F/xr4d/am8XaR8F/E2q3XgbU9O8QMdV0to2kGrJEreWlvKowN2Q43gYByMkCs79sTR9K8K/FD4cJ4S8ET+MvEFrod3o//CNQ2Ly2bafJG0UXmso42MzEDIyMklcA1nXoQxLdZSbtp/S6W7bhgOJM64Ppf2e6MVGU4zvNbxlo7NaODW0tWtbPRW+KPh/8VPFvwynFz4W8SX+iGSVZ2jt5cRSsudu6M5VhgkYI5Br7y+B3/BQvwvrXh+O0+I0p0LXrdQr39vbM9rd843BUyYz0yDxwSD2r88Nf0a48OT3drdwvHNBceRKrAgxsRnyyDnawwQQe4NemfAr9nfWvjRJqVyJv+Ee0Sytyx1WeAyQtKMfuwQRnAySQeMV5GFxVak0qeq7H1nE/CWGr4XE5xh8Xz4rSc4+6oS57cqUbtx0va8m5NO/c/XTw34r0XxhYm80LVbPWLUEBprGdZVUlQwBKk4OCDg88itN0DqyEcEYKnuPpX4+fBXwT498TeLtY0j4d+IZtPNpE8s91FeSWlvKhPlgsBnJYHjIPGfSvevCX7NPxN8Ka/pGtXvxUlt760aIPBBcXM2beNtwiLF13ISCNuMYJr3qWZOor8h+SY3Js3y2pGhi8PyzaTtzRdk+9m7PydmfTXxc/ZB+HvxVj1rUJtJ+x+KNRVSusxzyb43UAJhd23bhQCoHSvINU/wCCZ/hifQ5o9P8AFOpWur/aJJIrqaJZIRESNkTpnJKjI3ggnuK+iY/ipeCXS0fTIriKVyL25hn2iKPaSHRCCXJbA25GAc5OMV0cHj/SZYgzSyREkDbJGcjPfjjFdLhg6zu0r/cefUyud3z0vw/yPzX/AGnv2VdL/Zx8D6DfN4kuta1nUr97cq1usNuIlQsSBktuHyjrzmvmS4uBCJWLDao3kDlsAdv5196/t8/G34b+NvBKeGLG7bUPG2m6pD5EP2SVHgDEiXllGQVA475UjNfKfgvwj4ofwj40XTfBtzrtperDpl9dWVm1xeaZHvWZ2iCnIYhACMHIIzgdfnMVTpLEqnTej7a/1+h+sZDTp8MZJic4wT5MVGPLOFTZptSg4r4k7NNXvGXbqtb4DeGvifY/EnR5vAf2XSfGEukjVrCDU5Yovt1q4yNqvw4YA8DB68jGa/VD4J+MPFnjPwJbXfjXwtL4R8TwyNb3li5DRuy4/exEE5RgcjJyOR2zXjnxU/Z68O+NfCXw48eeF9TfwpqXge0tLvT9RuoHUtp0QV2hnQDep2Bu2QSwIOTWr8P/ANrK4+OOpa4Php4Zl1TSdIaJJr/VGNv5zSbyNiAEgAIfvYPI4Fe7h6cMG+Ryeuy3v8vI+Xx+NzXi6s8bVpxjGjCMW1aMdespSe7eyvtst2/gD9ovwB46/Z/+M9xe32vavfagZEurLxZiWJ58rxtlJPzLypG7t6V1Gj/8FDvirpHgvV9H1Se11xp7N7eDV3i8q7tXZSolynyuRnPK5yBzX6p674c0zxNpc+navp9tqdhMpWS2vIlljb6qwIr8y/2tf2Q9R+H3jybXfDPhmSP4bztHJL/ZPmXDWRwPMMkfLqmckFcgD06V59fC1cG/aUJPlvqv639T9NyzPss4uo/2bnVKMaqg1Gfuq7tZcu3LK7vyrR2focNp/wAPjH4A0R7u1u72eaFbyWWdUUrIeQsg+9jaSNxJ684rsvhv41vfhh4RvPD1vdXaaLqUksiRQbX8pZV2yABueCDnB96wPDWoapFEo8OeKLDxDowbyZLPWWO6IAZk2SfeKqMdc8Yqjc+KtBaSa3lsNQ8OS2ly6Nd2sJurVnVtpKsp4Ga/L61HNKDnz35ZNu8G/XZa/cmjkeQuk1H2fPybNXclsldP3r6K+kr+b1PQPgAx+Dfii4ez8Tafc6Zqir9shltR9qKru8vZlvlwzc8Hp0r6z03xhpkgS8nvLUl8LHc7wA3tz0Pf1r4UTU9I1F4v7L1jR9TlkbLL5iwsp9RuIYE+i8HvXZ+GhJaRlX12z+ykFhCs6SspI6bs8DPbmlRz/FYCk1P3+yknFr7l+i9ehjm8K+MqyxWJk3Udk7x5W1stktUtPhS8+h9J6/8AEjwxpIeaO8djuyY7U7YyT1OTgfXBH0ryrxB8f7iLzbqw1DzoS5EUFmiOwA7Funrk/WvJ/EodJJLi61zTL0hdq+beJEiD/czjP86yRc6VeRTwwao091sEk9rpNkZ5VTjAGPlAIxgDrnoayrZnjsxUffcV2pqS+9q8vyXkc1DLOaKesvRP/J/jbt5lGfw3FqfxBl8VXpl1O61C4kuvn+aVjkEYxxwBtH4mt/Qvib4h/ZU8Xp420/RY9Us9XsprBtMmZV8m5ZldZJJFGTnbnjnA254qpout3WtW8l5oGiQ6QqREQ6xr4LmQhtpCRpnbycZ9eKx9b04+KLeTw5JPd+N/GF8d9uthbGSS3PQCONDhVyDkt2znbuUj2cBSzP6zDFT91JW97WT3tZXdt99/kejR4boTaoVI+zpKXNJJ+8+r5rO1v5ryv5bW5j4xftN/Ef41TPB4k12SPTmcbNH04GC1BzxlQcyH3csa9x/Zh/Yn8XePvBt54g1DxVrvw6hvJx9ms4IXR7pAvMzL5iEAk4GR2J6Yr6A/Yu/ZJk+FmhT65470LS5fFt1IrWu8LcS2EQH3d3KhyeTt6dM19bAYr9Dw2AlUtWxLbb6a/wBfIz4g4zo4BSyvh6EY04te+lFp/wCFWt5OTvfp3FprIGoor6A/ETxD4nfsd/Dj4l6hJqh0t/Dmvtk/2toTi2lY46uoBR/fcuT6185+If2DfiZ4L0maw8CeMdH1jTjL5ot9Xtfs9wwyTtZwHV+WJ5xjtiiiuKpg6NR3tZ91ofU4LibNMDFU41OaC+zNKS0231XyaOLuPgX8X9Eh1O81b4aRajrEO37E+mCCYSBlxJl1bKgkZHG4BiAQMVxupfBjxfqUV2ZPgNra3ksM225WwwRMw+VioYKQDk9M/XsUV5dXBwi7cz/D/I+8y/ijFV4e1dOKflzr/wBv+Zd8Ofs5fElrC2WD4G4uvs0cZm1FrdUMoPzOwdtwBHPGMHj6+oaB+yl8ataSRJ4NA8LJKyZkur4TthQAN0UKbWOAAAWAA4680UV0UsvpNXbf4fojxsx4yxym4qnD1tJv/wAmk1+B6D4I/wCCdml2ZM3i3xrq2sI8rTnTdKJsbRWYszAHLPtyzcArnPPavpb4e/CXwj8KtNNj4U8P2OiQMP3jW0f7yX3eQ5Zz7sTRRXoUsNSo/BH/ADPjsfnWYZmrYqs5LtsvuVl+B1wUL0paKK6TxD//2Q==">
                     <div class="header-text-container">
                         <div id="disp_gov" style="font-size:10px">नेपाल सरकार</div>
@@ -326,7 +341,9 @@
                         <div id="disp_phone"></div>
                         <div id="disp_email"></div>
                     </div>
-                </div>
+                </div> -->
+                    <div id="common-header-container"></div> 
+
 
 <h4 style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 2px; font-size: 19px;">टिप्पणी र आदेश</h4>
 
@@ -342,82 +359,94 @@
                 <div id="main_content">
                     <p>उल्लिखित निवेदकले <span id="out_owners" class="font-bold text-red-800">.......</span>को नाममा जग्गाधनी श्रेस्ता कायम रहेको <span class="global-dist">सिन्धुपाल्चोक</span> जिल्ला <span id="out_land_details" class="font-bold text-green-700">.......</span> <span id="out_land_grammar">को जग्गा</span> <span class="font-bold" id="out_likhat_txt">...</span> को पारित शेषपछिको बकसपत्र लिखत बमोजिम दाखिला खारेज गरिपाउन द.नं. <span id="out_danum" class="font-bold">.......</span> मिति <span id="out_dadate" class="font-bold">.......</span> मा निवेदन गर्नुभएको ।</p>
                     <p id="rokka_para">उल्लिखित कित्ता जग्गाहरू मोठ कायम रहेको, <span id="out_rokka_details" class="font-bold text-orange-800">.......</span> मोठ तथा कम्प्युटर फाँटबाट र उल्लिखित लिखत तामेली सदर भएको व्यहोरा तामेली फाँटबाट भिडि आएको ।</p>
-                    <div id="kk_table_area" class="my-6">
-                        <p class="mb-2">माग भएका कित्ता जग्गाहरूको मुल्याङ्कन र कायम हुने जग्गाधनीको विवरण देहाय बमोजिम हुने ।</p>
-                        <table class="table-output w-full">
-                            <thead id="out_table_head"></thead>
-                            <tbody id="kk_rows"></tbody>
-                        </table>
-                    </div>
-                    <div id="decision_area"><p id="out_final_decision">.......</p></div>
+<div id="kk_table_area" class="my-6">
+    <!-- यहाँ id="out_intro_phrase" थपिएको छ -->
+    <p id="out_intro_phrase" class="mb-2">माग भएका कित्ता जग्गाहरूको मुल्याङ्कन देहाय बमोजिम हुने ।</p>
+    <table class="table-output w-full">
+        <thead id="out_table_head"></thead>
+        <tbody id="kk_rows"></tbody>
+    </table>
+</div>                    <div id="decision_area"><p id="out_final_decision">.......</p></div>
                 </div>
             </div>
         </div>
     </div>
 
+<!-- मुल्याङ्कन मोडल (Adalat Style) -->
+<div id="valModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        <div class="p-4 border-b bg-amber-50 flex justify-between items-center">
+            <h2 class="font-bold text-amber-800 text-lg">न्युनत्तम मुल्याङ्कन र घरबाटो विवरण</h2>
+            <button onclick="closeValuationModal()" class="text-2xl">&times;</button>
+        </div>
+        <div class="p-4 overflow-y-auto flex-grow" id="modal-content">
+            <!-- Table and House details will be injected here -->
+        </div>
+        <div class="p-4 border-t bg-slate-50 flex justify-end">
+            <button onclick="closeValuationModal()" class="bg-amber-600 text-white px-6 py-2 rounded-lg font-bold">सुरक्षित गरी बन्द गर्नुहोस्</button>
+        </div>
+    </div>
+</div>
+<datalist id="class_list_standard">
+    <option value="आवासीय"><option value="कृषि"><option value="व्यवसायिक">
+</datalist>
     <script>
-        let applicants = []; let owners = []; let lands = []; let rokkaEntries = []; let baseValuations = {};
 
-        const toNepaliDigits = (s) => s ? s.toString().replace(/[0-9]/g, d => "०१२३४५६७८९"[d]) : "";
-        const convertDate = (s) => s ? toNepaliDigits(s).replace(/[./-]/g, "।") : "";
-        const toEnglish = (s) => { if (!s) return 0; const res = s.toString().replace(/[०-९]/g, d => "०१२३४५६७८९".indexOf(d)); return parseFloat(res.replace(/,/g, '')) || 0; };
-        function nepaliJoin(arr) { if (!arr || !arr.length) return ""; if (arr.length === 1) return arr[0]; const last = arr.pop(); return arr.join(', ') + ' र ' + last; }
+// १. ग्लोबल स्टेट (State)
+let applicants = []; 
+let owners = []; 
+let lands = []; 
+let rokkaEntries = []; 
+let baseValuations = {};
+let editId = null; 
+let editAppId = null;
 
-        function formatNepaliMoney(num) {
-            if (!num && num !== 0) return "०";
-            let str = Math.round(num).toString();
-            let lastThree = str.substring(str.length - 3);
-            let otherNumbers = str.substring(0, str.length - 3);
-            if (otherNumbers != '') lastThree = ',' + lastThree;
-            return toNepaliDigits(otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree);
-        }
+// २. आधारभूत उपयोगी फङ्सनहरू
+const toNepaliDigits = (s) => s ? s.toString().replace(/[0-9]/g, d => "०१२३४५६७८९"[d]) : "";
+const convertDate = (s) => s ? toNepaliDigits(s).replace(/[./-]/g, "।") : "";
+const toEnglish = (s) => { 
+    if (!s) return 0; 
+    const res = s.toString().replace(/[०-९]/g, d => "०१२३४५६७८९".indexOf(d)); 
+    return parseFloat(res.replace(/,/g, '')) || 0; 
+};
+function nepaliJoin(arr) { if (!arr || !arr.length) return ""; if (arr.length === 1) return arr[0]; const last = arr.pop(); return arr.join(', ') + ' र ' + last; }
 
-        const NUM_NE = ["शुन्य", "एक", "दुई", "तीन", "चार", "पाँच", "छ", "सात", "आठ", "नौ", "दस", "एघार", "बाह्र", "तेह्र", "चौध", "पन्ध्र", "सोह्र", "सत्र", "अठार", "उन्नाइस", "बीस", "एक्काइस", "बाइस", "तेइस", "चौबीस", "पच्चीस", "छब्बीस", "सत्ताइस", "अठ्ठाइस", "उनन्तीस", "तीस", "एकतीस", "बत्तीस", "तेत्तीस", "चौँतीस", "पैंतीस", "छत्तीस", "सैंतीस", "अठतीस", "उनन्चालीस", "चालीस", "एकचालीस", "बयालीस", "त्रिचालीस", "चवालीस", "पैँतालीस", "छयालीस", "सत्चालीस", "अठचालीस", "उनन्चास", "पचास", "एकाउन्न", "बाउन्न", "त्रिपन्न", "चवन्न", "पचपन्न", "छपन्न", "सन्ताउन्न", "अन्ठाउन्न", "उनन्साठी", "साठी", "एकसट्ठी", "बैसट्ठी", "त्रिसट्ठी", "चौसट्ठी", "पैंसट्ठी", "छैंसट्ठी", "सडसट्ठी", "अठसट्ठी", "उनन्सत्तरी", "सत्तरी", "एकहत्तर", "बहत्तर", "त्रिहत्तर", "चौरहत्तर", "पचहत्तर", "छयहत्तर", "सतहत्तर", "अठहत्तर", "उनासी", "अस्सी", "एकासी", "बयासी", "त्रियासी", "चौरासी", "पचासी", "छयासी", "सतासी", "अठासी", "उनान्नब्बे", "नब्बे", "एकान्नब्बे", "बयान्नब्बे", "त्रियान्नब्बे", "चौरान्नब्बे", "पन्चान्नब्बे", "छयान्नब्बे", "सन्तानब्बे", "अन्ठान्नब्बे", "उनान्सय"];
+function formatNepaliMoney(num) {
+    if (!num && num !== 0) return "०";
+    let str = Math.round(num).toString();
+    let lastThree = str.substring(str.length - 3);
+    let otherNumbers = str.substring(0, str.length - 3);
+    if (otherNumbers != '') lastThree = ',' + lastThree;
+    return toNepaliDigits(otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree);
+}
+
+const NUM_NE = ["शुन्य", "एक", "दुई", "तीन", "चार", "पाँच", "छ", "सात", "आठ", "नौ", "दस", "एघार", "बाह्र", "तेह्र", "चौध", "पन्ध्र", "सोह्र", "सत्र", "अठार", "उन्नाइस", "बीस", "एक्काइस", "बाइस", "तेइस", "चौबीस", "पच्चीस", "छब्बीस", "सत्ताइस", "अठ्ठाइस", "उनन्तीस", "तीस", "एकतीस", "बत्तीस", "तेत्तीस", "चौँतीस", "पैंतीस", "छत्तीस", "सैंतीस", "अठतीस", "उनन्चालीस", "चालीस", "एकचालीस", "बयालीस", "त्रिचालीस", "चवालीस", "पैँतालीस", "छयालीस", "सत्चालीस", "अठचालीस", "उनन्चास", "पचास", "एकाउन्न", "बाउन्न", "त्रिपन्न", "चवन्न", "पचपन्न", "छपन्न", "सन्ताउन्न", "अन्ठाउन्न", "उनन्साठी", "साठी", "एकसट्ठी", "बैसट्ठी", "त्रिसट्ठी", "चौसट्ठी", "पैंसट्ठी", "छैंसट्ठी", "सडसट्ठी", "अठसट्ठी", "उनन्सत्तरी", "सत्तरी", "एकहत्तर", "बहत्तर", "त्रिहत्तर", "चौरहत्तर", "पचहत्तर", "छयहत्तर", "सतहत्तर", "अठहत्तर", "उनासी", "अस्सी", "एकासी", "बयासी", "त्रियासी", "चौरासी", "पचासी", "छयासी", "सतासी", "अठासी", "उनान्नब्बे", "नब्बे", "एकानन्नब्बे", "बयान्नब्बे", "त्रियान्नब्बे", "चौरानन्नब्बे", "पन्चानन्नब्बे", "छयान्नब्बे", "सन्तानब्बे", "अन्ठानन्नब्बे", "उनान्सय"];
+
 function numberToNepaliWords(num) {
     if (num === 0) return "शुन्य";
-    const NUM_NE = ["", "एक", "दुई", "तीन", "चार", "पाँच", "छ", "सात", "आठ", "नौ", "दस", "एघार", "बाह्र", "तेह्र", "चौध", "पन्ध्र", "सोह्र", "सत्र", "अठार", "उन्नाइस", "बीस", "एक्काइस", "बाइस", "तेइस", "चौबीस", "पच्चीस", "छब्बीस", "सत्ताइस", "अठ्ठाइस", "उनन्तीस", "तीस", "एकतीस", "बत्तीस", "तेत्तीस", "चौँतीस", "पैंतीस", "छत्तीस", "सैंतीस", "अठतीस", "उनन्चालीस", "चालीस", "एकचालीस", "बयालीस", "त्रिचालीस", "चवालीस", "पैँतालीस", "छयालीस", "सत्चालीस", "अठचालीस", "उनन्चास", "पचास", "एकाउन्न", "बाउन्न", "त्रिपन्न", "चवन्न", "पचपन्न", "छपन्न", "सन्ताउन्न", "अन्ठाउन्न", "उनन्साठी", "साठी", "एकसट्ठी", "बैसट्ठी", "त्रिसट्ठी", "चौसट्ठी", "पैंसट्ठी", "छैंसट्ठी", "सडसट्ठी", "अठसट्ठी", "उनन्सत्तरी", "सत्तरी", "एकहत्तर", "बहत्तर", "त्रिहत्तर", "चौरहत्तर", "पचहत्तर", "छयहत्तर", "सतहत्तर", "अठहत्तर", "उनासी", "अस्सी", "एकासी", "बयासी", "त्रियासी", "चौरासी", "पचासी", "छयासी", "सतासी", "अठासी", "उनान्नब्बे", "नब्बे", "एकान्नब्बे", "बयान्नब्बे", "त्रियान्नब्बे", "चौरान्नब्बे", "पन्चान्नब्बे", "छयान्नब्बे", "सन्तानब्बे", "अन्ठान्नब्बे", "उनान्सय"];
-
     let n = Math.floor(num);
     let words = "";
-
-    function convertGroup(val) {
-        if (val < 100) return NUM_NE[val];
-        return "";
-    }
-
     const crore = Math.floor(n / 10000000); n %= 10000000;
     const lakh = Math.floor(n / 100000); n %= 100000;
     const thousand = Math.floor(n / 1000); n %= 1000;
     const hundred = Math.floor(n / 100); n %= 100;
-
-    if (crore > 0) words += convertGroup(crore) + " करोड ";
-    if (lakh > 0) words += convertGroup(lakh) + " लाख ";
-    if (thousand > 0) words += convertGroup(thousand) + " हजार ";
-    if (hundred > 0) words += convertGroup(hundred) + " सय ";
-    if (n > 0) words += convertGroup(n);
-
+    if (crore > 0) words += (NUM_NE[crore] || crore) + " करोड ";
+    if (lakh > 0) words += (NUM_NE[lakh] || lakh) + " लाख ";
+    if (thousand > 0) words += (NUM_NE[thousand] || thousand) + " हजार ";
+    if (hundred > 0) words += (NUM_NE[hundred] || hundred) + " सय ";
+    if (n > 0) words += NUM_NE[n] || n;
     return words.trim();
 }
 
-let editAppId = null;
-
-// Goal 1: Update Misil Preview
-function updateMisilPreview() {
-    const misnum = document.getElementById('in_misnum').value;
-    const misdate = document.getElementById('in_misdate').value;
-    document.getElementById('out_misnum').innerText = toNepaliDigits(misnum) || ".......";
-    document.getElementById('out_misdate').innerText = convertDate(misdate) || ".......";
-}
-
-// Goal 2: Adalat-Style Applicant Logic
+// ३. निवेदक व्यवस्थापन (Adalat Style)
 function pushApplicant() {
     const nameEl = document.getElementById('temp_app_name');
     const name = nameEl.value.trim();
-    if (!name) return alert("नाम खाली छ");
+    if (!name) return alert("निवेदकको नाम खाली छ");
 
     const relType = document.querySelector('input[name="rel_temp"]:checked').value;
-
     const appData = {
+        id: editAppId || Date.now(),
         name: name,
         f: document.getElementById('temp_app_f').value,
         gf: document.getElementById('temp_app_gf').value,
@@ -428,28 +457,29 @@ function pushApplicant() {
 
     if (editAppId !== null) {
         const index = applicants.findIndex(a => a.id === editAppId);
-        if (index > -1) applicants[index] = { ...applicants[index], ...appData };
+        if (index > -1) applicants[index] = appData;
         editAppId = null;
+        document.querySelector('button[onclick="pushApplicant()"]').innerText = "+ थप्नुहोस्";
     } else {
-        applicants.push({ id: Date.now(), ...appData });
+        applicants.push(appData);
     }
 
-    nameEl.value = ''; // Clear name only to keep other details for next entry
+    nameEl.value = ''; 
     renderApplicants();
     updateAll();
 }
 
 function renderApplicants() {
-    const listHtml = applicants.map((a, i) => `
+    const container = document.getElementById('applicant-list-items');
+    if (!container) return;
+    container.innerHTML = applicants.map((a, i) => `
         <div class="flex justify-between items-center bg-white p-2 mb-1 rounded border border-indigo-200 shadow-sm">
             <span class="text-xs font-bold text-slate-700">${toNepaliDigits(i + 1)}. ${a.name}</span>
             <div class="flex gap-2">
                 <button onclick="editApp(${i})" class="text-blue-600 text-[10px] hover:underline">Edit</button>
                 <button onclick="applicants.splice(${i},1); renderApplicants(); updateAll();" class="text-red-600 text-[10px]">✕</button>
             </div>
-        </div>
-    `).join('');
-    document.getElementById('applicant-list-items').innerHTML = listHtml;
+        </div>`).join('');
 }
 
 function editApp(i) {
@@ -461,9 +491,9 @@ function editApp(i) {
     document.getElementById('temp_app_dist').value = a.dist;
     document.getElementById('temp_app_addr').value = a.addr;
     document.querySelector(`input[name="rel_temp"][value="${a.relType}"]`).checked = true;
+    document.querySelector('button[onclick="pushApplicant()"]').innerText = "Update गर्नुहोस्";
 }
 
-// Table Generation for Tippani (Matches Adalat)
 function renderApplicantTable() {
     let tableHtml = "";
     let snCount = 1;
@@ -479,106 +509,85 @@ function renderApplicantTable() {
         });
         return html + `</tbody></table>`;
     }
-
     tableHtml += generateSubTable(fatherRelApps, "बाबुको नाम", "बाजेको नाम");
     tableHtml += generateSubTable(husbandRelApps, "पतिको नाम", "ससुराको नाम");
-    document.getElementById('applicant_table_area').innerHTML = tableHtml;
+    const container = document.getElementById('applicant_table_area');
+    if (container) container.innerHTML = tableHtml;
 }
 
-
-        function addOwner() { const n = prompt("धनीको नाम:"); if (n) { owners.push(n); renderOwners(); updateAll(); } }
-        function renderOwners() {
-            document.getElementById('owner-list').innerHTML = owners.map((o, i) => `<span class="bg-rose-100 px-2 py-1 rounded text-[10px] flex gap-1">${o}<button onclick="owners.splice(${i},1); renderOwners(); updateAll();">✕</button></span>`).join('');
-            const select = document.getElementById('dead_owner_select');
-            const cur = select.value;
-            select.innerHTML = '<option value="">धनी छान्नुहोस्</option>' + owners.map(o => `<option value="${o}" ${o === cur ? 'selected' : ''}>${o}</option>`).join('');
-        }
-
-let editId = null; // कुन जग्गा इडिट भइरहेको छ ट्रयाक गर्न
-
-// १. जग्गा कार्डहरू रेन्डर गर्ने (Edit र Cancel बटन सहित)
-function renderLandUI() {
-    const container = document.getElementById('land-list-ui');
-    if (!container) return;
-    
-    const radio = document.querySelector('input[name="global_area_type"]:checked');
-    const areaSystem = radio ? radio.value : 'traditional';
-
-    container.innerHTML = lands.map((l) => {
-        return `
-        <div class="bg-white border border-slate-300 p-2 rounded shadow-sm mb-2">
-            <div class="flex items-center justify-between gap-2">
-                <div class="text-xs font-bold text-blue-800 whitespace-nowrap">
-                    ${l.vdc}-${toNepaliDigits(l.ward)} (कि.नं. ${toNepaliDigits(l.kitta)})
-                </div>
-                
-                <div class="flex items-center gap-1">
-                    <!-- क्षेत्रफल इनपुटहरू -->
-                    ${areaSystem === 'traditional' ?
-                        `<input type="text" value="${l.r || ''}" oninput="updateLandData(${l.id},'r',this.value)" placeholder="र" class="w-8 border p-1 text-center text-xs rounded bg-yellow-50 focus:bg-white">
-                         <input type="text" value="${l.a || ''}" oninput="updateLandData(${l.id},'a',this.value)" placeholder="आ" class="w-8 border p-1 text-center text-xs rounded bg-yellow-50 focus:bg-white">
-                         <input type="text" value="${l.p || ''}" oninput="updateLandData(${l.id},'p',this.value)" placeholder="पै" class="w-8 border p-1 text-center text-xs rounded bg-yellow-50 focus:bg-white">
-                         <input type="text" value="${l.d || ''}" oninput="updateLandData(${l.id},'d',this.value)" placeholder="दा" class="w-8 border p-1 text-center text-xs rounded bg-yellow-50 focus:bg-white">`
-                        : `<input type="text" value="${l.sqm || ''}" oninput="updateLandData(${l.id},'sqm',this.value)" placeholder="व.मि." class="w-20 border p-1 text-right text-xs rounded bg-yellow-50 focus:bg-white">`
-                    }
-
-                    <!-- Edit र Cancel बटनहरू -->
-                    <div class="flex items-center gap-1 border-l pl-2 ml-1">
-                        <button onclick="editLandData(${l.id})" class="text-blue-600 font-bold text-xs hover:underline">Edit</button>
-                        <button onclick="removeLandEntry(${l.id})" class="text-red-500 font-bold text-xs hover:underline">✕</button>
-                    </div>
-                </div>
-            </div>
-        </div>`
-    }).join('');
-    
-    // रोक्का र मुल्याङ्कनका लिस्टहरू पनि अपडेट गर्ने
-    renderBaseValuationUI(); 
-    renderRokkaSelectors();
-}
-
-// २. जग्गा थप्ने वा सच्याउने (Same / New)
+// ४. जग्गा व्यवस्थापन (Adalat Style)
 function addNewLandEntry(type) {
     const vdc = document.getElementById('l_vdc').value.trim();
     const ward = document.getElementById('l_ward').value.trim();
     const kitta = document.getElementById('l_kitta').value.trim();
-
     if (!vdc || !kitta) { alert("गा.वि.स. र कि.नं. अनिवार्य छ"); return; }
 
     if (editId !== null) {
-        // Edit Mode: डाटा अपडेट गर्ने
         const idx = lands.findIndex(x => x.id === editId);
-        if (idx > -1) {
-            lands[idx].vdc = vdc;
-            lands[idx].ward = ward;
-            lands[idx].kitta = kitta;
+        if (idx > -1) { 
+            lands[idx].vdc = vdc; 
+            lands[idx].ward = ward; 
+            lands[idx].kitta = kitta; 
         }
         editId = null;
         document.getElementById('btn_same').innerText = "+ Same";
         document.getElementById('btn_new').innerText = "+ New";
     } else {
-        // Add Mode: नयाँ जग्गा थप्ने
-        lands.push({ 
-            id: Date.now(), vdc, ward, kitta, 
-            r: '', a: '', p: '', d: '', sqm: '' 
-        });
+        lands.push({ id: Date.now(), vdc, ward, kitta, r: '', a: '', p: '', d: '', sqm: '', area: '' });
     }
 
-    // इनपुट क्लिन गर्ने
-    if (type === 'new') {
-        document.getElementById('l_vdc').value = '';
-        document.getElementById('l_ward').value = '';
-        document.getElementById('l_vdc').focus();
-    } else {
-        document.getElementById('l_kitta').focus();
+    if (type === 'new') { 
+        document.getElementById('l_vdc').value = ''; 
+        document.getElementById('l_ward').value = ''; 
+        document.getElementById('l_vdc').focus(); 
+    } else { 
+        document.getElementById('l_kitta').focus(); 
     }
     document.getElementById('l_kitta').value = '';
-
     renderLandUI();
     updateAll();
 }
 
-// ३. Edit बटन थिच्दा डाटा बक्समा लैजाने
+function renderLandUI() {
+    const container = document.getElementById('land-list-ui');
+    if (!container) return;
+    const radio = document.querySelector('input[name="global_area_type"]:checked');
+    const areaSystem = radio ? radio.value : 'traditional';
+
+    container.innerHTML = lands.map((l) => `
+        <div class="bg-white border border-slate-300 p-2 rounded shadow-sm mb-2">
+            <div class="flex items-center justify-between gap-2">
+                <div class="text-xs font-bold text-blue-800">${l.vdc}-${toNepaliDigits(l.ward)} (कि.नं. ${toNepaliDigits(l.kitta)})</div>
+                <div class="flex items-center gap-1">
+                    ${areaSystem === 'traditional' ? 
+                      `<input type="text" value="${l.r || ''}" oninput="updateLandData(${l.id},'r',this.value)" placeholder="र" class="w-8 border p-1 text-center text-xs rounded">
+                       <input type="text" value="${l.a || ''}" oninput="updateLandData(${l.id},'a',this.value)" placeholder="आ" class="w-8 border p-1 text-center text-xs rounded">
+                       <input type="text" value="${l.p || ''}" oninput="updateLandData(${l.id},'p',this.value)" placeholder="पै" class="w-8 border p-1 text-center text-xs rounded">
+                       <input type="text" value="${l.d || ''}" oninput="updateLandData(${l.id},'d',this.value)" placeholder="दा" class="w-8 border p-1 text-center text-xs rounded">`
+                    : `<input type="text" value="${l.sqm || ''}" oninput="updateLandData(${l.id},'sqm',this.value)" placeholder="व.मि." class="w-20 border p-1 text-right text-xs rounded">`
+                    }
+                    <button onclick="editLandData(${l.id})" class="text-blue-600 font-bold text-xs ml-2 hover:underline">Edit</button>
+                    <button onclick="removeLandEntry(${l.id})" class="text-red-500 font-bold text-xs ml-1 hover:underline">✕</button>
+                </div>
+            </div>
+        </div>`).join('');
+    renderRokkaSelectors();
+}
+
+function updateLandData(id, key, val) {
+    const land = lands.find(x => x.id === id);
+    if (land) { 
+        land[key] = val; 
+        const unit = document.querySelector('input[name="global_area_type"]:checked').value;
+        if (unit === 'traditional') {
+            land.area = `${toNepaliDigits(land.r || '०')}-${toNepaliDigits(land.a || '०')}-${toNepaliDigits(land.p || '०')}-${toNepaliDigits(land.d || '०')}`;
+        } else {
+            land.area = toNepaliDigits(land.sqm || '०') + " व.मि.";
+        }
+        updateAll(); 
+    }
+}
+
 function editLandData(id) {
     const l = lands.find(x => x.id === id);
     if (!l) return;
@@ -586,299 +595,541 @@ function editLandData(id) {
     document.getElementById('l_vdc').value = l.vdc;
     document.getElementById('l_ward').value = l.ward;
     document.getElementById('l_kitta').value = l.kitta;
-    document.getElementById('btn_same').innerText = "Update (Same)";
-    document.getElementById('btn_new').innerText = "Update (New)";
+    document.getElementById('btn_same').innerText = "Update";
     document.getElementById('l_kitta').focus();
 }
 
-// ४. डाटा सच्याउँदा (In-card edit) तत्काल सेभ गर्ने
-function updateLandData(id, key, val) {
-    const land = lands.find(x => x.id === id);
-    if (land) {
-        land[key] = val;
-        // क्षेत्रफल अपडेट (R-A-P-D वा Sqm)
-        const unit = document.querySelector('input[name="global_area_type"]:checked').value;
-        if (unit === 'traditional') {
-            land.area = `${toNepaliDigits(land.r || '०')}-${toNepaliDigits(land.a || '०')}-${toNepaliDigits(land.p || '०')}-${toNepaliDigits(land.d || '०')}`;
-        } else {
-            land.area = toNepaliDigits(land.sqm || '०') + " व.मि.";
-        }
-        updateAll();
+function removeLandEntry(id) { 
+    lands = lands.filter(x => x.id !== id); 
+    renderLandUI(); 
+    updateAll(); 
+}
+
+// ५. रोक्का व्यवस्थापन
+function renderRokkaSelectors() {
+    const container = document.getElementById('rokka-kitta-selector');
+    if (!container) return;
+    container.innerHTML = lands.map(l => `
+        <div id="card_rk_${l.id}" class="kitta-card p-1 text-[10px] border rounded cursor-pointer min-w-[60px]" onclick="toggleRKSelection(${l.id})">
+            <input type="checkbox" id="rk_cb_${l.id}" class="rk-cb hidden" value="${l.id}">
+            <div>${toNepaliDigits(l.kitta)}</div>
+        </div>`).join('');
+}
+
+function toggleRKSelection(id) {
+    const cb = document.getElementById('rk_cb_' + id);
+    const card = document.getElementById('card_rk_' + id);
+    if (cb && card) {
+        cb.checked = !cb.checked;
+        card.classList.toggle('selected', cb.checked);
     }
 }
 
-// ५. जग्गा हटाउने
-function removeLandEntry(id) {
-    lands = lands.filter(x => x.id !== id);
-    renderLandUI();
+function addRokka() {
+    const selectedCbs = document.querySelectorAll('.rk-cb:checked');
+    const kittaIds = Array.from(selectedCbs).map(c => parseInt(c.value));
+    const auth = document.getElementById('r_auth').value;
+    const chanum = document.getElementById('r_chanum').value;
+    const date = document.getElementById('r_date').value;
+    if (kittaIds.length === 0 || !auth || !chanum || !date) { alert("रोक्काको विवरण अपुरो छ"); return; }
+    rokkaEntries.push({ kittaIds, auth, chanum, date, isRokka: true, selectedForFukuwa: false });
+    renderRokkaList(); 
     updateAll();
 }
-        function renderBaseValuationUI() {
-            const cont = document.getElementById('base-valuation-list');
-            cont.innerHTML = lands.map(l => `
-                <div class="flex items-center gap-2 bg-slate-700 p-2 rounded mb-1">
-                    <span class="text-[10px] font-bold w-1/2 text-white">कि.नं. ${toNepaliDigits(l.kitta)} थैली:</span>
-                    <input type="text" oninput="baseValuations[${l.id}]=this.value; updateAll();" value="${baseValuations[l.id] || ''}" class="border p-1 rounded text-black text-[10px] w-1/2">
-                </div>`).join('');
-        }
 
-        function updateAll() {
-    updateMisilPreview();
+function renderRokkaList() {
+    const summary = document.getElementById('rokka-summary');
+    const fukuwaOpts = document.getElementById('fukuwa_options');
+    if (summary) summary.innerHTML = rokkaEntries.map((re, i) => `<div class="bg-white border p-1 text-[10px] flex justify-between rounded"><span>🚩 ${re.auth} (च.नं. ${toNepaliDigits(re.chanum)})</span><button onclick="rokkaEntries.splice(${i},1); renderRokkaList(); updateAll();" class="text-red-500">✕</button></div>`).join('');
+    if (fukuwaOpts) fukuwaOpts.innerHTML = rokkaEntries.map((re, i) => `<label class="flex items-center gap-2 text-[10px] cursor-pointer"><input type="checkbox" ${re.selectedForFukuwa ? 'checked' : ''} onchange="rokkaEntries[${i}].selectedForFukuwa = this.checked; updateAll();"> ${re.auth} फुकुवा गर्ने</label>`).join('');
+}
 
-    // 2. Update Applicant Table (Goal 2)
-    renderApplicantTable();
+function generateSmartRokkaText() {
+    if (lands.length === 0) return ".......";
+    if (rokkaEntries.length === 0) return "रोक्का नरहेको व्यहोरा";
+    const groupMap = {}; const unblockedKittas = [];
+    lands.forEach(l => {
+        const matchingEntries = rokkaEntries.filter(re => re.kittaIds.includes(l.id));
+        if (matchingEntries.length > 0) {
+            const key = matchingEntries.map(re => `${re.auth}को च.नं. ${toNepaliDigits(re.chanum)} मिति ${convertDate(re.date)}`).join(' र ');
+            if (!groupMap[key]) groupMap[key] = []; groupMap[key].push(toNepaliDigits(l.kitta));
+        } else { unblockedKittas.push(toNepaliDigits(l.kitta)); }
+    });
+    let parts = [];
+    Object.keys(groupMap).forEach(key => parts.push(`कि.नं. ${nepaliJoin(groupMap[key])} ${key} को पत्रले रोक्का रहेको`));
+    if (unblockedKittas.length) parts.push(`कि.नं. ${nepaliJoin(unblockedKittas)} रोक्का नरहेको`);
+    return nepaliJoin(parts) + " व्यहोरा";
+}
 
-    // 3. Update Existing Preview Details
-    document.getElementById('out_danum').innerText = toNepaliDigits(document.getElementById('in_danum').value) || ".......";
-    document.getElementById('out_dadate').innerText = convertDate(document.getElementById('in_dadate').value) || ".......";
+// ६. मुल्याङ्कन र विलम्व शुल्क (Borrow Logic)
+function calculateLateFeeAuto() {
+    const regDate = document.getElementById('in_dadate').value;
+    const deathDate = document.getElementById('death_date').value;
+    if (!regDate || !deathDate) return;
+
+    const p1 = deathDate.split(/[\।\.\/-]/).map(p => parseInt(toEnglish(p)));
+    const p2 = regDate.split(/[\।\.\/-]/).map(p => parseInt(toEnglish(p)));
+    if (p1.length !== 3 || p2.length !== 3) return;
+
+    let y1 = p1[0], m1 = p1[1], d1 = p1[2];
+    let y2 = p2[0], m2 = p2[1], d2 = p2[2];
+
+    let diffD = d2 - d1;
+    let diffM = m2 - m1;
+    let diffY = y2 - y1;
+
+    if (diffD < 0) { diffD += 30; diffM -= 1; }
+    if (diffM < 0) { diffM += 12; diffY -= 1; }
+
+    const totalMonths = (diffY * 12) + diffM;
+    const checkbox = document.getElementById('has_bilamba');
+    const yearInput = document.getElementById('bilamba_years');
+
+    // ६ महिना कटेपछि विलम्व शुल्क लाग्ने
+    if (totalMonths >= 6) {
+        checkbox.checked = true;
+        let finalYear = diffY;
+        if (diffM > 0 || diffD > 0) finalYear += 1;
+        yearInput.value = toNepaliDigits(finalYear);
+        yearInput.classList.remove('hidden');
+    } else {
+        checkbox.checked = false;
+        yearInput.value = "";
+    }
+}
 
 
+function renderTable() {
+    const container = document.getElementById('kk_rows');
+    const introEl = document.getElementById('out_intro_phrase'); // परिचय वाक्यको ID
+    if (!container) return;
 
-            document.getElementById('out_owners').innerText = nepaliJoin([...owners]) || ".......";
-            
-// updateAll() भित्र यो भाग बदल्नुहोस्
-// updateAll() फङ्सन भित्रको यो भाग बदल्नुहोस्
-const locs = {}; 
-lands.forEach(l => { 
-    // गा.वि.स. र वडालाई साँचो (Key) बनाउने
-    const key = `साविक ${l.vdc} वडा नं. ${toNepaliDigits(l.ward)}`; 
-    if (!locs[key]) locs[key] = []; 
-    locs[key].push(`${toNepaliDigits(l.kitta)}`); 
-});
+    // १. मुल्याङ्कन मोडलबाट 'घरबाटो फ्रेज' तान्ने र सेट गर्ने
+    if (introEl) {
+        const phrase = generateRecPhrase();
+        introEl.innerText = `${phrase} को आधारमा देहाय बमोजिम मुल्याङ्कन कायम हुने ।`;
+    }
 
-const detailsStr = Object.keys(locs).map(k => {
-    // ग्रुप गरिएका कित्ताहरूलाई 'र' ले जोड्ने
-    const kittaList = [...locs[k]]; 
-    return `${k} को कि.नं. ${nepaliJoin(kittaList)}`;
-}).join(', ');
+    // २. टेबल हेडर सेट गर्ने (बाटो र वर्गीकरण सहित)
+    const headContainer = document.getElementById('out_table_head');
+    if (headContainer) {
+        headContainer.innerHTML = `
+            <tr>
+                <th>सि.नं.</th>
+                <th>साविक गा.वि.स./वडा</th>
+                <th>कि.नं.</th>
+                <th>क्षेत्रफल</th>
+                <th>बाटोको प्रकार / वर्गीकरण</th>
+                <th>थैली</th>
+            </tr>`;
+    }
 
-document.getElementById('out_land_details').innerText = detailsStr || ".......";
+    // ३. टेबलको बडी (Rows) भर्ने
+    let html = "";
+    let total = 0;
 
-            document.getElementById('out_land_details').innerText = Object.keys(locs).map(k => `${k} को ${nepaliJoin(locs[k])}`).join(', ') || ".......";
-            document.getElementById('out_land_grammar').innerText = lands.length > 1 ? "का जग्गाहरू" : "को जग्गा";
-            document.getElementById('out_likhat_txt').innerText = `र.नं. ${toNepaliDigits(document.getElementById('in_ranum').value || "....")} मिति ${convertDate(document.getElementById('in_parit_date').value || "....")}`;
-            document.getElementById('out_danum').innerText = toNepaliDigits(document.getElementById('in_danum').value);
-            document.getElementById('out_dadate').innerText = convertDate(document.getElementById('in_dadate').value);
+    lands.forEach((l, i) => { 
+        const val = toEnglish(baseValuations[l.id]); 
+        total += val; 
 
-            renderRokkaDetails(); renderTable();
-            document.getElementById('out_final_decision').innerHTML = generateDecision();
-            applyGlobalSettings();
-            saveToLocal();
-        }
+        // मुल्याङ्कन मोडलमा भरिएको बाटो र वर्गीकरण
+        const roadInfo = l.road || '.......';
+        const classInfo = l.class || '.......';
 
-        function renderRokkaDetails() {
-            let clean = []; let grouped = {}; lands.forEach(l => {
-                let rel = rokkaEntries.filter(re => re.kittaIds.includes(l.id) && re.isRokka);
-                if (!rel.length) clean.push(toNepaliDigits(l.kitta));
-                else { let key = rel.map(re => `${re.auth}को च.नं. ${toNepaliDigits(re.chanum)} मिति ${convertDate(re.date)}`).join(' र '); if (!grouped[key]) grouped[key] = []; grouped[key].push(toNepaliDigits(l.kitta)); }
-            });
-            let rText = "";
-            if (clean.length === lands.length && lands.length > 0) rText = "रोक्का नरहेको व्यहोरा";
-            else {
-                let parts = [];
-                if (clean.length) parts.push(`कि.नं. ${nepaliJoin(clean)} रोक्का नरहेको`);
-                Object.keys(grouped).forEach(k => parts.push(`कि.नं. ${nepaliJoin(grouped[k])} ${k} बाट रोक्का रहेको`));
-                rText = nepaliJoin(parts) + " व्यहोरा";
-            }
-            document.getElementById('out_rokka_details').innerText = rText || ".......";
-        }
+        html += `
+            <tr>
+                <td>${toNepaliDigits(i + 1)}</td>
+                <td>${l.vdc} ${toNepaliDigits(l.ward)}</td>
+                <td>${toNepaliDigits(l.kitta)}</td>
+                <td>${l.area || '०'}</td>
+                <td style="font-size: 12px; text-align: left; padding-left: 5px;">
+                    ${roadInfo} / ${classInfo}
+                </td>
+                <td style="font-weight:bold;">${formatNepaliMoney(val)}</td>
+            </tr>`; 
+    });
+
+    // ४. जम्मा र अक्षरेपि फुटर
+    html += `
+        <tr class="font-bold bg-slate-50">
+            <td colspan="5" style="text-align:right; padding-right:10px;">जम्मा न्युनत्तम मुल्याङ्कन:</td>
+            <td>${formatNepaliMoney(total)}</td>
+        </tr>
+        <tr class="font-bold">
+            <td colspan="6" style="text-align:left; padding-left:10px;">अक्षरेपि: ${numberToNepaliWords(total)} मात्र ।</td>
+        </tr>`;
+
+    container.innerHTML = html;
+}
 
 function applyGlobalSettings() {
-    const data = JSON.parse(localStorage.getItem('global_office_settings'));
-    if (!data) return;
+    // This replaces all the old manual ID filling logic
+    CommonHeader.render('common-header-container');
+}
 
-    // लेटरहेडका सबै ५ वटा मुख्य भागहरू
-    const govEl = document.getElementById('disp_gov');
-    const minEl = document.getElementById('disp_ministry');
-    const deptEl = document.getElementById('disp_dept');
-    const officeEl = document.getElementById('disp_office');
-    const addrEl = document.getElementById('disp_addr');
+// function applyGlobalSettings() {
+//     const rawData = localStorage.getItem('global_office_settings');
+//     if (!rawData) return;
+//     const data = JSON.parse(rawData);
 
-    if (govEl) govEl.innerText = data.gov || "नेपाल सरकार";
-    if (minEl) minEl.innerText = data.ministry || "";
-    if (deptEl) deptEl.innerText = data.dept || "";
-    if (officeEl) officeEl.innerText = data.office || "भूमि प्रशासन कार्यालय";
-    if (addrEl) addrEl.innerText = data.addr || "";
+//     // ID Linkage Check & Fill
+//     const safeFill = (id, val) => {
+//         const el = document.getElementById(id);
+//         if (el) el.innerText = val || "";
+//     };
 
-    // फोन र ईमेल (यदि प्रिभ्युमा छ भने)
-    if (document.getElementById('disp_phone')) 
-        document.getElementById('disp_phone').innerText = data.phone ? "फोन: " + data.phone : "";
-    if (document.getElementById('disp_email')) 
-        document.getElementById('disp_email').innerText = data.email ? "Email: " + data.email : "";
+//     // लेटरहेड लिङ्केज
+//     safeFill('disp_gov', data.gov || "नेपाल सरकार");
+//     safeFill('disp_ministry', data.ministry);
+//     safeFill('disp_dept', data.dept);
+//     safeFill('disp_office', data.office);
+//     safeFill('disp_addr', data.addr);
+//     safeFill('disp_phone', data.phone ? "फोन: " + data.phone : "");
+//     safeFill('disp_email', data.email ? "Email: " + data.email : "");
 
-    // व्यहोरा भित्रको जिल्ला अटो-अपडेट
-    document.querySelectorAll('.global-dist').forEach(el => {
-        el.innerText = data.def_dist || "सिन्धुपाल्चोक";
+//     // व्यहोरा भित्रको जिल्ला लिङ्केज
+//     document.querySelectorAll('.global-dist').forEach(el => {
+//         el.innerText = data.def_dist || "सिन्धुपाल्चोक";
+//     });
+// }
+
+
+function updateMisilPreview() {
+    const misnum = document.getElementById('in_misnum').value;
+    const misdate = document.getElementById('in_misdate').value;
+    const mEl = document.getElementById('out_misnum');
+    const dEl = document.getElementById('out_misdate');
+    if (mEl) mEl.innerText = toNepaliDigits(misnum) || ".......";
+    if (dEl) dEl.innerText = convertDate(misdate) || ".......";
+}
+
+function updateAll() {
+    updateMisilPreview();
+    renderApplicantTable();
+    calculateLateFeeAuto();
+    
+    // निवेदक वाक्यांश (प्रिभ्युका लागि)
+    const groups = {}; 
+    applicants.forEach(a => { 
+        const key = `${a.dist || ''}|${a.addr || ''}`; 
+        if (!groups[key]) groups[key] = []; groups[key].push(`<span class="font-bold text-blue-900">${a.name || ''}</span>`); 
     });
+    const appTextEl = document.getElementById('out_applicant_details');
+
+    // जग्गा विवरण वाक्यांश
+    const locs = {}; 
+    lands.forEach(l => { 
+        const key = `साविक ${l.vdc} वडा नं. ${toNepaliDigits(l.ward)}`; 
+        if (!locs[key]) locs[key] = []; locs[key].push(`${toNepaliDigits(l.kitta)}`); 
+    });
+    const detailsStr = Object.keys(locs).map(k => `${k} को कि.नं. ${nepaliJoin([...locs[k]])}`).join(', ');
+    const landEl = document.getElementById('out_land_details');
+    if (landEl) landEl.innerText = detailsStr || ".......";
+    const gramEl = document.getElementById('out_land_grammar');
+    if (gramEl) gramEl.innerText = lands.length > 1 ? "का जग्गाहरू" : "को जग्गा";
+
+    // बाँकी प्रिभ्युहरू
+    const ownerEl = document.getElementById('out_owners');
+    if (ownerEl) ownerEl.innerText = nepaliJoin([...owners]) || ".......";
+    const ranum = document.getElementById('in_ranum').value;
+    const paritDt = document.getElementById('in_parit_date').value;
+    const likhatEl = document.getElementById('out_likhat_txt');
+    if (likhatEl) likhatEl.innerText = `र.नं. ${toNepaliDigits(ranum || "....")} मिति ${convertDate(paritDt || "....")}`;
+    const danumEl = document.getElementById('out_danum');
+    if (danumEl) danumEl.innerText = toNepaliDigits(document.getElementById('in_danum').value) || ".......";
+    const ddateEl = document.getElementById('out_dadate');
+    if (ddateEl) ddateEl.innerText = convertDate(document.getElementById('in_dadate').value) || ".......";
+
+    document.getElementById('out_rokka_details').innerText = generateSmartRokkaText();
+    renderTable();
+    document.getElementById('out_final_decision').innerHTML = generateDecision();
+    applyGlobalSettings();
+    saveToLocal();
 }
 
 function generateDecision() {
-        let extra = document.getElementById('decision_extra').value.trim();
+    let extra = document.getElementById('decision_extra').value.trim();
     const deadName = document.getElementById('dead_owner_select').value;
     const dDate = document.getElementById('death_date').value;
     
-    let deathPart = (deadName && dDate) ? `${deadName}को मिति ${convertDate(dDate)} मा मृत्यु भएको र ` : '';
+    // १. मृत्यु सम्बन्धी वाक्यांश
+    let deathPart = (deadName && dDate) ? `${deadName}को मिति ${convertDate(dDate)} मा मृत्यु भएको तथा ` : '';
     
-    // थप विवरण (extra) भएमा मात्र 'साथै' र 'समेतको' आउने, नभए सिधै 'आधारमा'
-    let d = `यसमा ${deathPart}उल्लिखित अन्य प्रमाणहरूको ${extra ? 'साथै ' + extra + ' समेतको' : ''} आधारमा `;
-
-    let regTotal = 0; 
-    lands.forEach(l => { regTotal += toEnglish(baseValuations[l.id]); });
-
-    const is3Gen = document.getElementById('is_3_gen').checked;
-    const svcPercVal = document.getElementById('svc_perc').value; // इनपुटबाट सिधै लिने
-    const svcFee = Math.ceil(regTotal * toEnglish(svcPercVal) / 100);
+    // २. सुरुवाती वाक्यांश (प्रमाणहरू + extra लाई "को आधारमा" भन्दा अगाडि ल्याइएको)
+    // तपाईंले खोज्नुभएको: अन्य उल्लिखित प्रमाणहरूको {extra} को आधारमा
+    let d = `यसमा ${deathPart} अन्य उल्लिखित प्रमाणहरू ${extra ? ' तथा ' + extra : ''}को आधारमा `;
     
-    // १. सेवा शुल्कको भाग
-    let revText = `रजिष्ट्रेशन थैली रू. ${formatNepaliMoney(regTotal)} (${numberToNepaliWords(regTotal)}) को प्रदेश आर्थिक ऐन बमोजिम ${is3Gen ? 'राजिनामा' : 'अंशवण्डा'} सरह ${toNepaliDigits(svcPercVal)}% ले रू. ${formatNepaliMoney(svcFee)} (${numberToNepaliWords(svcFee)}) सेवा शुल्क`;
-    
-    // २. लाभकरको भाग (तपाईंले भन्नुभएको ढाँचामा)
-    if (is3Gen && document.getElementById('has_profit').checked) {
-        const pPerc = document.getElementById('profit_perc').value; // ७.५% वा अन्य
-        const pFee = Math.ceil(regTotal * toEnglish(pPerc) / 100);
-        revText += `, ${toNepaliDigits(pPerc)}% ले रू. ${formatNepaliMoney(pFee)} (${numberToNepaliWords(pFee)}) लाभकर`;
+    // ३. फुकुवा सम्बन्धी निर्णय
+    if (document.getElementById('need_fukuwa').checked) {
+        const fItems = rokkaEntries.filter(re => re.selectedForFukuwa);
+        if (fItems.length) {
+            d += `${nepaliJoin(fItems.map(re => `${re.auth}को च.नं. ${toNepaliDigits(re.chanum)} मिति ${convertDate(re.date)}`))} को पत्रले रोक्का रहेका जग्गाहरू फुकुवा गरि `;
+        }
     }
 
-    // ३. विलम्ब शुल्कको भाग (तपाईंले भन्नुभएको ढाँचामा)
+    // ४. मुल्याङ्कन हिसाब (जग्गा + घर)
+    let landTotal = 0; 
+    lands.forEach(l => { 
+        landTotal += toEnglish(baseValuations[l.id]) || 0; 
+    });
+
+    let houseTotal = 0;
+    houseEntries.forEach(h => {
+        houseTotal += toEnglish(h.price) || 0;
+    });
+
+    const grandTotal = landTotal + houseTotal;
+    const svcPercVal = document.getElementById('svc_perc').value;
+    const svcFee = Math.ceil(grandTotal * toEnglish(svcPercVal) / 100);
+    
+    const housePart = getHousePhrase(); 
+    const is3Gen = document.getElementById('is_3_gen').checked;
+
+    // ५. राजश्व सम्बन्धी वाक्यांश
+    let revText = `${housePart}कुल थैली रू. ${formatNepaliMoney(grandTotal)} (${numberToNepaliWords(grandTotal)} रूपैयाँ) को ${is3Gen ? 'राजिनामा' : 'अंशवण्डा'} सरह ${toNepaliDigits(svcPercVal)}% ले हुने रू. ${formatNepaliMoney(svcFee)} (${numberToNepaliWords(svcFee)} रूपैयाँ) सेवा शुल्क`;
+    
+    if (is3Gen && document.getElementById('has_profit').checked) {
+        const pPerc = document.getElementById('profit_perc').value;
+        const pFee = Math.ceil(grandTotal * toEnglish(pPerc) / 100);
+        revText += `, ${toNepaliDigits(pPerc)}% ले हुने रू. ${formatNepaliMoney(pFee)} (${numberToNepaliWords(pFee)} रूपैयाँ) लाभकर`;
+    }
+
     if (document.getElementById('has_bilamba').checked) {
-        const yrs = document.getElementById('bilamba_years').value; // २ वर्ष वा अन्य
+        const yrs = document.getElementById('bilamba_years').value;
         const bAmt = toEnglish(yrs) * 500;
         if (toEnglish(yrs) > 0) {
-            revText += ` र ${toNepaliDigits(yrs)} वर्षको मुलुकी देवानी संहिता २०७४ को दफा ४२९(४) विलम्व शुल्क रू. ${formatNepaliMoney(bAmt)} (${numberToNepaliWords(bAmt)})`;
+            revText += ` र ${toNepaliDigits(yrs)} वर्षको मुलुकी देवानी संहिता २०७४ को दफा ४२९(४) बमोजिम विलम्व शुल्क रू. ${formatNepaliMoney(bAmt)} (${numberToNepaliWords(bAmt)} रूपैयाँ)`;
         }
     }
 
     const appNames = nepaliJoin(applicants.map(a => a.name));
-    const appLabel = applicants.length > 1 ? "निवेदकहरू" : "निवेदक";
-
-    return d + revText + ` असुल भई कि.नं. ${nepaliJoin(lands.map(l => toNepaliDigits(l.kitta)))} ${appLabel} ${appNames}को नाममा दा.खा. हुन एवम् तामेली प्रति लिखतमा समेत दा.खा. भई गएको व्यहोरा जनाउन आवश्यक निर्णयार्थ पेश । श्रीमानको जो आदेश ।`;
+    
+    // ६. अन्तिम निर्णय (यहाँ finalExtra हटाइएको छ किनकि यो सुरुमै गइसक्यो)
+    return d + revText + ` असुल भई कि.नं. ${nepaliJoin(lands.map(l => toNepaliDigits(l.kitta)))} निवेदक ${appNames}को नाममा दा.खा. हुन निर्णयार्थ पेश ।`;
 }
 
-        function renderTable() {
-            let html = `<tr><th>सि.नं.</th><th>गा.वि.स./वडा</th><th>कि.नं.</th><th>क्षे.फ.</th><th>जग्गाधनी</th><th>थैली</th></tr>`;
-            let total = 0; const appNames = nepaliJoin(applicants.map(a => a.name));
-            lands.forEach((l, i) => { 
-                const val = toEnglish(baseValuations[l.id]); total += val; 
-                html += `<tr><td>${toNepaliDigits(i + 1)}</td><td>${l.vdc} ${toNepaliDigits(l.ward)}</td><td>${toNepaliDigits(l.kitta)}</td><td>${l.area}</td><td>${appNames}</td><td>${formatNepaliMoney(val)}</td></tr>`; 
-            });
-            html += `<tr class="font-bold"><td colspan="5" style="text-align:right">जम्मा मुल्याङ्कन:</td><td>${formatNepaliMoney(total)}</td></tr>`;
-            document.getElementById('kk_rows').innerHTML = html;
-        }
+// ८. सेभ/लोड
+function saveToLocal() {
+    const data = { 
+        applicants, 
+        owners, 
+        lands, 
+        rokkaEntries, 
+        baseValuations, 
+        recommendations, // थपिएको
+        houseEntries,    // थपिएको
+        danum: document.getElementById('in_danum').value, 
+        dadate: document.getElementById('in_dadate').value,
+        misnum: document.getElementById('in_misnum').value, 
+        misdate: document.getElementById('in_misdate').value,
+        ranum: document.getElementById('in_ranum').value, 
+        paritDate: document.getElementById('in_parit_date').value,
+        deathOwner: document.getElementById('dead_owner_select').value, 
+        deathDate: document.getElementById('death_date').value,
+        is3Gen: document.getElementById('is_3_gen').checked, 
+        hasBilamba: document.getElementById('has_bilamba').checked,
+        hasProfit: document.getElementById('has_profit').checked, 
+        profitPerc: document.getElementById('profit_perc').value,
+        svcPerc: document.getElementById('svc_perc').value,
+        bilambaYears: document.getElementById('bilamba_years').value, 
+        need_fukuwa: document.getElementById('need_fukuwa').checked,
+        decisionExtra: document.getElementById('decision_extra').value
+    };
+    localStorage.setItem('malpot_sheba_v3', JSON.stringify(data));
+}
 
-        function toggleUnitUI() { const u = document.querySelector('input[name="unit"]:checked').value; document.getElementById('ui_rapd').classList.toggle('hidden', u !== 'rapd'); document.getElementById('ui_sqm').classList.toggle('hidden', u !== 'sqm'); }
-        function toggleRevenueFields() { const is3 = document.getElementById('is_3_gen').checked; document.getElementById('profit_perc').disabled = !is3; document.getElementById('has_profit').disabled = !is3; }
-        function toggleBilambaUI() { document.getElementById('bilamba_years').classList.toggle('hidden', !document.getElementById('has_bilamba').checked); }
-        function toggleRFields() { document.getElementById('r_fields').classList.toggle('hidden', document.querySelector('input[name="r_status"]:checked').value === 'no'); }
-        function renderRokkaSelectors() { document.getElementById('rokka-kitta-selector').innerHTML = lands.map(l => `<div id="card_${l.id}" class="kitta-card text-[10px]" onclick="toggleRK(${l.id})"><input type="checkbox" id="rk_${l.id}" value="${l.id}" class="hidden rk-cb"><div>${toNepaliDigits(l.kitta)}</div></div>`).join(''); }
-        function toggleRK(id) { const cb = document.getElementById('rk_' + id); cb.checked = !cb.checked; document.getElementById('card_' + id).classList.toggle('selected', cb.checked); }
-        function addRokka() { const kids = Array.from(document.querySelectorAll('.rk-cb:checked')).map(cb => parseInt(cb.value)); if (!kids.length) return; rokkaEntries.push({ kittaIds: kids, isRokka: document.querySelector('input[name="r_status"]:checked').value === 'yes', auth: document.getElementById('r_auth').value, chanum: document.getElementById('r_chanum').value, date: document.getElementById('r_date').value }); updateAll(); }
+function loadFromLocal() {
+    const raw = localStorage.getItem('malpot_sheba_v3');
+    if (!raw) { renderApplicants(); renderOwners(); renderLandUI(); return; }
+    const data = JSON.parse(raw);
+    
+    // Arrays पुनर्स्थापना
+    applicants = data.applicants || []; 
+    owners = data.owners || []; 
+    lands = data.lands || [];
+    rokkaEntries = data.rokkaEntries || []; 
+    baseValuations = data.baseValuations || {};
+    recommendations = data.recommendations || []; // थपिएको
+    houseEntries = data.houseEntries || [];       // थपिएको
 
-        function exportToWord() {
-            const data = JSON.parse(localStorage.getItem('global_office_settings')) || {};
-            const logoImg = document.getElementById('nisan_img');
-            const canvas = document.createElement('canvas');
-            canvas.width = logoImg.naturalWidth; canvas.height = logoImg.naturalHeight;
-            canvas.getContext('2d').drawImage(logoImg, 0, 0);
-            const b64 = canvas.toDataURL('image/png');
+    // Inputs पुनर्स्थापना
+    document.getElementById('in_danum').value = data.danum || '';
+    document.getElementById('in_dadate').value = data.dadate || '';
+    document.getElementById('in_misnum').value = data.misnum || '';
+    document.getElementById('in_misdate').value = data.misdate || '';
+    document.getElementById('in_ranum').value = data.ranum || '';
+    document.getElementById('in_parit_date').value = data.paritDate || '';
+    document.getElementById('death_date').value = data.deathDate || '';
+    document.getElementById('is_3_gen').checked = data.is3Gen || false;
+    document.getElementById('has_profit').checked = data.hasProfit || false;
+    document.getElementById('profit_perc').value = data.profitPerc || '7.5';
+    document.getElementById('svc_perc').value = data.svcPerc || '0.3';
+    document.getElementById('has_bilamba').checked = data.hasBilamba || false;
+    document.getElementById('bilamba_years').value = data.bilambaYears || '';
+    document.getElementById('need_fukuwa').checked = data.need_fukuwa || false;
+    document.getElementById('decision_extra').value = data.decisionExtra || '';
 
-            const headerHTML = `
-                <table style="width:100%; border:none; border-bottom: 2pt double black;">
-                    <tr>
-                        <td style="width:15%; border:none; vertical-align:middle;"><img src="${b64}" width="90"></td>
-                        <td style="width:70%; border:none; text-align:center; color:red;">
-                            <div style="font-size:9pt;">${data.gov || 'नेपाल सरकार'}</div>
-                            <div style="font-size:10pt;">${data.ministry || ''}</div>
-                            <div style="font-size:12pt;">${data.dept || ''}</div>
-                            <div style="font-size:16pt; font-weight:bold;">${data.office || ''}</div>
-                            <div style="font-size:14pt;">${data.addr || ''}</div>
-                        </td>
-                        <td style="width:15%; border:none; vertical-align:bottom; text-align:right; font-size:9pt; color:black;">
-                            <div>${document.getElementById('disp_phone').innerText}</div>
-                            <div>${document.getElementById('disp_email').innerText}</div>
-                        </td>
-                    </tr>
-                </table>`;
+    // UI Refresh
+    renderApplicants(); 
+    renderOwners(); 
+    renderLandUI(); 
+    renderRokkaList();
+    
+    setTimeout(() => { 
+        document.getElementById('dead_owner_select').value = data.deathOwner || '';
+        updateAll(); 
+    }, 150);
+}
 
-            let mainContent = document.getElementById('main_content').innerHTML;
-            mainContent = mainContent.replace(/<table/g, '<table border="1" cellspacing="0" cellpadding="3" style="border-collapse:collapse; width:100%;"');
+// ९. स्टार्टअप
+window.onload = async () => {
+    // 1. Initialize VDC Manager ( reusable call )
+    // Parameters: (InputID, DatalistID)
+    await VDCManager.init('l_vdc', 'vdc_list');
 
-            const wordDoc = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'><style>@page Section1 { size: A4; margin: 1in 0.5in 1in 1.25in; } body { font-family:'Mukta', sans-serif; font-size:14pt; } table td, table th { border: 1px solid black; text-align:center; }</style></head>
-                <body><div class="Section1">${headerHTML}<h3 style="text-align:center; text-decoration:underline;">टिप्पणी र आदेश</h3><p>श्रीमान्,</p>${mainContent}</div></body></html>`;
-            
-            const blob = new Blob(['\ufeff', wordDoc], { type: 'application/msword' });
-            const link = document.createElement("a"); link.href = URL.createObjectURL(blob);
-            link.download = `Sheba-Tippani-${applicants[0]?.name || 'new'}.doc`;
-            link.click();
-        }
-
-        function saveToLocal() {
-            const data = { applicants, owners, lands, rokkaEntries, baseValuations,
-                danum: document.getElementById('in_danum').value, dadate: document.getElementById('in_dadate').value,
-                ranum: document.getElementById('in_ranum').value, paritDate: document.getElementById('in_parit_date').value,
-                misnum: document.getElementById('in_misnum').value,
-misdate: document.getElementById('in_misdate').value,
-                deathOwner: document.getElementById('dead_owner_select').value, deathDate: document.getElementById('death_date').value,
-                is3Gen: document.getElementById('is_3_gen').checked, bilambaYears: document.getElementById('bilamba_years').value,
-                hasBilamba: document.getElementById('has_bilamba').checked, decisionExtra: document.getElementById('decision_extra').value
-            };
-            localStorage.setItem('malpot_sheba_v3', JSON.stringify(data));
-        }
-
-        function loadFromLocal() {
-            const data = JSON.parse(localStorage.getItem('malpot_sheba_v3'));
-            if (data) {
-                applicants = data.applicants || []; owners = data.owners || []; lands = data.lands || [];
-                rokkaEntries = data.rokkaEntries || []; baseValuations = data.baseValuations || {};
-                document.getElementById('in_danum').value = data.danum || '';
-                document.getElementById('in_dadate').value = data.dadate || '';
-                document.getElementById('in_ranum').value = data.ranum || '';
-                document.getElementById('in_parit_date').value = data.paritDate || '';
-                document.getElementById('dead_owner_select').value = data.deathOwner || '';
-                document.getElementById('death_date').value = data.deathDate || '';
-                document.getElementById('is_3_gen').checked = data.is3Gen || false;
-                document.getElementById('bilamba_years').value = data.bilambaYears || '';
-                document.getElementById('has_bilamba').checked = data.hasBilamba || false;
-                document.getElementById('decision_extra').value = data.decisionExtra || '';
-                renderApplicants(); renderOwners(); renderLandUI();
-                toggleRevenueFields(); toggleBilambaUI(); updateAll();applyGlobalSettings();
-
-                                  document.getElementById('dead_owner_select').value = data.deathOwner || '';
-        document.getElementById('death_date').value = data.deathDate || '';
-        document.getElementById('in_misnum').value = data.misnum || '';
-document.getElementById('in_misdate').value = data.misdate || '';
-
-
-            } else { addApplicant(); }
-        }
-
-        function resetData() { if (confirm("मेटाउन चाहनुहुन्छ?")) { localStorage.removeItem('malpot_sheba_v3'); location.reload(); } }
-window.onload = function() {
+    // 2. Load existing local data
     loadFromLocal();
-    applyGlobalSettings(); // <-- यहाँ थप्नुहोस्
+    
+    // 3. Apply Letterhead (The previous common component)
+    if(typeof CommonHeader !== 'undefined') {
+        CommonHeader.render('common-header-container');
+    }
 };
-        // यो कोड सबै पेज (Malpot, Kutabali, Tippani आदि) मा राख्नुहोस्
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        // यहाँ './sw.js' को सट्टा '/sw.js' (Root Path) प्रयोग गर्नुहोला 
-        // जसले गर्दा फोल्डर भित्रबाट पनि यसले मेन फाइल भेट्छ
-        navigator.serviceWorker.register('/sw.js')
-            .then(reg => {
-                console.log('Service Worker Registered for this page!');
-                
-                // नयाँ अपडेट चेक गर्ने लजिक
-                reg.onupdatefound = () => {
-                    const installingWorker = reg.installing;
-                    installingWorker.onstatechange = () => {
-                        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            console.log('नयाँ अपडेट उपलब्ध छ! कृपया पेज रिलोड गर्नुहोस्।');
-                        }
-                    };
-                };
-            })
-            .catch(err => console.log('Service Worker Registration Failed:', err));
-    });
+function resetData() { if (confirm("सबै मेटाउन चाहनुहुन्छ?")) { localStorage.removeItem('malpot_sheba_v3'); location.reload(); } }
+function toggleUnitUI() { renderLandUI(); updateAll(); }
+function toggleRFields() { document.getElementById('r_fields').classList.toggle('hidden', document.querySelector('input[name="r_status"]:checked').value === 'no'); }
+function toggleRevenueFields() { document.getElementById('profit_perc').disabled = !document.getElementById('is_3_gen').checked; document.getElementById('has_profit').disabled = !document.getElementById('is_3_gen').checked; }
+function toggleBilambaUI() { document.getElementById('bilamba_years').classList.toggle('hidden', !document.getElementById('has_bilamba').checked); }
+
+function addApplicant() { pushApplicant(); } // Re-binding for HTML compatibility
+function addOwner() { const n = prompt("धनीको नाम:"); if (n) { owners.push(n); renderOwners(); updateAll(); } }
+function renderOwners() {
+    document.getElementById('owner-list').innerHTML = owners.map((o, i) => `<span class="bg-rose-100 px-2 py-1 rounded text-[10px] flex gap-1">${o}<button onclick="owners.splice(${i},1); renderOwners(); updateAll();">✕</button></span>`).join('');
+    const select = document.getElementById('dead_owner_select');
+    const cur = select.value;
+    select.innerHTML = '<option value="">धनी छान्नुहोस्</option>' + owners.map(o => `<option value="${o}" ${o === cur ? 'selected' : ''}>${o}</option>`).join('');
 }
-    </script>
+
+// Word Export
+function exportToWord() {
+    // १. letterhead.js ले प्रयोग गर्ने localStorage बाट डाटा तान्ने
+    const settings = JSON.parse(localStorage.getItem('global_office_settings')) || {};
+    
+    // २. फाइलको नामको लागि पहिलो निवेदकको नाम
+    let fileName = "Tippani_Export";
+    if (applicants.length > 0 && applicants[0].name) {
+        fileName = applicants[0].name.trim().replace(/\s+/g, '_');
+    }
+
+    // ३. वर्डको लागि आधिकारिक लोगो (Base64)
+    const logoBase64 =
+"data:image/jpeg;base64,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"
+
+    // ४. पत्रको हेडर (Word-friendly Table Format)
+const wordHeader = `
+    <table class="header-table" style="width:100%; border:none; border-bottom:2pt double black; border-collapse:collapse; margin-bottom:0.3pt;">
+        <tr>
+            <td style="width:15%; text-align:left;">
+                <img src="${logoBase64}" width="75" height="75">
+            </td>
+            <td style="width:85%; text-align:center;" class="header-container">
+                <div style="font-size:10pt;">${settings.gov || "नेपाल सरकार"}</div>
+                <div style="font-size:12pt; font-weight:bold;">${settings.ministry || ""}</div>
+                <div style="font-size:13pt; font-weight:bold;">${settings.dept || ""}</div>
+                <div style="font-size:17pt; font-weight:bold; color:#ff0000;">${settings.office || ""}</div>
+                <div style="font-size:12pt; font-weight:bold;">${settings.addr || ""}</div>
+            </td>
+        </tr>
+    </table>`;
+    // ५. मि.नं. र मिति (Misil Header)
+    const miNum = toNepaliDigits(document.getElementById('in_misnum').value) || ".......";
+    const miDate = convertDate(document.getElementById('in_misdate').value) || ".......";
+    const misilHeader = `
+        <table style="width:100%; border:none; border-collapse:collapse; margin-bottom:10pt;">
+            <tr>
+                <td style="text-align:left; border:none; font-weight:bold; font-size:13pt;">मि.नं. ${miNum}</td>
+                <td style="text-align:right; border:none; font-weight:bold; font-size:13pt;">मितिः ${miDate}</td>
+            </tr>
+        </table>`;
+
+    // ६. कन्टेन्ट तयारी (Borders मिलाउने)
+    let applicantTable = document.getElementById('applicant_table_area').innerHTML;
+// Change the replacement logic to this:
+applicantTable = applicantTable.replace(/<table/g, '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse; width:100%; margin-bottom:10pt;"');
+
+    let mainContent = document.getElementById('main_content').innerHTML;
+    // मुल्याङ्कन टेबललाई बोर्डर हाल्ने
+mainContent = mainContent.replace(/<table/g, '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse; width:100%; margin:5pt 0;"');
+
+    // ७. पूर्ण HTML डकुमेन्ट
+    const wordHtml = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+            <meta charset='utf-8'>
+<style>
+    @page Section1 { size: A4; margin: 0.5in 0.5in 0.5in 1.25in; }
+    div.Section1 { page: Section1; }
+    body { font-family: 'Mukta', 'Arial Unicode MS', sans-serif; font-size: 14pt; line-height: 1.3; }
+
+    /* The "Tight Fit" Logic */
+    table { border-collapse: collapse; width: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    
+    table td, table th { 
+        border: 1pt solid black; 
+        text-align: center; 
+        padding: 0.5pt 2pt;          /* Nearly zero vertical padding */
+        line-height: 12pt;           /* Matches font size for tight vertical fit */
+        mso-line-height-rule: exactly; /* Forces Word to ignore extra spacing */
+        font-size: 12pt; 
+    }
+
+    /* Remove extra space Word adds to paragraphs inside cells */
+    table td p, table th p { 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        line-height: 12pt; 
+    }
+
+    p { margin: 0 0 5pt 0; text-align: justify; }
+    h3 { text-align: center; text-decoration: underline; font-size: 18pt; margin-bottom: 2pt; }
+    /* Header specific tight styles */
+.header-container div { 
+    margin: 0 !important; 
+    padding: 0 !important; 
+    line-height: 1.1 !important; /* Tightens the gap between Nepal Sarkar, Ministry, etc. */
+}
+
+/* Specific rule for the header table cells */
+.header-table td {
+    padding: 0 !important;
+    border: none !important;
+    vertical-align: middle;
+}
+</style>      
+
+</head>
+        <body>
+            <div class="Section1">
+                ${wordHeader}
+                <h3>टिप्पणी र आदेश</h3>
+                ${misilHeader}
+                ${applicantTable}
+                <p style="margin-top:12pt;">श्रीमान्,</p>
+                ${mainContent}
+            </div>
+        </body></html>`;
+
+    // ८. फाइल डाउनलोड
+    const blob = new Blob(['\ufeff', wordHtml], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = url;
+    downloadLink.download = fileName + '_Seba_Tippani.doc';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+</script>
 </body>
 </html>

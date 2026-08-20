@@ -1,0 +1,22 @@
+<div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
+    <div class="flex justify-between mb-2 font-bold text-indigo-800 text-xs">निवेदकहरू</div>
+    
+    <!-- Permanent Input Form (Matches Adalat) -->
+    <div id="applicant-form-container" class="space-y-2 mb-3 bg-indigo-100 p-2 rounded border border-indigo-300">
+        <input type="text" id="temp_app_name" placeholder="निवेदकको नाम" class="w-full border p-2 font-bold text-sm bg-white outline-none">
+        <div class="flex gap-4 px-1">
+            <label class="text-[10px] font-bold cursor-pointer"><input type="radio" name="rel_temp" value="father" checked> बाबु/बाजे</label>
+            <label class="text-[10px] font-bold cursor-pointer"><input type="radio" name="rel_temp" value="husband"> पति/ससुरा</label>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="temp_app_f" placeholder="बाबु/पति" class="border p-1 text-xs">
+            <input type="text" id="temp_app_gf" placeholder="बाजे/ससुरा" class="border p-1 text-xs">
+            <input type="text" id="temp_app_dist" value="सिन्धुपाल्चोक" placeholder="जिल्ला" class="border p-1 text-xs">
+            <input type="text" id="temp_app_addr" placeholder="ठेगाना" class="border p-1 text-xs">
+        </div>
+        <button onclick="pushApplicant()" class="w-full bg-indigo-600 text-white py-2 rounded font-bold text-xs shadow hover:bg-indigo-700 transition">+ थप्नुहोस्</button>
+    </div>
+
+    <!-- Container for the LIST of added applicants -->
+    <div id="applicant-list-items" class="max-h-48 overflow-y-auto pt-1"></div>
+</div>

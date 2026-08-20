@@ -1,0 +1,34 @@
+<!-- रोक्का र फुकुवा व्यवस्थापन सेक्सन -->
+<section class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+    <h3 class="font-bold text-orange-800 border-b mb-2 text-sm">रोक्का र फुकुवा व्यवस्थापन</h3>
+    
+    <!-- कित्ता छान्ने ठाउँ (Adalat Style Cards) -->
+    <div id="rokka-kitta-selector" class="flex flex-wrap gap-2 mb-3"></div>
+
+    <div class="bg-white p-3 rounded border border-orange-200 space-y-2">
+        <div class="flex gap-4 font-bold text-xs">
+            <label class="cursor-pointer"><input type="radio" name="r_status" value="no" checked onclick="toggleRFields()"> रोक्का छैन</label>
+            <label class="text-red-600 cursor-pointer"><input type="radio" name="r_status" value="yes" onclick="toggleRFields()"> रोक्का छ</label>
+        </div>
+
+        <div id="r_fields" class="hidden space-y-2">
+            <input type="text" id="r_auth" placeholder="निकाय (उदा: बैंक वा अदालत)" class="w-full border p-2 rounded text-xs bg-orange-50">
+            <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="r_chanum" placeholder="च.नं." class="border p-2 rounded text-xs bg-orange-50">
+                <input type="text" id="r_date" placeholder="मिति" class="border p-2 rounded text-xs bg-orange-50">
+            </div>
+            <button onclick="addRokka()" class="w-full bg-orange-600 text-white py-2 rounded text-xs font-bold shadow-md hover:bg-orange-700 transition">रोक्का सुरक्षित गर्नुहोस्</button>
+        </div>
+    </div>
+
+    <!-- सुरक्षित गरिएका रोक्काहरूको सूची -->
+    <div id="rokka-summary" class="mt-2 space-y-1"></div>
+
+    <!-- फुकुवा अप्सन (Decision Part को लागि) -->
+    <div class="mt-2 border-t pt-2">
+        <label class="flex items-center gap-2 font-bold text-blue-800 text-xs cursor-pointer">
+            <input type="checkbox" id="need_fukuwa" onchange="updateAll()"> फुकुवा आवश्यक छ ? (Decision मा आउनेछ)
+        </label>
+        <div id="fukuwa_options" class="pl-5 space-y-1 mt-1"></div>
+    </div>
+</section>

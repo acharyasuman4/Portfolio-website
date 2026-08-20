@@ -1,0 +1,26 @@
+<section class="bg-green-50 p-4 rounded-lg border border-green-200">
+    <h3 class="font-bold text-green-800 mb-2">जग्गाको विवरण</h3>
+
+    <div class="grid grid-cols-3 gap-2 mb-3">
+        <input type="text" id="l_vdc" placeholder="गा.वि.स." class="border p-1 rounded text-sm">
+        <input type="text" id="l_ward" placeholder="वडा" class="border p-1 rounded text-sm">
+        <input type="text" id="l_kitta" placeholder="कि.नं." class="border p-1 rounded text-sm">
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 mb-3">
+        <button id="btn_same" onclick="addNewLandEntry('same')" class="bg-teal-600 text-white py-2 rounded-lg font-bold shadow-md hover:bg-teal-700">+ Same</button>
+        <button id="btn_new" onclick="addNewLandEntry('new')" class="bg-green-700 text-white py-2 rounded-lg font-bold shadow-md hover:bg-green-800">+ New</button>
+    </div>
+
+    <!-- क्षेत्रफल प्रणाली (Adalat Style) -->
+    <div class="flex items-center justify-between mb-3 bg-white p-2 rounded border border-green-100">
+        <span class="text-[10px] font-bold text-slate-500">क्षेत्रफल प्रणाली:</span>
+        <div class="flex gap-3 text-[10px] font-bold">
+            <label class="cursor-pointer"><input type="radio" name="global_area_type" value="traditional" checked onclick="renderLandUI(); updateAll();"> रोपनी-आना</label>
+            <label class="cursor-pointer"><input type="radio" name="global_area_type" value="metric" onclick="renderLandUI(); updateAll();"> वर्ग मि.</label>
+        </div>
+    </div>
+
+    <!-- जग्गा कार्डहरूको सूची यहाँ देखिनेछ -->
+    <div id="land-list-ui" class="space-y-2 mb-4"></div>
+</section>
