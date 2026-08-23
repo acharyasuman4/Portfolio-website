@@ -140,9 +140,9 @@
         .doc-table th,
         .doc-table td {
             border: 1px solid black;
-            padding: 1px;
+            padding: 2px;
             text-align: center;
-            font-size: 13pt;
+            font-size: 11pt;
         }
 
         .item-list {
@@ -163,52 +163,6 @@
             font-weight: bold;
             margin-left: 10px;
         }
-
-#valModal {
-    display: none; /* सुरुमा लुकाउने */
-    flex-direction: column;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    z-index: 1001;
-    width: 96vw;
-    max-width: 1300px;
-    height: 90vh;           /* उचाइ अनिवार्य छ */
-    border-radius: 10px;
-    box-shadow: 0 0 50px rgba(0,0,0,0.5);
-    overflow: hidden;       /* बाहिरी बक्स स्क्रोल हुनुहुँदैन */
-}
-
-.modal-header {
-    padding: 15px 20px;
-    background: #f1f5f9;
-    border-bottom: 1px solid #e2e8f0;
-    flex-shrink: 0;
-}
-
-.modal-content-scroll {
-    flex: 1;                /* बाँकी भाग यसले ओगट्छ */
-    overflow-y: auto;       /* भित्री भाग स्क्रोल गराउने मुख्य कमान्ड */
-    padding: 20px;
-    background: #ffffff;
-}
-
-.modal-footer-sticky {
-    padding: 10px 20px;
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
-    text-align: right;
-    flex-shrink: 0;
-}
-
-/* बाटोको नाम लामो भए पनि नथुप्रियोस् भन्नका लागि टेबल सेल मिलाउने */
-.doc-table td input[list="road_list"] {
-    min-width: 250px;       /* बाटोको इनपुट बक्स अलिक लामो बनाउने */
-    text-align: left;
-    padding-left: 10px;
-}
 
 @media print {
             /* 1. PAPER MARGINS */
@@ -402,18 +356,28 @@
                 </div>
                 <div class="row-2">
                     <input type="text" id="in_loc" placeholder="स्थानीय तह" class="input-box"
-                        oninput="update();">
-                    <input type="text" id="in_lw" placeholder="वडा नं." class="input-box" oninput="update();">
+                        oninput="syncHR(true); update();">
+                    <input type="text" id="in_lw" placeholder="वडा नं." class="input-box" oninput="syncHR(true); update();">
                 </div>
                 <div class="row-2">
                     <input type="text" id="in_sc" placeholder="सि.च.नं." class="input-box" oninput="update()">
-                    <input type="text" id="in_sd" placeholder="सि.मिति" class="input-box" oninput="update();">
+                    <input type="text" id="in_sd" placeholder="सि.मिति" class="input-box" oninput="syncHR(true); update();">
                 </div>
 
-<!-- साइडबारको hr_inputs खण्डलाई यसले रिप्लेस गर्नुहोस् -->
-<div id="hr_inputs" style="display:none; background:#fff7ed; padding:10px; border:1px dashed #fdba74; margin-bottom:10px; text-align:center;">
-    <button class="btn btn-dark" style="width:100%;" onclick="openValModal()">🏠 घरबाटो विवरण भर्नुहोस्</button>
-</div>
+                <div id="hr_inputs"
+                    style="display:none; background:#fff7ed; padding:5px; border:1px dashed #fdba74; margin-bottom:10px;">
+                    <div class="row-2">
+                        <input type="text" id="hr_loc" placeholder="स्थानीय तह (घरबाटो)" class="input-box"
+                            oninput="update()">
+                        <input type="text" id="hr_ward" placeholder="वडा" class="input-box" oninput="update()">
+                    </div>
+                    <div class="row-2">
+                        <input type="text" id="hr_sc" placeholder="घरबाटो च.नं." class="input-box" oninput="update()">
+                        <input type="text" id="hr_sd" placeholder="घरबाटो मिति" class="input-box" oninput="update()">
+                    </div>
+                    <button class="btn btn-dark" onclick="openValModal()">🏠 घरबाटो विवरण भर्नुहोस्</button>
+                </div>
+
 <!-- साविक खरिद मुल्य सेक्सन -->
 <div class="input-group" style="background:#f0f9ff; border: 1px solid #0ea5e9; margin-top: 5px;">
     <!-- यो Hidden Input अनिवार्य छ -->
@@ -506,14 +470,6 @@
     </div>
 </div>
 
-<div class="input-group" style="background:#fdf4ff; border: 1px solid #d8b4fe;">
-    <label>मोठ / रोक्का विवरण (भिडी आएको व्यहोरा):</label>
-    <textarea id="in_moth_status" class="input-box" style="height: 80px;" oninput="state.manualMoth = true; update();"></textarea>
-    <div style="font-size: 10px; color: #7c3aed; text-align: right; cursor: pointer;" onclick="state.manualMoth = false; update();">
-        🔄 अटो-जेनेरेट व्यहोरा रिसेट गर्ने
-    </div>
-</div>
-
 <!-- थप निर्णय -->
 <div class="input-group">
     <label>थप निर्णय (नामसारी पछि):</label>
@@ -538,76 +494,57 @@
 
         <div class="preview-container">
             <!-- Modal -->
-<!-- Modal Overlay -->
-<div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000;" onclick="closeValModal()"></div>
+<!-- १. मोडल ओभरले (पछाडिको कालो भाग) -->
+<div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000;" onclick="closeValModal()"></div>
 
-<!-- Main Modal -->
-<div id="valModal" style="display:none;">
-    <!-- १. स्थिर हेडर -->
-    <div class="modal-header">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 style="margin:0; color:#1e293b; font-size:1.4rem;">🏠 घरबाटो मुल्याङ्कन विवरण</h3>
-            <span style="cursor:pointer; font-size:24px; font-weight:bold;" onclick="closeValModal()">×</span>
-        </div>
+<!-- २. मुख्य मोडल पपअप -->
+<div id="valModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; z-index:1001; padding:20px; box-shadow:0 0 50px rgba(0,0,0,0.5); width:95%; max-width:900px; border-radius:10px; max-height:90vh; overflow-y:auto;">
+    <h3 style="margin:0 0 15px 0; border-bottom:1px solid #ddd; padding-bottom:10px;">🏠 घरबाटो मुल्याङ्कन विवरण</h3>
+
+    <div style="margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:5px; display:flex; flex-wrap:wrap; gap:15px; align-items:center;">
+    <label><input type="checkbox" id="chk_modal_hissa" onchange="toggleHissaUI(); update();"> हकहिस्सा ?</label>
+    <div id="global_hissa_div" style="display:none;">
+        <input type="text" id="global_hissa_pc" placeholder="प्रतिशत (उदा: ५०)" class="input-box" style="width:80px; margin-bottom:0;" oninput="applyGlobalHissa(this.value)"> %
     </div>
+    <label><input type="checkbox" id="chk_show_table" onchange="update()"> टिप्पणीमा टेबल राख्ने ?</label>
+    <label><input type="checkbox" id="chk_reg_fant" onchange="update()"> रजिष्ट्रेशन फाँटबाट प्राप्त</label>
+                <label><input type="checkbox" id="chk_no_total" onchange="update()"> कुल मुल्य नराख्ने ?</label>
 
-    <!-- २. स्क्रोल हुने बिचको भाग -->
-    <div class="modal-content-scroll">
-        
-        <!-- सिफारिस पत्र विवरण खण्ड -->
-        <div id="hr_rec_modal_container"></div>
+</div>
 
-        <!-- सेटिङ्स र चेकबक्स खण्ड -->
-        <div style="margin-bottom:15px; background:#f8fafc; padding:12px; border-radius:8px; display:flex; flex-wrap:wrap; gap:20px; align-items:center; border:1px solid #e2e8f0;">
-            <label><input type="checkbox" id="chk_modal_hissa" onchange="toggleHissaUI(); update();"> हकहिस्सा ?</label>
-            <div id="global_hissa_div" style="display:none;">
-                <input type="text" id="global_hissa_pc" placeholder="प्रतिशत" class="input-box" style="width:70px; margin-bottom:0;" oninput="applyGlobalHissa(this.value)"> %
-            </div>
-            <label><input type="checkbox" id="chk_show_table" onchange="update()"> टिप्पणीमा टेबल राख्ने ?</label>
-            <label><input type="checkbox" id="chk_reg_fant" onchange="update()"> रजिष्ट्रेशन फाँटबाट प्राप्त</label>
-            <label><input type="checkbox" id="chk_no_total" onchange="update()"> कुल मुल्य नराख्ने ?</label>
-        </div>
-
-        <!-- मुख्य मुल्याङ्कन टेबल -->
-        <div style="overflow-x:auto;"> <!-- टेबल धेरै चौडा भएमा दायाँ-बायाँ स्क्रोल होस् -->
-            <table class="doc-table">
-                <thead>
-                    <tr style="background:#f1f5f9;">
-                        <th>गा.वि.स. - वडा : कि.नं.</th>
-                        <th>क्षेत्रफल</th>
-                        <th>बाटोको प्रकार</th>
-                        <th>वर्गिकरण</th>
-                        <th>दररेट (प्रति रोपनी)</th>
-                        <th id="hissa_header_th" style="display:none;">हकहिस्सा %</th>
-                        <th>न्युनत्तम मुल्य</th>
-                    </tr>
-                </thead>
-                <tbody id="val_body"></tbody>
-                <tfoot>
-                    <tr style="background:#fefce8; font-weight:bold; font-size:1.1rem;">
-                        <td colspan="4" style="text-align:right; padding-right:15px;">कुल न्युनत्तम मुल्याङ्कन (कुल थैली) :</td>
-                        <td id="total_thaili_disp" colspan="2" style="text-align:right; padding-right:10px;">०।००</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <!-- घरको मूल्य थप्ने सेक्सन -->
-        <div style="margin-top:20px; border:1px solid #fed7aa; border-radius:8px; overflow:hidden;">
-            <div style="background:#fff7ed; padding:10px; border-bottom:1px solid #fed7aa;">
-                <label style="font-weight:bold; color:#c2410c;">
-                    <input type="checkbox" id="chk_add_house" onchange="toggleHouseValUI(); update();"> 🏠 घरको मुल्य थप्ने ?
-                </label>
-            </div>
-            <div id="house_val_container" style="display:none; padding:15px; background:white;"></div>
-        </div>
-        
-        <div style="height: 20px;"></div> <!-- केही तल स्पेस छोड्न -->
+    
+    <table class="doc-table">
+        <thead>
+            <tr style="background:#f1f5f9;">
+                <th>गा.वि.स. - वडा : कि.नं.</th>
+                <th>क्षेत्रफल (R-A-P-D)</th>
+                <th>बाटोको प्रकार</th>
+                <th>वर्गिकरण</th>
+                <th>दररेट (प्रति रोपनी)</th>
+                <th>न्युनत्तम मुल्य</th>
+            </tr>
+        </thead>
+        <tbody id="val_body">
+            <!-- JS ले यहाँ डेटा भर्नेछ -->
+        </tbody>
+        <tfoot>
+            <tr style="background:#fefce8; font-weight:bold;">
+                <td colspan="5" style="text-align:right; padding-right:10px;">कुल न्युनत्तम मुल्याङ्कन (कुल थैली) :</td>
+                <td id="total_thaili_disp">०।००</td>
+            </tr>
+        </tfoot>
+    </table>
+<div style="margin-bottom:15px; background:#fff7ed; padding:10px; border-radius:5px; border:1px solid #fed7aa;">
+    <label style="font-weight:bold; color:#c2410c;">
+        <input type="checkbox" id="chk_add_house" onchange="toggleHouseValUI(); update();"> 🏠 घरको मुल्य थप्ने ?
+    </label>
+    <div id="house_val_container" style="display:none; margin-top:10px;">
+        <!-- JS ले यहाँ कित्ता, घर सङ्ख्या र मुल्यको इनपुट बनाउनेछ -->
     </div>
+</div>
 
-    <!-- ३. स्थिर फुटर -->
-    <div class="modal-footer-sticky">
-        <button onclick="closeValModal()" class="btn btn-red" style="width:auto; padding:10px 60px; font-size:1.1rem; border-radius:8px; font-weight:bold; box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);">बन्द गर्नुहोस् (Close)</button>
+    <div style="margin-top:20px; text-align:right;">
+        <button onclick="closeValModal()" class="btn btn-red" style="width:auto; padding:8px 30px;">बन्द गर्नुहोस् (Close)</button>
     </div>
 
     <!-- अटो-कम्प्लिट लिस्टहरू -->
@@ -628,17 +565,8 @@
     
 
     <script>
-// Ensure every required array/object exists at startup
-let state = { 
-    apps: [], 
-    mrtks: [], 
-    lands: [], 
-    mohis: [], 
-    areas: {}, 
-    hr_recs: [],        // Fix: Added here
-    purchasePrices: {}, // Fix: Added here
-    housePrices: {}     // Fix: Added here
-};
+    let state = { apps: [], mrtks: [], lands: [], mohis: [], areas: {}, };
+
     let landRevenueMaster = null;
 
 // Function to fetch the master data
@@ -780,10 +708,9 @@ function renderNamsariKittaUI() {
 }
 
 
-// Helper to check if a ward exists in strings like "1-9" or "5,8,9"
 function isWardInTarget(inputWard, targetWardStr) {
-    if (!targetWardStr || !inputWard) return true; // If no ward provided, match by VDC only
-    
+    if (!targetWardStr || !inputWard) return false;
+    // inputWard र targetWardStr दुवैलाई अंग्रेजीमा बदल्ने
     const wNum = parseInt(n2e(inputWard));
     const normalizedTarget = targetWardStr.toString().replace(/[०-९]/g, d => "0123456789"["०१२३४५६७८९".indexOf(d)]);
     
@@ -798,26 +725,6 @@ function isWardInTarget(inputWard, targetWardStr) {
         }
     }
     return false;
-}
-
-// Logic to find Current Municipality and Ward based on your JSON structure
-function findCurrentMapping(vdcName, oldWard) {
-    if (!valuationDb) return null;
-    for (let dist of valuationDb.districts) {
-        for (let local of dist.locals) {
-            for (let map of local.mapping) {
-                for (let link of map.links) {
-                    if (link.vdc === vdcName && isWardInTarget(oldWard, link.oldW)) {
-                        return {
-                            currentLocal: local.name,
-                            currentWard: toNepNum(map.wardNo) // Converting "wardNo" to Nepali
-                        };
-                    }
-                }
-            }
-        }
-    }
-    return null;
 }
 
 function isFuzzyMatch(s1, s2) {
@@ -860,96 +767,52 @@ function toggleHouseValUI() {
     }
 }
 
-// १. घर इन्ट्री गर्ने नयाँ UI
 function renderHouseValRows() {
     const cont = document.getElementById('house_val_container');
     if (!cont) return;
 
+    // यदि जग्गा विवरण नै थपिएको छैन भने
     if (!state.lands || state.lands.length === 0) {
-        cont.innerHTML = "<div style='color:red; font-size:12px;'>पहिले जग्गा थप्नुहोस् ।</div>";
+        cont.innerHTML = "<div style='color:red; font-size:12px; padding:5px;'>पहिले जग्गा विवरण थप्नुहोस् ।</div>";
         return;
     }
 
-    let kittaCheckboxes = "";
+    // state मा housePrices अजेक्ट छैन भने बनाउने
+    if (!state.housePrices) state.housePrices = {};
+
+    let html = "";
     state.lands.forEach(l => {
         l.ks.forEach(k => {
-            kittaCheckboxes += `
-            <label style="font-weight:normal; font-size:12px; border:1px solid #ddd; padding:2px 5px; border-radius:3px; cursor:pointer; background:white;">
-                <input type="checkbox" class="house-kitta-chk" value="${k}"> ${k}
-            </label>`;
+            const id = `${l.vdc}_${l.ward}_${k}`;
+            
+            // यो कित्ताको लागि पहिलो पटक सेटिङ मिलाउने
+            if (!state.housePrices[id]) {
+                state.housePrices[id] = { count: 1, price: "" };
+            }
+            
+            const hp = state.housePrices[id];
+
+            html += `
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:5px; background:white; padding:5px; border-radius:4px; border:1px solid #fed7aa;">
+                <label style="font-size:12px; font-weight:bold; width:120px; color:#c2410c;">${l.vdc} ${l.ward}-${k}:</label>
+                <div style="display:flex; align-items:center; gap:5px;">
+                    <span style="font-size:10px;">सङ्ख्या:</span>
+                    <input type="text" class="input-box" style="width:50px; margin:0; text-align:center; font-weight:bold;" 
+                        value="${toNepNum(hp.count)}" 
+                        oninput="updateHouseData('${id}', 'count', this.value)">
+                </div>
+                <div style="display:flex; align-items:center; gap:5px; flex-grow:1;">
+                    <span style="font-size:10px;">मूल्य:</span>
+                    <input type="text" class="input-box modal-rate-input" style="margin:0; font-weight:bold;" 
+                        placeholder="घरको कुल मूल्य" 
+                        value="${hp.price || ''}" 
+                        oninput="updateHouseData('${id}', 'price', this.value)">
+                </div>
+            </div>`;
         });
     });
-
-    let html = `
-    <div style="background:#fff7ed; padding:10px; border-radius:5px; border:1px solid #fdba74;">
-        <label style="font-weight:bold; color:#c2410c;">कित्ताहरू छान्नुहोस्:</label>
-        <div style="display:flex; flex-wrap:wrap; gap:5px; margin:5px 0;">${kittaCheckboxes}</div>
-        
-        <div style="display:grid; grid-template-columns: 1fr 2fr auto; gap:10px; align-items:end;">
-            <div>
-                <label style="font-size:11px;">घर संख्या:</label>
-                <select id="h_count" class="input-box" style="margin:0;">
-                    <option value="1">१</option><option value="2">२</option><option value="3">३</option>
-                    <option value="4">४</option><option value="5">५</option>
-                </select>
-            </div>
-            <div>
-                <label style="font-size:11px;">घरको कुल मूल्य (रू.):</label>
-                <input type="text" id="h_price" class="input-box modal-rate-input" placeholder="मूल्य" style="margin:0;">
-            </div>
-            <button onclick="addHouseEntry()" class="btn btn-dark" style="background:#c2410c; padding:8px 15px;">+ थप्नुहोस्</button>
-        </div>
-    </div>
-    <div id="house_entries_summary" style="margin-top:10px;"></div>`;
-
     cont.innerHTML = html;
-    renderHouseEntriesSummary();
 }
-
-// २. इन्ट्री थप्ने लजिक
-function addHouseEntry() {
-    const checkedKittas = Array.from(document.querySelectorAll('.house-kitta-chk:checked')).map(el => el.value);
-    const price = document.getElementById('h_price').value;
-    const count = document.getElementById('h_count').value;
-
-    if (checkedKittas.length === 0 || !price) {
-        alert("कित्ता र मूल्य अनिवार्य छ ।");
-        return;
-    }
-
-    if (!state.houseEntries) state.houseEntries = [];
-    state.houseEntries.push({
-        ks: checkedKittas,
-        price: price.replace(/\d/g, d => "०१२३४५६७८९"[d]),
-        count: count
-    });
-
-    // रिसेट गर्ने
-    document.getElementById('h_price').value = "";
-    document.querySelectorAll('.house-kitta-chk').forEach(cb => cb.checked = false);
-    
-    renderHouseEntriesSummary();
-    update();
-}
-
-// ३. थपिएका घरहरूको लिस्ट देखाउने
-function renderHouseEntriesSummary() {
-    const div = document.getElementById('house_entries_summary');
-    if (!state.houseEntries || state.houseEntries.length === 0) { div.innerHTML = ""; return; }
-
-    div.innerHTML = state.houseEntries.map((h, i) => `
-    <div class="item-list" style="background:#ffedd5; border-color:#fed7aa;">
-        <span style="font-size:11px;">कि.नं. <b>${h.ks.join(', ')}</b> मा <b>${toNep(h.count)}</b> वटा घरको मूल्य रू. <b>${h.price}</b></span>
-        <span class="del-btn" onclick="state.houseEntries.splice(${i},1); renderHouseEntriesSummary(); update();">×</span>
-    </div>`).join('');
-}
-
-
-
-
-
-
-
 function updateHouseData(id, field, val) {
     if (!state.housePrices[id]) state.housePrices[id] = { count: 1, price: "" };
     
@@ -962,64 +825,19 @@ function updateHouseData(id, field, val) {
     update(); // टिप्पणीको व्यहोरा र कुल थैली अपडेट गर्न
 }
 
-// Fix for the console error: Finds the local body ID and Name
-function findLocalInfo(vdcName, wardNum) {
-    if (!valuationDb || !valuationDb.districts) return null;
-    for (let d of valuationDb.districts) {
-        for (let l of d.locals) {
-            if (l.mapping) {
-                for (let m of l.mapping) {
-                    for (let link of m.links) {
-                        // Matching VDC and checking if ward is in the oldW range
-                        if (link.vdc === vdcName && (!wardNum || isWardInTarget(wardNum, link.oldW))) {
-                            return { lId: l.id, localName: l.name };
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return null;
-}
-
-// // १. साविक गा.वि.स. र वडाको आधारमा नगरपालिकाको ID (lId) पत्ता लगाउने
-// function findLocalInfo(vdcName, wardNum) {
-//     if (!valuationDb || !valuationDb.districts) return null;
-//     for (let d of valuationDb.districts) {
-//         for (let l of d.locals) {
-//             if (l.mapping) {
-//                 for (let m of l.mapping) {
-//                     for (let link of m.links) {
-//                         if (link.vdc === vdcName && (!wardNum || isWardInTarget(wardNum, link.oldW))) {
-//                             return { lId: l.id, localName: l.name };
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//     return null;
-// }
-
-// Refined Helper to find Current Local Body and Current Ward
-function findMappingDetails(vdcName, wardNum) {
+// १. साविक गा.वि.स. र वडाको आधारमा हालको स्थानीय तह पत्ता लगाउने फङ्सन
+function findCurrentLocalBody(vdcName, wardNum) {
     if (!valuationDb || !valuationDb.districts) return null;
     
     for (let district of valuationDb.districts) {
         for (let local of district.locals) {
             if (local.mapping) {
                 for (let map of local.mapping) {
-                    // map.ward is usually the CURRENT ward number
-                    const currentWard = map.ward || map.currentWard || "";
-                    
-                    if (map.links) {
-                        for (let link of map.links) {
-                            // Check if VDC matches and Old Ward falls in range
-                            if (link.vdc === vdcName && (!wardNum || isWardInTarget(wardNum, link.oldWard || link.oldW))) {
-                                return { 
-                                    local: local.name, 
-                                    currentWard: currentWard 
-                                };
+                    for (let link of map.links) {
+                        if (link.vdc === vdcName) {
+                            // यदि वडा तोकिएको छ भने वडा पनि चेक गर्ने
+                            if (!wardNum || isWardInTarget(wardNum, link.oldWard)) {
+                                return local.name; // जस्तै: "चौतारा साँगाचोकगढी नगरपालिका"
                             }
                         }
                     }
@@ -1030,6 +848,24 @@ function findMappingDetails(vdcName, wardNum) {
     return null;
 }
 
+// १. साविक गा.वि.स. र वडाको आधारमा नगरपालिकाको ID (lId) पत्ता लगाउने
+function findLocalInfo(vdcName, wardNum) {
+    if (!valuationDb || !valuationDb.districts) return null;
+    for (let d of valuationDb.districts) {
+        for (let l of d.locals) {
+            if (l.mapping) {
+                for (let m of l.mapping) {
+                    for (let link of m.links) {
+                        if (link.vdc === vdcName && (!wardNum || isWardInTarget(wardNum, link.oldW))) {
+                            return { lId: l.id, localName: l.name };
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return null;
+}
 
 // २. सम्बन्धित कित्ताको लागि मात्र सडक फिल्टर गर्ने र मूल्य अनुसार मिलाउने
 function updateRoadDatalist(vdcName, wardNum) {
@@ -1083,39 +919,6 @@ function updateRoadDatalist(vdcName, wardNum) {
         document.getElementById('in_landowner').value = val;
         update();
     }
-
-function syncRecommendationsFromLands() {
-    if (!state.lands || state.lands.length === 0) return;
-    if (!state.hr_recs) state.hr_recs = [];
-
-    let newEntries = new Map();
-
-    state.lands.forEach(l => {
-        const mapping = findCurrentMapping(l.vdc, l.ward);
-        if (mapping) {
-            // Unique key to prevent duplicate rows for the same Municipality/Ward
-            const key = `${mapping.currentLocal}_${mapping.currentWard}`;
-            if (!newEntries.has(key)) {
-                newEntries.set(key, mapping);
-            }
-        }
-    });
-
-    // Add to state only if the Municipality+Ward combination doesn't already exist
-    newEntries.forEach((val) => {
-        const exists = state.hr_recs.some(r => r.loc === val.currentLocal && r.ward === val.currentWard);
-        if (!exists) {
-            state.hr_recs.push({
-                loc: val.currentLocal,
-                ward: val.currentWard,
-                sc: '', // Dispatch No. left vacant
-                sd: ''  // Date left vacant
-            });
-        }
-    });
-    
-    saveState();
-}
 
     // Function to handle the "Renouncing rights" UI
 function addHaqGroup() {
@@ -1427,16 +1230,9 @@ document.getElementById('m_dt').addEventListener('input', checkBilamba);
             syncHR();
         }
 
-function openValModal() {
-    // 1. Automatically sync Municipality/Ward from Lands before showing modal
-    syncRecommendationsFromLands();
-    
-    // 2. Open Modal UI
-    document.getElementById('valModal').style.display = 'flex';
+        function openValModal() {
+    document.getElementById('valModal').style.display = 'block';
     document.getElementById('modalOverlay').style.display = 'block';
-    
-    // 3. Render the dynamic parts
-    renderHRRecUI(); 
     renderValRows();
 }
 
@@ -1752,51 +1548,31 @@ const vdc = document.getElementById('l_vdc').value;
     update(); 
 }
 
+// JSON बाट मूल्य खोज्ने मुख्य इन्जिन
 function getPriceFromJson(vdc, ward, road, cat) {
     if (!valuationDb || !vdc || !road) return 0;
 
-    // 1. Filter all valuations for this specific road
+    // १. पहिले सडक मिल्ने रेटहरू खोज्ने
     const roadMatches = valuationDb.valuations.filter(v => v.road === road);
 
-    // 2. Filter for those that match the VDC and Ward
+    // २. त्यसमध्ये गा.वि.स. र वडा मिल्ने फिल्टर गर्ने
     const possibleMatches = roadMatches.filter(v => {
-        // Handle "scope: all" or targets being a string "सबै पालिका"
-        if (v.scope === "all" || typeof v.targets === 'string') return true;
-        
-        // Handle standard array targets
-        if (Array.isArray(v.targets)) {
-            return v.targets.some(t => {
-                const vdcMatch = (t.vdc === vdc);
-                const wardMatch = ward ? isWardInTarget(ward, t.oldWard || t.oldW || t.currentWard) : true;
-                return vdcMatch && wardMatch;
-            });
-        }
-        return false;
+        if (v.scope === "all") return true;
+        return v.targets.some(t => {
+            const vdcMatch = (t.vdc === vdc);
+            const wardMatch = ward ? isWardInTarget(ward, t.oldWard || t.currentWard) : true;
+            return vdcMatch && wardMatch;
+        });
     });
 
-    if (possibleMatches.length === 0) return 0;
-
-    // 3. PRIORITY LOGIC (The Fix):
-    // Priority 1: Exact Classification Match (e.g., residential)
-    let finalMatch = possibleMatches.find(v => v.classification === cat);
-    
-    // Priority 2: Fuzzy Classification Match (e.g., "आवासीय" matches "आवासीय क्षेत्र")
-    if (!finalMatch && cat) {
-        finalMatch = possibleMatches.find(v => v.classification && v.classification.includes(cat));
-    }
-
-    // Priority 3: The "सबै" (All) or entries with NO classification (specifically for Bhotekoshi)
-    if (!finalMatch) {
-        finalMatch = possibleMatches.find(v => v.classification === "सबै") || 
-                     possibleMatches.find(v => !v.classification); // Catch-all for Bhotekoshi's missing keys
-    }
-
-    // Priority 4: If still nothing, take the first available match for that road
-    if (!finalMatch) finalMatch = possibleMatches[0];
+    // ३. वर्गिकरण (आवासीय/कृषि) मिलाउने
+    let finalMatch = possibleMatches.find(v => v.classification === cat) ||
+                     possibleMatches.find(v => isFuzzyMatch(v.classification, cat)) ||
+                     possibleMatches.find(v => v.classification === "सबै") ||
+                     possibleMatches[0];
 
     return finalMatch ? n2e(finalMatch.price) : 0;
 }
-
 
 // मोडल भित्र रेट सेट गर्ने फङ्सन
 function fetchAndSetRate(id, vdc, ward) {
@@ -1852,53 +1628,6 @@ function renderAreaInputs() {
 }
 
 
-function generateDetailedHRText() {
-    if (!state.hr_recs || state.hr_recs.length === 0) return "....... ....... नं. वडा कार्यालयको च.नं. ....... मिति ....... को घरबाटो सिफारिस";
-
-    let parts = [];
-    let lastLoc = "";
-
-    state.hr_recs.forEach((rec) => {
-        let currentLoc = (rec.loc || "").trim();
-        let ward = (rec.ward || "").trim() || ".......";
-        let sc = (rec.sc || "").trim() || ".......";
-        let sd = (rec.sd || "").trim() || ".......";
-
-        let locPart = "";
-        // यदि अघिल्लो रो र अहिलेको रोको स्थानीय तह एउटै छ भने 'ऐ.' राख्ने
-        if (currentLoc !== "" && currentLoc === lastLoc) {
-            locPart = "ऐ.";
-        } else {
-            locPart = currentLoc || ".......";
-        }
-
-        parts.push(`<b>${locPart} ${ward}</b> नं. वडा कार्यालयको च.नं. <b>${sc}</b> मिति <b>${sd}</b>`);
-        lastLoc = currentLoc; // पछिल्लो स्थानीय तह अपडेट गर्ने
-    });
-
-    // सबै भागहरूलाई 'र' र 'कमा' ले जोड्ने र अन्तिममा तपाईँले चाहेको पुच्छर जोड्ने
-    return nepJoin(parts) + " को घरबाटो सिफारिस";
-}
-
-function generateMothStatusText() {
-    let base = "माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको ।";
-    
-    if (state.mohis && state.mohis.length > 0) {
-        // मोही विवरणहरूलाई ग्रुप गर्ने
-        let mohiClauses = state.mohis.map(m => {
-            let kits = m.kittas.map(k => toNep(k));
-            let kitStr = nepJoin(kits);
-            let mName = m.name.trim() === "" ? "यथावत" : m.name;
-            return `कि.नं. ${kitStr} मा मोही ${mName} कायम रहेको`;
-        });
-        
-        // मोठ कायम रहेको पछि मोहीको विवरण घुसाउने
-        base = `माग दावी भएका जग्गाहरूको मोठ कायम रहेको, ${nepJoin(mohiClauses)} र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको ।`;
-    }
-    return base;
-}
-
-
         // ४. UPDATE (Main Preview Generator)
 function update() {
     // १. आधारभूत सेटिङ र डेटा
@@ -1906,10 +1635,6 @@ function update() {
         gov: "नेपाल सरकार", ministry: "भूमि व्यवस्था, सहकारी, संघीय मामिला तथा सामान्य प्रशासन मन्त्रालय", dept: "भूमि व्यवस्थापन तथा अभिलेख विभाग", 
         office: "भूमि प्रशासन कार्यालय", addr: "चौतारा, सिन्धुपाल्चोक", def_dist: "सिन्धुपाल्चोक" 
     };
-if (!state.manualMoth) {
-    document.getElementById('in_moth_status').value = generateMothStatusText();
-}
-const mothStatusValue = document.getElementById('in_moth_status').value;
 
     
 
@@ -1951,24 +1676,28 @@ const mothStatusValue = document.getElementById('in_moth_status').value;
     const bulkManual = n2e(vSafe('total_purchase_manual'));
     let finalThaili = Math.max(sumOfIndividualThaili, bulkManual);
 
-// update() भित्र यो खण्ड अपडेट गर्नुहोस्:
-let houseValTotal = 0;
-let houseTextParts = [];
+// --- घरको मूल्य हिसाव र पाठ (Requirement 5 Logic) ---
+    let houseValTotal = 0;
+    let houseTextParts = [];
+    if (document.getElementById('chk_add_house')?.checked) {
+        state.lands.forEach(l => {
+            l.ks.forEach(k => {
+                const id = `${l.vdc}_${l.ward}_${k}`;
+                const hp = state.housePrices?.[id];
+                if (hp && n2e(hp.price) > 0) {
+                    const pNum = n2e(hp.price);
+                    houseValTotal += pNum;
+                    const cNum = hp.count || 1;
+                    if (cNum === 1) {
+                        houseTextParts.push(`कि.नं. <b>${k}</b> मा भएको घरको मुल्य रू. <b>${toNep(pNum)}</b>`);
+                    } else {
+                        houseTextParts.push(`कि.नं. <b>${k}</b> मा भएका <b>${toNep(cNum)}</b> वटा घरहरूको मुल्य रू. <b>${toNep(pNum)}</b>`);
+                    }
+                }
+            });
+        });
+    }
 
-if (document.getElementById('chk_add_house')?.checked && state.houseEntries) {
-    state.houseEntries.forEach(h => {
-        const pNum = n2e(h.price);
-        houseValTotal += pNum;
-        const kitList = h.ks.map(k => `<b>${k}</b>`);
-        const countNep = toNep(h.count);
-        
-        if (h.count == "1") {
-            houseTextParts.push(`कि.नं. ${nepJoin(kitList)} मा भएको घरको मुल्य रू. <b>${h.price}</b>`);
-        } else {
-            houseTextParts.push(`कि.नं. ${nepJoin(kitList)} मा भएका <b>${countNep}</b> वटा घरहरूको मुल्य रू. <b>${h.price}</b>`);
-        }
-    });
-}
     // कुल थैलीमा घरको मूल्य पनि जोड्ने
     finalThaili += houseValTotal;
 
@@ -2072,41 +1801,41 @@ if (document.getElementById('chk_filter_kitta').checked) {
 
     const gharbato = document.getElementById('chk_rec_house').checked ? 
     `<b>${v('hr_loc')} ${v('hr_ward')}</b> नं. वडा कार्यालयको च.नं. <b>${v('hr_sc')}</b> मिति <b>${v('hr_sd')}</b> को घरबाटो सिफारिस` : "";
-// --- घरबाटो र सिफारिसको विशेष लजिक (Requirement 4 & 5 Update) ---
+// --- ४. सिफारिस र घरबाटोको व्यहोरा (Requirement 4 Logic) ---
+    let recText = "";
+    const isN = document.getElementById('chk_rec_namsari').checked;
+    const isH = document.getElementById('chk_rec_house').checked;
 
+    const locN = v('in_loc').trim();
+    const wardN = v('in_lw').trim();
+    const scN = v('in_sc').trim();
+    const sdN = v('in_sd').trim();
 
+    const locH = v('hr_loc').trim();
+    const wardH = v('hr_ward').trim();
+    const scH = v('hr_sc').trim();
+    const sdH = v('hr_sd').trim();
 
-
-
-// --- माग दावी अनुच्छेदको सिफारिस व्यहोरा (recText) ---
-const isN = document.getElementById('chk_rec_namsari').checked;
-const isH = document.getElementById('chk_rec_house').checked;
-const isTable = document.getElementById('chk_show_table').checked;
-
-let namsariBase = `<b>${v('in_loc')} ${v('in_lw')}</b> नं. वडा कार्यालयको च.नं. <b>${v('in_sc')}</b> मिति <b>${v('in_sd')}</b> को सिफारिस`;
-
-// यदि टेबल टिक छ भने संक्षिप्त "घरबाटो सिफारिस", छैन भने पूर्ण विवरण
-let hrTextForParagraph = (isH && isTable) ? "घरबाटो सिफारिस" : generateDetailedHRText();
-
-let recText = "";
-if (isN && isH) {
-    recText = `${namsariBase}, ${hrTextForParagraph}`;
-} else if (isN) {
-    recText = namsariBase;
-} else if (isH) {
-    recText = hrTextForParagraph;
-}
-// १. नामसारी सिफारिसको आधारभूत डेटा
-let prevLoc = v('in_loc').trim();
-let prevWard = v('in_lw').trim();
-
-if (isN) {
-    finalRecText = namsariBase;
-}
-
-
-
-let mohiTextParts = [];
+    if (isN) {
+        let baseNamsariRec = `<b>${locN} ${wardN}</b> नं. वडा कार्यालयको च.नं. <b>${scN}</b> मिति <b>${sdN}</b> को सिफारिस`;
+        
+        if (!isH) {
+            recText = baseNamsariRec;
+        } else {
+            // यदि नामसारी र घरबाटो सिफारिस एउटै स्थानीय तह र वडाको भए
+            if (locN === locH && wardN === wardH) {
+                if (scN === scH && sdN === sdH) {
+                    recText = `${baseNamsariRec} र सोही सिफारिसमा उल्लेख भएको घरबाटोको व्यहोरा`;
+                } else {
+                    recText = `${baseNamsariRec},  ऐ.ऐ. को च.नं. <b>${scH}</b> मिति <b>${sdH}</b> को सिफारिसमा उल्लेख भएको घरबाटोको व्यहोरा`;
+                }
+            } else {
+                // यदि स्थानीय तह वा वडा फरक भएमा
+                recText = `${baseNamsariRec}, <b>${locH}</b> को <b>${wardH}</b> नं. वडा कार्यालयको च.नं. <b>${scH}</b> मिति <b>${sdH}</b> को सिफारिसमा उल्लेख भएको घरबाटोको व्यहोरा`;
+            }
+        }
+    }
+    let mohiTextParts = [];
     if (document.getElementById('chk_mohi')?.checked) {
         state.mohis.forEach(m => {
             const kittaList = nepJoin(m.kittas.map(k => `<b>${toNep(k)}</b>`));
@@ -2122,7 +1851,7 @@ let mohiTextParts = [];
     let decDts = state.mrtks.map(m => `<b>${m.rel} ${m.name}</b>को मिति <b>${m.dt}</b>`).join(' र ');
     let nijaText = state.mrtks.length > 1 ? "निजहरू" : "निज";
     let activeNamesOnly = nepJoin(activeApps.map(a => `<b>${a.name}</b>`));
-    let nivedakKa = state.apps.length > 1 ? "निवेदकहरूले" : "निवेदकले";
+    let nivedakKa = state.apps.length > 1 ? "निवेदकहरूको" : "निवेदकको";
     // let haqNote = (state.haq_groups || []).map(g => `, हकदारहरू मध्येका <b>${nepJoin(g.names)}</b> ले द.नं. <b>${g.reg}</b> मिति <b>${g.dt}</b> को निवेदनबाट दिएको मञ्जुरी`).join(' र ');
     let hissaText = (document.getElementById('chk_hissa')?.checked) ? " को हकहिस्सा मात्र" : "";
     let guthiText = (document.getElementById('chk_guthi')?.checked) ? " <b>गुठी यथावत कायम राखी</b> " : "";
@@ -2206,32 +1935,27 @@ let extraDecisionFinal = extraDecision ? ` साथै ${extraDecision}` : "";
 
     
 
+    // ६. प्रिभ्यु टेबुल र बडी कन्टेन्ट
+// update() फङ्सन भित्रको टेवल जेनेरेसन भाग (hrTableHtml) यसरी बदल्नुहोस्:
 
-// --- २. विस्तृत घरबाटो व्यहोरा र टेबल जेनेरेसन (Replacement Block) ---
     let hrTableHtml = "";
-    const isHouseRecChecked = document.getElementById('chk_rec_house').checked;
-    const isShowTable = document.getElementById('chk_show_table').checked;
-    
-    // विस्तृत व्यहोरा तयार गर्ने
-    let detailedHRText = isHouseRecChecked ? generateDetailedHRText() : "";
-
-    if (isShowTable && isHouseRecChecked) {
+    if (document.getElementById('chk_show_table').checked) {
         const isHissaActive = document.getElementById('chk_modal_hissa')?.checked;
 
         // १. ग्रुपिङ गर्ने (Normalization प्रयोग गरेर)
         let groups = {};
         state.lands.forEach(l => {
             l.ks.forEach(k => {
-                const id = `${l.vdc}_${l.ward}_${k}`;
-                const a = state.areas[id];
+                const a = state.areas[`${l.vdc}_${l.ward}_${k}`];
                 if (!a) return;
                 
+                // प्रतिशतलाई Normalize गर्ने (Key जहिले अंग्रेजी अंकमा राख्ने)
                 let pcValue = isHissaActive ? (a.percent || "१००") : "१००";
                 let pcKey = n2e(pcValue).toString(); 
                 
                 if (!groups[pcKey]) {
                     groups[pcKey] = {
-                        displayLabel: toNep(pcKey),
+                        displayLabel: toNep(pcKey), // प्रदर्शन गर्दा नेपालीमा देखाउने
                         items: []
                     };
                 }
@@ -2239,17 +1963,20 @@ let extraDecisionFinal = extraDecision ? ` साथै ${extraDecision}` : "";
             });
         });
 
-        // टेबल सुरु गर्नु अघि विस्तृत व्यहोरा राख्ने
-        hrTableHtml = `<p style="margin:1px;">${detailedHRText}को आधारमा देहाय बमोजिम न्युनत्तम मुल्याङ्कन कायम हुने ${regPhaatNote} ।</p><table class="doc-table">`;
+        hrTableHtml = `${gharbato}को आधारमा देहाय बमोजिम न्युनत्तम मुल्याङ्कन कायम हुने ${regPhaatNote} ।<table class="doc-table">`;
 
         let sn = 1;
+        // प्रतिशत धेरैबाट थोरैमा मिलाउने (Sort)
         let sortedKeys = Object.keys(groups).sort((a, b) => parseFloat(b) - parseFloat(a));
 
         sortedKeys.forEach(pcKey => {
             let group = groups[pcKey];
             let pcNum = parseFloat(pcKey);
+            
+            // हेडरको नाम: १००% भए सादा, नत्र ब्र्याकेटमा प्रतिशत
             let headerVal = (isHissaActive && pcNum < 100) ? `न्युनत्तम मुल्य (${group.displayLabel}% जग्गाको)` : `न्युनत्तम मुल्य`;
 
+            // समूहको हेडिङ रो
             hrTableHtml += `<tr style="background:#f2f2f2; font-weight:bold;">
                 <td style="width:40px;">क्र.सं.</td>
                 <td>गा.वि.स.</td>
@@ -2274,6 +2001,7 @@ let extraDecisionFinal = extraDecision ? ` साथै ${extraDecision}` : "";
             });
         });
 
+        // अन्तिममा जम्मा टोटल
         hrTableHtml += `<tr style="font-weight:bold; background:#fafafa;">
             <td colspan="5" style="text-align:right; padding-right:10px;">कुल न्युनत्तम मुल्याङ्कन</td>
             <td style="text-align:right; padding-right:5px;">${toNep(minValTotal)}</td>
@@ -2289,7 +2017,7 @@ let extraDecisionFinal = extraDecision ? ` साथै ${extraDecision}` : "";
 
     let tableHtml = `<table style="width:100%; border:none; border-collapse:collapse; margin-bottom:10px;"><tr><td style="width:65%; vertical-align:top; padding-right:10px;"><table class="doc-table">${sons.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>बाबुको नाम</th><th>बाजेको नाम</th></tr>` : ''}${sons.map((x, i) => `<tr><td>${toNep(i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}${wives.length ? `<tr><th>सि.नं.</th><th>निवेदकको नाम थर</th><th>पतिको नाम</th><th>ससुराको नाम</th></tr>` : ''}${wives.map((x, i) => `<tr><td>${toNep(sons.length + i + 1)}</td><td>${x.name}</td><td>${x.f}</td><td>${x.gf}</td></tr>`).join('')}</table></td><td style="width:35%; vertical-align:top;"><table class="doc-table"><tr><th>मृतकको नाम</th><th>नाता</th><th>मृत्यु मिति</th></tr>${state.mrtks.map(m => `<tr><td>${m.name}</td><td>${m.rel}</td><td>${m.dt}</td></tr>`).join('')}</table></td></tr></table>`;
 
-    let bodyHtml = `<p style="text-indent:10px; margin:2px; padding:0px">श्रीमान्,</p><p style="text-indent:50px; margin:2px; padding:0px">${settings.def_dist} जिल्ला ${landFinal} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा निवेदकको ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${state.apps.length > 1 ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakKa} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन दिनुभएको ।</p><p style="text-indent:50px; margin:2px; padding:0px">${mothStatusValue} ${hrTableHtml} माग दावी अनुसारका जग्गा निवेदकको नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै ${recText}, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, मृत्युदर्ता, निवेदकको नागरिकता र सनाखत ${haqNote} ${extrainfo} लगायतका प्रमाणहरूको आधारमा ${feeText} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको हकदार <b>${activeNamesOnly}</b>को नाममा ${namsariLandFinal}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन ${vargText} ${extraDecisionFinal} आवश्यक निर्णयार्थ पेश ।</p>`;
+    let bodyHtml = `<p style="text-indent:10px; margin:2px; padding:0px">श्रीमान्,</p><p style="text-indent:50px; margin:2px; padding:0px">${settings.def_dist} जिल्ला ${landFinal} मृतक जग्गाधनी <b>${v('in_landowner')}</b>को नाममा दर्ता रही आएकोमा निवेदकको ${decDts} मा मृत्यु भएकोले ${nijaText}को शेषपछिको हक खाने नजिकको ${state.apps.length > 1 ? 'हकदारहरू हामी मात्र भएकोले हाम्रो' : 'हकदार म मात्र भएकोले मेरो'} नाममा नामसारी गरिपाउँ भनी ${nivedakKa} द.नं. <b>${v('in_rn')}</b> मिति <b>${v('in_rd')}</b> को माग निवेदन दिनुभएको ।</p><p style="text-indent:50px; margin:2px; padding:0px">माग दावी भएका जग्गाहरूको मोठ कायम रहेको र रोक्का नरहेको भनी सम्बन्धित फाँटबाट भिडी आएको । ${hrTableHtml} माग दावी अनुसारका जग्गा निवेदकको नाममा नामसारी गरिदिनका लागि अनुरोध गर्दै ${recText}, मृतक र निवेदकहरू बीचको नाता प्रमाणपत्र, जग्गाधनीको मृत्युदर्ताको प्रमाणपत्र, निवेदकको नागरिकता र सनाखत ${haqNote} ${extrainfo} लगायतका प्रमाणहरूको आधारमा ${feeText} असुली भई मुलुकी देवानी संहिता ऐन, २०७४ को दफा २३९(१) बमोजिमको हकदार <b>${activeNamesOnly}</b>को नाममा ${namsariLandFinal}${hissaText} ${guthiText} ${mohiFinalText} मालपोत ऐन,२०३४ को दफा ८(१) बमोजिम नामसारी हुन ${vargText} ${extraDecisionFinal} आवश्यक निर्णयार्थ पेश ।</p>`;
 
     document.getElementById('preview').innerHTML = headerHtml + tableHtml + bodyHtml;
     saveState();
@@ -2367,20 +2095,16 @@ let extraDecisionFinal = extraDecision ? ` साथै ${extraDecision}` : "";
     `).join('');
         }
 
-window.onload = () => {
-    loadGlobalSettings();
-    loadRevenueMasterData();
+        window.onload = () => {
+    loadGlobalSettings(); // प्रदेश र नाता लोड गर्ने
+        loadRevenueMasterData(); // <--- Add this line
 
     const saved = localStorage.getItem('namsari_v3_storage');
     if (saved) {
-        const d = JSON.parse(saved);
-        // Safety Merge: Use defaults from current 'state' if they are missing in 'saved'
-        state = { ...state, ...d.state }; 
+        const d = JSON.parse(saved); 
+        state = d.state;
         
-        // Ensure sub-properties are arrays even after merging
-        if (!state.hr_recs) state.hr_recs = [];
-        if (!state.mohis) state.mohis = [];
-        
+        // सबै इनपुटहरूको भ्यालु भर्ने
         for (let id in d.inputs) {
             const el = document.getElementById(id);
             if (el) { 
@@ -2390,15 +2114,16 @@ window.onload = () => {
         }
     }
     
-    renderAreaInputs();
-    toggleHouseRoad();
+    // लोड भएपछि हराउन नदिन यी फङ्सनहरू अनिवार्य कल गर्नुपर्छ:
+    renderAreaInputs();   // क्षेत्रफलको लिस्ट देखाउन
+    toggleHouseRoad();    // घरबाटोको सिफारिस इनपुट देखाउन (यदि टिक छ भने)
+    update();             // प्रिभ्यू अपडेट गर्न
     renderMohiUI();
-    renderHaqUI();
-    renderPurchaseUI(); 
-    renderVargikaranUI();
-    toggleHouseValUI();
-    update(); // Run update last after all properties are safe
+        renderHaqUI();
+        renderPurchaseUI(); renderVargikaranUI();
+
 }
+
 
         function saveState() {
             const inputs = {};
@@ -2407,70 +2132,6 @@ window.onload = () => {
         }
         function resetAll() { if (confirm("विवरण मेटाउने?")) { localStorage.removeItem('namsari_v3_storage'); location.reload(); } }
 // नम्बर टाइप गर्दा नेपाली बनाउने फङ्सन
-
-
-// १. घरबाटो सिफारिस विवरण राख्न state मा एरे थप्ने (Initialize if empty)
-if (!state.hr_recs) state.hr_recs = [];
-
-function renderHRRecUI() {
-    const container = document.getElementById('hr_rec_modal_container');
-    if (!container) return;
-
-    let html = `
-    <div style="background:#f0f9ff; padding:10px; border-radius:8px; border:1px solid #bae6fd; margin-bottom:15px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <label style="font-weight:bold; color:#0369a1;">🏠 घरबाटो सिफारिस पत्र विवरण:</label>
-            <button onclick="addHRRecRow()" class="btn btn-green" style="width:auto; padding:2px 10px;">+ थप सिफारिस थप्नुहोस्</button>
-        </div>
-        <div id="hr_rec_rows_list">`;
-
-    if (state.hr_recs.length === 0) {
-        html += `<div style="text-align:center; padding:10px; font-size:12px; color:#64748b;">कुनै विवरण छैन। जग्गा थपेपछि यहाँ स्वतः भरिनेछ।</div>`;
-    }
-
-    state.hr_recs.forEach((rec, index) => {
-        html += `
-        <div style="display:grid; grid-template-columns: 2.2fr 0.8fr 1.5fr 1.5fr 40px; gap:8px; margin-bottom:8px; align-items:center;">
-            <input type="text" placeholder="स्थानीय तह" class="input-box hr-rec-input" value="${rec.loc}" oninput="updateHRRecData(${index}, 'loc', this.value)">
-            <input type="text" placeholder="वडा" class="input-box hr-rec-input" value="${rec.ward}" oninput="updateHRRecData(${index}, 'ward', this.value)">
-            <input type="text" placeholder="च.नं." class="input-box hr-rec-input" value="${rec.sc}" oninput="updateHRRecData(${index}, 'sc', this.value)">
-            <input type="text" placeholder="मिति" class="input-box hr-rec-input" value="${rec.sd}" oninput="updateHRRecData(${index}, 'sd', this.value)">
-            <button onclick="removeHRRecRow(${index})" style="background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; height:30px;">×</button>
-        </div>`;
-    });
-
-    html += `</div></div>`;
-    container.innerHTML = html;
-}
-
-// ३. नयाँ खाली रो थप्ने
-function addHRRecRow() {
-    state.hr_recs.push({ loc: '', ward: '', sc: '', sd: '' });
-    renderHRRecUI();
-    // नयाँ थपिएको पहिलो इनपुट (स्थानीय तह) मा फोकस गर्ने
-    setTimeout(() => {
-        const rows = document.querySelectorAll('#hr_rec_rows_list > div');
-        if (rows.length > 0) {
-            const lastRowInputs = rows[rows.length - 1].querySelectorAll('input');
-            lastRowInputs[0].focus();
-        }
-    }, 10);
-}
-
-// ४. रो हटाउने
-function removeHRRecRow(index) {
-    state.hr_recs.splice(index, 1);
-    renderHRRecUI();
-    update();
-}
-
-// ५. डेटा अपडेट गर्ने
-function updateHRRecData(index, field, val) {
-    // अङ्कलाई नेपाली बनाउने
-    const nepVal = val.replace(/\d/g, d => "०१२३४५६७८९"[d]);
-    state.hr_recs[index][field] = (field === 'sd') ? nepVal.replace(/\./g, "।") : nepVal;
-    update();
-}
 
 
 // फाइल एक्सपोर्ट फङ्सन (अन्तिमको हटाएर यो राख्नुहोस्)
