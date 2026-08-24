@@ -67,6 +67,58 @@
     text-align: center;
     font-weight: bold;
 }
+/* मोडलको साइज र स्क्रोलिङ सुधार */
+#valModal > div {
+    width: 98vw !important;
+    max-width: 1400px !important;
+    height: 94vh !important;
+    display: flex;
+    flex-direction: column;
+}
+
+#modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* बाटो छनोट गर्ने इनपुटलाई चौडा बनाउने */
+.table-output input[list*="roads"] {
+    min-width: 280px;
+    text-align: left;
+}
+
+.modal-header-fixed { flex-shrink: 0; }
+.modal-footer-fixed { flex-shrink: 0; }
+
+/* १. बायाँ पट्टिको इन्पुटहरूलाई अझ प्रष्ट बनाउने */
+.scrollable-column input, 
+.scrollable-column select, 
+.scrollable-column textarea {
+    font-size: 1.1rem !important; /* १६ बाट १८ पिक्सेल जति बनाइएको */
+    padding: 0.5rem !important;  /* भित्र खाली ठाउँ बढाइएको */
+    font-weight: 500;
+}
+
+/* २. प्रिभ्यु भित्रको टेवलको अक्षर बढाउने (सरकारी मानक अनुसार) */
+.table-output td, .table-output th { 
+    border: 1px solid #000; 
+    padding: 6px 8px; /* प्याडिङ बढाइएको */
+    text-align: center; 
+    font-size: 13pt !important; /* ११-१२ बाट १३ पिटी बनाइएको */
+    line-height: 1.3; 
+}
+
+/* ३. टिप्पणीको मुख्य अनुच्छेदको अक्षर */
+.preview-content {
+    font-size: 14pt !important; /* लेख पढ्न सजिलो हुने साइज */
+}
+
+/* ४. मुल्याङ्कन मोडल भित्रको टेवल इनपुटहरू */
+#modal-content input, #modal-content select {
+    font-size: 14px !important;
+    font-weight: bold;
+}
 
 /* ५. मोबाइलमा बेस साइज बढाउने */
 @media (max-width: 768px) {
@@ -148,6 +200,7 @@
         scrollbar-width: thin;
     }
 }
+
         }
 
 
@@ -357,8 +410,8 @@
 <div id="applicant_table_area" class="mt-4 mb-4"></div>
                 <p>श्रीमान्,</p>
                 <div id="main_content">
-                    <p>उल्लिखित निवेदकले <span id="out_owners" class="font-bold text-red-800">.......</span>को नाममा जग्गाधनी श्रेस्ता कायम रहेको <span class="global-dist">सिन्धुपाल्चोक</span> जिल्ला <span id="out_land_details" class="font-bold text-green-700">.......</span> <span id="out_land_grammar">को जग्गा</span> <span class="font-bold" id="out_likhat_txt">...</span> को पारित शेषपछिको बकसपत्र लिखत बमोजिम दाखिला खारेज गरिपाउन द.नं. <span id="out_danum" class="font-bold">.......</span> मिति <span id="out_dadate" class="font-bold">.......</span> मा निवेदन गर्नुभएको ।</p>
-                    <p id="rokka_para">उल्लिखित कित्ता जग्गाहरू मोठ कायम रहेको, <span id="out_rokka_details" class="font-bold text-orange-800">.......</span> मोठ तथा कम्प्युटर फाँटबाट र उल्लिखित लिखत तामेली सदर भएको व्यहोरा तामेली फाँटबाट भिडि आएको ।</p>
+                    <p>उल्लिखित निवेदकले <span id="out_owners" class="font-bold text-black">.......</span>को नाममा जग्गाधनी श्रेस्ता कायम रहेको <span class="global-dist">सिन्धुपाल्चोक</span> जिल्ला <span id="out_land_details" class="font-bold text-black">.......</span> <span id="out_land_grammar">को जग्गा</span> <span class="font-bold" id="out_likhat_txt">...</span> को पारित शेषपछिको बकसपत्र लिखत बमोजिम दाखिला खारेज गरिपाउन द.नं. <span id="out_danum" class="font-bold">.......</span> मिति <span id="out_dadate" class="font-bold">.......</span> मा निवेदन गर्नुभएको ।</p>
+                    <p id="rokka_para">उल्लिखित कित्ता जग्गाहरू मोठ कायम रहेको, <span id="out_rokka_details" class="font-bold text-black">.......</span> मोठ तथा कम्प्युटर फाँटबाट र उल्लिखित लिखत तामेली सदर भएको व्यहोरा तामेली फाँटबाट भिडि आएको ।</p>
 <div id="kk_table_area" class="my-6">
     <!-- यहाँ id="out_intro_phrase" थपिएको छ -->
     <p id="out_intro_phrase" class="mb-2">माग भएका कित्ता जग्गाहरूको मुल्याङ्कन देहाय बमोजिम हुने ।</p>

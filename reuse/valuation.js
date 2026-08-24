@@ -38,35 +38,20 @@ function wardMatches(inputWard, targetWardStr) {
     return false;
 }
 
-function getRoadOptionsForLand(land) {
-    const local = findLocalUnitByVdc(land.vdc);
-    if (!local || !valuationDb.valuations) return [{ name: "नभएको", price: 0 }];
-    
-    let rawRoads = valuationDb.valuations.filter(v => {
-        if (v.lId !== local.id) return false;
-        if (v.scope === "all") return true;
-        return v.targets.some(t => t.vdc === land.vdc && wardMatches(land.ward, t.oldWard));
-    });
-
-    const roadMap = {};
-    rawRoads.forEach(r => {
-        if (!roadMap[r.road] || parseFloat(r.price) > roadMap[r.road]) roadMap[r.road] = parseFloat(r.price);
-    });
-
-    return Object.keys(roadMap).map(name => ({ name: name, price: roadMap[name] })).sort((a,b) => b.price - a.price);
-}
 
 // --- 3. UI RENDERING (ADALAT STYLE) ---
 function openValuationModal() {
     const modal = document.getElementById('valModal');
     modal.classList.remove('hidden');
-    
-    // पहिले सिफारिसहरू सिङ्क गर्ने अनि मात्र रेन्डर गर्ने
-    syncRecommendations(); 
+    modal.style.display = 'flex'; // block को सट्टा flex
+    syncRecommendations();
     renderValuationTable();
 }
+
 function closeValuationModal() {
-    document.getElementById('valModal').classList.add('hidden');
+    const modal = document.getElementById('valModal');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
     updateAll();
 }
 
@@ -116,7 +101,7 @@ function renderValuationTable() {
     // 2. जग्गा मुल्याङ्कन टेबल (Land Valuation Table)
     html += `
     <div class="overflow-x-auto mb-6">
-        <table class="w-full text-[11px] border-collapse bg-white border border-slate-300 shadow-md">
+        <table class="w-full text-[14px] border-collapse bg-white border border-slate-300 shadow-md">
             <thead>
                 <tr class="bg-slate-200 text-slate-700">
                     <th class="border p-2">कि.नं.</th><th class="border p-2">क्षेत्रफल</th>
@@ -182,38 +167,80 @@ function normalizeClass(str) {
         .trim();
 }
 
-// २. JSON बाट रेट खोज्ने मुख्य इन्जिन
 function getPriceFromJson(roadName, className, land) {
     if (!valuationDb || !valuationDb.valuations || !roadName) return 0;
 
     const local = findLocalUnitByVdc(land.vdc);
     if (!local) return 0;
 
-    // यो बाटो र वडामा पर्ने सबै दरहरू फिल्टर गर्ने
+    // १. यो बाटो र यो पालिकाका सबै सम्भावित दररेटहरू फिल्टर गर्ने
     const relevant = valuationDb.valuations.filter(v => {
         if (v.road !== roadName || v.lId !== local.id) return false;
-        if (v.scope === "all") return true;
-        return v.targets && v.targets.some(t =>
-            t.vdc === land.vdc && wardMatches(land.ward, t.oldWard)
-        );
+        
+        // "सबै पालिका" (string) वा scope: all भएकोलाई स्विकार्ने
+        if (v.scope === "all" || typeof v.targets === 'string') return true;
+        
+        // targets एरे भित्र VDC र Ward चेक गर्ने
+        if (Array.isArray(v.targets)) {
+            return v.targets.some(t =>
+                t.vdc === land.vdc && wardMatches(land.ward, t.oldWard || t.oldW || t.currentWard)
+            );
+        }
+        return false;
     });
 
     if (relevant.length === 0) return 0;
 
-    const targetNorm = normalizeClass(className);
+    const targetNorm = className ? className.trim() : "";
 
-    // प्राथमिकता १: वर्गीकरण ठ्याक्कै मिलेमा (Exact Match)
-    if (targetNorm !== "") {
-        let exactMatch = relevant.find(v => normalizeClass(v.classification) === targetNorm);
-        if (exactMatch) return parseFloat(exactMatch.price);
+    // २. प्राथमिकताको आधारमा रेट छान्ने (Priority Logic):
+    // Priority 1: Exact Classification Match (आवासीय/कृषि)
+    let match = relevant.find(v => v.classification === targetNorm);
+
+    // Priority 2: Fuzzy Match (यदि 'आवासीय क्षेत्र' को सट्टा 'आवासीय' मात्र टाइप भएमा)
+    if (!match && targetNorm) {
+        match = relevant.find(v => v.classification && v.classification.includes(targetNorm));
     }
 
-    // प्राथमिकता २: "सबै" (All) वर्गीकरण भएको दर
-    let sabaMatch = relevant.find(v => normalizeClass(v.classification) === "सबै");
-    if (sabaMatch) return parseFloat(sabaMatch.price);
+    // Priority 3: "सबै" वा classification को 'की' नै नभएको (Bhotekoshi Fix)
+    if (!match) {
+        match = relevant.find(v => v.classification === "सबै") || 
+                relevant.find(v => !v.classification); // भोटेकोशीको खाली classification समात्न
+    }
 
-    // प्राथमिकता ३: केही नमिलेमा पहिलो उपलब्ध दर दिने
-    return parseFloat(relevant[0].price) || 0;
+    // ४. यदि केही नमिले पहिलो उपलब्ध रेट दिने
+    if (!match) match = relevant[0];
+
+    return match ? parseFloat(match.price) : 0;
+}
+
+function getRoadOptionsForLand(land) {
+    const local = findLocalUnitByVdc(land.vdc);
+    let rawRoads = [];
+
+    if (local && valuationDb.valuations) {
+        rawRoads = valuationDb.valuations.filter(v => {
+            if (v.lId !== local.id) return false;
+            // "सबै पालिका" भएको स्ट्रिङ वा scope: all लाई स्विकार्ने
+            if (v.scope === "all" || typeof v.targets === 'string') return true;
+            return v.targets.some(t => t.vdc === land.vdc && wardMatches(land.ward, t.oldWard || t.oldW));
+        });
+    }
+
+    const roadMap = {};
+    rawRoads.forEach(r => {
+        if (!roadMap[r.road] || parseFloat(r.price) > roadMap[r.road]) {
+            roadMap[r.road] = parseFloat(r.price);
+        }
+    });
+
+    let uniqueRoads = Object.keys(roadMap).map(name => ({ name: name, price: roadMap[name] }));
+    uniqueRoads.sort((a, b) => b.price - a.price);
+
+    if (uniqueRoads.length === 0) {
+        return ["नभएको", "गोरेटो बाटो", "कच्ची मोटरबाटो"].map(d => ({ name: d, price: 0 }));
+    }
+    return uniqueRoads;
 }
 
 // ३. इन्पुट परिवर्तन हुँदा रेट अपडेट गर्ने फङ्सन

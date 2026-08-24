@@ -634,7 +634,7 @@
         <!-- दायाँ भाग: प्रिभ्यु -->
 <div id="print-area" class="shadow-sm border border-slate-300 overflow-y-auto max-h-[95vh]">
                 <div id="word-content" class="preview-content">
-                <div class="office-header">
+                <!-- <div class="office-header">
                     <img id="nisan_img"
                         src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCABYAF0DASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KK8++Kvx08F/Bqw+0+KdcgsJXjMkNkvz3M4H/POMcn+VTKUYLmk7I6KGHrYqoqNCDlJ7JK7+5HZa5run+G9LuNR1S+ttOsLdd81zdSiOOMepY8CvKfjP8AtQ+EvhP8OYPFMF9YeIXvQp02xtL+NXvQTgtGecqOpOOPrX5+ftD/ABj8S/tRavBqVlaWUOlWFre3NvolldPLdxWsA3vPdpwgJUZAH0+sn7LP7PHiL40W2p/ZodFi0V7q1sNVutQQS31jbDFwxt1YZRpV2oGGOGJ7V40sdUqzdOhHR7P9T71ZDlmW4SGLzPEfvotOVDSM3Hms4q7Uua15bJW2dnzH0j+zX+3lffFL4mQeD/FGhWdjJqs0i2F1p7ttiwm5YpFbJYkK3zgjnHHeuf8Ahn+1t4u8DapeW2t3dt8SNMk1e+gTSNK3y6/psMc7LvdAm2SIDgbjngfN2r0n4A/sc/8ACnfjHrfi+OS1/s1ry+isbCRPNaO0k8t7eSNzzG6/vY2B6rg/XzvX/wBnX42RWum6ZoVv4N0C807W7vVdP1yzvXh1KYSSyOFkOzkYfDDkEAA8V24dYiFO1V3d/Lb5hHFZBmWIqOlQVCDilab0Uk3dprmaWy033aaun9C/E/8Aae0PwF8FZfiFaWN1qdu80drBYXEUlnMZnONkiyLuTHJPB6cZzXhX7Pf/AAUHfxp4wg0Dx1p+laHDfSv9m1iO68iCIdUjkD5BJ4AYMAc17prHgHxn8YfgRqXhHx7Bo+leJL2JbWW/s/8ATLfG5c3CIwXbJt3YXoGwc4r5vf8AYA1rw74JifRzosuuSX+pW19HrSiaFtMnOyCTcR8s0KosgKgcu47cxiliVVUqL91dO55GAxmS0MHUwWMwzlWk3aonpHZR6rRO7lo7rvol9jaf8ZPBWq+L5/C9r4o0qfXoIxK9il0pk2nGMdm6jgEkZGa7MEEV+G+heCtZuP7S1G3thHYaNHbX8+ptG3lRQyXHkx3AGNzxlwTkD7uTX6C/Av8Aby0G/ll8MfELVNLsdVtH8m31/TFcaZfx4G1huAaJucEEY4PTpWGHx/O+WuuXselmnDVBRVTIazxcVfn5Vflasr+7dWd9FvZNrmSbX2JRUNrdRXtvHPBIssMih0dDkMpGQQfQipq9g/Pyrqdw1rY3EyBGeONnUSvsQkAkbm/hHv2r8q/2grHxj8V/iTHa6r460Dxb4jtbW9uJNM0VGSw0eKJd/kidgPMkbG0YBJbHqK+iP25viH471vwv4p8NaT4JktfBGlxRzap4s1WUW8bsCCEtgWXfgkAsN2TkAV+fX9galB4ki0M2L6fqztEkcN0RbtG0ih4yWbAAKkNkkDBzXz2Y15SfslBtad9fI/WOCcDhFF5m8fGjVvKEU+Wy927clJq6sna1tvi3R9Uf8E7fhi3iT4havqmsTNb266DzpE8BA1C0uwU37ujRjYwPfdxxiv0Q8GeA9B8A6Zb2OiWEVpHBawWXmKMyyRQrsiDv1fapwCa+Mr79sTw58G/AXh7wn4B0ey1vW9L02Kxn1TDCwicKDII24eZfM3HqF9zXz148/aL+JXxLEy6z4pvjZkZey0//AEW3UHplY8ZH+8TX6HlPCWLnSTmlTW/vb6+X+dj8ez3iyeYYr22MmqtWKUbxSUbLz897+fTZfe3xr/bD8GfCidtKtrsa7r+7ZJa2GJVtP9qVgQM/7AOT3wOa+LPGXx98Z/GXxgIrK7vLS3mby4rO2R5JSoIKsxhUvv3AcIAo6DjJPJ/DP4E+MfihcwDSNEvU06aOWVNTe1c2zbM7lDgYLEggDPLcZFVPENl4i+HqWqWt5q+j2d8jBYzcfZ58oxV1mjjbMZyc7H5wwPev0LAZTgMFJ06TU6vd2/Lps/M+ExWOxWJXPNOMPL/Pr+R7bpn7QHxJ+DOnaVqGqeNI9dW8icSeGrtlmu7C5R8GG5STEsa7cZZTkFhgEDn7G+Bfx+8N/H3w3JPp5+zalAoXUNHuCDJBnjP+3GecMPocHivyblle6nMk0rPJIw3TTuWJPTJJya9Kl8S6F8J9Y0bVPhn4n1a78QWhZrjVJrUW8D/MQYfKLHdGQAfmHOecdBjmOQ0MVBKCtVd7NRsvSVtPK+/rqaYPNKtCV5O8Ozevyv8Alsfob8cPgx4d134W/ECK2MPhmfVdJSK71S3izsgtVLxIUGP3agMNq44Y1+SSeFb61kvm1aZdFaC1tL9IL0eXdTQzuArRR5GSEPmYJB21+ov7Pv7Xfhv40wwaDraQ6H4qddjWMxH2e9OOTCzdc8/IefTNfIn/AAUV8Fz6J8bv7eF3a3kes2KSJYw83NutugV2dB0XGCHPHX0r8QzzLa2FlarBqS0+T6+evbuf0HwHxAqNZUHjI0cNdzldR96SVuW8lpda7N+7pq9fq/8AY2+IOoeIfDl1p2ofEjR/iBaxhG02YRm21aKMZDR3UDcnGBhwSSOp6V9L1+SH7MWhfE3w58S7W58Dtodr4ruNEi1W20rXJEH9rWUnO2JsdcDnaylcc+lfqx4S1HUdW8NabeavpjaLqk0Cvdae0qy/Z5MfMm9eGAPQjqMU8FVlVp2nGzR89xBhcBg8e6eXYj21OSUr3vZy15W0rXXZbX1PhD/goz8ZPDfiyz0LwVoniGDUL/TdSNxqem26+ZEsirhFlkB27lJb5MHk84xg/Eusa5e67e3VzqV/Lf3EpV5HuXLPIV4Xk8/L0HoOBX2h+0N8F/A/hn4ieF/hz4Z8L6Z4Z8OwiPXvFnjG/Z5JYLUyMoi8+Rid0m1gBnLMy4HU18c+PrLSLDx94lTwxeJe+Gf7RlfTpcPl7bcdgG4AjCkDn0rw8Y6sazqcyT6Wb/r+rH6NwhmGBqZXLB/2VKvL3vbNRg0+X3ormly8z2SjunrG59EeFPgp4M8Qav4c0eHxg+t63qkccjaZokYnuAWQMVbaGSBVzhpJG+XngnivQ9Q/Y/8AGni34bS6tp0Fr4VWETS23gzyWe4mMZIBlnLDzJWxkEjbyMACut/4Jo+AFsvCXiXxnPaKJNSuRY2k5YEmKMZk+XGVy59fmwOOK+1cA9hX6XheJ8zrQjVqyV91p0/LXvuultT+eHlFFOUalNwd2uV3utdnfW6/4dH5e6x+0343+H/hfR/Auiw3XgiDQbGTTry2nx9pmlflpmyoMbAlmXB/i7145beJI9a8Rx6l4guLnXVdwLySednnkj6Ehyc7gORnjIA6V+rXxo/Z+8I/G3QL611nTLZNXlgMVtrUcI+1WzjJRg45IB/hPBGR3r4E/aK/Yu1/4HaBpOuaFd3fiuxEZGq3MdqFFlIMYYIpJ8tskZOcY5PNdkuKp4OspUcLFU38bT99tvVp/O6vf1R5GJyyva7nzJbeVvL/ACKN1otp8Dm1K61Dw7Z+LdL1mzkGgeIrqP8A49ZcYxJCTsWVc4eNhlTypI68D4S+HuteMbN76xhRNMjuYrE39yWET3EhxHCm0MXkP91QcDk4FZfgP4l6t8NPFVpq40qw1NoAXGm67aGW3YMuN2wkYYg8OOxr3i+/4KEeIE0GDTdD+H/hTQXhk8+KRI2ljhl5/exxYVQ3J5ya6Z8d4Okn7GMpSdrt6beWttPRXu7dDijg6dT+LLlS2SV/x/z1t1O48Bfsu+AfC/iHUNJ8WeJF8TeONLsG1QaDYzNa2qbFLYeYDcMFQCxKYLDivC/2ovj5pnxM8RWcPhXSP+Ee0W10/wCxyXDLi6vgzB3SQ5J8vd/CSS3Vs8Aefz/F3xXcXfi65OpBJ/FilNXeOBEM6mQSEDA+UEgZxjI46Vw12ZJZF2PtbktIa+HzviGnmlFwTm5O2srJLvaKvu9utu99P03gGcaOd0fZ4J1463jFJtX0jJuXu+7fVycYpvdW1674W+PD8P8A4j+FPFM13dRR6RerK0kKrLKkeCJAisQuCCRg4HNfsX8Lfi34V+MXhSHxB4R1SPVtNdtjFAVkhcAZSRDyrDI4P4ZFflz8N/DWkRfCfw3rvgi60zVfi5oGq3Gp33hu9tvMk1OyJA8lEkG2ZlVSwVfmAZiOVFfpv8LPh34Q0LRv7d8M+GrbwtJ4hggvryCyjMAZym5QyDADLvI4Arx8thKCdpJxf9f8Oj7PjPNf7SxlL2mCeHrKP7zmSTk29LNL3krWUnuvS7+YP2v9e+M/jK08Z6dpWg2nhH4Y6XAwvta1SeKGXVAvUqWJ/d5OFXAJ9eQK/P3VtOv9DfSvt1pJYi/sU1G0aYYSW3YsFkU+h2nrX6F/F/xr4d/am8XaR8F/E2q3XgbU9O8QMdV0to2kGrJEreWlvKowN2Q43gYByMkCs79sTR9K8K/FD4cJ4S8ET+MvEFrod3o//CNQ2Ly2bafJG0UXmso42MzEDIyMklcA1nXoQxLdZSbtp/S6W7bhgOJM64Ppf2e6MVGU4zvNbxlo7NaODW0tWtbPRW+KPh/8VPFvwynFz4W8SX+iGSVZ2jt5cRSsudu6M5VhgkYI5Br7y+B3/BQvwvrXh+O0+I0p0LXrdQr39vbM9rd843BUyYz0yDxwSD2r88Nf0a48OT3drdwvHNBceRKrAgxsRnyyDnawwQQe4NemfAr9nfWvjRJqVyJv+Ee0Sytyx1WeAyQtKMfuwQRnAySQeMV5GFxVak0qeq7H1nE/CWGr4XE5xh8Xz4rSc4+6oS57cqUbtx0va8m5NO/c/XTw34r0XxhYm80LVbPWLUEBprGdZVUlQwBKk4OCDg88itN0DqyEcEYKnuPpX4+fBXwT498TeLtY0j4d+IZtPNpE8s91FeSWlvKhPlgsBnJYHjIPGfSvevCX7NPxN8Ka/pGtXvxUlt760aIPBBcXM2beNtwiLF13ISCNuMYJr3qWZOor8h+SY3Js3y2pGhi8PyzaTtzRdk+9m7PydmfTXxc/ZB+HvxVj1rUJtJ+x+KNRVSusxzyb43UAJhd23bhQCoHSvINU/wCCZ/hifQ5o9P8AFOpWur/aJJIrqaJZIRESNkTpnJKjI3ggnuK+iY/ipeCXS0fTIriKVyL25hn2iKPaSHRCCXJbA25GAc5OMV0cHj/SZYgzSyREkDbJGcjPfjjFdLhg6zu0r/cefUyud3z0vw/yPzX/AGnv2VdL/Zx8D6DfN4kuta1nUr97cq1usNuIlQsSBktuHyjrzmvmS4uBCJWLDao3kDlsAdv5196/t8/G34b+NvBKeGLG7bUPG2m6pD5EP2SVHgDEiXllGQVA475UjNfKfgvwj4ofwj40XTfBtzrtperDpl9dWVm1xeaZHvWZ2iCnIYhACMHIIzgdfnMVTpLEqnTej7a/1+h+sZDTp8MZJic4wT5MVGPLOFTZptSg4r4k7NNXvGXbqtb4DeGvifY/EnR5vAf2XSfGEukjVrCDU5Yovt1q4yNqvw4YA8DB68jGa/VD4J+MPFnjPwJbXfjXwtL4R8TwyNb3li5DRuy4/exEE5RgcjJyOR2zXjnxU/Z68O+NfCXw48eeF9TfwpqXge0tLvT9RuoHUtp0QV2hnQDep2Bu2QSwIOTWr8P/ANrK4+OOpa4Php4Zl1TSdIaJJr/VGNv5zSbyNiAEgAIfvYPI4Fe7h6cMG+Ryeuy3v8vI+Xx+NzXi6s8bVpxjGjCMW1aMdespSe7eyvtst2/gD9ovwB46/Z/+M9xe32vavfagZEurLxZiWJ58rxtlJPzLypG7t6V1Gj/8FDvirpHgvV9H1Se11xp7N7eDV3i8q7tXZSolynyuRnPK5yBzX6p674c0zxNpc+navp9tqdhMpWS2vIlljb6qwIr8y/2tf2Q9R+H3jybXfDPhmSP4bztHJL/ZPmXDWRwPMMkfLqmckFcgD06V59fC1cG/aUJPlvqv639T9NyzPss4uo/2bnVKMaqg1Gfuq7tZcu3LK7vyrR2focNp/wAPjH4A0R7u1u72eaFbyWWdUUrIeQsg+9jaSNxJ684rsvhv41vfhh4RvPD1vdXaaLqUksiRQbX8pZV2yABueCDnB96wPDWoapFEo8OeKLDxDowbyZLPWWO6IAZk2SfeKqMdc8Yqjc+KtBaSa3lsNQ8OS2ly6Nd2sJurVnVtpKsp4Ga/L61HNKDnz35ZNu8G/XZa/cmjkeQuk1H2fPybNXclsldP3r6K+kr+b1PQPgAx+Dfii4ez8Tafc6Zqir9shltR9qKru8vZlvlwzc8Hp0r6z03xhpkgS8nvLUl8LHc7wA3tz0Pf1r4UTU9I1F4v7L1jR9TlkbLL5iwsp9RuIYE+i8HvXZ+GhJaRlX12z+ykFhCs6SspI6bs8DPbmlRz/FYCk1P3+yknFr7l+i9ehjm8K+MqyxWJk3Udk7x5W1stktUtPhS8+h9J6/8AEjwxpIeaO8djuyY7U7YyT1OTgfXBH0ryrxB8f7iLzbqw1DzoS5EUFmiOwA7Funrk/WvJ/EodJJLi61zTL0hdq+beJEiD/czjP86yRc6VeRTwwao091sEk9rpNkZ5VTjAGPlAIxgDrnoayrZnjsxUffcV2pqS+9q8vyXkc1DLOaKesvRP/J/jbt5lGfw3FqfxBl8VXpl1O61C4kuvn+aVjkEYxxwBtH4mt/Qvib4h/ZU8Xp420/RY9Us9XsprBtMmZV8m5ZldZJJFGTnbnjnA254qpout3WtW8l5oGiQ6QqREQ6xr4LmQhtpCRpnbycZ9eKx9b04+KLeTw5JPd+N/GF8d9uthbGSS3PQCONDhVyDkt2znbuUj2cBSzP6zDFT91JW97WT3tZXdt99/kejR4boTaoVI+zpKXNJJ+8+r5rO1v5ryv5bW5j4xftN/Ef41TPB4k12SPTmcbNH04GC1BzxlQcyH3csa9x/Zh/Yn8XePvBt54g1DxVrvw6hvJx9ms4IXR7pAvMzL5iEAk4GR2J6Yr6A/Yu/ZJk+FmhT65470LS5fFt1IrWu8LcS2EQH3d3KhyeTt6dM19bAYr9Dw2AlUtWxLbb6a/wBfIz4g4zo4BSyvh6EY04te+lFp/wCFWt5OTvfp3FprIGoor6A/ETxD4nfsd/Dj4l6hJqh0t/Dmvtk/2toTi2lY46uoBR/fcuT6185+If2DfiZ4L0maw8CeMdH1jTjL5ot9Xtfs9wwyTtZwHV+WJ5xjtiiiuKpg6NR3tZ91ofU4LibNMDFU41OaC+zNKS0231XyaOLuPgX8X9Eh1O81b4aRajrEO37E+mCCYSBlxJl1bKgkZHG4BiAQMVxupfBjxfqUV2ZPgNra3ksM225WwwRMw+VioYKQDk9M/XsUV5dXBwi7cz/D/I+8y/ijFV4e1dOKflzr/wBv+Zd8Ofs5fElrC2WD4G4uvs0cZm1FrdUMoPzOwdtwBHPGMHj6+oaB+yl8ataSRJ4NA8LJKyZkur4TthQAN0UKbWOAAAWAA4680UV0UsvpNXbf4fojxsx4yxym4qnD1tJv/wAmk1+B6D4I/wCCdml2ZM3i3xrq2sI8rTnTdKJsbRWYszAHLPtyzcArnPPavpb4e/CXwj8KtNNj4U8P2OiQMP3jW0f7yX3eQ5Zz7sTRRXoUsNSo/BH/ADPjsfnWYZmrYqs5LtsvuVl+B1wUL0paKK6TxD//2Q=="
                         class="office-emblem">
@@ -645,8 +645,11 @@
                         <div style="font-size: 13pt; margin: 2px 0;">भूमि व्यवस्थापन तथा अभिलेख विभाग</div>
                         <div style="font-size: 18pt;">भूमि प्रशासन कार्यालय</div>
                         <div style="font-size: 12pt;">चौतारा, सिन्धुपाल्चोक</div>
-                    </div>
-                </div>
+                    </div> -->
+                <!-- </div> -->
+<div id="common-header-container"></div>
+<!-- <div style="border-bottom: 2px solid black; margin-bottom: 5px;"></div> -->
+
                 <div id="out_paragraph" class="mb-4 text-[16.5px]"> सिफारिस पत्रको विवरण भर्नुहोस्... </div>
                 <!-- Change this line in your HTML -->
                 <table class="table-output w-full" cellspacing="0">
@@ -677,7 +680,7 @@
             </div>
         </div>
     </div>
-
+<script src="/reuse/letterhead.js"></script>
     <script>
         let upperEntries = [];
         let lowerEntries = [];
@@ -760,17 +763,11 @@ function formatNepaliNumber(num) {
 }
 
 function applyOfficeSettings() {
-    const settings = JSON.parse(localStorage.getItem('global_office_settings'));
-    if (!settings) return;
-    const headerContainer = document.querySelector('.header-text-container');
-    if (headerContainer) {
-        headerContainer.innerHTML = `
-            <div style="font-size: 9pt;">${settings.gov || 'नेपाल सरकार'}</div>
-            <div style="font-size: 10pt;">${settings.ministry || ''}</div>
-            <div style="font-size: 13pt; margin: 2px 0;">${settings.dept || ''}</div>
-            <div style="font-size: 18pt;">${settings.office || 'भूमि प्रशासन कार्यालय'}</div>
-            <div style="font-size: 12pt;">${settings.addr || ''}</div>
-        `;
+    // Shared Script (letterhead.js) बाट हेडर रेन्डर गर्ने
+    if (typeof CommonHeader !== 'undefined') {
+        CommonHeader.render('common-header-container');
+    } else {
+        console.error("letterhead.js फाइल भेटिएन ।");
     }
 }
 // Call this on page load
@@ -875,7 +872,6 @@ function isWardInTarget(inputWard, targetWardStr) {
     return false;
 }
 
-// Updated Price Matching Engine
 function checkPriceMemory() {
     const vdc = document.getElementById('old_vdc').value.trim();
     const oldWardInput = document.getElementById('ward').value.trim(); 
@@ -884,31 +880,50 @@ function checkPriceMemory() {
 
     if (!valuationDb || !vdc || !road) return;
 
-    // Filter by Road
+    // १. पहिले सडक अनुसार फिल्टर गर्ने
     const roadValuations = valuationDb.valuations.filter(v => v.road === road);
 
-    // Filter by VDC and OLD Ward
+    // २. साविक गा.वि.स. र वडा अनुसार फिल्टर गर्ने (Bhotekoshi Fix)
     const possibleMatches = roadValuations.filter(v => {
-        if (v.scope === "all") return true;
+        // यदि targets स्ट्रिङमा "सबै पालिका" छ भने सिधै म्याच मान्ने
+        if (v.scope === "all" || typeof v.targets === 'string') return true;
         
-        return v.targets.some(t => {
-            const vdcMatch = (t.vdc === vdc);
-            // Match input against 'oldWard' range (e.g., "1-2,4,9")
-            const wardMatch = oldWardInput ? isWardInTarget(oldWardInput, t.oldWard) : true;
-            return vdcMatch && wardMatch;
-        });
+        // यदि एरे छ भने VDC र Ward चेक गर्ने
+        if (Array.isArray(v.targets)) {
+            return v.targets.some(t => {
+                const vdcMatch = (t.vdc === vdc);
+                const wardMatch = oldWardInput ? isWardInTarget(oldWardInput, t.oldWard || t.oldW) : true;
+                return vdcMatch && wardMatch;
+            });
+        }
+        return false;
     });
 
-    // Find best match based on category (residential, etc.)
-    let finalMatch = possibleMatches.find(v => v.classification === category) || 
-                     possibleMatches.find(v => isFuzzyMatch(v.classification, category)) ||
-                     possibleMatches.find(v => v.classification === "सबै") ||
-                     possibleMatches[0];
+    if (possibleMatches.length === 0) return;
+
+    // ३. वर्गीकरण प्राथमिकता (Priority Logic):
+    // Priority 1: Exact Match (आवासीय क्षेत्र)
+    let finalMatch = possibleMatches.find(v => v.classification === category);
+
+    // Priority 2: Fuzzy Match (आवासीय मात्र टाइप भए पनि)
+    if (!finalMatch && category) {
+        finalMatch = possibleMatches.find(v => v.classification && v.classification.includes(category));
+    }
+
+    // Priority 3: "सबै" वा classification को 'की' नै नभएको (Bhotekoshi Fix)
+    if (!finalMatch) {
+        finalMatch = possibleMatches.find(v => v.classification === "सबै") || 
+                     possibleMatches.find(v => !v.classification); 
+    }
+
+    // Priority 4: पहिलो उपलब्ध डाटा
+    if (!finalMatch) finalMatch = possibleMatches[0];
 
     if (finalMatch) {
         document.getElementById('pricePerRopani').value = engToNep(finalMatch.price);
     }
 }
+
 // Ensure the Ward input also triggers the price check
 document.getElementById('ward').addEventListener('input', checkPriceMemory);
 // Ensure event listeners are attached to inputs
@@ -954,33 +969,31 @@ document.getElementById('old_vdc').addEventListener('input', function() {
     }
 });
 
-// Triggered when VDC is selected
 function updateRoadOptions() {
     const vdc = document.getElementById('old_vdc').value.trim();
     const ward = document.getElementById('ward').value.trim();
     if (!vdc || !valuationDb) return;
 
-    // १. यो VDC र वडा कुन स्थानीय तहमा पर्छ पत्ता लगाउने
     let localId = null;
     valuationDb.districts.forEach(dist => {
         dist.locals.forEach(local => {
             local.mapping.forEach(map => {
-                if (map.links.some(link => link.vdc === vdc && (ward ? isWardInTarget(ward, link.oldW) : true))) {
+                if (map.links.some(link => link.vdc === vdc && (ward ? isWardInTarget(ward, link.oldW || link.oldWard) : true))) {
                     localId = local.id;
                 }
             });
         });
     });
 
-    // २. सडकहरू फिल्टर गर्ने
     const roadPriceMap = {};
     valuationDb.valuations.forEach(v => {
         let isMatch = false;
 
-        // नियम: सोही नगरपालिकाको 'all' सडक वा सोही VDC/Ward को 'specific' सडक
-        if (v.scope === "all" && v.lId === localId) {
+        // स्थानीय तह मिल्ने 'all' सडक वा "सबै पालिका" लेखिएको सडक
+        if ((v.scope === "all" || v.targets === "सबै पालिका") && (v.lId === localId || !v.lId)) {
             isMatch = true;
-        } else if (v.scope === "specific" && v.targets) {
+        } else if (Array.isArray(v.targets)) {
+            // स्पेसिफिक VDC सडक
             isMatch = v.targets.some(t => {
                 const vdcMatch = (t.vdc === vdc);
                 const wardMatch = ward ? isWardInTarget(ward, t.oldWard || t.currentWard) : true;
@@ -996,11 +1009,9 @@ function updateRoadOptions() {
         }
     });
 
-    // ३. High to Low Sort
     const sortedRoadNames = Object.keys(roadPriceMap).sort((a, b) => roadPriceMap[b] - roadPriceMap[a]);
     setupDatalist("roadOptions", sortedRoadNames);
 }
-
 // वडा कोलममा oninput थप्नुहोस्
 document.getElementById('ward').addEventListener('input', updateRoadOptions);
 
@@ -1303,39 +1314,64 @@ document.getElementById('ward').addEventListener('input', () => {
 });        
 
 async function exportToWord() {
-    const emblemImg = document.getElementById('nisan_img').src;
-    const headerContainer = document.getElementById('dynamicHeader');
-    const headerContent = headerContainer ? headerContainer.innerHTML : "";
-    const paragraphText = document.getElementById('out_paragraph').innerText;
+    // १. Common Header बाट लोगो र टेक्स्ट तान्ने
+    const logoImg = document.querySelector('.common-header-logo img');
+    const logoSrc = logoImg ? logoImg.src : '';
+    
+    const headerElement = document.querySelector('.common-header-text');
+    let headerHtml = headerElement.innerHTML;
 
+    // २. वर्डका लागि "शुन्य ग्याप" इन्लाइन स्टाइल
+    // यहाँ हामीले div लाई मार्जिन जिरो र लाइन-हाइट १ मा सेट गरेका छौँ
+    headerHtml = headerHtml
+        .replace(/class="common-gov"/g, 'style="font-size: 10pt; font-weight: bold; margin:0; padding:0; line-height:12pt;"')
+        .replace(/class="common-ministry"/g, 'style="font-size: 11pt; font-weight: bold; margin:0; padding:0; line-height:13pt;"')
+        .replace(/class="common-dept"/g, 'style="font-size: 13pt; font-weight: bold; margin:0; padding:0; line-height:15pt;"')
+        .replace(/class="common-office"/g, 'style="font-size: 17pt; font-weight: bold; margin:0; padding:0; line-height:20pt; color:red;"')
+        .replace(/class="common-addr"/g, 'style="font-size: 12pt; font-weight: bold; margin:0; padding:0; line-height:14pt;"')
+        // बाँकी रहेका div हरूलाई पनि सफा गर्ने
+        .replace(/<div/g, '<div style="margin:0; padding:0; line-height:1.1; color:red;"');
+
+    const paragraphText = document.getElementById('out_paragraph').innerText;
     const tableClone = document.querySelector('.table-output').cloneNode(true);
     tableClone.querySelectorAll('.no-print').forEach(el => el.remove());
 
+    // ३. वर्ड लेआउट (CSS मा टाइट फिटिङ थपिएको छ)
     const docHtml = `
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
     <head>
         <meta charset='utf-8'>
         <style>
-            @page Section1 { size: 8.5in 11in; margin: 0.5in 0.5in 0.5in 1.2in; }
+            @page Section1 { size: 8.5in 11in; margin: 0.5in 0.5in 0.5in 1.25in; }
             div.Section1 { page:Section1; }
-            body { font-family:'Mukta', sans-serif; font-size:12pt; }
-            .header-table { width:100%; border:none; margin-bottom:10px; }
-            .header-text { color:red; font-weight:bold; text-align:center; }
-            .main-table { border-collapse:collapse; width:100%; }
-            .main-table th, .main-table td { border:1pt solid black; padding:5px; text-align:center; }
+            body { font-family:'Mukta', 'Arial Unicode MS', sans-serif; font-size:14pt; }
+            
+            /* हेडरको ग्याप कम गर्ने मुख्य कमाण्ड */
+            table.header-table { width:100%; border-collapse:collapse; margin-bottom: 2pt; }
+            table.header-table td { padding: 0 !important; margin: 0 !important; border: none; vertical-align: middle; }
+            
+            /* मुख्य टेबल स्टाइल */
+            .main-table { border-collapse:collapse; width:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+            .main-table th, .main-table td { border:1pt solid black; padding:2pt; text-align:center; font-size:12.5pt; line-height:1.2; }
+            
+            p { text-align:justify; line-height: 1.3; margin: 0 0 8pt 0; padding:0; }
         </style>
     </head>
     <body>
         <div class="Section1">
             <table class="header-table">
                 <tr>
-                    <td width="100"><img src="${emblemImg}" width="80"></td>
-                    <td class="header-text">${headerContent}</td>
-                    <td width="100"></td>
+                    <td width="85" style="text-align:left;"><img src="${logoSrc}" width="75" height="75"></td>
+                    <td style="text-align:center;">
+                        <div style="margin:0; padding:0;">${headerHtml}</div>
+                    </td>
+                    <td width="85"></td>
                 </tr>
             </table>
-            <div style="border-bottom:3px double black; margin-bottom:15px;"></div>
-            <p style="text-align:justify; font-size:14pt;">${paragraphText}</p>
+            <!-- डबल लाइन (Border-bottom को सट्टा छुट्टै डिभ) -->
+            <div style="border-top: 1.5pt solid black; border-bottom: 0.5pt solid black; height: 2pt; margin-bottom: 12pt;"></div>
+            
+            <p>${paragraphText}</p>
             <table class="main-table">${tableClone.innerHTML}</table>
         </div>
     </body>
@@ -1344,10 +1380,9 @@ async function exportToWord() {
     const blob = new Blob(['\ufeff', docHtml], { type: 'application/msword' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `Valuation_Report.doc`;
+    link.download = `मुल्याङ्कन_रिपोर्ट.doc`;
     link.click();
 }
-
         // यो कोड सबै पेज (Malpot, Kutabali, Tippani आदि) मा राख्नुहोस्
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
