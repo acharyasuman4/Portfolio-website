@@ -373,39 +373,6 @@ const searchIndex = [
     { name: "न्युनत्तम मुल्याङ्कन रिपोर्ट", link: "registration/valuation_report/index.html" }
 ];
 
-// Import the updater from Tauri (only works inside the app)
-const { check } = window.__TAURI__.updater;
-const { relaunch } = window.__TAURI__.process;
-
-async function checkAndInstallUpdates() {
-    try {
-        console.log("Checking for updates in background...");
-        const update = await check();
-        
-        if (update) {
-            console.log(`Update found: ${update.version}`);
-            
-            // OPTION A: Show a notification/button to the user
-            const userConfirmed = confirm(`New version ${update.version} is available. Install and restart now?`);
-            
-            if (userConfirmed) {
-                // Download and install
-                await update.downloadAndInstall();
-                // Restart the app to apply the update
-                await relaunch();
-            }
-        } else {
-            console.log("App is up to date.");
-        }
-    } catch (error) {
-        console.error("Update check failed (User might be offline):", error);
-    }
-}
-
-// Check for updates 5 seconds after the app opens
-// This ensures the UI is already loaded and fast for the user
-setTimeout(checkAndInstallUpdates, 5000);
-
 // Function to download all pages for Offline use
 async function startOfflineDownload() {
     const overlay = document.getElementById('download-overlay');
@@ -556,7 +523,6 @@ function handleFuzzySearch() {
 
     
     </script>
-    <script src="script.js"></script>
 
 </body>
 </html>
