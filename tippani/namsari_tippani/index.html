@@ -1264,10 +1264,8 @@ function checkBilamba() {
 
 function n2e(str) {
     if (str === null || str === undefined || str === "") return 0;
-    // नेपाली अंकलाई अंग्रेजीमा बदल्ने
     let val = str.toString().replace(/[०-९]/g, d => "0123456789"["०१२३४५६७८९".indexOf(d)]);
-    // अंक र थोप्लो बाहेक अरु सबै हटाउने
-    val = val.replace(/[^0-9.]/g, '');
+    val = val.replace(/,/g, ''); // हटाउने कमा
     return parseFloat(val) || 0;
 }
     function nepJoin(arr) {
@@ -1752,51 +1750,89 @@ const vdc = document.getElementById('l_vdc').value;
     update(); 
 }
 
+// १. वर्गीकरण (Classification) जाँच गर्ने विशेष हेल्पर
+function matchClassification(vClass, inputCat) {
+    const vc = (vClass || "").trim();
+    const ic = (inputCat || "").trim();
+
+    // यदि प्रयोगकर्ताले 'आवासीय' रोजेको भए
+    if (ic.includes("आवासीय")) {
+        return vc.includes("आवासीय");
+    }
+    // यदि प्रयोगकर्ताले 'व्यवसायिक' वा 'व्यापारिक' रोजेको भए
+    if (ic.includes("व्यवसायिक") || ic.includes("व्यापारिक")) {
+        return vc.includes("व्यवसायिक") || vc.includes("व्यापारिक");
+    }
+    // यदि खाली, 'कृषि' वा 'सबै' छ भने (यसले आवासीय/व्यवसायिक बाहेकका बेस रेट खोज्छ)
+    if (ic === "" || ic.includes("कृषि") || ic.includes("सबै")) {
+        return vc === "सबै" || vc === "" || !vClass || vc.includes("कृषि");
+    }
+
+    return vc === ic;
+}
+
+// २. मुख्य मुल्याङ्कन रेट खोज्ने फंक्सन
 function getPriceFromJson(vdc, ward, road, cat) {
     if (!valuationDb || !vdc || !road) return 0;
 
-    // 1. Filter all valuations for this specific road
-    const roadMatches = valuationDb.valuations.filter(v => v.road === road);
+    const info = findLocalInfo(vdc, ward);
+    const localId = info ? info.lId : null;
 
-    // 2. Filter for those that match the VDC and Ward
-    const possibleMatches = roadMatches.filter(v => {
-        // Handle "scope: all" or targets being a string "सबै पालिका"
-        if (v.scope === "all" || typeof v.targets === 'string') return true;
-        
-        // Handle standard array targets
-        if (Array.isArray(v.targets)) {
-            return v.targets.some(t => {
-                const vdcMatch = (t.vdc === vdc);
-                const wardMatch = ward ? isWardInTarget(ward, t.oldWard || t.oldW || t.currentWard) : true;
-                return vdcMatch && wardMatch;
-            });
-        }
-        return false;
+    // यो स्थानीय तह र यो सडकका सम्पूर्ण रेकर्डहरू
+    const roadVals = valuationDb.valuations.filter(v => {
+        if (localId && v.lId !== localId) return false;
+        return v.road === road;
     });
 
-    if (possibleMatches.length === 0) return 0;
+    if (roadVals.length === 0) return 0;
 
-    // 3. PRIORITY LOGIC (The Fix):
-    // Priority 1: Exact Classification Match (e.g., residential)
-    let finalMatch = possibleMatches.find(v => v.classification === cat);
-    
-    // Priority 2: Fuzzy Classification Match (e.g., "आवासीय" matches "आवासीय क्षेत्र")
-    if (!finalMatch && cat) {
-        finalMatch = possibleMatches.find(v => v.classification && v.classification.includes(cat));
+    // Specific (निश्चित गा.वि.स./वडा) र General (सबै पालिका) छुट्याउने
+    const specificMatches = roadVals.filter(v => {
+        if (v.scope !== "specific" || !Array.isArray(v.targets)) return false;
+        return v.targets.some(t =>
+            t.vdc === vdc && (ward ? isWardInTarget(ward, t.oldWard || t.oldW || t.currentWard) : true)
+        );
+    });
+
+    const generalMatches = roadVals.filter(v => v.scope === "all" || typeof v.targets === 'string');
+
+    const isSpecialCat = cat && (cat.includes("आवासीय") || cat.includes("व्यवसायिक") || cat.includes("व्यापारिक"));
+
+    // क) यदि प्रयोगकर्ताले 'आवासीय' वा 'व्यवसायिक' छानेको छ भने:
+    if (isSpecialCat) {
+        // १. पहिले Specific भित्र आवासीय/व्यवसायिक छ कि हेर्ने
+        const specCat = specificMatches.find(v => matchClassification(v.classification, cat));
+        if (specCat) return n2e(specCat.price);
+
+        // २. छैन भने पालिकास्तर (General) को आवासीय/व्यवसायिक लिने
+        const genCat = generalMatches.find(v => matchClassification(v.classification, cat));
+        if (genCat) return n2e(genCat.price);
+
+        // ३. दुबैमा छैन भने Specific को साधारण रेट लिने
+        const specBase = specificMatches.find(v => matchClassification(v.classification, "")) || specificMatches[0];
+        if (specBase) return n2e(specBase.price);
+
+        // ४. अन्तिममा General बेस रेट
+        const genBase = generalMatches.find(v => matchClassification(v.classification, "")) || generalMatches[0];
+        if (genBase) return n2e(genBase.price);
+    } 
+    // ख) यदि वर्गीकरण खाली छ, 'कृषि' छ वा 'सबै' छ भने (बेस रेट):
+    else {
+        // १. पहिले Specific को बेस रेट लिने (उदा: तातोपानीको ६७,५००)
+        const specBase = specificMatches.find(v => matchClassification(v.classification, cat)) || 
+                         specificMatches.find(v => !v.classification || v.classification === "सबै") ||
+                         specificMatches[0];
+        if (specBase) return n2e(specBase.price);
+
+        // २. छैन भने General को बेस रेट लिने (उदा: सिम्पालकाभ्रेको ५,००,०००)
+        const genBase = generalMatches.find(v => matchClassification(v.classification, cat)) || 
+                        generalMatches.find(v => !v.classification || v.classification === "सबै") ||
+                        generalMatches[0];
+        if (genBase) return n2e(genBase.price);
     }
 
-    // Priority 3: The "सबै" (All) or entries with NO classification (specifically for Bhotekoshi)
-    if (!finalMatch) {
-        finalMatch = possibleMatches.find(v => v.classification === "सबै") || 
-                     possibleMatches.find(v => !v.classification); // Catch-all for Bhotekoshi's missing keys
-    }
-
-    // Priority 4: If still nothing, take the first available match for that road
-    if (!finalMatch) finalMatch = possibleMatches[0];
-
-    return finalMatch ? n2e(finalMatch.price) : 0;
+    return 0;
 }
-
 
 // मोडल भित्र रेट सेट गर्ने फङ्सन
 function fetchAndSetRate(id, vdc, ward) {
