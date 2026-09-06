@@ -687,8 +687,12 @@
         let priceMemory = {};
 
         // ----------------- NUMBER SUPPORT -----------------
-        const nepToEng = (s) => s.toString().replace(/[०-९]/g, d => "०१२३४५६७८९".indexOf(d));
-        const engToNep = (s) => s.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
+const nepToEng = (s) => {
+    if (!s) return "0";
+    let res = s.toString().replace(/[०-९]/g, d => "०१२३४५६७८९".indexOf(d));
+    return res.replace(/,/g, ''); // हटाउनुहोस् कमाहरू
+};
+const engToNep = (s) => s.toString().replace(/\d/g, d => "०१२३४५६७८९"[d]);
 
         // Auto-convert English to Nepali in real-time for inputs
         document.querySelectorAll('.nep-digit').forEach(input => {
@@ -746,21 +750,7 @@ document.getElementById('category').addEventListener('input', function() {
     }
 });
 // Function to format numbers in Nepali System (##,##,###) and remove .00
-function formatNepaliNumber(num) {
-    // Round the number to remove any decimals like .00
-    let x = Math.round(num).toString();
-    
-    // Logic for Nepali comma placement (3, 2, 2...)
-    let lastThree = x.substring(x.length - 3);
-    let otherNumbers = x.substring(0, x.length - 3);
-    if (otherNumbers !== '') {
-        lastThree = ',' + lastThree;
-    }
-    let res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
-    
-    // Convert the result to Nepali digits
-    return engToNep(res);
-}
+
 
 function applyOfficeSettings() {
     // Shared Script (letterhead.js) बाट हेडर रेन्डर गर्ने
@@ -872,57 +862,138 @@ function isWardInTarget(inputWard, targetWardStr) {
     return false;
 }
 
-function checkPriceMemory() {
-    const vdc = document.getElementById('old_vdc').value.trim();
-    const oldWardInput = document.getElementById('ward').value.trim(); 
-    const road = document.getElementById('road').value.trim();
-    const category = document.getElementById('category').value.trim();
 
-    if (!valuationDb || !vdc || !road) return;
 
-    // १. पहिले सडक अनुसार फिल्टर गर्ने
-    const roadValuations = valuationDb.valuations.filter(v => v.road === road);
-
-    // २. साविक गा.वि.स. र वडा अनुसार फिल्टर गर्ने (Bhotekoshi Fix)
-    const possibleMatches = roadValuations.filter(v => {
-        // यदि targets स्ट्रिङमा "सबै पालिका" छ भने सिधै म्याच मान्ने
-        if (v.scope === "all" || typeof v.targets === 'string') return true;
-        
-        // यदि एरे छ भने VDC र Ward चेक गर्ने
-        if (Array.isArray(v.targets)) {
-            return v.targets.some(t => {
-                const vdcMatch = (t.vdc === vdc);
-                const wardMatch = oldWardInput ? isWardInTarget(oldWardInput, t.oldWard || t.oldW) : true;
-                return vdcMatch && wardMatch;
-            });
+// HELPER: Find Local Level ID (lId) from Old VDC and Ward
+function getLidFromMapping(vdcName, wardNum) {
+    if (!valuationDb || !vdcName) return null;
+    const cleanVdc = vdcName.trim();
+    for (let dist of valuationDb.districts) {
+        for (let local of dist.locals) {
+            for (let map of local.mapping) {
+                for (let link of map.links) {
+                    if (link.vdc.trim() === cleanVdc) {
+                        if (!wardNum || isWardInTarget(wardNum, link.oldW)) return local.id;
+                    }
+                }
+            }
         }
-        return false;
-    });
+    }
+    return null;
+}
 
-    if (possibleMatches.length === 0) return;
 
-    // ३. वर्गीकरण प्राथमिकता (Priority Logic):
-    // Priority 1: Exact Match (आवासीय क्षेत्र)
-    let finalMatch = possibleMatches.find(v => v.classification === category);
+function getPriceFromJson(vdc, ward, road, cat) {
+    if (!valuationDb || !vdc || !road) return 0;
 
-    // Priority 2: Fuzzy Match (आवासीय मात्र टाइप भए पनि)
-    if (!finalMatch && category) {
-        finalMatch = possibleMatches.find(v => v.classification && v.classification.includes(category));
+    const currentLid = getLidFromMapping(vdc, ward);
+    if (!currentLid) return 0;
+
+    // यो पालिका र यो बाटो भएका सबै दरहरू निकाल्ने
+    const candidates = valuationDb.valuations.filter(v => 
+        v.lId === currentLid && v.road.trim() === road.trim()
+    );
+
+    if (candidates.length === 0) return 0;
+
+    // १. गा.वि.स. को आधारमा दुई भागमा विभाजन गर्ने
+    const specificMatches = candidates.filter(v => 
+        v.scope === "specific" && 
+        Array.isArray(v.targets) && 
+        v.targets.some(t => t.vdc.trim() === vdc.trim() && (ward ? isWardInTarget(ward, t.oldWard || t.oldW) : true))
+    );
+
+    const generalMatches = candidates.filter(v => v.scope === "all" || v.targets === "सबै पालिका");
+
+    const isUserPickingClass = (cat && cat !== "नभएको" && cat !== "कृषि");
+
+    // --- प्राथमिकताको लजिक (Tiered Matching) ---
+
+    // Tier 1: गा.वि.स. पनि मिल्ने र वर्गीकरण (Residential/Commercial) पनि मिल्ने
+    if (isUserPickingClass) {
+        let t1 = specificMatches.find(v => fuzzyClassMatch(v.classification, cat) && (v.classification && v.classification !== "सबै"));
+        if (t1) return parseFloat(nepToEng(t1.price));
     }
 
-    // Priority 3: "सबै" वा classification को 'की' नै नभएको (Bhotekoshi Fix)
-    if (!finalMatch) {
-        finalMatch = possibleMatches.find(v => v.classification === "सबै") || 
-                     possibleMatches.find(v => !v.classification); 
+    // Tier 2: गा.वि.स. नमिले पनि पालिका स्तरमा वर्गीकरण (Residential/Commercial) मिलेको दर
+    if (isUserPickingClass) {
+        let t2 = generalMatches.find(v => fuzzyClassMatch(v.classification, cat) && (v.classification && v.classification !== "सबै"));
+        if (t2) return parseFloat(nepToEng(t2.price));
     }
 
-    // Priority 4: पहिलो उपलब्ध डाटा
-    if (!finalMatch) finalMatch = possibleMatches[0];
+    // Tier 3: गा.वि.स. म्याच हुने "सबै" वा खाली वर्गीकरण भएको दर
+    let t3 = specificMatches.find(v => !v.classification || v.classification === "सबै" || v.classification === "कृषि");
+    if (t3) return parseFloat(nepToEng(t3.price));
 
-    if (finalMatch) {
-        document.getElementById('pricePerRopani').value = engToNep(finalMatch.price);
+    // Tier 4: केही नभेटिए पालिकाको "सबै" दर
+    let t4 = generalMatches.find(v => !v.classification || v.classification === "सबै");
+    if (t4) return parseFloat(nepToEng(t4.price));
+
+    return 0;
+}
+
+// हिज्जे मिलाउन यो फङ्सन अनिवार्य छ
+function normalizeClassification(str) {
+    if (!str) return "";
+    let s = str.trim();
+    s = s.replace(/व्यावसायिक/g, "व्यवसायिक")
+         .replace(/आवसीय/g, "आवासीय")
+         .replace(/कृषी/g, "कृषि")
+         .replace(/एरिया|क्षेत्र|भाग/g, "")
+         .replace(/\s+/g, "");
+    return s;
+}
+
+function fuzzyClassMatch(vClass, inputCat) {
+    const vc = normalizeClassification(vClass);
+    const ic = normalizeClassification(inputCat);
+    if (!ic) return vc === "" || vc === "सबै";
+    return vc.includes(ic) || ic.includes(vc);
+}
+
+
+
+// ४. UI TRIGGER (बाटो वा वर्गीकरण छान्दा दर देखाउने)
+function checkPriceMemory() {
+    const vdc = document.getElementById('old_vdc').value;
+    const ward = document.getElementById('ward').value;
+    const road = document.getElementById('road').value;
+    const category = document.getElementById('category').value;
+
+    if (!vdc || !road) return;
+
+    const price = getPriceFromJson(vdc, ward, road, category);
+    const priceInput = document.getElementById('pricePerRopani');
+
+    if (price > 0) {
+        priceInput.value = engToNep(price);
+        updateAll(); 
+    } else {
+        priceInput.value = ""; 
     }
 }
+
+// ५. EVENT LISTENERS
+// यी लिस्टनरहरूले टाइप गर्ने बित्तिकै दर अपडेट गर्छन्
+document.getElementById('road').addEventListener('input', checkPriceMemory);
+document.getElementById('category').addEventListener('input', checkPriceMemory);
+document.getElementById('ward').addEventListener('input', () => {
+    updateRoadOptions();
+    checkPriceMemory();
+    syncRecommendationInputs();
+});
+
+// ६. FORMATTING (नेपाली कमा सिस्टम)
+function formatNepaliNumber(num) {
+    if (!num) return "०";
+    let x = Math.round(num).toString();
+    let lastThree = x.substring(x.length - 3);
+    let otherNumbers = x.substring(0, x.length - 3);
+    if (otherNumbers !== '') lastThree = ',' + lastThree;
+    let res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+    return engToNep(res);
+}
+
 
 // Ensure the Ward input also triggers the price check
 document.getElementById('ward').addEventListener('input', checkPriceMemory);
@@ -1061,9 +1132,14 @@ document.getElementById('old_vdc').addEventListener('input', updateRoadOptions);
         function addLowerEntry(type) {
             const vdc = document.getElementById('old_vdc').value, ward = document.getElementById('ward').value, kitta = document.getElementById('kitta').value;
             const road = document.getElementById('road').value, cat = document.getElementById('category').value;
-            const price = parseFloat(nepToEng(document.getElementById('pricePerRopani').value)) || 0;
             if (!kitta || !vdc) return alert("गा.वि.स. र कित्ता अनिवार्य छ");
-            priceMemory[`${vdc}|${road}|${cat}`] = price;
+    const priceInput = document.getElementById('pricePerRopani').value;
+    const price = parseFloat(nepToEng(priceInput)) || 0;
+
+    // यो लाइनले अर्को पटकको लागि मूल्य 'सम्झिने' काम गर्छ
+    if (price > 0) {
+        priceMemory[`${vdc}|${road}|${cat}`] = price;
+    }
 
             let totalRopani = 0, areaStr = "";
             const areaType = document.querySelector('input[name="areaType"]:checked').value;
