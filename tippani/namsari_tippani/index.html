@@ -500,7 +500,7 @@
 <div class="input-group" style="background:#fefce8; border: 1px solid #facc15; margin-bottom:10px;">
     <label><input type="checkbox" id="chk_vargikaran" onchange="renderVargikaranUI(); update();"> वर्गीकरण निर्णय थप ?</label>
     <div id="vargikaran_inputs" style="display:none; margin-top:5px;">
-        <input type="text" id="varg_source" value="मोठ फाँटबाट प्राप्त विवरण बमोजिम" class="input-box">
+        <input type="text" id="varg_source" value="मोठ फाँटबाट भिडीआए बमोजिम" class="input-box">
         <label>कित्ताहरू छान्नुहोस्:</label>
         <div id="varg_kitta_list" style="max-height:100px; overflow-y:auto; background:white; border:1px solid #ddd; padding:5px;"></div>
     </div>
@@ -1999,9 +1999,9 @@ if (document.getElementById('chk_add_house')?.checked && state.houseEntries) {
         const countNep = toNep(h.count);
         
         if (h.count == "1") {
-            houseTextParts.push(`कि.नं. ${nepJoin(kitList)} मा भएको घरको मुल्य रू. <b>${h.price}</b>`);
+            houseTextParts.push(`कि.नं. ${nepJoin(kitList)} मा भएको घरको मुल्य रू. <b>${h.price}</b> समेतको आधारमा `);
         } else {
-            houseTextParts.push(`कि.नं. ${nepJoin(kitList)} मा भएका <b>${countNep}</b> वटा घरहरूको मुल्य रू. <b>${h.price}</b>`);
+            houseTextParts.push(`कि.नं. ${nepJoin(kitList)} मा भएका <b>${countNep}</b> वटा घरहरूको मुल्य रू. <b>${h.price}</b> समेतको आधारमा `);
         }
     });
 }
@@ -2020,7 +2020,7 @@ if (document.getElementById('chk_add_house')?.checked && state.houseEntries) {
         thailiPrefix = `, कि.नं. <b>${nepJoin(kitasWithHighPurchase)}</b> ${landWord} खरिद मुल्य समेतको आधारमा कायम भएको कुल थैली अंक रू. <b>${toNep(finalThaili)}</b> अक्षेरेपी <b>${numberToNepaliWords(finalThaili)}</b> रूपैयाँको `;
     } else {
         // साविक खरिद मूल्य नभएमा साधारण तरिकाले जोड्ने
-        thailiPrefix = `समेतको आधारमा कायम भएको कुल थैली अंक रू. <b>${toNep(finalThaili)}</b> अक्षेरेपी <b>${numberToNepaliWords(finalThaili)}</b> रूपैयाँको `;
+        thailiPrefix = `कायम भएको कुल थैली अंक रू. <b>${toNep(finalThaili)}</b> अक्षेरेपी <b>${numberToNepaliWords(finalThaili)}</b> रूपैयाँको `;
     }
 
     // यदि घरको मूल्य थपिएको भए thailiPrefix भन्दा अगाडि घरको पाठ जोड्ने
